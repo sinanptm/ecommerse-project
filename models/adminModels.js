@@ -166,6 +166,7 @@ const Banner = mongoose.model("Banner", bannerSchema);
 const walletSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   amount: { type: Number, default: 0 },
+  productid: { type:  mongoose.Schema.Types.ObjectId, ref: "Product", required: true }
 });
 
 const Wallet = mongoose.model("Wallet", walletSchema);
