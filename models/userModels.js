@@ -3,15 +3,14 @@ const mongoose = require("mongoose");
 // User Schema
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
-  Fname: { type: String, required: true },
-  Lname: { type: String, required: true },
+  name: { type: String, required: true },
   gender: { type: String },
   phone: { type: String },
   password: { type: String, required: true },
   addressid: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },
   createdate: { type: Date, default: Date.now },
   updated: { type: Date },
-  email: { type: String },
+  email: { type: String , unique: true, required:true},
   is_verified: { type: Boolean, default: false },
 });
 

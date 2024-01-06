@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Login/Sign Up</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="images/icons/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/linearicons-v1.0.0/icon-font.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .size-210 {
+            max-width: 400px;
+            /* Adjust the max-width as needed */
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg">
+        <!-- Login Form -->
+        <form class="login-form" method="post" action="/login">
+            <h4 class="mtext-105 cl2 txt-center p-b-30">
+                Login
+            </h4>
+            <% if (typeof msg !== 'undefined') { %>
+            <p style="color:#ff0000;"><%= msg %></p>
+            <% } %>
+            <div class="bor8 m-b-20 how-pos4-parent">
+                <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" id="email" name="email"
+                    placeholder="Email Address">
+                <img class="how-pos4 pointer-none" src="images/icons/icon-email.png" alt="Email Icon"
+                    style="width: 20px; height: 20px;">
+            </div>
+            <small class="form-text text-left" style="color: red; display: none;" id="error"></small>
+            <div class="bor8 m-b-30 how-pos4-parent">
+                <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" id="password" type="password"
+                    name="password" placeholder="Password">
+                <img class="how-pos4 pointer-none" src="images/icons/padlock.png" alt="Password Icon"
+                    style="width: 20px; height: 20px;">
+            </div>
+            <small class="form-text text-left" style="color: red; display: none;" id="errorpass"></small>
+            <button
+                class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
+                Login
+            </button>
+            <small class="mtext-105 cl2 txt-center p-t-10"><small
+                    class="stext-111 cl2 plh3 size-116 p-l-62 ">Don't have an account?</small>
+                <a href="/register" class="cpointer" style="font-size: 14px;">Sign Up</a>
+            </small>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const emailInput = document.querySelector('input[id="email"]');
+        const errorParagraphEmail = document.getElementById('error');
+        const passwordInput = document.querySelector('input[id="password"]');
+        const errorParagraphPassword = document.getElementById('errorpass');
+
+        // Email input validation
+        emailInput.addEventListener("input", function (event) {
+            const enteredEmail = event.target.value;
+
+            if (!isValidEmail(enteredEmail)) {
+                errorParagraphEmail.textContent = "Invalid email address format";
+                errorParagraphEmail.style.display = "block";
+                emailInput.style.border = "1px solid red";
+            } else {
+                errorParagraphEmail.textContent = "";
+                errorParagraphEmail.style.display = "none";
+                emailInput.style.border = "";
+            }
+        });
+
+        // Password input validation
+        passwordInput.addEventListener("input", function (event) {
+            const enteredPassword = event.target.value;
+
+            if (!isValidPassword(enteredPassword)) {
+                errorParagraphPassword.textContent =
+                    "Password must be at least 4 characters";
+                errorParagraphPassword.style.display = "block";
+                passwordInput.style.border = "1px solid red";
+            } else {
+                errorParagraphPassword.textContent = "";
+                errorParagraphPassword.style.display = "none";
+                passwordInput.style.border = "";
+            }
+        });
+
+        // Function to validate email format
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Function to validate password (replace with your logic)
+        function isValidPassword(password) {
+            // Allow any characters, just ensure the length is at least 4
+            return password.length >= 4;
+        }
+    });
+</script>
+<script src="js/main.js"></script>
+
+</body>
+</html>

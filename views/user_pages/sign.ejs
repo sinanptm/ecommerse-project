@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Login/Sign Up</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="images/icons/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/linearicons-v1.0.0/icon-font.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .size-210 {
+            max-width: 400px;
+            /* Adjust the max-width as needed */
+            width: 100%;
+        }
+
+        .size-210 input {
+            padding: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg">
+        <form class="login-form" method="post" action="/register">
+            <h4 class="mtext-105 cl2 txt-center p-b-30">
+                Sign Up
+            </h4>
+            <% if (typeof msg !== 'undefined') { %>
+                <p style="color:#ff0000;"><%= msg %></p>
+            <% } %>
+            <div class="bor8 m-b-20 how-pos4-parent">
+                <input class="stext-111 cl2 plh3 size-999" type="text" name="name" placeholder="  Name">
+            </div>
+            <div class="bor8 m-b-20 how-pos4-parent">
+                <input class="stext-111 cl2 plh3 size-999 " type="text" name="number" placeholder="  Number">
+            </div>
+            <div class="bor8 m-b-20 how-pos4-parent">
+                <input class="stext-111 cl2 plh3 size-999 " type="text" name="username" placeholder="  Username">
+            </div>
+            <div class="bor8 m-b-20 how-pos4-parent">
+                <input class="stext-111 cl2 plh3 size-999 " type="password" id="signupPassword" name="password"
+                    placeholder="  Password">
+                <small class="form-text text-left" style="color: red; display: none;" id="errorpass"></small>
+            </div>
+            <div class="bor8 m-b-20 how-pos4-parent">
+                <input class="stext-111 cl2 plh3 size-999 " type="text" id="signupEmail" name="email"
+                    placeholder="  Email Address">
+                <small class="form-text text-left" style="color: red; display: none;" id="erroremail"></small>
+            </div>
+            <div class="bor8 m-b-20 how-pos4-parent">
+                <input class="stext-111 cl2 plh3 size-999 " type="text" name="gender" placeholder="  Gender">
+            </div>
+            <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
+                Sign Up
+            </button>
+            <small class="mtext-105 cl2 txt-center p-t-10"><small
+                    class="stext-111 cl2 plh3 size-116 p-l-62 ">Already have an account?</small>
+                <a href="/login" class="cpointer" style="font-size: 14px;">Sign In</a>
+            </small>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const signupEmailInput = document.querySelector('input[id="signupEmail"]');
+            const signupErrorEmail = document.getElementById('erroremail');
+            const signupPasswordInput = document.querySelector('input[id="signupPassword"]');
+            const signupErrorPassword = document.getElementById('errorpass');
+
+            // Email input validation for sign up
+            signupEmailInput.addEventListener("input", function (event) {
+                const enteredEmail = event.target.value;
+
+                if (!isValidEmail(enteredEmail)) {
+                    signupErrorEmail.textContent = "Invalid email address format";
+                    signupErrorEmail.style.display = "block";
+                    signupEmailInput.style.border = "1px solid red";
+                } else {
+                    signupErrorEmail.textContent = "";
+                    signupErrorEmail.style.display = "none";
+                    signupEmailInput.style.border = "";
+                }
+            });
+
+            // Password input validation for sign up
+            signupPasswordInput.addEventListener("input", function (event) {
+                const enteredPassword = event.target.value;
+
+                if (!isValidPassword(enteredPassword)) {
+                    signupErrorPassword.textContent =
+                        "Password must be at least 4 characters";
+                    signupErrorPassword.style.display = "block";
+                    signupPasswordInput.style.border = "1px solid red";
+                } else {
+                    signupErrorPassword.textContent = "";
+                    signupErrorPassword.style.display = "none";
+                    signupPasswordInput.style.border = "";
+                }
+            });
+
+            // Function to validate email format
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            // Function to validate password (replace with your logic)
+            function isValidPassword(password) {
+                // Allow any characters, just ensure the length is at least 4
+                return password.length >= 4;
+            }
+        });
+    </script>
+    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="vendor/animsition/js/animsition.min.js"></script>
+    <script src="vendor/bootstrap/js/popper.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="vendor/select2/select2.min.js"></script>
+    <script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

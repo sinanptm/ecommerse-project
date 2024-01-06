@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>OTP Verification</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="images/icons/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/linearicons-v1.0.0/icon-font.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .size-210 {
+            max-width: 400px;
+            /* Adjust the max-width as needed */
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg">
+        <!-- OTP Form -->
+        <form class="otp-form" method="post" action="/verifyOTP">
+            <h4 class="mtext-105 cl2 txt-center p-b-30">
+                Enter OTP
+            </h4>
+            <div class="bor8 m-b-20 how-pos4-parent">
+                <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" id="otp" name="otp"
+                    placeholder="Enter OTP">
+                <img class="how-pos4 pointer-none" src="images/icons/padlock.png" alt="Key Icon"
+                    style="width: 20px; height: 20px;">
+            </div>
+            <small class="form-text text-left" style="color: red; display: none;" id="error"></small>
+            <button
+                class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
+                Verify OTP
+            </button>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const otpInput = document.querySelector('input[id="otp"]');
+            const errorParagraph = document.getElementById('error');
+
+            // OTP input validation
+            otpInput.addEventListener("input", function (event) {
+                const enteredOTP = event.target.value;
+
+                if (!isValidOTP(enteredOTP)) {
+                    errorParagraph.textContent = "Invalid OTP format";
+                    errorParagraph.style.display = "block";
+                    otpInput.style.border = "1px solid red";
+                } else {
+                    errorParagraph.textContent = "";
+                    errorParagraph.style.display = "none";
+                    otpInput.style.border = "";
+                }
+            });
+
+            // Function to validate OTP format
+            function isValidOTP(otp) {
+                const otpRegex = /^\d{6}$/;
+                return otpRegex.test(otp);
+            }
+        });
+    </script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
