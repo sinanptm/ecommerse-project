@@ -1,6 +1,6 @@
 const redirectLogin = async (req, res, next) => {
   try {
-    if (req.session.token && req.cookies.token) {
+    if (req.session.token || req.cookies.token) {
       next();
     } else {
       res.redirect("/login");
@@ -21,7 +21,7 @@ const OTPStatus = async (req, res, next) => {
 
 const checkStatus = async (req, res, next) => {
   try {
-    if (req.session.token && req.cookies.token) {
+    if (req.session.token || req.cookies.token) {
       res.redirect("/home");
     } else {
       next();

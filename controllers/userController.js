@@ -5,6 +5,7 @@ const otpModel = require("../models/otpModel");
 const jwt = require("jsonwebtoken");
 const { secret } = require("../config/lock");
 
+// !  login and logout controllers
 const loadLogin = async (req, res) => {
   try {
     res.render("login");
@@ -145,9 +146,71 @@ const loadRegister = async (req, res) => {
   }
 };
 
-const loadHome = async (req, res) => {
-  res.render("cart")
+
+const userLogout = async (req, res) => {
+  try {
+    req.session.destroy((err) => {
+      if (err) {
+        console.log('Error destroying session:', err);
+        res.status(500).send('Internal Server Error');
+      } else {
+        res.clearCookie('token');
+        res.redirect('/login');
+      }
+    });
+  } catch (error) {
+    console.log('Error in userLogout:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
 };
+
+module.exports = {
+  userLogout,
+};
+
+
+// ! homepage controller
+
+const loadHome = async (req, res) => {
+  const pipeline = [
+    {
+      $lookup: {
+        from: "images",
+        localField: "img",
+        foreignField: "_id",
+        as: "images",
+      },
+    },
+    {
+      $unwind: "$images",
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        price: 1,
+        quantity: 1,
+        status: 1,
+        color: 1,
+        size: 1,
+        categoryid: 1,
+        createdate: 1,
+        main: "$images.main",
+        back: "$images.back",
+        side: "$images.side1",
+      },
+    },
+  ];
+
+  try {
+    const products = await userModels.Product.aggregate(pipeline);
+    res.render("home", { products });
+  } catch (error) {
+    console.error('Error in loadHome:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
 
 module.exports = {
   loadHome,
@@ -158,5 +221,6 @@ module.exports = {
   securePassword,
   loadOTP,
   verifyOTP,
-  newOTP
+  newOTP,
+  userLogout
 };

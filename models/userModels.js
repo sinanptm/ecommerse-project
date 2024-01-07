@@ -62,7 +62,7 @@ const imageSchema = new mongoose.Schema({
   productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
   main: { type: String },
   back: { type: String },
-  side1: { type: String },
+  side: { type: String },
 });
 
 const Image = mongoose.model("Image", imageSchema);

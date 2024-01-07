@@ -22,19 +22,6 @@ userRoute.use(
   })
 );
 
-userRoute.get('/clearSessionsAndCookies', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Error destroying session:', err);
-      res.status(500).send('Internal Server Error');
-    } else {
-      res.clearCookie('token');
-      res.redirect("/home")      
-    }
-  });
- 
-});
-
 userRoute.use(express.json());
 userRoute.use(express.urlencoded({ extended: true }));
 
@@ -72,5 +59,7 @@ userRoute.get("/contact", checkStatus, (req, res) => {
 userRoute.get("/whishlist",  redirectLogin,(req, res) => {
   res.render("cart");
 });
+
+userRoute.get("/logout",redirectLogin,userController.userLogout)
 
 module.exports = userRoute;
