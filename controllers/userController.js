@@ -1,7 +1,9 @@
 const userModels = require("../models/userModels");
-const { sendOTP } = require("../config/sendOTP");
+const { sendOTPs } = require("../config/sendOTP");
 const bcrypt = require("bcrypt");
-const OTPs = require("../models/otpModel");
+const otpModel = require("../models/otpModel");
+const jwt = require("jsonwebtoken");
+const { secret } = require("../config/lock");
 
 const loadLogin = async (req, res) => {
   try {
@@ -13,83 +15,103 @@ const loadLogin = async (req, res) => {
 
 const checkLogin = async (req, res) => {
   try {
-    var user_mail = req.body.email;
-    const { email, password, duration, messsage, subject } = await req.body;
-
-    const data = await userModels.User.findOne({ email: email });
+    const { email, password, duration, message, subject } = req.body;
+    const data = await userModels.User.findOne({ email });
     if (data) {
       if (await bcrypt.compare(password, data.password)) {
-          const OTP = await sendOTP({
-              email,
-              duration,
-              messsage,
-              subject,
-            });
-            res.status(200).json(OTP);
-            res.redirect("/verifyOTP");
+        req.session.OTPId = data._id.toString();
+        res.redirect(`/verifyOTP?email=${email}`);
       } else {
         res.render("login", { msg: "Incorrect password." });
       }
     } else {
       res.render("login", { msg: "Incorrect email and password." });
     }
-    
   } catch (error) {
-    res.status(404).json(error)
+    res.status(404).json(error.message);
   }
 };
 
-const loadOTP = (req, res) => {
+
+const newOTP = async(req,res)=>{
+  res.render("otp", { email :req.session.pmail});
+  
+}
+
+const loadOTP = async (req, res) => {
   try {
-    res.render("otp");
+    const { email, message, duration, subject } = req.query;
+    const OTP = await sendOTPs({
+      email,
+    });
+    req.session.pmail = email
+    res.redirect("/OTP")
   } catch (error) {
     console.log(error);
+  }
+};
+
+const securePassword = async (pass) => {
+  try {
+    return await bcrypt.hash(pass, 10);
+  } catch (error) {
+    console.log(error.message);
   }
 };
 
 const verifyOTP = async (req, res) => {
   let { email, otp } = req.body;
   try {
-    if (!email && otp) {
-      throw Error("provide values for email and password");
+    if (!email || !otp) {
+      delete req.session.OTPId;
+      throw Error(`Provide values for email ${email} and OTP ${otp}`);
     }
-    const matchedRecord = await OTPs.OTP.findOne({ email: email });
+
+    const matchedRecord = await otpModel.OTP.findOne({ email: email });
     if (!matchedRecord) {
-      throw Error("No otp Found ");
+      delete req.session.OTPId;
+      throw Error("No OTP found for the provided email");
     }
-    const { expiresAt } = matchedRecord;
-    const OTP = matchedRecord.otp;
-    if (expiresAt < Date.now()) {
-      await OTP.deleteOne({ email });
-      throw Error("OTP code has expired.request for new one");
+
+    if (matchedRecord.expiresAt < Date.now()) {
+      await otpModel.OTP.deleteOne({ email });
+      delete req.session.OTPId;
+      res.render("otp", { msg: "OTP code has expired. Request a new one." });
+      throw Error("OTP code has expired. Request a new one");
+    }
+
+    if (await bcrypt.compare(otp, matchedRecord.otp)) {
+      const data = await userModels.User.findOne({ email: email });
+      const token = securePassword(data._id.toString());
+      req.session.token = token;
+      res.cookie("token", token.toString(), {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+
+      // Delete OTP record and session variable after setting the token and cookie
+      await otpModel.OTP.deleteOne({ email: email });
+      delete req.session.OTPId;
+
+      // Redirect to home after cleanup
+      res.redirect("/home");
     } else {
-      if (await bcrypt.compare(otp, OTP)) {
-        res.redirect("/home");
-        const data = await userModels.User.findOne({ email: user_mail });
-        req.session.user_id = data._id;
-        res.cookie("userToken", data._id.toString(), {
-          maxAge: 30 * 24 * 60 * 60 * 1000,
-        });
-        res.redirect("/home");
-      }
+      res.render("otp", {
+        msg: "Incorrect OTP. Please try again.",
+        email: email,
+      });
     }
-  } catch (error) {}
-};
-
-
-const securePassword = async (pass) => {
-  try {
-    const hashpass = await bcrypt.hash(pass, 10);
-    return hashpass;
   } catch (error) {
+    delete req.session.OTPId;
     console.log(error.message);
+    res.status(404).json(error.message);
   }
 };
+
 
 const checkRegister = async (req, res) => {
   try {
     const { email, password, username, number, name, gender } = await req.body;
-    const secPass = securePassword(password);
+    const secPass = await securePassword(password);
 
     const newUser = new userModels.User({
       name: name,
@@ -107,7 +129,7 @@ const checkRegister = async (req, res) => {
     res.render("login", { msg: "User registration successful. Please login." });
   } catch (error) {
     if (error.code === 11000) {
-      res.render("register", { msg: "Email already exists" });
+      res.render("sign", { msg: "Email already exists" });
     } else {
       console.error(error);
       res.status(500).json({ error: "Internal server error." });
@@ -123,7 +145,9 @@ const loadRegister = async (req, res) => {
   }
 };
 
-const loadHome = async (req, res) => {};
+const loadHome = async (req, res) => {
+  res.render("cart")
+};
 
 module.exports = {
   loadHome,
@@ -133,5 +157,6 @@ module.exports = {
   checkRegister,
   securePassword,
   loadOTP,
-  verifyOTP
+  verifyOTP,
+  newOTP
 };

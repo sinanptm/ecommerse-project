@@ -5,8 +5,11 @@ const nocache = require("nocache");
 const path = require("path");
 const session = require("express-session");
 const { secret } = require("../config/lock");
-userRoute.use(nocache());
+const cookieParser = require("cookie-parser");
+const { checkStatus, redirectLogin, OTPStatus } = require("../middlewares/auth");
 
+userRoute.use(nocache());
+userRoute.use(cookieParser());
 userRoute.set("view engine", "ejs");
 userRoute.set("views", path.join(__dirname, "../views/user_pages"));
 userRoute.use(express.static(path.join(__dirname, "../public")));
@@ -19,40 +22,54 @@ userRoute.use(
   })
 );
 
+userRoute.get('/clearSessionsAndCookies', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      res.clearCookie('token');
+      res.redirect("/home")      
+    }
+  });
+ 
+});
+
 userRoute.use(express.json());
 userRoute.use(express.urlencoded({ extended: true }));
 
-userRoute.get("/", userController.loadLogin);
-userRoute.get("/login", userController.loadLogin);
+userRoute.get("/", checkStatus, userController.loadLogin);
+userRoute.get("/login", checkStatus, userController.loadLogin);
 userRoute.post("/login", userController.checkLogin);
 
-userRoute.get("/verifyOTP", userController.loadOTP);
+userRoute.get("/verifyOTP", OTPStatus, checkStatus, userController.loadOTP);
+userRoute.get('/OTP',OTPStatus,userController.newOTP)
 userRoute.post("/verifyOTP", userController.verifyOTP);
 
-userRoute.get("/register", userController.loadRegister);
+userRoute.get("/register", checkStatus, userController.loadRegister);
 userRoute.post("/register", userController.checkRegister);
 
-userRoute.get("/home", userController.loadHome);
+userRoute.get("/home", redirectLogin ,userController.loadHome);
 
-userRoute.get("/about", (req, res) => {
+userRoute.get("/about", redirectLogin,(req, res) => {
   res.render("about");
 });
-userRoute.get("/products", (req, res) => {
+userRoute.get("/products", redirectLogin, (req, res) => {
   res.render("product");
 });
-userRoute.get("/product-detials", (req, res) => {
+userRoute.get("/product-detials", redirectLogin, (req, res) => {
   res.render("product-detial");
 });
-userRoute.get("/cart", (req, res) => {
+userRoute.get("/cart", redirectLogin, (req, res) => {
   res.render("cart");
 });
-userRoute.get("/blog", (req, res) => {
+userRoute.get("/blog",  redirectLogin,(req, res) => {
   res.render("blog");
 });
-userRoute.get("/contact", (req, res) => {
+userRoute.get("/contact", checkStatus, (req, res) => {
   res.render("contact");
 });
-userRoute.get("/whishlist", (req, res) => {
+userRoute.get("/whishlist",  redirectLogin,(req, res) => {
   res.render("cart");
 });
 
