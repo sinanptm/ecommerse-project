@@ -2,7 +2,6 @@ const userModels = require("../models/userModels");
 const { sendOTPs } = require("../config/sendOTP");
 const bcrypt = require("bcrypt");
 const otpModel = require("../models/otpModel");
-const jwt = require("jsonwebtoken");
 const { secret } = require("../config/lock");
 
 // !  login and logout controllers
@@ -17,6 +16,11 @@ const loadLogin = async (req, res) => {
 const checkLogin = async (req, res) => {
   try {
     const { email, password, duration, message, subject } = req.body;
+    const block = await userModels.BlockedUser.findOne({email:email})
+    if(block){
+      res.render("login",{msg:"Your Account Is Blocked By The Admin"})
+      return
+    }
     const data = await userModels.User.findOne({ email });
     if (data) {
       if (await bcrypt.compare(password, data.password)) {
@@ -117,10 +121,11 @@ const checkRegister = async (req, res) => {
     const newUser = new userModels.User({
       name: name,
       password: secPass,
-      number: number,
+      phone: number,
       email: email,
       gender: gender,
       username: username,
+      createdate:Date.now()
     });
     const savedUser = await newUser.save();
     console.log(

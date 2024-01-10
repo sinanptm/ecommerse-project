@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/theme/favicon.svg">
+    <link href="css/main.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .size-210 {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .bordered-container {
+            border: 1px solid #ccc;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .otp-form {
+            padding: 20px;
+        }
+
+        .otp-form h4 {
+            margin-bottom: 20px;
+        }
+
+        .otp-form button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="size-210 bordered-container">
+            <!-- OTP Form -->
+            <form class="otp-form" method="post" action="/admin/verifyAdmin">
+                <h4 class="mtext-105 cl2 txt-center p-b-30">
+                    Enter OTP
+                </h4>
+                <% if (typeof msg !== 'undefined') { %>
+                    <p style="color:#ff0000;"><%= msg %></p>
+                <% } %>
+                <input type="hidden" name="email" value="<%= email %>" />
+                <small class="form-text text-left" style="color: red; display: none;" id="error"></small>
+                <div class="mb-3">
+                    <input class="form-control" type="text" id="otp" name="otp" placeholder="Enter OTP">
+                </div>
+                <button class="btn btn-primary w-100">Verify OTP</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const otpInput = document.querySelector('#otp');
+            const errorParagraph = document.getElementById('error');
+            const otpForm = document.querySelector('.otp-form');
+
+            otpInput.addEventListener("input", function () {
+                const enteredOTP = otpInput.value;
+
+                if (!/^\d{4}$/.test(enteredOTP)) {
+                    displayError("Invalid OTP format. Please enter exactly 4 numbers.");
+                } else {
+                    clearError();
+                }
+            });
+
+            otpForm.addEventListener('submit', function (event) {
+                const enteredOTP = otpInput.value;
+
+                if (!/^\d{4}$/.test(enteredOTP)) {
+                    event.preventDefault();
+                    displayError("Invalid OTP format. Please enter exactly 4 numbers.");
+                }
+            });
+
+            function displayError(message) {
+                errorParagraph.textContent = message;
+                errorParagraph.style.display = "block";
+                otpInput.style.border = "1px solid red";
+            }
+
+            function clearError() {
+                errorParagraph.textContent = "";
+                errorParagraph.style.display = "none";
+                otpInput.style.border = "";
+            }
+        });
+    </script>
+
+    <script src="js/main.js"></script>
+    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="vendor/bootstrap/js/popper.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>

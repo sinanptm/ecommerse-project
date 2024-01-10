@@ -6,7 +6,7 @@ const path = require("path");
 const session = require("express-session");
 const { secret } = require("../config/lock");
 const cookieParser = require("cookie-parser");
-const { checkStatus, redirectLogin, OTPStatus } = require("../middlewares/auth");
+const { checkStatus, redirectLogin, OTPStatus } = require("../middlewares/userAuth");
 
 userRoute.use(nocache());
 userRoute.use(cookieParser());

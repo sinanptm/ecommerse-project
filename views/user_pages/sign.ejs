@@ -33,6 +33,16 @@
         .size-210 input {
             padding: 12px;
         }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
     </style>
 </head>
 
@@ -46,26 +56,26 @@
                 <p style="color:#ff0000;"><%= msg %></p>
             <% } %>
             <div class="bor8 m-b-20 how-pos4-parent">
-                <input class="stext-111 cl2 plh3 size-999" type="text" name="name" placeholder="  Name">
+                <input required class="stext-111 cl2 plh3 size-999" type="text" name="name" placeholder="  Name">
             </div>
             <div class="bor8 m-b-20 how-pos4-parent">
-                <input class="stext-111 cl2 plh3 size-999 " type="text" name="number" placeholder="  Number">
+                <input required class="stext-111 cl2 plh3 size-999 " type="number" name="number" placeholder="  Number">
             </div>
             <div class="bor8 m-b-20 how-pos4-parent">
-                <input class="stext-111 cl2 plh3 size-999 " type="text" name="username" placeholder="  Username">
+                <input required class="stext-111 cl2 plh3 size-999 " type="text" name="username" placeholder="  Username">
             </div>
             <div class="bor8 m-b-20 how-pos4-parent">
-                <input class="stext-111 cl2 plh3 size-999 " type="password" id="signupPassword" name="password"
+                <input required class="stext-111 cl2 plh3 size-999 " type="password" id="signupPassword" name="password"
                     placeholder="  Password">
                 <small class="form-text text-left" style="color: red; display: none;" id="errorpass"></small>
             </div>
             <div class="bor8 m-b-20 how-pos4-parent">
-                <input class="stext-111 cl2 plh3 size-999 " type="text" id="signupEmail" name="email"
+                <input required class="stext-111 cl2 plh3 size-999 " type="text" id="signupEmail" name="email"
                     placeholder="  Email Address">
                 <small class="form-text text-left" style="color: red; display: none;" id="erroremail"></small>
             </div>
             <div class="bor8 m-b-20 how-pos4-parent">
-                <input class="stext-111 cl2 plh3 size-999 " type="text" name="gender" placeholder="  Gender">
+                <input required class="stext-111 cl2 plh3 size-999 " type="text" name="gender" placeholder="  Gender">
             </div>
             <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
                 Sign Up

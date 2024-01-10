@@ -9,7 +9,8 @@ mongoose.connect("mongodb://127.0.0.1:27017/Trends_ecommerce_store");
 
 // for user routes
 app.use("/", userRoute);
-// app.use("/admin", adminRouter);
+// admin router 
+app.use("/admin", adminRouter);
 app.use((req, res, next) => {
   res.status(404);
   res.send(
@@ -17,7 +18,7 @@ app.use((req, res, next) => {
   );
 });
 
-var p = process.env.PORT || 3786;
+var p = process.env.PORT || 3333;
 app.listen(p, () => {
   console.log(`app is running on http://127.0.0.1:${p}`);
 });
