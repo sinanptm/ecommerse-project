@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // User Schema
 const userSchema = new mongoose.Schema({
-  email: { type: String,  unique: true },
+  email: { type: String, unique: true },
   username: { type: String, required: true },
   name: { type: String, required: true },
   gender: { type: String },
@@ -10,23 +10,13 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   addressid: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },
   createdate: { type: Date, default: Date.now },
-  updated: { type:Boolean, default:false },
+  updated: { type: Boolean, default: false },
   is_verified: { type: Boolean, default: false },
-  status:{type:String, default:"Active"}
+  status: { type: String, default: "Active" },
+  token: { type: String, unique: true },
 });
 
 const User = mongoose.model("User", userSchema);
-
-// Blocked Schema
-
-const blockedSchema = mongoose.Schema({
-  email: { type: String , unique: true },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-
-});
-
-const BlockedUser = mongoose.model("BlockedUser", blockedSchema);
-
 
 // Address Schema
 const addressSchema = new mongoose.Schema({
@@ -56,28 +46,18 @@ const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 
 // Products Schema
 const productsSchema = new mongoose.Schema({
-  name: { type: String },
+  name: { type: String, required: true, unique: true },
   price: { type: Number },
   quantity: { type: Number },
   status: { type: String },
-  img: { type: mongoose.Schema.Types.ObjectId, ref: "Image" },
-  color: { type: String },
-  size: { type: String },
+  img: { type: Array },
   categoryid: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   createdate: { type: Date },
+  discount: { type: Number },
 });
+productsSchema.index({ name: 1, categoryid: 1 }, { unique: true });
 
 const Product = mongoose.model("Product", productsSchema);
-
-// Image Schema
-const imageSchema = new mongoose.Schema({
-  productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-  main: { type: String },
-  back: { type: String },
-  side: { type: String },
-});
-
-const Image = mongoose.model("Image", imageSchema);
 
 // Coupons Schema
 const couponsSchema = new mongoose.Schema({
@@ -93,15 +73,10 @@ const Coupon = mongoose.model("Coupon", couponsSchema);
 
 // Category Schema
 const categorySchema = new mongoose.Schema({
-  name: {type: String,
-    required: true,
-    unique: true
-  },
-  description: {type: String,
-    required: true
-  },
-  items: [{type: mongoose.Schema.Types.ObjectId,ref: "Product",}],
-  img:{type:String}
+  name: { type: String, required: true, unique: true },
+  description: { type: String, required: true },
+  items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+  img: { type: String },
 });
 
 const Category = mongoose.model("Category", categorySchema);
@@ -110,7 +85,11 @@ const Category = mongoose.model("Category", categorySchema);
 const walletSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   amount: { type: Number, default: 0 },
-  productid: { type:  mongoose.Schema.Types.ObjectId, ref: "Product", required: true }
+  productid: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
 });
 
 const Wallet = mongoose.model("Wallet", walletSchema);
@@ -174,7 +153,6 @@ const bannerSchema = new mongoose.Schema({
 
 const Banner = mongoose.model("Banner", bannerSchema);
 
-
 const adminSchema = new mongoose.Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
@@ -195,8 +173,6 @@ module.exports = {
   Order,
   OrderItem,
   Banner,
-  Image,
   Wallet,
   Admin,
-  BlockedUser
 };

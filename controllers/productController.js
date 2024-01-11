@@ -1,5 +1,7 @@
 const adminModel = require("../models/userModels");
 const mongoose = require("mongoose");
+const fs = require("fs")
+
 
 // ! dashboard loeding
 const loadDashBoard = async (req, res) => {
@@ -10,7 +12,7 @@ const loadDashBoard = async (req, res) => {
   }
 };
 
-// ! product list
+// todo: product management
 const loadProducts = async (req, res) => {
   try {
     res.render("products-list");
@@ -19,7 +21,66 @@ const loadProducts = async (req, res) => {
   }
 };
 
-// ! catocory managment
+// ! add products
+const loadAddProduct = async (req, res) => {
+  try {
+    const msg =  req.query.msg;
+    const catogories = await adminModel.Category.find();
+    res.render("addProducts", { catogories: catogories, msg });
+  } catch (error) {
+    console.log(error.message);
+    res.status(404).json(error.message);
+  }
+};
+
+
+const addProduct = async (req, res) => {
+  const catogories = await adminModel.Category.find();
+  try {
+    const { name, price, quantity, status, categoryid, discount } = req.body;
+
+    const mainImage = req.files['mainImage'] ? req.files['mainImage'][0].filename : null;
+    const backImage = req.files['backImage'] ? req.files['backImage'][0].filename : null;
+    const sideImage = req.files['sideImage'] ? req.files['sideImage'][0].filename : null;
+
+    const img = [mainImage, backImage, sideImage].filter(Boolean);
+
+    const product = new adminModel.Product({
+      name,
+      price,
+      quantity,
+      status,
+      img,
+      categoryid,
+      createdate: new Date(),
+      discount,
+    });
+
+    const savedProduct = await product.save();
+    await adminModel.Category.findByIdAndUpdate(categoryid, { $push: { items: savedProduct._id } });
+
+
+    res.redirect("/admin/addProduct?msg=Product added seccussfully")
+
+  } catch (error) {
+    if (error.code === 11000) {
+      // Duplicate key error (MongoDB error code 11000)
+      res.redirect("/admin/addProduct?msg=Product with this name already exists");
+    } else {
+      // Other errors
+      console.error(error);
+      res.redirect("/admin/addProduct?msg=" + error.message);
+    }
+  }
+};
+
+module.exports = { addProduct };
+
+
+
+
+
+// todo: catocory managment
 const laodCatagorie = async (req, res) => {
   try {
     const categories = await adminModel.Category.find();
@@ -81,6 +142,8 @@ const deleteCatogory = async (req, res) => {
 module.exports = {
   loadDashBoard,
   loadProducts,
+  loadAddProduct,
+  addProduct,
   laodCatagorie,
   addCatagorie,
   editCatogory,

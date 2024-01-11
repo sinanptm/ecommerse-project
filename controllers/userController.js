@@ -16,10 +16,13 @@ const loadLogin = async (req, res) => {
 const checkLogin = async (req, res) => {
   try {
     const { email, password, duration, message, subject } = req.body;
-    const block = await userModels.BlockedUser.findOne({email:email})
-    if(block){
-      res.render("login",{msg:"Your Account Is Blocked By The Admin"})
-      return
+    const { status } = await userModels.User.findOne(
+      { email: email.trim() },
+      { status: 1, _id: 0 }
+    );
+    if (status === "Blocked") {
+      res.render("login", { msg: "Your Account Is Blocked By The Admin" });
+      return;
     }
     const data = await userModels.User.findOne({ email });
     if (data) {
@@ -37,11 +40,9 @@ const checkLogin = async (req, res) => {
   }
 };
 
-
-const newOTP = async(req,res)=>{
-  res.render("otp", { email :req.session.pmail});
-  
-}
+const newOTP = async (req, res) => {
+  res.render("otp", { email: req.session.pmail });
+};
 
 const loadOTP = async (req, res) => {
   try {
@@ -49,8 +50,8 @@ const loadOTP = async (req, res) => {
     const OTP = await sendOTPs({
       email,
     });
-    req.session.pmail = email
-    res.redirect("/OTP")
+    req.session.pmail = email;
+    res.redirect("/OTP");
   } catch (error) {
     console.log(error);
   }
@@ -58,6 +59,7 @@ const loadOTP = async (req, res) => {
 
 const securePassword = async (pass) => {
   try {
+    pass = pass.trim()
     return await bcrypt.hash(pass, 10);
   } catch (error) {
     console.log(error.message);
@@ -85,26 +87,26 @@ const verifyOTP = async (req, res) => {
       throw Error("OTP code has expired. Request a new one");
     }
 
-    if (await bcrypt.compare(otp, matchedRecord.otp)) {
-      const data = await userModels.User.findOne({ email: email });
-      const token = securePassword(data._id.toString());
-      req.session.token = token;
-      res.cookie("token", token.toString(), {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
+    const data = await userModels.User.findOne({ email: email });
+    const token = await securePassword(data._id.toString()); // Await here
 
-      // Delete OTP record and session variable after setting the token and cookie
-      await otpModel.OTP.deleteOne({ email: email });
-      delete req.session.OTPId;
+    req.session.token = token;
+    res.cookie("token", token.toString(), {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
 
-      // Redirect to home after cleanup
-      res.redirect("/home");
-    } else {
-      res.render("otp", {
-        msg: "Incorrect OTP. Please try again.",
-        email: email,
-      });
-    }
+    const user = await userModels.User.updateOne(
+      { email: email },
+      { $set: { token: token } },
+      { upsert: true }
+    );
+
+    // Delete OTP record and session variable after setting the token and cookie
+    await otpModel.OTP.deleteOne({ email: email });
+    delete req.session.OTPId;
+
+    // Redirect to home after cleanup
+    res.redirect("/home");
   } catch (error) {
     delete req.session.OTPId;
     console.log(error.message);
@@ -125,7 +127,7 @@ const checkRegister = async (req, res) => {
       email: email,
       gender: gender,
       username: username,
-      createdate:Date.now()
+      createdate: Date.now(),
     });
     const savedUser = await newUser.save();
     console.log(
@@ -151,28 +153,26 @@ const loadRegister = async (req, res) => {
   }
 };
 
-
 const userLogout = async (req, res) => {
   try {
     req.session.destroy((err) => {
       if (err) {
-        console.log('Error destroying session:', err);
-        res.status(500).send('Internal Server Error');
+        console.log("Error destroying session:", err);
+        res.status(500).send("Internal Server Error");
       } else {
-        res.clearCookie('token');
-        res.redirect('/login');
+        res.clearCookie("token");
+        res.redirect("/login");
       }
     });
   } catch (error) {
-    console.log('Error in userLogout:', error.message);
-    res.status(500).send('Internal Server Error');
+    console.log("Error in userLogout:", error.message);
+    res.status(500).send("Internal Server Error");
   }
 };
 
 module.exports = {
   userLogout,
 };
-
 
 // ! homepage controller
 
@@ -211,11 +211,10 @@ const loadHome = async (req, res) => {
     const products = await userModels.Product.aggregate(pipeline);
     res.render("home", { products });
   } catch (error) {
-    console.error('Error in loadHome:', error);
-    res.status(500).send('Internal Server Error');
+    console.error("Error in loadHome:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
-
 
 module.exports = {
   loadHome,
@@ -227,5 +226,5 @@ module.exports = {
   loadOTP,
   verifyOTP,
   newOTP,
-  userLogout
+  userLogout,
 };

@@ -6,7 +6,12 @@ const path = require("path");
 const session = require("express-session");
 const { secret } = require("../config/lock");
 const cookieParser = require("cookie-parser");
-const { checkStatus, redirectLogin, OTPStatus } = require("../middlewares/userAuth");
+const {
+  redirectLogin,
+  OTPStatus,
+  checkBlocke,
+  checkAuthPages
+} = require("../middlewares/userAuth");
 
 userRoute.use(nocache());
 userRoute.use(cookieParser());
@@ -25,41 +30,41 @@ userRoute.use(
 userRoute.use(express.json());
 userRoute.use(express.urlencoded({ extended: true }));
 
-userRoute.get("/", checkStatus, userController.loadLogin);
-userRoute.get("/login", checkStatus, userController.loadLogin);
+userRoute.get("/", checkAuthPages, userController.loadLogin);
+userRoute.get("/login", checkAuthPages, userController.loadLogin);
 userRoute.post("/login", userController.checkLogin);
 
-userRoute.get("/verifyOTP", OTPStatus, checkStatus, userController.loadOTP);
-userRoute.get('/OTP',OTPStatus,userController.newOTP)
+userRoute.get("/verifyOTP", checkAuthPages, OTPStatus,userController.loadOTP);
+userRoute.get("/OTP", checkAuthPages, OTPStatus, userController.newOTP);
 userRoute.post("/verifyOTP", userController.verifyOTP);
 
-userRoute.get("/register", checkStatus, userController.loadRegister);
+userRoute.get("/register", checkAuthPages, userController.loadRegister);
 userRoute.post("/register", userController.checkRegister);
 
-userRoute.get("/home", redirectLogin ,userController.loadHome);
+userRoute.get("/home", checkBlocke, redirectLogin, userController.loadHome);
 
-userRoute.get("/about", redirectLogin,(req, res) => {
+userRoute.get("/about", checkBlocke, redirectLogin, (req, res) => {
   res.render("about");
 });
-userRoute.get("/products", redirectLogin, (req, res) => {
+userRoute.get("/products", checkBlocke, redirectLogin, (req, res) => {
   res.render("product");
 });
-userRoute.get("/product-detials", redirectLogin, (req, res) => {
+userRoute.get("/product-detials", checkBlocke, redirectLogin, (req, res) => {
   res.render("product-detial");
 });
-userRoute.get("/cart", redirectLogin, (req, res) => {
+userRoute.get("/cart", checkBlocke, redirectLogin, (req, res) => {
   res.render("cart");
 });
-userRoute.get("/blog",  redirectLogin,(req, res) => {
+userRoute.get("/blog", checkBlocke, redirectLogin, (req, res) => {
   res.render("blog");
 });
-userRoute.get("/contact", checkStatus, (req, res) => {
+userRoute.get("/contact", checkBlocke, redirectLogin, (req, res) => {
   res.render("contact");
 });
-userRoute.get("/whishlist",  redirectLogin,(req, res) => {
+userRoute.get("/whishlist", checkBlocke, redirectLogin, (req, res) => {
   res.render("cart");
 });
 
-userRoute.get("/logout",redirectLogin,userController.userLogout)
+userRoute.get("/logout", checkBlocke, redirectLogin, userController.userLogout);
 
 module.exports = userRoute;

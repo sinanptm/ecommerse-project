@@ -179,17 +179,10 @@ const userBlock = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const userToBlock = await adminModel.User.findById(id);
+    const userToBlock = await adminModel.User.updateOne({_id:id},{status: "Blocked"});
     if (!userToBlock) {
       return res.status(404).send("User not found");
     }
-
-    const blockedUser = new adminModel.BlockedUser({
-      email: userToBlock.email,
-      userId: userToBlock._id,
-    });
-    await blockedUser.save();
-    await adminModel.User.updateOne({ _id: id }, { status: "Blocked" });
     res.status(200);
     res.redirect("/admin/userdetails?id=" + id);
   } catch (error) {
@@ -198,24 +191,21 @@ const userBlock = async (req, res) => {
   }
 };
 // ! User unblocking
-const userUnBlock = async (req, res) => {
+const userUnblock = async (req, res) => {
   try {
     const id = req.params.id;
-    const blockedUser = await adminModel.BlockedUser.findOneAndDelete({
-      userId: id,
-    });
-    if (!blockedUser) {
+    const userToUnBlock = await adminModel.User.updateOne({_id:id},{status: "Active"});
+    if (!userToUnBlock) {
       return res.status(404).send("Blocked user not found");
     }
-
-    await adminModel.User.updateOne({ _id: id }, { status: "Active" });
-
     res.status(200).redirect("/admin/userdetails?id=" + id);
   } catch (error) {
     console.error("Error unblocking user:", error);
     res.status(500).send("Internal Server Error");
   }
 };
+
+
 // ! User Adding
 const addUser = async (req, res) => {
   try {
@@ -271,6 +261,6 @@ module.exports = {
   userBlock,
   userDelete,
   userEdit,
-  userUnBlock,
+  userUnblock,
   addUser,
 };

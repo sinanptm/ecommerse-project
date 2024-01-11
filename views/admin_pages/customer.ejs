@@ -23,7 +23,7 @@
         }
         .user-details-container {
     font-family: 'Arial', sans-serif;
-    max-width: 600px;
+    max-width: 800px;
     margin: auto;
     padding: 20px;
     background-color: #f8f8f8;
@@ -74,6 +74,7 @@ li strong {
                     <div class="submenu">
                         <a href="/admin/products">Product List</a>
                         <a href="/admin/catogories">Categories</a>
+                        <a href="/admin/addProduct">Add product </a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu active">
@@ -84,7 +85,7 @@ li strong {
                         <a href="/admin/users">User Managment</a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu">
+               <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
@@ -97,17 +98,7 @@ li strong {
                     </div>
                 </li>
                 
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Add product</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-form-product-1.html">Add product 1</a>
-                        <a href="page-form-product-2.html">Add product 2</a>
-                        <a href="page-form-product-3.html">Add product 3</a>
-                        <a href="page-form-product-4.html">Add product 4</a>
-                    </div>
-                </li>
+                
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
                         <span class="text">Transactions</span>
@@ -239,7 +230,7 @@ li strong {
                     <div class="user-details-buttons">
                         <button class="btn btn-primary" data-bs-target="#editUserModal" data-bs-toggle="modal">Edit</button>
                         <% if (user.status === "Blocked") { %>
-                            <a href="/admin/userblock/<%= user._id %>" class="btn btn-success">Unblock</a>
+                            <a href="/admin/userUnblock/<%= user._id %>" class="btn btn-success">Unblock</a>
                           <% } else { %>
                             <a href="javascript:void(0);" onclick="confirmBlock()" class="btn btn-warning">Block</a>
                           <% } %>                        
