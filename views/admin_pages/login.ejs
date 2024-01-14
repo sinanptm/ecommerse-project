@@ -67,26 +67,28 @@
             <div class="card mx-auto card-login">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Login</h4>
-                    <form method="post" action="/admin/login">
+                    <form method="post" action="/admin/login" id="loginForm">
                         <% if (typeof msg !== 'undefined') { %>
                             <p style="color:#ff0000;"><%= msg %></p>
-                            <% } %>
+                        <% } %>
+                        <small class="form-text text-left" style="color: red; display: none;" id="errorEmail"></small>
                         <div class="mb-3">
-                            <input class="form-control" placeholder="Username or email" type="email" name="email">
-                        </div> <!-- form-group// -->
+                            <input class="form-control" placeholder="Username or email" type="email" name="email" id="email">
+                        </div>
+                        <small class="form-text text-left" style="color: red; display: none;" id="errorPassword"></small>
                         <div class="mb-3">
-                            <input class="form-control" placeholder="Password" type="password" name="password">
-                        </div> <!-- form-group// -->
+                            <input class="form-control" placeholder="Password" type="password" name="password" id="password">
+                        </div>
                         <div class="mb-3">
                             <a href="#" class="float-end font-sm text-muted">Forgot password?</a>
                             <label class="form-check">
                                 <input type="checkbox" class="form-check-input" checked="">
                                 <span class="form-check-label">Remember</span>
                             </label>
-                        </div> <!-- form-group form-check .// -->
+                        </div>
                         <div class="mb-4">
-                            <button type="submit" class="btn btn-primary w-100"> Login </button>
-                        </div> <!-- form-group// -->
+                            <button type="submit" class="btn btn-primary w-100" id="loginButton"> Login </button>
+                        </div>
                     </form>
                     <p class="text-center small text-muted mb-15">or sign up with</p>
                     <div class="d-grid gap-3 mb-4">
@@ -117,6 +119,64 @@
             <p class="font-xs mb-30">All rights reserved</p>
         </footer>
     </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const emailInput = document.getElementById('email');
+            const errorEmail = document.getElementById('errorEmail');
+            const passwordInput = document.getElementById('password');
+            const errorPassword = document.getElementById('errorPassword');
+            const loginForm = document.getElementById('loginForm');
+            const loginButton = document.getElementById('loginButton');
+        
+            // Email input validation
+            emailInput.addEventListener("input", function (event) {
+                const enteredEmail = event.target.value;
+        
+                if (!isValidEmail(enteredEmail)) {
+                    errorEmail.textContent = "Invalid email address format";
+                    errorEmail.style.display = "block";
+                    emailInput.style.border = "1px solid red";
+                } else {
+                    errorEmail.textContent = "";
+                    errorEmail.style.display = "none";
+                    emailInput.style.border = "";
+                }
+            });
+        
+            // Password input validation
+            passwordInput.addEventListener("input", function (event) {
+                const enteredPassword = event.target.value;
+        
+                if (!isValidPassword(enteredPassword)) {
+                    errorPassword.textContent = "Password must be at least 4 characters";
+                    errorPassword.style.display = "block";
+                    passwordInput.style.border = "1px solid red";
+                } else {
+                    errorPassword.textContent = "";
+                    errorPassword.style.display = "none";
+                    passwordInput.style.border = "";
+                }
+            });
+        
+            // Form submission validation
+            loginForm.addEventListener("submit", function (event) {
+                if (!isValidEmail(emailInput.value) || !isValidPassword(passwordInput.value)) {
+                    event.preventDefault(); // Prevent form submission if validation fails
+                }
+            });
+        
+            // Function to validate email format
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email) && email.trim() !== '';
+            }
+        
+            // Function to validate password (replace with your logic) and space
+            function isValidPassword(password) {
+                return password.length >= 4 && password.trim() !== '';
+            }
+        });
+        </script>
     <script src="js/vendors/jquery-3.6.0.min.js"></script>
     <script src="js/vendors/bootstrap.bundle.min.js"></script>
     <script src="js/vendors/jquery.fullscreen.min.js"></script>

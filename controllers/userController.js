@@ -1,5 +1,5 @@
 const userModels = require("../models/userModels");
-const { sendOTPs } = require("../config/sendOTP");
+const { sendOTPs, deleteExpiredOTPs } = require("../config/sendOTP");
 const bcrypt = require("bcrypt");
 const otpModel = require("../models/otpModel");
 const { secret } = require("../config/lock");
@@ -9,9 +9,10 @@ const loadLogin = async (req, res) => {
   try {
     res.render("login");
   } catch (err) {
-    console.log(err.message);
+    res.render("login"),{msg: err.message};
   }
 };
+
 
 const checkLogin = async (req, res) => {
   try {
@@ -21,7 +22,7 @@ const checkLogin = async (req, res) => {
       { status: 1, _id: 0 }
     );
     if (status === "Blocked") {
-      res.render("login", { msg: "Your Account Is Blocked By The Admin" });
+      res.render("login", { msg: "Your Account Is Blocked By The Admin" , valid:req.cookies.token});
       return;
     }
     const data = await userModels.User.findOne({ email });
@@ -30,13 +31,32 @@ const checkLogin = async (req, res) => {
         req.session.OTPId = data._id.toString();
         res.redirect(`/verifyOTP?email=${email}`);
       } else {
-        res.render("login", { msg: "Incorrect password." });
+        res.render("login", { msg: "Incorrect password." , valid:req.cookies.token});
       }
     } else {
-      res.render("login", { msg: "Incorrect email and password." });
+      res.render("login", { msg: "Incorrect email and password." , valid:req.cookies.token});
     }
   } catch (error) {
     res.status(404).json(error.message);
+  }
+};
+
+
+const loadOTP = async (req, res) => {
+  try {
+    await deleteExpiredOTPs()
+    const { email, message, duration, subject } = req.query;
+    const OTP = await sendOTPs({
+      email,
+      message:"OTP verfication for TRENDS e-commerce",
+      subject:"verification",
+      duration:2
+    });
+
+    req.session.pmail = email;
+    res.redirect("/OTP");
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -44,18 +64,6 @@ const newOTP = async (req, res) => {
   res.render("otp", { email: req.session.pmail });
 };
 
-const loadOTP = async (req, res) => {
-  try {
-    const { email, message, duration, subject } = req.query;
-    const OTP = await sendOTPs({
-      email,
-    });
-    req.session.pmail = email;
-    res.redirect("/OTP");
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 const securePassword = async (pass) => {
   try {
@@ -71,20 +79,21 @@ const verifyOTP = async (req, res) => {
   try {
     if (!email || !otp) {
       delete req.session.OTPId;
-      throw Error(`Provide values for email ${email} and OTP ${otp}`);
+      res.render("otp", { msg: `Provide values for email ${email} and OTP ${otp}` , email: req.session.pmail , valid:req.cookies.token});
+      return
     }
 
-    const matchedRecord = await otpModel.OTP.findOne({ email: email });
+    const matchedRecord = await otpModel.OTP.findOne({ email: email});
     if (!matchedRecord) {
       delete req.session.OTPId;
-      throw Error("No OTP found for the provided email");
+      res.render("otp", { msg: "No OTP found for the provided email." , email: req.session.pmail, valid:req.cookies.token});
+      return
     }
 
     if (matchedRecord.expiresAt < Date.now()) {
       await otpModel.OTP.deleteOne({ email });
-      delete req.session.OTPId;
-      res.render("otp", { msg: "OTP code has expired. Request a new one." });
-      throw Error("OTP code has expired. Request a new one");
+      res.render("otp", { msg: "OTP code has expired. Request a new one." , email: req.session.pmail, valid:req.cookies.token});
+      return
     }
 
     const data = await userModels.User.findOne({ email: email });
@@ -170,51 +179,89 @@ const userLogout = async (req, res) => {
   }
 };
 
-module.exports = {
-  userLogout,
-};
 
 // ! homepage controller
 
 const loadHome = async (req, res) => {
-  const pipeline = [
-    {
-      $lookup: {
-        from: "images",
-        localField: "img",
-        foreignField: "_id",
-        as: "images",
-      },
-    },
-    {
-      $unwind: "$images",
-    },
-    {
-      $project: {
-        _id: 1,
-        name: 1,
-        price: 1,
-        quantity: 1,
-        status: 1,
-        color: 1,
-        size: 1,
-        categoryid: 1,
-        createdate: 1,
-        main: "$images.main",
-        back: "$images.back",
-        side: "$images.side1",
-      },
-    },
-  ];
-
   try {
-    const products = await userModels.Product.aggregate(pipeline);
-    res.render("home", { products });
+    const products= await userModels.Product.find()
+    res.render("home", { products, valid:req.cookies.token });
+    
   } catch (error) {
     console.error("Error in loadHome:", error);
     res.status(500).send("Internal Server Error");
   }
 };
+
+const laodProductDetials = async (req, res) => {
+  try {
+    const id = req.query.id;
+
+    const product = await userModels.Product
+      .findById(id)
+      .populate({
+        path: 'categoryid',
+        model: 'Category',
+        select: 'name description img'
+      });
+    
+    if (product && product.categoryid) {
+      const categoryId = product.categoryid._id;
+    
+      const relatedProducts = await userModels.Product.find({ categoryid: categoryId });
+    
+      res.render("product-detail", { product, relatedProducts , valid:req.cookies.token});
+    } else {
+      res.status(404).send("Product not found");
+    }
+  } catch (error) {
+    console.error("Error in loadProductDetails:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const loadProducts =  async (req,res)=>{
+  try {
+    const products= await userModels.Product.find()
+    res.render("product", { products, valid:req.cookies.token});
+    
+  } catch (error) {
+    console.error("Error in loadHome:", error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+const loadAbout = async(req,res)=>{
+  try {
+    res.render("about",{ valid:req.cookies.token})
+  } catch (error) {
+    
+  }
+}
+const loadContact = async(req,res)=>{
+  try {
+    res.render("contact",{ valid:req.cookies.token})
+
+  } catch (error) {
+    
+  }
+}
+const loadCart = async(req,res)=>{
+  try {
+    res.render("cart",{ valid:req.cookies.token})
+
+  } catch (error) {
+    
+  }
+}
+const loadBlog = async(req,res)=>{
+  try {
+    res.render("blog",{ valid:req.cookies.token})
+
+  } catch (error) {
+    
+  }
+}
 
 module.exports = {
   loadHome,
@@ -227,4 +274,10 @@ module.exports = {
   verifyOTP,
   newOTP,
   userLogout,
+  laodProductDetials,
+  loadProducts,
+  loadAbout,
+  loadBlog,
+  loadCart,
+  loadContact
 };

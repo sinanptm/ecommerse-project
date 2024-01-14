@@ -7,9 +7,8 @@ const session = require("express-session");
 const { secret } = require("../config/lock");
 const cookieParser = require("cookie-parser");
 const {
-  redirectLogin,
   OTPStatus,
-  checkBlocke,
+  requireLogin,
   checkAuthPages
 } = require("../middlewares/userAuth");
 
@@ -34,37 +33,25 @@ userRoute.get("/", checkAuthPages, userController.loadLogin);
 userRoute.get("/login", checkAuthPages, userController.loadLogin);
 userRoute.post("/login", userController.checkLogin);
 
-userRoute.get("/verifyOTP", checkAuthPages, OTPStatus,userController.loadOTP);
+userRoute.get("/verifyOTP", checkAuthPages, OTPStatus, userController.loadOTP);
 userRoute.get("/OTP", checkAuthPages, OTPStatus, userController.newOTP);
-userRoute.post("/verifyOTP", userController.verifyOTP);
+userRoute.post("/checkOTP", userController.verifyOTP);
 
 userRoute.get("/register", checkAuthPages, userController.loadRegister);
 userRoute.post("/register", userController.checkRegister);
 
-userRoute.get("/home", checkBlocke, redirectLogin, userController.loadHome);
+userRoute.get("/home", userController.loadHome);
+userRoute.get("/products", userController.loadProducts);
+userRoute.get("/product", userController.laodProductDetials);
 
-userRoute.get("/about", checkBlocke, redirectLogin, (req, res) => {
-  res.render("about");
-});
-userRoute.get("/products", checkBlocke, redirectLogin, (req, res) => {
-  res.render("product");
-});
-userRoute.get("/product-detials", checkBlocke, redirectLogin, (req, res) => {
-  res.render("product-detial");
-});
-userRoute.get("/cart", checkBlocke, redirectLogin, (req, res) => {
-  res.render("cart");
-});
-userRoute.get("/blog", checkBlocke, redirectLogin, (req, res) => {
-  res.render("blog");
-});
-userRoute.get("/contact", checkBlocke, redirectLogin, (req, res) => {
-  res.render("contact");
-});
-userRoute.get("/whishlist", checkBlocke, redirectLogin, (req, res) => {
-  res.render("cart");
-});
 
-userRoute.get("/logout", checkBlocke, redirectLogin, userController.userLogout);
+userRoute.get("/about", userController.loadAbout);
+
+userRoute.get("/cart", requireLogin, userController.loadCart);
+userRoute.get("/blog", userController.loadBlog);
+userRoute.get("/contact", userController.loadContact);
+userRoute.get("/whishlist", userController.loadCart);
+
+userRoute.get("/logout", userController.userLogout);
 
 module.exports = userRoute;

@@ -62,7 +62,6 @@ const securePassword = async (pass) => {
 };
 
 const verifyOTP = async (req, res) => {
-  console.log("USE SIDE");
 
   let { email, otp } = req.body;
   try {
@@ -115,96 +114,51 @@ const verifyOTP = async (req, res) => {
 
 const loadUser = async (req, res) => {
   try {
+    const msg =  req.query.msg 
     const users = await adminModel.User.find();
-    res.render("users-list", { users });
+    res.render("users-list", { users, msg });
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).send("Internal Server Error");
   }
 };
 
-const userDetails = async (req, res) => {
-  try {
-    const userId = req.query.id;
-
-    const user = await adminModel.User.findById(userId);
-
-    if (user) {
-      res.render("customer", { user });
-    } else {
-      res.send("User not found");
-    }
-  } catch (error) {
-    console.error("Error fetching user details:", error);
-    res.status(500).send("Internal Server Error");
-  }
-};
-
-// ! edit user
-const userEdit = async (req, res) => {
-  try {
-    const { name, email, username, phone, gender } = req.body;
-    const id = req.params.id;
-    const user = await adminModel.User.updateOne(
-      { _id: id },
-      {
-        $set: {
-          name,
-          email,
-          username,
-          phone,
-          gender,
-          updated: true,
-        },
-      }
-    );
-
-    if (user) {
-      req.flash("success", "User details updated successfully.");
-    } else {
-      req.flash("error", "Failed to update user details.");
-    }
-
-    res.redirect("/admin/userdetails?id=" + id);
-  } catch (error) {
-    console.error("Error editing user:", error);
-    req.flash("error", "Internal Server Error. Please try again later.");
-    res.redirect("/admin/userdetails?id=" + id);
-  }
-};
-
-
 // ! User Blocking
 const userBlock = async (req, res) => {
   try {
     const id = req.params.id;
-
-    const userToBlock = await adminModel.User.updateOne({_id:id},{status: "Blocked"});
+    const userToBlock = await adminModel.User.updateOne(
+      { _id: id },
+      { status: "Blocked" }
+    );
     if (!userToBlock) {
       return res.status(404).send("User not found");
     }
     res.status(200);
-    res.redirect("/admin/userdetails?id=" + id);
+    res.redirect("/admin/users");
   } catch (error) {
     console.error("Error blocking user:", error);
-    res.status(500).send("Internal Server Error");
+    res.redirect("/admin/users?msg="+error.message);
+
   }
 };
 // ! User unblocking
 const userUnblock = async (req, res) => {
   try {
     const id = req.params.id;
-    const userToUnBlock = await adminModel.User.updateOne({_id:id},{status: "Active"});
+    const userToUnBlock = await adminModel.User.updateOne(
+      { _id: id },
+      { status: "Active" }
+    );
     if (!userToUnBlock) {
       return res.status(404).send("Blocked user not found");
     }
-    res.status(200).redirect("/admin/userdetails?id=" + id);
+    res.status(200).redirect("/admin/users");
   } catch (error) {
     console.error("Error unblocking user:", error);
-    res.status(500).send("Internal Server Error");
+    res.redirect("/admin/users?msg="+error.message);
   }
 };
-
 
 // ! User Adding
 const addUser = async (req, res) => {
@@ -249,6 +203,21 @@ const userDelete = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    req.session.destroy((err) => {
+      if (err) {
+        console.log("Error destroying session:", err);
+        res.status(500).send("Internal Server Error");
+      } else {
+        res.clearCookie("adminToken");
+        res.redirect("/admin/login");
+      }
+    });
+  } catch (err) {
+
+  }
+};
 
 module.exports = {
   loadLogin,
@@ -257,10 +226,9 @@ module.exports = {
   newOTP,
   checkLogin,
   loadUser,
-  userDetails,
   userBlock,
   userDelete,
-  userEdit,
   userUnblock,
   addUser,
+  logout,
 };

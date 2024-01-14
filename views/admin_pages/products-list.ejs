@@ -15,6 +15,20 @@
     <link rel="shortcut icon" type="image/x-icon" href="imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="css/main.css" rel="stylesheet" type="text/css" />
+    <style>
+        .edit-form {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .product-image {
+    width: 60px; /* Set the desired width */
+    height: 40px; /* Set the desired height */
+    object-fit: cover; /* Optional: Ensure the image maintains its aspect ratio */
+    /* Add any other styles you want */
+}
+
+    </style>
 </head>
 
 <body>
@@ -170,7 +184,7 @@
                             <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            <a class="dropdown-item text-danger" href="admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
                 </ul>
@@ -181,9 +195,14 @@
                 <div>
                     <h2 class="content-title card-title">Products List</h2>
                     <p>All Products</p>
+                    <% if (typeof msg !=='undefined' ) { %>
+                        <h6 style="color:#1ea344;">
+                            <%= msg %>
+                        </h6>
+                    <% } %>
                 </div>
                 <div>
-                    <a href="#" class="btn btn-primary btn-sm rounded">Create new</a>
+                    <a href="/admin/addProduct" class="btn btn-primary"><i class="material-icons md-plus"></i>Create new</a>
                 </div>
             </div>
             <div class="card mb-4">
@@ -215,43 +234,52 @@
                         </div>
                     </div>
                 </header> <!-- card-header end// -->
-                <div class="card-body">
-                    <article class="itemlist">
-                        <div class="row align-items-center">
-                            <div class="col col-check flex-grow-0">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox">
-                                </div>
+               
+
+                <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th scope="col">Image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% products.forEach(product => { %>
+                        <tr>
+                          <td>
+                            <a class="itemside" href="#">
+                              <div class="left">
+                                <img src="/product_images/<%= product.img[0] %>" class="img-sm img-thumbnail product-image" alt="Product Image">
                             </div>
-                            <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                <a class="itemside" href="#">
-                                    <div class="left">
-                                        <img src="imgs/items/1.jpg" class="img-sm img-thumbnail" alt="Item">
-                                    </div>
-                                    <div class="info">
-                                        <h6 class="mb-0">T-shirt for men medium size</h6>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-price"> <span>$34.50</span> </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                <span class="badge rounded-pill alert-success">Active</span>
-                            </div>
-                            <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                <span>02.11.2022</span>
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                <a href="#" class="btn btn-sm font-sm rounded btn-brand">
-                                    <i class="material-icons md-edit"></i> Edit
-                                </a>
-                                <a href="#" class="btn btn-sm font-sm btn-light rounded">
-                                    <i class="material-icons md-delete_forever"></i> Delete
-                                </a>
-                            </div>
-                        </div> <!-- row .// -->
-                    </article> <!-- itemlist  .// -->
-                </div> <!-- card-body end// -->
-            </div> <!-- card end// -->
+                            </a>
+                          </td>
+                          <td>
+                            <a class="itemside" href="/admin/editProduct?id=<%= product._id %>">
+                              <div class="info">
+                                <h6 class="mb-0"><%= product.name %></h6>
+                              </div>
+                            </a>
+                          </td>
+                          <td><%= product.price %></td>
+                          <td><span class="badge rounded-pill alert-success">Active</span></td>
+                          <td><%= product.createdate.toISOString().split('T')[0] %></td>
+                          <td> 
+                            <a href="/admin/editProduct?id=<%= product._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                <i class="material-icons md-edit"></i> Edit
+                            </a>                            
+                            <a onclick="confirmDelete('<%= product._id %>')" class="btn btn-sm font-sm btn-light rounded">
+                              <i class="material-icons md-delete_forever"></i> Delete
+                            </a>
+                          </td>
+                        </tr>
+                      <% }) %>
+                    </tbody>
+                  </table>                  
+            </div> <!-- card end// -->       
             <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">
@@ -280,6 +308,14 @@
             </div>
         </footer>
     </main>
+    <script>
+        function confirmDelete(id) {
+            var confirmDelete = confirm("Are you sure you want to delete this catogory?");
+            if (confirmDelete) {
+                window.location.href = "/admin/deleteProduct/"+id;
+            }
+        }
+    </script>
     <script src="js/vendors/jquery-3.6.0.min.js"></script>
     <script src="js/vendors/bootstrap.bundle.min.js"></script>
     <script src="js/vendors/select2.min.js"></script>

@@ -188,7 +188,7 @@
                             <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help
                                 center</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="#"><i
+                            <a class="dropdown-item text-danger" href="/aadmin/logout"><i
                                     class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
@@ -196,19 +196,19 @@
             </div>
         </header>
         <section class="content-main">
-            <form class="full-width-form" action="/admin/addProduct" method="post" enctype="multipart/form-data">                <div class="row">
+            <form class="full-width-form" action="/admin/addProduct" method="post" enctype="multipart/form-data">
+                <div class="row">
                     <div class="col-6">
                         <div class="content-header">
                             <h2 class="content-title">Add New Product</h2>
-                            <% if (typeof msg !=='undefined' ) { %>
-                                <strong style="color:#1ea344;">
+                            <% if (typeof msg !== 'undefined') { %>
+                                <h6 style="color:#1ea344;">
                                     <%= msg %>
-                                </strong><br><br><br>
-                                <% } %>
-                                    <div>
-                                        <button class="btn btn-md rounded font-sm hover-up"
-                                            type="submit">Publich</button>
-                                    </div>
+                                </h6><br><br><br>
+                            <% } %>
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit">Publich</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -223,20 +223,21 @@
                                     <div class="col-md-9">
                                         <div class="mb-4">
                                             <label class="form-label">Product title</label>
-                                            <input required type="text" placeholder="Type here" class="form-control"
-                                                name="name">
+                                            <input required type="text" placeholder="Type here" class="form-control" name="name" id="productName">
+                                            <small class="form-text text-left" style="color: red; display: none;" id="errorProductName"></small>
                                         </div>
                                         <div class="mb-4">
                                             <label class="form-label">Quantity</label>
-                                            <input type="number" required placeholder="Type here" class="form-control"
-                                                name="quantity" min="0" rows="4"></input>
+                                            <input type="number" required placeholder="Type here" class="form-control" name="quantity" id="productQuantity" min="0" rows="4">
+                                            <small class="form-text text-left" style="color: red; display: none;" id="errorProductQuantity"></small>
                                         </div>
                                         <div class="mb-4">
-                                            <label class="form-label">Staus</label>
-                                            <select required name="status" class="form-select">
+                                            <label class="form-label">Status</label>
+                                            <select required name="status" class="form-select" id="productStatus">
                                                 <option> Available </option>
                                                 <option> Disabled </option>
                                             </select>
+                                            <small class="form-text text-left" style="color: red; display: none;" id="errorProductStatus"></small>
                                         </div>
                                     </div> <!-- col.// -->
                                 </div> <!-- row.// -->
@@ -248,8 +249,8 @@
                                     <div class="col-md-9">
                                         <div class="mb-4">
                                             <label class="form-label">Cost in INR</label>
-                                            <input type="number" required name="price" placeholder="0000.0"
-                                                class="form-control" min="0">
+                                            <input type="number" required name="price" placeholder="0000.0" class="form-control" id="productPrice" min="0">
+                                            <small class="form-text text-left" style="color: red; display: none;" id="errorProductPrice"></small>
                                         </div>
                                     </div> <!-- col.// -->
                                 </div> <!-- row.// -->
@@ -261,8 +262,8 @@
                                     <div class="col-md-9">
                                         <div class="mb-4">
                                             <label class="form-label"></label>
-                                            <input type="number" required name="discount" placeholder="0000.0"
-                                                class="form-control" min="0">
+                                            <input type="number" required name="discount" placeholder="0000.0" class="form-control" id="productDiscount" min="0">
+                                            <small class="form-text text-left" style="color: red; display: none;" id="errorProductDiscount"></small>
                                         </div>
                                     </div> <!-- col.// -->
                                 </div> <!-- row.// -->
@@ -275,13 +276,13 @@
                                         <div class="mb-4">
                                             <% catogories.forEach(category=> { %>
                                                 <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                    <input required value="<%= category._id%>" class="form-check-input"
-                                                        name="categoryid" type="radio">
+                                                    <input required value="<%= category._id%>" class="form-check-input" name="categoryid" type="radio">
                                                     <span class="form-check-label">
                                                         <%= category.name %>
                                                     </span>
                                                 </label>
-                                                <% }); %>
+                                            <% }); %>
+                                            <small class="form-text text-left" style="color: red; display: none;" id="errorProductCategory"></small>
                                         </div>
                                     </div> <!-- col.// -->
                                 </div> <!-- row.// -->
@@ -295,11 +296,10 @@
                                             <label class="form-label">
                                                 <h6>Images</h6>
                                             </label><br>
-                                           <!-- Ensure the names match the fields expected by Multer -->
-                                            Main <input type="file" id="main" name="mainImage" accept="image/*" required>
-                                            Back <input type="file" id="back" name="backImage" accept="image/*" required>
+                                            <!-- Ensure the names match the fields expected by Multer -->
+                                            Main <input type="file" id="main" name="mainImage" accept="image/*" required><br>
+                                            Back <input type="file" id="back" name="backImage" accept="image/*" required><br>
                                             Side <input type="file" id="side" name="sideImage" accept="image/*" required><br>
-                                                                                    
                                         </div>
                                     </div> <!-- .row end// -->
                                 </div>
@@ -307,7 +307,7 @@
                         </div>
                     </div>
                 </div>
-            </form>
+            </form>            
         </section> <!-- content-main end// -->
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
@@ -324,6 +324,62 @@
             </div>
         </footer>
     </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const productNameInput = document.getElementById('productName');
+    const errorProductName = document.getElementById('errorProductName');
+    const productQuantityInput = document.getElementById('productQuantity');
+    const errorProductQuantity = document.getElementById('errorProductQuantity');
+    const productStatusSelect = document.getElementById('productStatus');
+    const errorProductStatus = document.getElementById('errorProductStatus');
+    const productPriceInput = document.getElementById('productPrice');
+    const errorProductPrice = document.getElementById('errorProductPrice');
+    const productDiscountInput = document.getElementById('productDiscount');
+    const errorProductDiscount = document.getElementById('errorProductDiscount');
+    const productCategoryInput = document.getElementsByName('categoryid');
+    const errorProductCategory = document.getElementById('errorProductCategory');
+
+    productNameInput.addEventListener("input", function (event) {
+        validateInput(event, errorProductName, "Product title");
+    });
+
+    productQuantityInput.addEventListener("input", function (event) {
+        validateInput(event, errorProductQuantity, "Quantity");
+    });
+
+    productStatusSelect.addEventListener("change", function (event) {
+        validateInput(event, errorProductStatus, "Status");
+    });
+
+    productPriceInput.addEventListener("input", function (event) {
+        validateInput(event, errorProductPrice, "Cost in INR");
+    });
+
+    productDiscountInput.addEventListener("input", function (event) {
+        validateInput(event, errorProductDiscount, "Discount");
+    });
+
+    productCategoryInput.forEach(function (categoryInput) {
+        categoryInput.addEventListener("change", function (event) {
+            validateInput(event, errorProductCategory, "Category");
+        });
+    });
+
+    function validateInput(event, errorElement, fieldName) {
+        const enteredValue = event.target.value;
+        if (enteredValue.trim() === "") {
+            errorElement.textContent = fieldName + " cannot be empty";
+            errorElement.style.display = "block";
+            event.target.style.border = "1px solid red";
+        } else {
+            errorElement.textContent = "";
+            errorElement.style.display = "none";
+            event.target.style.border = "";
+        }
+    }
+});
+
+    </script>
     <script src="js/vendors/jquery-3.6.0.min.js"></script>
     <script src="js/vendors/bootstrap.bundle.min.js"></script>
     <script src="js/vendors/select2.min.js"></script>

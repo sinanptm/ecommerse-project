@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const OTPSchena =  new mongoose.Schema({
-    email:{type:String, unique:true},
+    email:{type:String, unique:false},
     otp:String,
     createdAt:Date,
     expiresAt:Date

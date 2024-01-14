@@ -59,17 +59,6 @@ productsSchema.index({ name: 1, categoryid: 1 }, { unique: true });
 
 const Product = mongoose.model("Product", productsSchema);
 
-// Coupons Schema
-const couponsSchema = new mongoose.Schema({
-  couponName: { type: String },
-  couponCode: { type: String },
-  discAmt: { type: Number },
-  ParchaseAmount: { type: Number },
-  createdate: { type: Date },
-  expDate: { type: Date },
-});
-
-const Coupon = mongoose.model("Coupon", couponsSchema);
 
 // Category Schema
 const categorySchema = new mongoose.Schema({
@@ -81,6 +70,17 @@ const categorySchema = new mongoose.Schema({
 
 const Category = mongoose.model("Category", categorySchema);
 
+// Coupons Schema
+const couponsSchema = new mongoose.Schema({
+  couponName: { type: String },
+  couponCode: { type: String },
+  discAmt: { type: Number },
+  ParchaseAmount: { type: Number },
+  createdate: { type: Date },
+  expDate: { type: Date },
+});
+
+const Coupon = mongoose.model("Coupon", couponsSchema);
 // wallet schema
 const walletSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },

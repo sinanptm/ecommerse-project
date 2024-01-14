@@ -31,6 +31,7 @@ adminRoute.use(
 );
 adminRoute.use(flash());
 
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname,"../public/product_images"));
@@ -59,36 +60,34 @@ adminRoute.get("/verifyAdmin", OTPStatus, checkStatus, adminController.loadOTP);
 adminRoute.post("/verifyAdmin", adminController.verifyOTP);
 
 // ! user Managment 
-adminRoute.get("/users",adminController.loadUser)
+adminRoute.get("/users", redirectLogin, adminController.loadUser)
 
-adminRoute.get('/userdetails', adminController.userDetails);
+adminRoute.get('/userblock/:id', redirectLogin,  adminController.userBlock);
+adminRoute.get('/userUnblock/:id', redirectLogin,  adminController.userUnblock);
+adminRoute.get('/userdelete/:id', redirectLogin,  adminController.userDelete);
 
-adminRoute.get('/userblock/:id', adminController.userBlock);
-adminRoute.get('/userUnblock/:id', adminController.userUnblock);
-adminRoute.get('/userdelete/:id', adminController.userDelete);
+adminRoute.post("/addUser", redirectLogin, adminController.addUser)
 
-adminRoute.post("/addUser",adminController.addUser)
-adminRoute.post('/useredit/:id', adminController.userEdit);
+adminRoute.get("/dashboard", redirectLogin, productController.loadDashBoard);
 
-adminRoute.get("/dashboard",productController.loadDashBoard);
+adminRoute.get("/logout", redirectLogin, adminController.logout)
 
 // ! poduct management
-adminRoute.get("/productDetials",productController.loadProducts);
-adminRoute.get("/products",productController.loadProducts);
+adminRoute.get("/productDetials", redirectLogin, productController.loadProducts);
+adminRoute.get("/products", redirectLogin, productController.loadProducts);
 
-adminRoute.get("/addProduct",productController.loadAddProduct)
-adminRoute.post('/addProduct', upload.fields([{ name: 'mainImage' }, { name: 'backImage' }, { name: 'sideImage' }]), productController.addProduct);
+adminRoute.get("/addProduct", redirectLogin, productController.loadAddProduct)
+adminRoute.post('/addProduct',  redirectLogin, upload.fields([{ name: 'mainImage' }, { name: 'backImage' }, { name: 'sideImage' }]), productController.addProduct);
 
-// ! qcatogory managment
-adminRoute.get("/catogories",productController.laodCatagorie);
-adminRoute.post("/catogories",productController.addCatagorie);
-adminRoute.post("/editCatogories/:id",productController.editCatogory);
-adminRoute.get("/deleteCatogory/:id",productController.deleteCatogory)
+adminRoute.post('/editProduct/:id', redirectLogin,  upload.fields([{ name: 'mainImage' }, { name: 'backImage' }, { name: 'sideImage' }]), productController.editProduct)
+adminRoute.get("/editProduct",  redirectLogin, productController.loadEditProduct);
+adminRoute.get("/deleteProduct/:id", redirectLogin, productController.deleteProduct)
 
-// adminRoute.get("/brands");
-// adminRoute.get("/orders");
-// adminRoute.get("/orderDetials");
-// adminRoute.get("/transactions");
+// ! qatogory managment
+adminRoute.get("/catogories", redirectLogin, productController.laodCatagorie);
+adminRoute.post("/catogories",  upload.single("file"), redirectLogin, productController.addCatagorie);
+adminRoute.post("/editCatogories/:id", upload.single("file"), redirectLogin, productController.editCatogory);
+adminRoute.get("/deleteCatogory/:id", redirectLogin, productController.deleteCatogory)
 
 module.exports =  adminRoute ;
 

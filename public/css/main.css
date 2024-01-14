@@ -292,7 +292,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 .header-v3 .wrap-menu-desktop {
   background-color: transparent;
   top: 0;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(214, 207, 207, 0.1);
 }
 
 .header-v4 .wrap-menu-desktop {
@@ -379,7 +379,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 }
 
 .header-v3 .main-menu > li > a {
-  color: #fff;
+  color: #333;
 }
 
 /*---------------------------------------------*/
@@ -629,7 +629,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 }
 
 .header-v3 .fix-menu-desktop .wrap-menu-desktop {
-  background-color: #222;
+  background-color: #fff;
   border-color: #222;
 }
 
@@ -3064,7 +3064,9 @@ input.num-product::-webkit-inner-spin-button {
 }
 
 .hov-img0 img{
-  width: 100%;
+  width: 300px; /* Set the desired width */
+  height: 200px; /* Set the desired height */
+  object-fit: cover; /* Preserve aspect ratio */
   -webkit-transition: transform 0.9s ease;
   -o-transition: transform 0.9s ease;
   -moz-transition: transform 0.9s ease;

@@ -22,6 +22,11 @@
             transition: opacity 0.3s ease-in-out;
         }
 
+        .custom-link-style {
+            text-decoration: underline;
+            /* Remove underline */
+        }
+
         .user-details-container {
             font-family: "Arial", sans-serif;
             max-width: 800px;
@@ -115,7 +120,7 @@
                         <a href="/admin/users">User Managment</a>
                     </div>
                 </li>
-                
+
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-orders-1.html">
                         <i class="icon material-icons md-shopping_cart"></i>
@@ -130,7 +135,7 @@
                     </div>
                 </li>
 
-                
+
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-transactions-1.html">
                         <i class="icon material-icons md-monetization_on"></i>
@@ -260,7 +265,7 @@
                             <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help
                                 center</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="#"><i
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i
                                     class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
@@ -268,88 +273,142 @@
             </div>
         </header>
 
-<section class="content-main">
-    <div class="content-header">
-        <div>
-            <h2 class="content-title card-title">Categories</h2>
-            <strong>Number of Categories: <%= categories.length %></strong>
-        </div>
-    
-        <div>
-            <button class="btn btn-primary" data-bs-target="#editUserModal" data-bs-toggle="modal">
-                <i class="material-icons md-plus"></i> Create new
-            </button>            
-            <% if (typeof msg !=='undefined' ) { %>
-                <h6 style="color: #ff0000">
-                    <%= msg %>
-                </h6>
-            <% } %>
-        </div>
-    </div>
-    
-    <% categories.forEach(function(category) { %>
-        <div class="user-details-container">
-            <ul>
-                <li>
-                    <h3>
-                        <%= category.name %>
-                    </h3>
-                </li>
-                <li><strong>
-                        <%= category.description %>
-                    </strong></li>
-                <li>
-                    <strong>Number of items: <%= category.items.length %></strong>
-                </li>
-                <li>
-                    <strong>Items:</strong>
-                    <ul>
-                        <% category.items.forEach(function(item) { %>
-                            <li><%= item.name %></li>
-                        <% }); %>
-                    </ul>
-                </li>
-                <button class="btn btn-primary" data-bs-target="#editCategoryModal<%= category._id %>" data-bs-toggle="modal">
-                    Edit
-                </button>
-                <a href="javascript:void(0);" onclick="confirmDelete('<%= category._id %>')" class="btn btn-danger">Delete</a>
-            </ul>
-            <img src="<%= category.img %>" alt="<%= category.name %> Image" class="small-image" />
-            <div class="user-details-buttons"></div>
-        </div><br>
-    
-        <div class="modal fade" id="editCategoryModal<%= category._id %>" aria-hidden="true" aria-labelledby="editUserModalLabel"
-            tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="editUserModalLabel">
-                            Edit Category
-                        </h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="/admin/editCatogories/<%= category._id %>" method="post">
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required value="<%= category.name %>" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Image Path</label>
-                                <input type="text" class="form-control" id="email" name="img" required value="<%= category.img %>" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="Discriotion" class="form-label">Description</label>
-                                <input type="text" class="form-control" id="Discriotion" name="description" required value="<%= category.description %>" />
-                            </div>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </form>
-                    </div>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Categories</h2>
+                    <strong>no. Categories: <%= categories.length %></strong>
+                </div>
+
+                <div>
+                    <button class="btn btn-primary" data-bs-target="#editUserModal" data-bs-toggle="modal">
+                        <i class="material-icons md-plus"></i> Create new
+                    </button>
+                    <% if (typeof msg !=='undefined' ) { %>
+                        <h6 style="color: #ff0000">
+                            <%= msg %>
+                        </h6>
+                        <% } %>
                 </div>
             </div>
-        </div>
-    <% }); %>
-</section>
+
+            <% categories.forEach(function(category) { %>
+                <div class="user-details-container">
+                    <ul>
+                        <li>
+                            <h3>
+                                <%= category.name %>
+                            </h3>
+                        </li>
+                        <li>
+                            <strong>
+                                <%= category.description %>
+                            </strong>
+                        </li>
+                        <li>
+                            <strong> Collections: <%= category.items.length %></strong>
+                        </li>
+                        <li>
+                            <ul>
+                                <% category.items.forEach(function(item,index) { %>
+                                    <li>
+                                    <li>
+                                        <a class="custom-link-style" href="/admin/editProduct?id=<%= item._id %>">
+                                            <h6>
+                                                <%= index + 1 %>. <%= item.name %>
+                                            </h6>
+                                        </a>
+                                    </li>
+
+                        </li>
+                        <% }); %>
+                    </ul>
+                    </li>
+                    <button class="btn btn-primary" data-bs-target="#editCategoryModal<%= category._id %>"
+                        data-bs-toggle="modal">
+                        Edit
+                    </button>
+                    <a href="javascript:void(0);" onclick="confirmDelete('<%= category._id %>')"
+                        class="btn btn-danger">Delete</a>
+                    </ul>
+                    <img <% if (category.img.length> 23) { %>
+                    src="<%= category.img %>"
+                    <% } else { %>
+                        src="/product_images/<%= category.img %>"
+                            <% } %>
+                                alt="<%= category.name %> Image" class="small-image"
+                                    />
+
+                                    <div class="user-details-buttons"></div>
+
+                </div><br>
+
+                <div class="modal fade" id="editCategoryModal<%= category._id %>" aria-hidden="true"
+                    aria-labelledby="editUserModalLabel" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="editUserModalLabel">
+                                    Edit Category
+                                </h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/admin/editCatogories/<%= category._id %>" method="post" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" required value="<%= category.name %>" />
+                                    </div>
+                                
+                                    <div class="mb-3">
+                                        <img 
+                                            <% if (category.img.length > 23) { %>
+                                                src="<%= category.img %>"
+                                            <% } else { %>
+                                                src="/product_images/<%= category.img %>"
+                                            <% } %>
+                                            alt="<%= category.name %> Image" class="small-image" 
+                                        />
+                                
+                                        <label for="file" class="form-label">Image Path</label>
+                                        <input type="file" class="form-control" id="file" name="file" required />
+                                    </div>
+                                
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">Description</label>
+                                        <input type="text" class="form-control" id="description" name="description" required value="<%= category.description %>" />
+                                    </div>
+                                
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+
+                    <div class="pagination-area mt-15 mb-50">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-start">
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">01</a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">02</a></li>
+                                <li class="page-item"><a class="page-link" href="#">03</a></li>
+                                <li class="page-item">
+                                    <a class="page-link dot" href="#">...</a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">16</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <br><br><br>
+        </section>
 
 
         <footer class="main-footer font-xs">
@@ -376,18 +435,21 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="/admin/catogories" method="post">
+                        <form action="/admin/catogories" method="post" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required />
+                                <input type="text" class="form-control" id="name" name="name" autocomplete="off"
+                                    required />
                             </div>
                             <div class="mb-3">
-                                <label for="email" class="form-label">Image Path</label>
-                                <input type="text" class="form-control" id="email" name="img" required />
+                                <label for="file" class="form-label">Image</label>
+                                <input type="file" class="form-control" id="email" name="file" autocomplete="off"
+                                    required />
                             </div>
                             <div class="mb-3">
                                 <label for="Discriotion" class="form-label">Discriotion</label>
-                                <input type="text" class="form-control" id="Discriotion" name="description" required />
+                                <input type="text" class="form-control" id="Discriotion" name="description"
+                                    autocomplete="off" required />
                             </div>
                             <button type="submit" class="btn btn-primary">Save</button>
                         </form>
@@ -400,7 +462,7 @@
         function confirmDelete(id) {
             var confirmDelete = confirm("Are you sure you want to delete this catogory?");
             if (confirmDelete) {
-                window.location.href = "/admin/deleteCatogory/"+id;
+                window.location.href = "/admin/deleteCatogory/" + id;
             }
         }
     </script>
