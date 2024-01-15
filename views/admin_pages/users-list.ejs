@@ -350,9 +350,7 @@
                                 <a href="/admin/userUnblock/<%= user._id %>" class="btn btn-success">Unblock</a>
                               <% } else { %>
                                 <a href="javascript:void(0);" onclick="confirmBlock('<%= user._id %>')" class="btn btn-warning">Block</a>
-                              <% } %>                        
-                              <a href="javascript:void(0);" onclick="confirmDelete('<%= user._id %>')" class="btn btn-danger">Delete</a>
-                     
+                              <% } %>                                             
                         </div>
                         </td>
                       </tr>
@@ -444,12 +442,6 @@
     </div>
     </main>
     <script>
-      function confirmDelete(id) {
-          var confirmDelete = confirm("Are you sure you want to delete this user?");
-          if (confirmDelete) {
-              window.location.href = "/admin/userdelete/"+id;
-          }
-      }
       function confirmBlock(id) {
           var confirmBlock = confirm("Are you sure you want to block this user?");
           if (confirmBlock) {

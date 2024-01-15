@@ -191,17 +191,6 @@ const addUser = async (req, res) => {
     }
   }
 };
-//! Controller for deleting user
-const userDelete = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const user = await adminModel.User.deleteOne({ _id: id });
-    res.redirect("/admin/users");
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    res.status(500).send("Internal Server Error");
-  }
-};
 
 const logout = async (req, res) => {
   try {
@@ -227,7 +216,6 @@ module.exports = {
   checkLogin,
   loadUser,
   userBlock,
-  userDelete,
   userUnblock,
   addUser,
   logout,

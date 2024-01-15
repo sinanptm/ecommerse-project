@@ -13,15 +13,20 @@
     <meta property="og:image" content="" />
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="imgs/theme/favicon.svg" />
-    <!-- Template CSS -->
-    <link href="css/main.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>    <link href="css/main.css" rel="stylesheet" type="text/css" />
     <style>
         .edit-form {
             display: none;
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
         }
-
+        .toast-warning {
+            background-color: #73030d;
+            border-color: #76000c;
+            color: #ffffff;
+        }
         .custom-link-style {
             text-decoration: underline;
             /* Remove underline */
@@ -313,11 +318,11 @@
                                 <% category.items.forEach(function(item,index) { %>
                                     <li>
                                     <li>
-                                        <a class="custom-link-style" href="/admin/editProduct?id=<%= item._id %>">
+                                        <span class="custom-link-style" href="/admin/editProduct?id=<%= item._id %>">
                                             <h6>
                                                 <%= index + 1 %>. <%= item.name %>
                                             </h6>
-                                        </a>
+                                        </span>
                                     </li>
 
                         </li>
@@ -328,9 +333,10 @@
                         data-bs-toggle="modal">
                         Edit
                     </button>
-                    <a href="javascript:void(0);" onclick="confirmDelete('<%= category._id %>')"
-                        class="btn btn-danger">Delete</a>
-                    </ul>
+                    <a href="javascript:void(0);" 
+                            <% if (category.items.length>0) { %> onclick="showToastr();" <% } else { %> onclick="confirmDelete('<%= category._id %>');" <% } %>
+                            class="btn btn-danger">Delete</a>
+                                     </ul>
                     <img <% if (category.img.length> 23) { %>
                     src="<%= category.img %>"
                     <% } else { %>
@@ -379,7 +385,16 @@
                                         <label for="description" class="form-label">Description</label>
                                         <input type="text" class="form-control" id="description" name="description" required value="<%= category.description %>" />
                                     </div>
-                                
+                                    <% category.items.forEach(function(item,index) { %>
+                                        <li>
+                                        
+                                            <a class="custom-link-style" href="/admin/editProduct?id=<%= item._id %>">
+                                                <h6>
+                                                    <%= index + 1 %>. <%= item.name %>
+                                                </h6>
+                                            </a>
+                                        </li>
+                            <% }); %>
                                     <button type="submit" class="btn btn-primary">Save</button>
                                 </form>
                                 
@@ -446,11 +461,13 @@
                                 <input type="file" class="form-control" id="email" name="file" autocomplete="off"
                                     required />
                             </div>
+
                             <div class="mb-3">
                                 <label for="Discriotion" class="form-label">Discriotion</label>
                                 <input type="text" class="form-control" id="Discriotion" name="description"
                                     autocomplete="off" required />
                             </div>
+                            
                             <button type="submit" class="btn btn-primary">Save</button>
                         </form>
                     </div>
@@ -465,6 +482,16 @@
                 window.location.href = "/admin/deleteCatogory/" + id;
             }
         }
+        function showToastr() {
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            showMethod: 'slideDown',
+            timeOut: 4000,
+        };
+
+        toastr.warning("You Can't Delete The Catogorie Wich Has Products Listed", 'Warning');
+    }
     </script>
     <script src="js/vendors/jquery-3.6.0.min.js"></script>
     <script src="js/vendors/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include toastr library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+</head>
+<body>
+
+<!-- Button to trigger toastr message -->
+<button onclick="showToastr()">Show Toastr</button>
+
+<!-- JavaScript for displaying toastr message -->
+<script>
+    function showToastr() {
+        // Trigger toastr message
+        toastr.warning('This is a toastr message');
+    }
+</script>
+
+</body>
+</html>

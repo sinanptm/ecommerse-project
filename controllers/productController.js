@@ -1,6 +1,9 @@
 const adminModel = require("../models/userModels");
 const mongoose = require("mongoose")
+const sharp = require("sharp")
+const path = require("path")
 // ! dashboard loeding
+
 const loadDashBoard = async (req, res) => {
   try {
     res.render("dashboard");
@@ -13,59 +16,130 @@ const loadDashBoard = async (req, res) => {
 const loadProducts = async (req, res) => {
   try {
     const msg = req.query.msg
-      const products = await adminModel.Product.aggregate([
-        {
-          $lookup: {
-            from: 'categories', 
-            localField: 'categoryid',
-            foreignField: '_id',
-            as: 'category',
-          },
+    const products = await adminModel.Product.aggregate([
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'categoryid',
+          foreignField: '_id',
+          as: 'category',
         },
-        {
-          $unwind: '$category', // Unwind the array created by $lookup (as it's a single match)
+      },
+      {
+        $unwind: '$category', // Unwind the array created by $lookup (as it's a single match)
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          price: 1,
+          quantity: 1,
+          status: 1,
+          img: 1,
+          category: '$category.name', // Rename the category name field
+          discription: "$category.description",
+          createdate: 1,
+          discount: 1,
         },
-        {
-          $project: {
-            _id: 1,
-            name: 1,
-            price: 1,
-            quantity: 1,
-            status: 1,
-            img: 1,
-            category: '$category.name', // Rename the category name field
-            discription:"$category.description",
-            createdate: 1,
-            discount: 1,
-          },
-        },
-      ]);
-      const categories = await adminModel.Category.find();
-      res.render("products-list", { products, categories, msg });
+      },
+    ]);
+    const categories = await adminModel.Category.find();
+    res.render("products-list", { products, categories, msg });
   } catch (err) {
     console.log(err.message);
   }
 };
+
+// ! add products
+const loadAddProduct = async (req, res) => {
+  try {
+    const msg = req.query.msg;
+    const catogories = await adminModel.Category.find();
+    res.render("addProducts", { catogories: catogories, msg });
+  } catch (error) {
+    console.log(error.message);
+    res.status(404).json(error.message);
+  }
+};
+
+
+const addProduct = async (req, res) => {
+  try {
+    const { name, price, quantity, status, categoryid, discount } = req.body;
+    const images = req.files.map(file => file.filename);
+    const promises = images.map(async (image) => {
+      const originalImagePath = path.join(__dirname, '../public/product_images', image);
+      const resizedPath = path.join(__dirname, '../public/resized_images',  image);
+      await sharp(originalImagePath)
+        .resize({ height: 1486, width: 1200, fit: 'fill' })
+        .toFile(resizedPath);
+        return image
+    });
+
+   const img = await Promise.all(promises);
+
+    const product = new adminModel.Product({
+      name,
+      price,
+      quantity,
+      status,
+      img,
+      categoryid,
+      createdate: new Date(),
+      discount,
+    });
+
+    const savedProduct = await product.save();
+    await adminModel.Category.findByIdAndUpdate(categoryid, { $push: { items: savedProduct._id } });
+
+    res.redirect("/admin/addProduct?msg=Product added seccussfully")
+
+  } catch (error) {
+    if (error.code === 11000) {
+      // Duplicate key error (MongoDB error code 11000)
+      res.redirect("/admin/addProduct?msg=Product with this name already exists");
+    } else {
+      // Other errors
+      console.error(error);
+      res.redirect("/admin/addProduct?msg=" + error.message);
+    }
+  }
+};
+
+// ! edit products
 
 const editProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const { name, price, quantity, status, categoryid, discount } = req.body;
 
-    // Handle image updates
-    let mainImage = req.files['mainImage'] ? req.files['mainImage'][0].filename : null;
-    let backImage = req.files['backImage'] ? req.files['backImage'][0].filename : null;
-    let sideImage = req.files['sideImage'] ? req.files['sideImage'][0].filename : null;
+    const images = req.files.map(file => file.filename);
 
-    // Retrieve the existing product to get old image filenames
     const existingProduct = await adminModel.Product.findById(id);
 
-    // Retain the old image filenames if new images are not provided
-    mainImage = mainImage || existingProduct.img[0];
-    backImage = backImage || existingProduct.img[1];
-    sideImage = sideImage || existingProduct.img[2];
+    const check = async (image) => {
+      if (image) {
+        const originalImagePath = path.join(__dirname, '../public/product_images', image);
+        const resizedPath = path.join(__dirname, '../public/resized_images', image);
+        await sharp(originalImagePath)
+          .resize({ height: 1486, width: 1200, fit: 'fill' })
+          .toFile(resizedPath);
+        return image;
+      } else {
+        return null;
+      }
+    };
 
-    const img = [mainImage, backImage, sideImage];
+    const promises = [];
+    for (let index = 0; index < 3; index++) {
+      const newImage = images[index];
+      const existingImage = existingProduct.img[index];
+
+      const result = newImage ? await check(newImage) : existingImage;
+      promises.push(result);
+    }
+
+    const img = await Promise.all(promises);
 
     const updatedProduct = await adminModel.Product.findByIdAndUpdate(id, {
       name,
@@ -73,23 +147,21 @@ const editProduct = async (req, res) => {
       quantity,
       status,
       img,
-      categoryid,
+      categoryid:categoryid?categoryid:existingProduct.categoryid,
       discount,
     });
 
+   if (existingProduct._id==categoryid) {
     const existingCategory = updatedProduct.categoryid;
-
-    // If category is updated, remove product from the old category
     if (existingCategory.toString() !== categoryid.toString()) {
       await adminModel.Category.findByIdAndUpdate(existingCategory, {
         $pull: { items: updatedProduct._id },
       });
-
-      // Add product to the new category
       await adminModel.Category.findByIdAndUpdate(categoryid, {
         $addToSet: { items: updatedProduct._id },
       });
     }
+   }
 
     res.redirect("/admin/products?msg=Product updated successfully");
   } catch (err) {
@@ -99,35 +171,36 @@ const editProduct = async (req, res) => {
 };
 
 
+
 const loadEditProduct = async (req, res) => {
   try {
-      const id = req.query.id;
+    const id = req.query.id;
 
-      if (!id) {
-          console.log("Redirecting to /admin/products");
-          res.redirect("/admin/products");
-          return;
-      }
+    if (!id) {
+      console.log("Redirecting to /admin/products");
+      res.redirect("/admin/products");
+      return;
+    }
 
-      const product = await adminModel.Product
-          .findById(id)
-          .populate({
-              path: 'categoryid',
-              model: 'Category',
-              select: 'name description' // Adjust the fields as needed
-          });
-      
-      if (!product) {
-          console.error("Product not found");
-          res.status(404).send("Product not found");
-          return;
-      }
+    const product = await adminModel.Product
+      .findById(id)
+      .populate({
+        path: 'categoryid',
+        model: 'Category',
+        select: 'name description' // Adjust the fields as needed
+      });
 
-      const categories = await adminModel.Category.find();
-      res.render("editt-product", { product, categories });
+    if (!product) {
+      console.error("Product not found");
+      res.status(404).send("Product not found");
+      return;
+    }
+
+    const categories = await adminModel.Category.find();
+    res.render("editt-product", { product, categories });
   } catch (err) {
-      console.error("Error in loadEditProduct:", err);
-      res.status(500).send("Internal Server Error");
+    console.error("Error in loadEditProduct:", err);
+    res.status(500).send("Internal Server Error");
   }
 };
 const deleteProduct = async (req, res) => {
@@ -149,56 +222,7 @@ const deleteProduct = async (req, res) => {
 };
 
 
-// ! add products
-const loadAddProduct = async (req, res) => {
-  try {
-    const msg =  req.query.msg;
-    const catogories = await adminModel.Category.find();
-    res.render("addProducts", { catogories: catogories, msg });
-  } catch (error) {
-    console.log(error.message);
-    res.status(404).json(error.message);
-  }
-};
 
-
-const addProduct = async (req, res) => {
-  try {
-    const { name, price, quantity, status, categoryid, discount } = req.body;
-    const mainImage = req.files['mainImage'] ? req.files['mainImage'][0].filename : null;
-    const backImage = req.files['backImage'] ? req.files['backImage'][0].filename : null;
-    const sideImage = req.files['sideImage'] ? req.files['sideImage'][0].filename : null;
-
-    const img = [mainImage, backImage, sideImage].filter(Boolean);
-
-    const product = new adminModel.Product({
-      name,
-      price,
-      quantity,
-      status,
-      img,
-      categoryid,
-      createdate: new Date(),
-      discount,
-    });
-
-    const savedProduct = await product.save();
-    await adminModel.Category.findByIdAndUpdate(categoryid, { $push: { items: savedProduct._id } });
-
-
-    res.redirect("/admin/addProduct?msg=Product added seccussfully")
-
-  } catch (error) {
-    if (error.code === 11000) {
-      // Duplicate key error (MongoDB error code 11000)
-      res.redirect("/admin/addProduct?msg=Product with this name already exists");
-    } else {
-      // Other errors
-      console.error(error);
-      res.redirect("/admin/addProduct?msg=" + error.message);
-    }
-  }
-};
 
 const laodCatagorie = async (req, res) => {
   try {
@@ -212,11 +236,11 @@ const laodCatagorie = async (req, res) => {
 
 const addCatagorie = async (req, res) => {
   const { name, description } = req.body;
-  
+
   const newCategory = new adminModel.Category({
     name,
     description,
-    img:req.file.filename,
+    img: req.file.filename,
   });
   const category = await newCategory.save();
   res.redirect("/admin/catogories");
