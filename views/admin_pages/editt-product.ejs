@@ -191,7 +191,7 @@
             </div>
         </header>
         <section class="content-main">
-            <form  action="/admin/editProduct/<%= product._id %>" method="post"
+            <form  action="/admin/editProduct/<%= product._id %>?type=fd" method="post"
                 enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-6">
@@ -288,22 +288,20 @@
                                         <div class="mb-4">
                                             <label class="form-label">Old Category:</label>
                                             <strong style="font-weight: 900;">
-                                                <%= product.categoryid ? product.categoryid.name
-                                                    : 'No category available' %>
+                                                <%= product.categoryid ? product.categoryid.name : 'No category available' %>
                                             </strong>
-
-                                            <% categories.forEach(category=> { %>
+                                        
+                                            <% categories.forEach(category => { %>
                                                 <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                    <input   class="form-check-input"
-                                                        name="categoryid" type="radio"
-                                                        <%=product.categoryid.toString()===category._id.toString()
-                                                        ? 'checked' : '' %>>
+                                                    <input value="<%= category._id %>" class="form-check-input" name="categoryid" type="radio">
                                                     <span class="form-check-label">
                                                         <%= category.name %>
                                                     </span>
                                                 </label>
-                                                <% }); %>
+                                            <% }); %>
+                                            
                                         </div>
+                                        
 
                                     </div> <!-- col.// -->
                                 </div> <!-- row.// -->

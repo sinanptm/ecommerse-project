@@ -1,7 +1,9 @@
 const adminModel = require("../models/userModels");
 const mongoose = require("mongoose")
 const sharp = require("sharp")
-const path = require("path")
+const path = require("path");
+const { log } = require("util");
+
 // ! dashboard loeding
 
 const loadDashBoard = async (req, res) => {
@@ -67,6 +69,7 @@ const addProduct = async (req, res) => {
   try {
     const { name, price, quantity, status, categoryid, discount } = req.body;
     const images = req.files.map(file => file.filename);
+
     const promises = images.map(async (image) => {
       const originalImagePath = path.join(__dirname, '../public/product_images', image);
       const resizedPath = path.join(__dirname, '../public/resized_images',  image);
@@ -111,8 +114,8 @@ const addProduct = async (req, res) => {
 const editProduct = async (req, res) => {
   try {
     const id = req.params.id;
+    
     const { name, price, quantity, status, categoryid, discount } = req.body;
-
     const images = req.files.map(file => file.filename);
 
     const existingProduct = await adminModel.Product.findById(id);
@@ -147,25 +150,36 @@ const editProduct = async (req, res) => {
       quantity,
       status,
       img,
-      categoryid:categoryid?categoryid:existingProduct.categoryid,
+      categoryid,
       discount,
     });
-
-   if (existingProduct._id==categoryid) {
-    const existingCategory = updatedProduct.categoryid;
-    if (existingCategory.toString() !== categoryid.toString()) {
-      await adminModel.Category.findByIdAndUpdate(existingCategory, {
-        $pull: { items: updatedProduct._id },
-      });
-      await adminModel.Category.findByIdAndUpdate(categoryid, {
-        $addToSet: { items: updatedProduct._id },
-      });
+    
+    if (categoryid !== existingProduct.categoryid.toString()) {
+      const oldCategory = await adminModel.Category.findByIdAndUpdate(
+        existingProduct.categoryid,
+        { $pull: { items: existingProduct._id } }
+      );
+          const newCategory = await adminModel.Category.findByIdAndUpdate(
+        categoryid,
+        { $addToSet: { items: existingProduct._id } }
+      );
+          if (req.query.type) {
+            res.redirect("/admin/catogories");
+          }else{
+            res.redirect("/admin/products?msg=Product updated successfully");
+          }
+      
+    } else {
+      if (req.query.type) {
+        res.redirect("/admin/catogories");
+      }else{
+        res.redirect("/admin/products?msg=Product updated successfully");
+      }
     }
-   }
-
-    res.redirect("/admin/products?msg=Product updated successfully");
+    
+    
   } catch (err) {
-    console.error(err);
+    console.error(err.message);
     res.status(500).send("Internal Server Error");
   }
 };
@@ -235,25 +249,49 @@ const laodCatagorie = async (req, res) => {
 };
 
 const addCatagorie = async (req, res) => {
-  const { name, description } = req.body;
+  try {
+    const { name, description } = req.body;
+    
+    const processImage = async (filename) => {
+      if (filename) {
+        const originalImagePath = path.join(__dirname, '../public/product_images', filename);
+        const resizedPath = path.join(__dirname, '../public/resized_images', filename);
+        await sharp(originalImagePath)
+          .resize({ height: 1486, width: 1200, fit: 'fill' })
+          .toFile(resizedPath);
+        return filename;
+      } else {
+        return null;
+      }
+    };
 
-  const newCategory = new adminModel.Category({
-    name,
-    description,
-    img: req.file.filename,
-  });
-  const category = await newCategory.save();
-  res.redirect("/admin/catogories");
+    const img = await processImage(req.file.filename);
+
+    const newCategory = new adminModel.Category({
+      name,
+      description,
+      img: img,
+    });
+
+    const category = await newCategory.save();
+    res.redirect("/admin/catogories");
+  } catch (error) {
+    console.error("Error adding category:", error);
+    req.flash("error", "Internal Server Error. Please try again later.");
+    res.redirect("/admin/catogories");
+  }
 };
+
 
 const editCatogory = async (req, res) => {
   try {
-    const { name, img, description } = req.body;
+    const { name, description } = req.body;
     const id = req.params.id;
 
     const existingProduct = await adminModel.Category.findById(id);
-    const file = req.file.filename
-    img = file || existingProduct.img[0];
+    const file = req.file && req.file.filename;
+    img = file || existingProduct.img;
+
     const category = await adminModel.Category.updateOne(
       { _id: id },
       {

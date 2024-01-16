@@ -15,7 +15,8 @@
     <link rel="shortcut icon" type="image/x-icon" href="imgs/theme/favicon.svg" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>    <link href="css/main.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link href="css/main.css" rel="stylesheet" type="text/css" />
     <style>
         .edit-form {
             display: none;
@@ -318,9 +319,9 @@
                                 <% category.items.forEach(function(item,index) { %>
                                     <li>
                                     <li>
-                                        <span class="custom-link-style" href="/admin/editProduct?id=<%= item._id %>">
+                                        <span class="custom-link-style" >
                                             <h6>
-                                                <%= index + 1 %>. <%= item.name %>
+                                                <a href="/admin/editProduct?id=<%= item._id %>&&type=cat"><%= index + 1 %>. <%= item.name %></a>
                                             </h6>
                                         </span>
                                     </li>
@@ -340,7 +341,7 @@
                     <img <% if (category.img.length> 23) { %>
                     src="<%= category.img %>"
                     <% } else { %>
-                        src="/product_images/<%= category.img %>"
+                        src="/resized_images/<%= category.img %>"
                             <% } %>
                                 alt="<%= category.name %> Image" class="small-image"
                                     />
@@ -362,6 +363,9 @@
                             </div>
                             <div class="modal-body">
                                 <form action="/admin/editCatogories/<%= category._id %>" method="post" enctype="multipart/form-data">
+                                    <div>
+                                        <a href="/admin/addProduct" class="btn btn-primary"><i class="material-icons md-plus"></i>new Product to this catogory</a>
+                                    </div>
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Name</label>
                                         <input type="text" class="form-control" id="name" name="name" required value="<%= category.name %>" />
@@ -372,28 +376,27 @@
                                             <% if (category.img.length > 23) { %>
                                                 src="<%= category.img %>"
                                             <% } else { %>
-                                                src="/product_images/<%= category.img %>"
+                                                src="/resized_images/<%= category.img %>"
                                             <% } %>
                                             alt="<%= category.name %> Image" class="small-image" 
                                         />
                                 
                                         <label for="file" class="form-label">Image Path</label>
-                                        <input type="file" class="form-control" id="file" name="file" required />
+                                        <input type="file" class="form-control" id="file" name="file"  />
                                     </div>
                                 
                                     <div class="mb-3">
                                         <label for="description" class="form-label">Description</label>
                                         <input type="text" class="form-control" id="description" name="description" required value="<%= category.description %>" />
                                     </div>
+                                    <strong>To Edit Products</strong>
                                     <% category.items.forEach(function(item,index) { %>
-                                        <li>
                                         
-                                            <a class="custom-link-style" href="/admin/editProduct?id=<%= item._id %>">
+                                            <a class="custom-link-style" href="/admin/editProduct?id=<%= item._id %>&&type=hnjnh">
                                                 <h6>
                                                     <%= index + 1 %>. <%= item.name %>
                                                 </h6>
                                             </a>
-                                        </li>
                             <% }); %>
                                     <button type="submit" class="btn btn-primary">Save</button>
                                 </form>

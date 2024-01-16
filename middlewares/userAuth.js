@@ -23,10 +23,10 @@ const checkAuthPages = (req, res, next) => {
         res.status(500).send("Internal Server Error");
     }
 };
-
 const requireLogin = async (req, res, next) => {
     try {
         if (req.session.token || req.cookies.token) {
+            // User is logged in
             const token = req.cookies.token;
             const user = await userModels.User.findOne({ token });
             if (!user) {
@@ -41,9 +41,13 @@ const requireLogin = async (req, res, next) => {
                     res.redirect("/login");
                 });
             } else {
+                res.locals.loginRequired = false;
+                res.locals.loginMessage = "You need to be logged in to access this page.";
+
                 next();
             }
         } else {
+            // User is not logged in
             res.locals.loginRequired = true;
             res.locals.loginMessage = "You need to be logged in to access this page.";
             next();
@@ -53,6 +57,7 @@ const requireLogin = async (req, res, next) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
 
 module.exports = {
     OTPStatus,

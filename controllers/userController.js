@@ -170,7 +170,7 @@ const userLogout = async (req, res) => {
         res.status(500).send("Internal Server Error");
       } else {
         res.clearCookie("token");
-        res.redirect("/login");
+        res.redirect("/home");
       }
     });
   } catch (error) {
@@ -184,7 +184,9 @@ const userLogout = async (req, res) => {
 
 const loadHome = async (req, res) => {
   try {
-    const products= await userModels.Product.find()
+    const products = await userModels.Product.aggregate([
+      { $sample: { size: 20 } } 
+    ]);
     res.render("home", { products, valid:req.cookies.token });
     
   } catch (error) {
@@ -193,18 +195,30 @@ const loadHome = async (req, res) => {
   }
 };
 
+const loadProducts =  async (req,res)=>{
+  try {
+    const products = await userModels.Product.aggregate([
+      { $sample: { size: 20 } } // Adjust the size based on the number of random products you want
+    ]);    res.render("product", { products, valid:req.cookies.token});
+    
+  } catch (error) {
+    console.error("Error in loadHome:", error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
 const laodProductDetials = async (req, res) => {
   try {
     const id = req.query.id;
 
     const product = await userModels.Product
-      .findById(id)
-      .populate({
-        path: 'categoryid',
-        model: 'Category',
-        select: 'name description img'
-      });
-    
+    .findById(id)
+    .populate({
+       path: 'categoryid',
+       model: 'Category',
+       select: 'name description img'
+    });
+ 
     if (product && product.categoryid) {
       const categoryId = product.categoryid._id;
     
@@ -220,16 +234,6 @@ const laodProductDetials = async (req, res) => {
   }
 };
 
-const loadProducts =  async (req,res)=>{
-  try {
-    const products= await userModels.Product.find()
-    res.render("product", { products, valid:req.cookies.token});
-    
-  } catch (error) {
-    console.error("Error in loadHome:", error);
-    res.status(500).send("Internal Server Error");
-  }
-}
 
 const loadAbout = async(req,res)=>{
   try {
