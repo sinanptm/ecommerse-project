@@ -13,32 +13,20 @@ const loadRegister = async (req, res) => {
   }
 };
 
-const checkUsers = async () => {
-  try {
-    const result = await userModels.User.deleteMany({ is_verified: false });
-
-    console.log(`${result.deletedCount} users deleted`);
-  } catch (error) {
-    console.error(error.message);
-  }
-};
-
-
 // * user registration validation
 
 const checkRegister = async (req, res) => {
   try {
-    await checkUsers()
     const { email, password, username, number, name, gender } = await req.body;
     const secPass = await securePassword(password);
 
     const newUser = new userModels.User({
       name: name,
-      password: secPass.trim(),
-      phone: number.trim(),
-      email: email.trim(),
-      gender: gender.trim(),
-      username: username.trim(),
+      password: secPass,
+      phone: number,
+      email: email,
+      gender: gender,
+      username: username,
       createdate: Date.now(),
     });
     const savedUser = await newUser.save();
@@ -68,7 +56,6 @@ const loadOTP = async (req, res) => {
       duration: 2
     });
 
-
     req.session.pmail = email;
     res.redirect("/OTP");
   } catch (error) {
@@ -80,7 +67,6 @@ const loadOTP = async (req, res) => {
 
 const newOTP = async (req, res) => {
   res.render("otp", { email: req.session.pmail });
-  delete req.session.pmail
 };
 
 // * for hashing datas using bcrypt
@@ -97,60 +83,48 @@ const securePassword = async (pass) => {
 // * OTP validation 
 
 const verifyOTP = async (req, res) => {
+  let { email, otp } = req.body;
   try {
-    let { email, otp } = req.body;
-
     if (!email || !otp) {
+      delete req.session.OTPId;
       res.render("otp", { msg: `Provide values for email ${email} `, email: req.session.pmail, valid: req.cookies.token });
-      return;
+      return
     }
-    console.log(email, otp);
 
-    // Check if email is defined before calling trim
-    email = email.trim();
-
-    const matchedRecord = await otpModel.OTP.findOne({ email });
-
+    const matchedRecord = await otpModel.OTP.findOne({ email: email });
     if (!matchedRecord) {
       delete req.session.OTPId;
       res.render("otp", { msg: "No OTP found for the provided email.", email: req.session.pmail, valid: req.cookies.token });
-      return;
+      return
     }
 
     if (matchedRecord.expiresAt < Date.now()) {
       await otpModel.OTP.deleteOne({ email });
       res.render("otp", { msg: "OTP code has expired. Request a new one.", email: req.session.pmail, valid: req.cookies.token });
-      return;
+      return
     }
 
-    await otpModel.OTP.deleteOne({ email });
+
+    await otpModel.OTP.deleteOne({ email: email });
     delete req.session.OTPId;
+    const veriy = await userModels.User.updateOne({ email }, { $set: { is_verified: true } })
 
-    const veriy = await userModels.User.updateOne({ email }, { $set: { is_verified: true } });
+    const token = await securePassword(veriy._id.toString());
 
-    if (veriy) {
-      const token = await securePassword(veriy._id);
-      console.log(veriy    , token);
+    req.session.token = token;
+    res.cookie("token", token.toString(), {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
 
-      req.session.token = token;
-      res.cookie("token", token.toString(), {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
-
-      const user = await userModels.User.updateOne(
-        { email },
-        { $set: { token: token } },
-        { upsert: true }
-      );
-
-      res.redirect("/home");
-    } else {
-      // Handle the case when veriy is undefined
-      res.render("otp", { msg: "Verification failed.", email: req.session.pmail, valid: req.cookies.token });
-    }
+    const user = await userModels.User.updateOne(
+      { email },
+      { $set: { token: token } },
+      { upsert: true }
+    );
+    res.redirect("/home")
   } catch (error) {
     delete req.session.OTPId;
-    console.error(error.message);
+    console.log(error.message);
     res.status(404).json(error.message);
   }
 };
