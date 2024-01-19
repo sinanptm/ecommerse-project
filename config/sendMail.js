@@ -78,7 +78,7 @@ const sendOTPs = async ({ email, subject = "TRENDS OTP verification", message = 
     await sendMail(mailOption);
 
     const hashOTP = await hasssss(otp.trim());
-    const expirationTime = Date.now() + duration * 60 * 1000;
+    const expirationTime = new Date(new Date().getTime() + duration * 60 * 1000);
     const newOTP = await new OTP({
       email,
       otp: hashOTP,
@@ -93,4 +93,46 @@ const sendOTPs = async ({ email, subject = "TRENDS OTP verification", message = 
   }
 };
 
-module.exports = { sendOTPs, deleteExpiredOTPs };
+
+const sendNewPass = async ({ email, subject = "TRENDS Forget Password", message = "Thank you for connecting with us", duration = 1 }) => {
+  try {
+    if (!email && subject && message) {
+      throw Error("Provide values for email, message, and password");
+    }
+
+    // Delete expired OTPs before sending a new one
+    await deleteExpiredOTPs();
+
+    const otp = await generateOTP();
+    const mailOption = {
+      from: mail,
+      to: email,
+      subject,
+      html: `
+        <p>${message}</p>
+        <p>To TeResert Your Passeord : <span style="color: tomato; font-size: 25px; letter-spacing: 2px;"><a href="http://127.0.0.1:3333/resetpassword?otp=${otp}&&email=${email}">Click me<a></span></p>
+        <p>This link expires in <b>${duration} minute(s)</b>.</p>
+      `,
+    };
+
+    await sendMail(mailOption);
+
+    const durationInMinutes = 5; // Set the desired number of minutes
+    const expirationTime = new Date(new Date().getTime() + durationInMinutes * 60 * 1000);
+
+    
+    const newOTP = await new OTP({
+      email,
+      otp: otp.trim(),
+      createdAt: Date.now(),
+      expiresAt: expirationTime,
+    });
+
+    const OTPrecord = await newOTP.save();
+    return OTPrecord;
+  } catch (err) {
+    throw err;
+  }
+};
+
+module.exports = { sendOTPs, deleteExpiredOTPs, sendNewPass };

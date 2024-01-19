@@ -1,11 +1,11 @@
 const adminModel = require("../models/userModels");
-const { sendOTPs } = require("../config/sendOTP");
+const { sendOTPs } = require("../config/sendMail");
 const otpModel = require("../models/otpModel");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const { secret } = require("../config/lock");
 
-// ! Admin Login
+//  * Admin Login page 
 const loadLogin = async (req, res) => {
   try {
     res.render("login");
@@ -14,6 +14,8 @@ const loadLogin = async (req, res) => {
   }
 };
 
+
+//  * Admin Login 
 const checkLogin = async (req, res) => {
   try {
     const { email, password, duration, message, subject } = req.body;
@@ -33,10 +35,12 @@ const checkLogin = async (req, res) => {
   }
 };
 
+//  * otp page loading 
 const newOTP = async (req, res) => {
   res.render("verficationOTP", { email: req.session.pmail });
 };
 
+//  * OTP sending
 const loadOTP = async (req, res) => {
   try {
     const { email, message, duration, subject } = req.query;
@@ -53,6 +57,7 @@ const loadOTP = async (req, res) => {
   }
 };
 
+//  * Bcrypt hashing function
 const securePassword = async (pass) => {
   try {
     return await bcrypt.hash(pass, 10);
@@ -60,20 +65,28 @@ const securePassword = async (pass) => {
     console.log(error.message);
   }
 };
-
+//  * OTP verification
 const verifyOTP = async (req, res) => {
 
   let { email, otp } = req.body;
   try {
     if (!email || !otp) {
       delete req.session.OTPId;
-      throw Error(`Provide values for email ${email} and OTP ${otp}`);
+      res.render("verficationOTP", {
+        msg:`Provide values for email ${email} a}`,
+        email
+      });
+      return
     }
 
     const matchedRecord = await otpModel.OTP.findOne({ email: email });
     if (!matchedRecord) {
       delete req.session.OTPId;
-      throw Error("No OTP found for the provided email");
+      res.render("verficationOTP", {
+        msg:"No OTP found for the provided email",
+        email
+      });
+      return
     }
 
     if (matchedRecord.expiresAt < Date.now()) {
@@ -82,7 +95,11 @@ const verifyOTP = async (req, res) => {
       res.render("verficationOTP", {
         msg: "OTP code has expired. Request a new one.",
       });
-      throw Error("OTP code has expired. Request a new one");
+      res.render("verficationOTP", {
+        msg:"OTP code has expired. Request a new one",
+        email
+      });
+      return
     }
 
     if (await bcrypt.compare(otp, matchedRecord.otp)) {
@@ -104,13 +121,16 @@ const verifyOTP = async (req, res) => {
       });
     }
   } catch (error) {
+    let { email, otp } = req.body;
+
+
     delete req.session.OTPId;
     console.log(error.message);
     res.status(404).json(error.message);
   }
 };
 
-//! dashboard--user_managment
+//  * dashboard--user_managment
 
 const loadUser = async (req, res) => {
   try {
@@ -123,7 +143,7 @@ const loadUser = async (req, res) => {
   }
 };
 
-// ! User Blocking
+//  * User Blocking
 const userBlock = async (req, res) => {
   try {
     const id = req.params.id;
@@ -142,7 +162,7 @@ const userBlock = async (req, res) => {
 
   }
 };
-// ! User unblocking
+//  * User unblocking
 const userUnblock = async (req, res) => {
   try {
     const id = req.params.id;
@@ -160,7 +180,7 @@ const userUnblock = async (req, res) => {
   }
 };
 
-// ! User Adding
+//  * User Adding
 const addUser = async (req, res) => {
   try {
     const { email, password, username, number, name, gender } = await req.body;
@@ -192,6 +212,8 @@ const addUser = async (req, res) => {
   }
 };
 
+
+//  * Aadmin logout 
 const logout = async (req, res) => {
   try {
     req.session.destroy((err) => {

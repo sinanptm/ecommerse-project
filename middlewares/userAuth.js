@@ -4,16 +4,26 @@ const OTPStatus = async (req, res, next) => {
     if (req.session.OTPId) {
         next();
     } else {
-        res.redirect("/login");
+        res.redirect("/register");
     }
 };
 
-const checkAuthPages = (req, res, next) => {
+const checkAuthPages = async (req, res, next) => {
     try {
         if (!req.session.token && !req.cookies.token) {
             next();
         } else {
-            res.redirect("/home");
+            const token = req.cookies.token;
+            const user = await userModels.User.findOne({ token });
+            if (user.status === "Blocked") {
+                req.session.destroy((err) => {
+                    if (err) {
+                        console.error("Error destroying session:", err);
+                    }
+                    res.clearCookie("token");
+                    res.redirect("/home");
+                });
+            }
         }
     } catch (err) {
         console.error(
@@ -23,6 +33,7 @@ const checkAuthPages = (req, res, next) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
 const requireLogin = async (req, res, next) => {
     try {
         if (req.session.token || req.cookies.token) {

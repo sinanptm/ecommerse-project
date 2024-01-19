@@ -4,7 +4,7 @@ const sharp = require("sharp")
 const path = require("path");
 const { log } = require("util");
 
-// ! dashboard loeding
+//  * dashboard loeding
 
 const loadDashBoard = async (req, res) => {
   try {
@@ -14,7 +14,8 @@ const loadDashBoard = async (req, res) => {
   }
 };
 
-// todo: product management
+
+//  * product management
 const loadProducts = async (req, res) => {
   try {
     const msg = req.query.msg
@@ -52,7 +53,7 @@ const loadProducts = async (req, res) => {
   }
 };
 
-// ! add products
+//  * add products
 const loadAddProduct = async (req, res) => {
   try {
     const msg = req.query.msg;
@@ -64,6 +65,7 @@ const loadAddProduct = async (req, res) => {
   }
 };
 
+// * to add now product
 
 const addProduct = async (req, res) => {
   try {
@@ -72,14 +74,14 @@ const addProduct = async (req, res) => {
 
     const promises = images.map(async (image) => {
       const originalImagePath = path.join(__dirname, '../public/product_images', image);
-      const resizedPath = path.join(__dirname, '../public/resized_images',  image);
+      const resizedPath = path.join(__dirname, '../public/resized_images', image);
       await sharp(originalImagePath)
         .resize({ height: 1486, width: 1200, fit: 'fill' })
         .toFile(resizedPath);
-        return image
+      return image
     });
 
-   const img = await Promise.all(promises);
+    const img = await Promise.all(promises);
 
     const product = new adminModel.Product({
       name,
@@ -108,17 +110,53 @@ const addProduct = async (req, res) => {
     }
   }
 };
+// * to edit a product
 
-// ! edit products
+const loadEditProduct = async (req, res) => {
+  try {
+    const id = req.query.id;
+    const type = req.query.type
+    if (!id) {
+      console.log("Redirecting to /admin/products");
+      res.redirect("/admin/products");
+      return;
+    }
+
+    const product = await adminModel.Product
+      .findById(id)
+      .populate({
+        path: 'categoryid',
+        model: 'Category',
+        select: 'name description' // Adjust the fields as needed
+      });
+
+    if (!product) {
+      console.error("Product not found");
+      res.status(404).send("Product not found");
+      return;
+    }
+
+    const categories = await adminModel.Category.find();
+    res.render("editt-product", { product, categories, type });
+  } catch (err) {
+    console.error("Error in loadEditProduct:", err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+//  * edit products
 
 const editProduct = async (req, res) => {
   try {
     const id = req.params.id;
-    
+
     const { name, price, quantity, status, categoryid, discount } = req.body;
+
     const images = req.files.map(file => file.filename);
 
     const existingProduct = await adminModel.Product.findById(id);
+    
+
 
     const check = async (image) => {
       if (image) {
@@ -153,72 +191,78 @@ const editProduct = async (req, res) => {
       categoryid,
       discount,
     });
-    
+
     if (categoryid !== existingProduct.categoryid.toString()) {
       const oldCategory = await adminModel.Category.findByIdAndUpdate(
         existingProduct.categoryid,
         { $pull: { items: existingProduct._id } }
       );
-          const newCategory = await adminModel.Category.findByIdAndUpdate(
+      const newCategory = await adminModel.Category.findByIdAndUpdate(
         categoryid,
         { $addToSet: { items: existingProduct._id } }
       );
-          if (req.query.type) {
-            res.redirect("/admin/catogories");
-          }else{
-            res.redirect("/admin/products?msg=Product updated successfully");
-          }
       
+      if (req.query.type) {
+        res.redirect("/admin/catogories");
+      } else {
+        res.redirect("/admin/products?msg=Product updated successfully");
+      }
+
     } else {
       if (req.query.type) {
         res.redirect("/admin/catogories");
-      }else{
+      } else {
         res.redirect("/admin/products?msg=Product updated successfully");
       }
     }
-    
-    
+
+
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send(err);
   }
 };
 
-
-
-const loadEditProduct = async (req, res) => {
+// * for listing  the product
+const listProduct = async (req, res) => {
   try {
-    const id = req.query.id;
-
+    const id = req.query.id
     if (!id) {
       console.log("Redirecting to /admin/products");
       res.redirect("/admin/products");
       return;
     }
+    const product = await adminModel.Product.findOneAndUpdate({_id:id},{$set:{status:"Available"}})
+    res.redirect("/admin/products")
+  } catch (error) {
+    res.status(404).send(error.message)
+  }
+}
 
-    const product = await adminModel.Product
-      .findById(id)
-      .populate({
-        path: 'categoryid',
-        model: 'Category',
-        select: 'name description' // Adjust the fields as needed
-      });
-
-    if (!product) {
-      console.error("Product not found");
-      res.status(404).send("Product not found");
+// * for listing  the product
+const unlistProduct = async (req, res) => {
+  try {
+    const id = req.query.id
+    if (!id) {
+      console.log("Redirecting to /admin/products");
+      res.redirect("/admin/products");
       return;
     }
+    const product = await adminModel.Product.findOneAndUpdate({_id:id},{$set:{status:"Disabled"}})
+    res.redirect("/admin/products")
 
-    const categories = await adminModel.Category.find();
-    res.render("editt-product", { product, categories });
-  } catch (err) {
-    console.error("Error in loadEditProduct:", err);
-    res.status(500).send("Internal Server Error");
+  } catch (error) {
+    res.status(404).send(error.message)
   }
-};
+}
+
+
+
+// * to delete a product
+
 const deleteProduct = async (req, res) => {
   try {
+    console.log(1);
     const id = req.params.id;
 
     const existingProduct = await adminModel.Product.findById(id);
@@ -236,7 +280,7 @@ const deleteProduct = async (req, res) => {
 };
 
 
-
+// * for showiing all the catogories
 
 const laodCatagorie = async (req, res) => {
   try {
@@ -248,10 +292,12 @@ const laodCatagorie = async (req, res) => {
   }
 };
 
+// * for adding new catogorie
+
 const addCatagorie = async (req, res) => {
   try {
     const { name, description } = req.body;
-    
+
     const processImage = async (filename) => {
       if (filename) {
         const originalImagePath = path.join(__dirname, '../public/product_images', filename);
@@ -282,7 +328,7 @@ const addCatagorie = async (req, res) => {
   }
 };
 
-
+// * for editting the catogory
 const editCatogory = async (req, res) => {
   try {
     const { name, description } = req.body;
@@ -316,6 +362,7 @@ const editCatogory = async (req, res) => {
     res.redirect("/admin/catogories");
   }
 };
+// * Delte catogotie
 
 const deleteCatogory = async (req, res) => {
   try {
@@ -339,5 +386,7 @@ module.exports = {
   deleteCatogory,
   editProduct,
   deleteProduct,
-  loadEditProduct
+  loadEditProduct,
+  listProduct,
+  unlistProduct
 };

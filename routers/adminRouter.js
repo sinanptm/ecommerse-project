@@ -31,7 +31,7 @@ adminRoute.use(nocache());
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname,"../public/product_images"));
+    cb(null, path.join(__dirname, "../public/product_images"));
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -54,8 +54,8 @@ adminRoute.post("/verifyAdmin", adminController.verifyOTP);
 // ! user Managment 
 adminRoute.get("/users", redirectLogin, adminController.loadUser)
 
-adminRoute.get('/userblock/:id', redirectLogin,  adminController.userBlock);
-adminRoute.get('/userUnblock/:id', redirectLogin,  adminController.userUnblock);
+adminRoute.get('/userblock/:id', redirectLogin, adminController.userBlock);
+adminRoute.get('/userUnblock/:id', redirectLogin, adminController.userUnblock);
 
 adminRoute.post("/addUser", redirectLogin, adminController.addUser)
 
@@ -69,17 +69,21 @@ adminRoute.get("/productDetials", redirectLogin, productController.loadProducts)
 adminRoute.get("/products", redirectLogin, productController.loadProducts);
 
 adminRoute.get("/addProduct", redirectLogin, productController.loadAddProduct)
-adminRoute.post('/addProduct',  redirectLogin, upload.array('image', 3), productController.addProduct);
+adminRoute.post('/addProduct', redirectLogin, upload.array('image', 3), productController.addProduct);
 
-adminRoute.post('/editProduct/:id', redirectLogin,upload.array('image', 3), productController.editProduct)
-adminRoute.get("/editProduct",  redirectLogin, productController.loadEditProduct);
+adminRoute.post('/editProduct/:id', redirectLogin, upload.array('image', 3), productController.editProduct)
+adminRoute.get("/editProduct", redirectLogin, productController.loadEditProduct);
 adminRoute.get("/deleteProduct/:id", redirectLogin, productController.deleteProduct)
 
-// ! qatogory managment
+// ! listing||unlisting product
+adminRoute.get("/list", redirectLogin, productController.listProduct)
+adminRoute.get("/unlist", redirectLogin, productController.unlistProduct)
+
+// ! catogory managment
 adminRoute.get("/catogories", redirectLogin, productController.laodCatagorie);
-adminRoute.post("/catogories",  upload.single("file"), redirectLogin, productController.addCatagorie);
+adminRoute.post("/catogories", upload.single("file"), redirectLogin, productController.addCatagorie);
 adminRoute.post("/editCatogories/:id", upload.single("file"), redirectLogin, productController.editCatogory);
 adminRoute.get("/deleteCatogory/:id", redirectLogin, productController.deleteCatogory)
 
-module.exports =  adminRoute ;
+module.exports = adminRoute;
 

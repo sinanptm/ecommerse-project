@@ -36,7 +36,7 @@
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
             <a href="/admin/" class="brand-wrap">
-                <img src="imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
+                <h3 class="logo" alt="Evara Dashboard">TRENDS</h1>
             </a>
             <div>
                 <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
@@ -191,8 +191,7 @@
             </div>
         </header>
         <section class="content-main">
-            <form  action="/admin/editProduct/<%= product._id %>?type=fd" method="post"
-                enctype="multipart/form-data">
+            <form action="/admin/editProduct/<%= product._id %><% if (type) { %>?type=dsfs<% } %>" method="post" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-6">
                         <div class="content-header">
@@ -285,22 +284,20 @@
                                         <h6>New Category</h6>
                                     </div>
                                     <div class="col-md-9">
-                                        <div class="mb-4">
-                                            <label class="form-label">Old Category:</label>
-                                            <strong style="font-weight: 900;">
-                                                <%= product.categoryid ? product.categoryid.name : 'No category available' %>
-                                            </strong>
-                                        
+                                        <div class="mb-4">                                          
+                                          <select class="form-select" name="categoryid">
+                                            <option value="<%= product.categoryid._id || '' %>" <% if (!product.categoryid._id) { %>selected<% } %>>
+                                              <%= product.categoryid._id ? product.categoryid.name : 'No category available' %>
+                                            </option>
                                             <% categories.forEach(category => { %>
-                                                <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                    <input value="<%= category._id %>" class="form-check-input" name="categoryid" type="radio">
-                                                    <span class="form-check-label">
-                                                        <%= category.name %>
-                                                    </span>
-                                                </label>
+                                              <option value="<%= category._id %>" <% if (category._id.toString() === String(product.categoryid._id)) { %>selected<% } %>>
+                                                <%= category.name %>
+                                              </option>
                                             <% }); %>
-                                            
+                                          </select>                                          
                                         </div>
+                                      </div>
+                                      
                                         
 
                                     </div> <!-- col.// -->

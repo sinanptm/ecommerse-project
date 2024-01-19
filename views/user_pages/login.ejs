@@ -160,7 +160,11 @@
 		</div>
 	</header>
 
-
+	<% if (toast!==undefined&&toast!==null) { %>
+        <script>
+            toastr.error('<%= toast %> ');
+        </script>
+    <% } %>
 	<!-- Sidebar -->
 	
 	<!-- Cart -->
@@ -262,10 +266,16 @@
                 <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
                     Login
                 </button>
-                <small class="mtext-105 cl2 txt-center p-t-10"><small
-                        class="stext-111 cl2 plh3 size-116 p-l-62 ">Don't have an account?</small>
-                    <a href="/register" class="cpointer" style="font-size: 14px;">Sign Up</a>
-                </small>
+				<small class="mtext-105 cl2 txt-center p-t-10">
+					<small class="stext-111 cl2 plh3 size-116" style="margin-left: 3px;font-size:10px;margin-right: 0px;">Don't have an account?</small>
+					<a href="/register" class="cpointer" style="font-size: 12px;">Sign Up</a>
+				</small> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+				<small class="mtext-105 cl2 txt-center p-t-10">
+					<small class="stext-111 cl2 plh3 size-116" style="margin-left: 3px;font-size:10px;margin-right: 0px;">Forgot Your Password?</small>
+					<a href="/sendreset" class="cpointer" style="font-size: 12px;">Reset</a>
+				</small>
+				
+				
             </form>
         </div>
     </section>

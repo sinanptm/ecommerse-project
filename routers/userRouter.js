@@ -1,6 +1,7 @@
 const express = require("express");
 const userRoute = express();
-const userController = require("../controllers/userController");
+const authController = require("../controllers/userController");
+const pageController = require("../controllers/userPageController")
 const nocache = require("nocache");
 const path = require("path");
 const session = require("express-session");
@@ -12,11 +13,13 @@ const {
   checkAuthPages
 } = require("../middlewares/userAuth");
 
-userRoute.use(nocache());
-userRoute.use(cookieParser());
 userRoute.set("view engine", "ejs");
 userRoute.set("views", path.join(__dirname, "../views/user_pages"));
 userRoute.use(express.static(path.join(__dirname, "../public")));
+userRoute.use(nocache());
+userRoute.use(cookieParser());
+userRoute.use(express.json());
+userRoute.use(express.urlencoded({ extended: true }));
 userRoute.locals.title = "TRENDS";
 userRoute.use(
   session({
@@ -26,32 +29,55 @@ userRoute.use(
   })
 );
 
-userRoute.use(express.json());
-userRoute.use(express.urlencoded({ extended: true }));
+// ! Authentication Routes
+userRoute.get('/clear-sessions', (req, res) => {
+  // Clear all cookies
+  const cookies = Object.keys(req.cookies);
+  cookies.forEach(cookieName => {
+    res.clearCookie(cookieName);
+  });
 
-userRoute.get("/", checkAuthPages, userController.loadLogin);
-userRoute.get("/login", checkAuthPages, userController.loadLogin);
-userRoute.post("/login", userController.checkLogin);
+  // Destroy the session
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      // Redirect to home page or login page after clearing cookies and session
+      res.redirect('/');
+    }
+  });
+});
+userRoute.get("/", pageController.loadHome);
+userRoute.get("/login", checkAuthPages, authController.loadLogin);
+userRoute.post("/login", authController.checkLogin);
 
-userRoute.get("/verifyOTP", checkAuthPages, OTPStatus, userController.loadOTP);
-userRoute.get("/OTP", checkAuthPages, OTPStatus, userController.newOTP);
-userRoute.post("/checkOTP", userController.verifyOTP);
+userRoute.get("/sendreset", authController.loadresetmail)
+userRoute.post("/sendreset", authController.sendresetmail)
 
-userRoute.get("/register", checkAuthPages, userController.loadRegister);
-userRoute.post("/register", userController.checkRegister);
+userRoute.get("/resetpassword", authController.loadnewPassword)
+userRoute.post("/newPassword", authController.checkNewPassword)
 
-userRoute.get("/home", userController.loadHome);
-userRoute.get("/products", userController.loadProducts);
-userRoute.get("/product", userController.laodProductDetials);
+userRoute.get("/verifyOTP", checkAuthPages, OTPStatus, authController.loadOTP);
+userRoute.get("/OTP", checkAuthPages, OTPStatus, authController.newOTP);
+userRoute.post("/checkOTP", authController.verifyOTP);
 
+userRoute.get("/register", checkAuthPages, authController.loadRegister);
+userRoute.post("/register", authController.checkRegister);
 
-userRoute.get("/about", userController.loadAbout);
+// ! Page Routes
 
-userRoute.get("/cart", requireLogin, userController.loadCart);
-userRoute.get("/blog", userController.loadBlog);
-userRoute.get("/contact", userController.loadContact);
-userRoute.get("/whishlist", userController.loadCart);
+userRoute.get("/home", pageController.loadHome);
+userRoute.get("/products", pageController.loadProducts);
+userRoute.get("/product", pageController.laodProductDetials);
 
-userRoute.get("/logout", userController.userLogout);
+userRoute.get("/about", pageController.loadAbout);
+
+userRoute.get("/cart", requireLogin, pageController.loadCart);
+userRoute.get("/blog", pageController.loadBlog);
+userRoute.get("/contact", pageController.loadContact);
+userRoute.get("/whishlist", pageController.loadCart);
+
+userRoute.get("/logout", authController.userLogout);
 
 module.exports = userRoute;

@@ -581,7 +581,7 @@
 		
 
 	<!-- Footer -->
-	<footer class="bg3 p-t-75 p-b-32">
+	<footer id="result" class="bg3 p-t-75 p-b-32">
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-6 col-lg-3 p-b-50">
@@ -886,6 +886,21 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			</div>
 		</div>
 	</div>
+
+	<!-- <script>
+        const xhr = new XMLHttpRequest ();
+        xhr.open("get"," http://127.0.0.1:3333/");
+        xhr.send();
+        xhr.onreadystatechange = ()=>{
+            if(xhr.readyState==4 && xhr.status==200){
+                alert("done")
+				var res = JSON.parse(xhr.responseText)
+
+            }else{  
+				alert(Error)
+			}
+        }
+    </script> -->
 
 <!--===============================================================================================-->	
 	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
