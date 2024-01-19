@@ -242,41 +242,72 @@
     <section class="section-slide d-flex justify-content-center align-items-center">
         <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg">
             <!-- Login Form -->
-            <form class="login-form" method="post" action="/login">
-                <h4 class="mtext-105 cl2 txt-center p-b-30">
-                    Login
-                </h4>
-                <% if (typeof msg !== 'undefined') { %>
-                <p style="color:#ff0000;"><%= msg %></p>
-                <% } %>
-                <small class="form-text text-left" style="color: red; display: none;" id="error"></small>
-                <div class="bor8 m-b-20 how-pos4-parent">
-                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" id="email" name="email"
-                        placeholder="Email Address">
-                    <img class="how-pos4 pointer-none" src="images/icons/icon-email.png" alt="Email Icon"
-                        style="width: 20px; height: 20px;">
-                </div>
-                <small class="form-text text-left" style="color: red; display: none;" id="errorpass"></small>
-                <div class="bor8 m-b-30 how-pos4-parent">
-                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" id="password" type="password"
-                        name="password" placeholder="Password">
-                    <img class="how-pos4 pointer-none" src="images/icons/padlock.png" alt="Password Icon"
-                        style="width: 20px; height: 20px;">
-                </div>
-                <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
-                    Login
-                </button>
+			<form class="login-form" method="post" action="/login" onsubmit="return validateForm()">
+				<h4 class="mtext-105 cl2 txt-center p-b-30">
+					Login
+				</h4>
+				<% if (typeof msg !== 'undefined') { %>
+				<p style="color:#ff0000;"><%= msg %></p>
+				<% } %>
+				<small class="form-text text-left" style="color: red; display: none;" id="error"></small>
+				<div class="bor8 m-b-20 how-pos4-parent">
+					<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" id="email" name="email"
+						placeholder="Email Address" required>
+					<img class="how-pos4 pointer-none" src="images/icons/icon-email.png" alt="Email Icon"
+						style="width: 20px; height: 20px;">
+				</div>
+				<small class="form-text text-left" style="color: red; display: none;" id="errorpass"></small>
+				<div class="bor8 m-b-30 how-pos4-parent">
+					<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" id="password" type="password"
+						name="password" placeholder="Password" required>
+					<img class="how-pos4 pointer-none" src="images/icons/padlock.png" alt="Password Icon"
+						style="width: 20px; height: 20px;">
+				</div>
+				<button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer" type="submit">
+					Login
+				</button>
 				<small class="mtext-105 cl2 txt-center p-t-10">
 					<small class="stext-111 cl2 plh3 size-116" style="margin-left: 3px;font-size:10px;margin-right: 0px;">Don't have an account?</small>
 					<a href="/register" class="cpointer" style="font-size: 12px;">Sign Up</a>
-				</small> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+				</small> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 				<small class="mtext-105 cl2 txt-center p-t-10">
 					<small class="stext-111 cl2 plh3 size-116" style="margin-left: 3px;font-size:10px;margin-right: 0px;">Forgot Your Password?</small>
 					<a href="/sendreset" class="cpointer" style="font-size: 12px;">Reset</a>
 				</small>
-				
-				
-            </form>
+			</form>
+			
+			<script>
+				function validateForm() {
+					var email = document.getElementById('email').value;
+					var password = document.getElementById('password').value;
+			
+					// Check for spaces in email
+					if (/\s/.test(email)) {
+						document.getElementById('error').innerHTML = 'Email should not contain spaces.';
+						document.getElementById('error').style.display = 'block';
+						return false;
+					}
+			
+					// Check for valid email format
+					var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+					if (!emailRegex.test(email)) {
+						document.getElementById('error').innerHTML = 'Invalid email format.';
+						document.getElementById('error').style.display = 'block';
+						return false;
+					}
+			
+					// Check for minimum password length
+					if (password.length < 4) {
+						document.getElementById('errorpass').innerHTML = 'Password should be at least 4 characters long.';
+						document.getElementById('errorpass').style.display = 'block';
+						return false;
+					}
+			
+					// If all validations pass, allow form submission
+					return true;
+				}
+			</script>
+			
         </div>
     </section>
 <br><br><br><br><br><br><br><br>
@@ -551,56 +582,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		});
 	</script>
 	<script src="js/main.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-         const emailInput = document.querySelector('input[id="email"]');
-         const errorParagraphEmail = document.getElementById('error');
-         const passwordInput = document.querySelector('input[id="password"]');
-         const errorParagraphPassword = document.getElementById('errorpass');
-     
-         // Email input validation
-         emailInput.addEventListener("input", function (event) {
-             const enteredEmail = event.target.value;
-     
-             if (!isValidEmail(enteredEmail)) {
-                 errorParagraphEmail.textContent = "Invalid email address format";
-                 errorParagraphEmail.style.display = "block";
-                 emailInput.style.border = "1px solid red";
-             } else {
-                 errorParagraphEmail.textContent = "";
-                 errorParagraphEmail.style.display = "none";
-                 emailInput.style.border = "";
-             }
-         });
-     
-         // Password input validation
-         passwordInput.addEventListener("input", function (event) {
-             const enteredPassword = event.target.value;
-     
-             if (!isValidPassword(enteredPassword)) {
-                 errorParagraphPassword.textContent =
-                     "Password must be at least 4 characters";
-                 errorParagraphPassword.style.display = "block";
-                 passwordInput.style.border = "1px solid red";
-             } else {
-                 errorParagraphPassword.textContent = "";
-                 errorParagraphPassword.style.display = "none";
-                 passwordInput.style.border = "";
-             }
-         });
-     
-         // Function to validate email format
-         function isValidEmail(email) {
-             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-             return emailRegex.test(email) && email.trim() !== ''; // Add space validation here
-         }
-     
-         // Function to validate password (replace with your logic)
-         function isValidPassword(password) {
-             return password.length >= 4 && password.trim() !== ''; // Add space validation here
-         }
-     });
-     
-     </script>
+
+	
 </body>
 </html>

@@ -13,10 +13,23 @@ const loadRegister = async (req, res) => {
   }
 };
 
+
+const checkUsers = async () => {
+  try {
+    const result = await userModels.User.deleteMany({ is_verified: false });
+    console.log(`${result.deletedCount} users deleted`);
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+
+
 // * user registration validation
 
 const checkRegister = async (req, res) => {
   try {
+    await checkUsers()
     const { email, password, username, number, name, gender } = await req.body;
     const secPass = await securePassword(password);
 
@@ -83,51 +96,60 @@ const securePassword = async (pass) => {
 // * OTP validation 
 
 const verifyOTP = async (req, res) => {
-  let { email, otp } = req.body;
   try {
+    let { email, otp } = req.body;
+
+    // Check if email and otp are provided
     if (!email || !otp) {
       delete req.session.OTPId;
-      res.render("otp", { msg: `Provide values for email ${email} `, email: req.session.pmail, valid: req.cookies.token });
-      return
+      return res.render("otp", { msg: `Provide values for email ${email}`, email: req.session.pmail, valid: req.cookies.token });
     }
 
     const matchedRecord = await otpModel.OTP.findOne({ email: email });
+
     if (!matchedRecord) {
       delete req.session.OTPId;
-      res.render("otp", { msg: "No OTP found for the provided email.", email: req.session.pmail, valid: req.cookies.token });
-      return
+      return res.render("otp", { msg: "No OTP found for the provided email.", email: req.session.pmail, valid: req.cookies.token });
     }
 
     if (matchedRecord.expiresAt < Date.now()) {
       await otpModel.OTP.deleteOne({ email });
-      res.render("otp", { msg: "OTP code has expired. Request a new one.", email: req.session.pmail, valid: req.cookies.token });
-      return
+      return res.render("otp", { msg: "OTP code has expired. Request a new one.", email: req.session.pmail, valid: req.cookies.token });
     }
 
+    if (bcrypt.compareSync(otp, matchedRecord.otp)) {
+      // Correct OTP
 
-    await otpModel.OTP.deleteOne({ email: email });
-    delete req.session.OTPId;
-    const veriy = await userModels.User.updateOne({ email }, { $set: { is_verified: true } })
+      await otpModel.OTP.deleteOne({ email: email });
+      const veriy = await userModels.User.updateOne({ email }, { $set: { is_verified: true } });
 
-    const token = await securePassword(veriy._id.toString());
+      const token = await securePassword(veriy._id);
 
-    req.session.token = token;
-    res.cookie("token", token.toString(), {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-    });
+      req.session.token = token;
+      res.cookie("token", token, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
 
-    const user = await userModels.User.updateOne(
-      { email },
-      { $set: { token: token } },
-      { upsert: true }
-    );
-    res.redirect("/home")
+      await userModels.User.updateOne(
+        { email },
+        { $set: { token: token } },
+        { upsert: true }
+      );
+
+      delete req.session.OTPId;
+      return res.redirect("/home");
+    } else {
+      // Incorrect OTP
+      return res.render("otp", { msg: "OTP Is Incorrect", email: req.session.pmail, valid: req.cookies.token });
+    }
+
   } catch (error) {
     delete req.session.OTPId;
     console.log(error.message);
-    res.status(404).json(error.message);
+    return res.status(501).send(error.message);
   }
 };
+
 
 
 
@@ -151,7 +173,7 @@ const checkLogin = async (req, res) => {
       { email: email.trim() }
     );
     if (!user) {
-      jres.redirect(`/login?toast=Your not a redistered User Please register`);
+      res.redirect(`/login?toast=Your not a redistered User Please register`);
       return
     }
     if (user.is_verified == false) {

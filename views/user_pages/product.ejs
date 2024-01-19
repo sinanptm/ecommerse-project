@@ -306,7 +306,7 @@
 						Men
 					</button>
 
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".children">
 						Children
 					</button>
 
@@ -530,7 +530,7 @@
 
 			<div class="row isotope-grid">
 				<% products.forEach(function(product) { %>
-					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%= product.categoryid.type %>">
 					  <!-- Block2 -->
 					  <div class="block2">
 						<div class="block2-pic hov-img0">

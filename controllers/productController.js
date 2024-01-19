@@ -296,7 +296,7 @@ const laodCatagorie = async (req, res) => {
 
 const addCatagorie = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, type } = req.body;
 
     const processImage = async (filename) => {
       if (filename) {
@@ -317,6 +317,7 @@ const addCatagorie = async (req, res) => {
       name,
       description,
       img: img,
+      type
     });
 
     const category = await newCategory.save();
@@ -331,7 +332,7 @@ const addCatagorie = async (req, res) => {
 // * for editting the catogory
 const editCatogory = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, type } = req.body;
     const id = req.params.id;
 
     const existingProduct = await adminModel.Category.findById(id);
@@ -345,6 +346,7 @@ const editCatogory = async (req, res) => {
           name,
           description,
           img,
+          type
         },
       }
     );

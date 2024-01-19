@@ -20,10 +20,13 @@ const loadHome = async (req, res) => {
 // * for showing products 
 const loadProducts = async (req, res) => {
     try {
-        const products = await userModels.Product.aggregate([
-            { $match: { status:"Available" } },
-            { $sample: { size: 2000 } }
-        ]);
+        const products = await userModels.Product.
+        find({ status:"Available" })
+        .populate({
+            path: 'categoryid',
+            model: 'Category',
+            select: 'name description img type'
+        });
         res.render("product", { products, valid: req.cookies.token });
 
     } catch (error) {
