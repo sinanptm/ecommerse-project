@@ -261,10 +261,10 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col">Image</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Image</th>
                             <th scope="col">Price</th>
-                            <!-- <th scope="col">Status</th> -->
+                            <th scope="col">Status</th>
                             <th scope="col">Date</th>
                             <th scope="col">Actions</th>
                         </tr>
@@ -272,14 +272,6 @@
                     <tbody>
                         <% products.forEach(product=> { %>
                             <tr>
-                                <td>
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="/resized_images/<%= product.img[0] %>"
-                                                class="img-sm img-thumbnail product-image" alt="Product Image">
-                                        </div>
-                                    </a>
-                                </td>
                                 <td>
                                     <a class="itemside" href="/admin/editProduct?id=<%= product._id %>">
                                         <div class="info">
@@ -290,9 +282,40 @@
                                     </a>
                                 </td>
                                 <td>
+                                    <a class="itemside" href="#">
+                                        <div class="left">
+                                            <img src="/resized_images/<%= product.img[0] %>"
+                                                class="img-sm img-thumbnail product-image" alt="Product Image">
+                                        </div>
+                                        <style>
+                                            @media (max-width: 767px) {
+                                                .additional-images {
+                                                    display: none;
+                                                }
+                                            }
+                                
+                                            @media (min-width: 768px) and (max-width: 999px) {
+                                                .additional-images {
+                                                    display: none;
+                                                }
+                                            }
+                                        </style>
+                                        <div class="left additional-images">
+                                            <img src="/resized_images/<%= product.img[1] %>"
+                                                class="img-sm img-thumbnail product-image" alt="Product Image">
+                                        </div>
+                                        <div class="left additional-images">
+                                            <img src="/resized_images/<%= product.img[2] %>"
+                                                class="img-sm img-thumbnail product-image" alt="Product Image">
+                                        </div>
+                                    </a>
+                                </td>
+                                
+                                
+                                <td>
                                     <%= product.price %>
                                 </td>
-                                <!-- <td>
+                                <td>
                                     <% if (product.status=="Available") { %>
                                         <span class="badge rounded-pill alert-success">
                                             Listed
@@ -302,7 +325,7 @@
                                             <%= product.status %>
                                         </span>
                                     <% } %>
-                                </td> -->
+                                </td>
                                 <td>
                                     <%= product.createdate.toISOString().split('T')[0] %>
                                 </td>

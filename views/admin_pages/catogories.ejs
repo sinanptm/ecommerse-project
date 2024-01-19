@@ -384,6 +384,15 @@
                                         <label for="file" class="form-label">Image Path</label>
                                         <input type="file" class="form-control" id="file" name="file"  />
                                     </div>
+                                    <section>
+                                        <div class="mb-3">
+                                            <label for="categoryType" class="form-label">Category Type</label>
+                                            <select class="form-control" id="categoryType" name="type">
+                                                <option value="men" <% if (category.type === 'men') { %>selected<% } %>>Men</option>
+                                                <option value="women" <% if (category.type === 'women') { %>selected<% } %>>Women</option>
+                                                <option value="children" <% if (category.type === 'children') { %>selected<% } %>>Children</option>
+                                            </select>
+                                        </div>
                                 
                                     <div class="mb-3">
                                         <label for="description" class="form-label">Description</label>
@@ -456,23 +465,28 @@
                         <form action="/admin/catogories" method="post" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" autocomplete="off"
-                                    required />
+                                <input type="text" class="form-control" id="name" name="name" autocomplete="off" required />
                             </div>
                             <div class="mb-3">
-                                <label for="file" class="form-label">Image</label>
-                                <input type="file" class="form-control" id="email" name="file" autocomplete="off"
-                                    required />
+                                <label for="image" class="form-label">Image</label>
+                                <input type="file" class="form-control" id="image" name="image" autocomplete="off" required />
                             </div>
-
                             <div class="mb-3">
-                                <label for="Discriotion" class="form-label">Discriotion</label>
-                                <input type="text" class="form-control" id="Discriotion" name="description"
-                                    autocomplete="off" required />
+                                <label for="type" class="form-label">Type</label>
+                                <!-- If it's a dropdown, use a select element -->
+                                <select class="form-control" id="type" name="type" required>
+                                    <option value="men">Men</option>
+                                    <option value="women">Women</option>
+                                    <option value="children">Children</option>
+                                </select>
                             </div>
-                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <input type="text" class="form-control" id="description" name="description" autocomplete="off" required />
+                            </div>
                             <button type="submit" class="btn btn-primary">Save</button>
                         </form>
+                        
                     </div>
                 </div>
             </div>

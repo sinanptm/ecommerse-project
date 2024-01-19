@@ -64,6 +64,7 @@ const Product = mongoose.model("Product", productsSchema);
 const categorySchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   description: { type: String, required: true },
+  type: { type:String },
   items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
   img: { type: String },
 });
