@@ -1,9 +1,7 @@
-const adminModel = require("../models/userModels");
+const { User, Admin } = require("../models/userModels");
 const { sendOTPs } = require("../config/sendMail");
-const otpModel = require("../models/otpModel");
-const bcrypt = require("bcrypt");
-const mongoose = require("mongoose");
-const { secret } = require("../config/lock");
+const { OTP } = require("../models/otpModel");
+const { makeHash, bcryptCompare } = require("../util/bcryption")
 
 //  * Admin Login page 
 const loadLogin = async (req, res) => {
@@ -19,9 +17,9 @@ const loadLogin = async (req, res) => {
 const checkLogin = async (req, res) => {
   try {
     const { email, password, duration, message, subject } = req.body;
-    const data = await adminModel.Admin.findOne({ email });
+    const data = await Admin.findOne({ email });
     if (data) {
-      if (await bcrypt.compare(password, data.password)) {
+      if (await bcryptCompare(password, data.password)) {
         req.session.OTPId = data._id.toString();
         res.redirect(`/admin/verifyAdmin?email=${email}`);
       } else {
@@ -57,60 +55,56 @@ const loadOTP = async (req, res) => {
   }
 };
 
-//  * Bcrypt hashing function
-const securePassword = async (pass) => {
-  try {
-    return await bcrypt.hash(pass, 10);
-  } catch (error) {
-    console.log(error.message);
-  }
-};
+
 //  * OTP verification
 const verifyOTP = async (req, res) => {
 
   let { email, otp } = req.body;
+  otp = otp.trim()
   try {
     if (!email || !otp) {
       delete req.session.OTPId;
       res.render("verficationOTP", {
-        msg:`Provide values for email ${email} a}`,
+        msg: `Provide values for email ${email} a}`,
         email
       });
       return
     }
 
-    const matchedRecord = await otpModel.OTP.findOne({ email: email });
+    const matchedRecord = await OTP.findOne({ email: email });
     if (!matchedRecord) {
       delete req.session.OTPId;
       res.render("verficationOTP", {
-        msg:"No OTP found for the provided email",
+        msg: "No OTP found for the provided email",
         email
       });
       return
     }
 
     if (matchedRecord.expiresAt < Date.now()) {
-      await otpModel.OTP.deleteOne({ email });
+      await OTP.deleteOne({ email });
       delete req.session.OTPId;
       res.render("verficationOTP", {
         msg: "OTP code has expired. Request a new one.",
       });
       res.render("verficationOTP", {
-        msg:"OTP code has expired. Request a new one",
+        msg: "OTP code has expired. Request a new one",
         email
       });
       return
     }
 
-    if (await bcrypt.compare(otp, matchedRecord.otp)) {
-      const data = await adminModel.Admin.findOne({ email: email });
-      const token = securePassword(data._id.toString());
+    if (await bcryptCompare(otp, matchedRecord.otp)) {
+      const data = await Admin.findOne({ email: email });
+      const token = await makeHash(data._id.toString());
       req.session.adminToken = token;
-      res.cookie("adminToken", token.toString(), {
+      res.cookie("adminToken", token, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
 
-      await otpModel.OTP.deleteOne({ email: email });
+      await Admin.updateOne({ email }, { $set: { token } });
+
+      await OTP.deleteOne({ email: email });
       delete req.session.OTPId;
 
       res.redirect("/admin/dashboard");
@@ -134,8 +128,8 @@ const verifyOTP = async (req, res) => {
 
 const loadUser = async (req, res) => {
   try {
-    const msg =  req.query.msg 
-    const users = await adminModel.User.find();
+    const msg = req.query.msg
+    const users = await User.find();
     res.render("users-list", { users, msg });
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -147,7 +141,7 @@ const loadUser = async (req, res) => {
 const userBlock = async (req, res) => {
   try {
     const id = req.params.id;
-    const userToBlock = await adminModel.User.updateOne(
+    const userToBlock = await User.updateOne(
       { _id: id },
       { status: "Blocked" }
     );
@@ -158,7 +152,7 @@ const userBlock = async (req, res) => {
     res.redirect("/admin/users");
   } catch (error) {
     console.error("Error blocking user:", error);
-    res.redirect("/admin/users?msg="+error.message);
+    res.redirect("/admin/users?msg=" + error.message);
 
   }
 };
@@ -166,7 +160,7 @@ const userBlock = async (req, res) => {
 const userUnblock = async (req, res) => {
   try {
     const id = req.params.id;
-    const userToUnBlock = await adminModel.User.updateOne(
+    const userToUnBlock = await User.updateOne(
       { _id: id },
       { status: "Active" }
     );
@@ -176,7 +170,7 @@ const userUnblock = async (req, res) => {
     res.status(200).redirect("/admin/users");
   } catch (error) {
     console.error("Error unblocking user:", error);
-    res.redirect("/admin/users?msg="+error.message);
+    res.redirect("/admin/users?msg=" + error.message);
   }
 };
 
@@ -184,9 +178,9 @@ const userUnblock = async (req, res) => {
 const addUser = async (req, res) => {
   try {
     const { email, password, username, number, name, gender } = await req.body;
-    const secPass = await securePassword(password);
+    const secPass = await makeHash(password);
 
-    const newUser = new adminModel.User({
+    const newUser = new User({
       name: name,
       password: secPass,
       phone: number,
@@ -203,7 +197,7 @@ const addUser = async (req, res) => {
     res.redirect("/admin/users");
   } catch (error) {
     if (error.code === 11000) {
-      const users = await adminModel.User.find();
+      const users = await User.find();
       res.render("users-list", { msg: "Email already exists", users });
     } else {
       console.error(error);

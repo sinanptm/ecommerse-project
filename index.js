@@ -1,37 +1,41 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
-
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const nocache = require("nocache");
+const flash = require('express-flash');
+require("dotenv").config();
+const connectMongoDB = require('./config/mongodb')
 const userRoute = require("./routers/userRouter");
 const adminRouter = require("./routers/adminRouter");
 
+connectMongoDB()
 
-// Connect to MongoDB
-mongoose.connect("mongodb://127.0.0.1:27017/Trends_ecommerce_store")
-  .then(() => {
-    console.log('Connected to MongoDB');
+app.use(flash());
+app.use(nocache());
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.set("view engine", "ejs");
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: true,
   })
-  .catch((error) => {
-    console.error('Error connecting to MongoDB:', error.message);
-  });
+);
 
 
-// User routes
-app.use("/", userRoute);
+
 
 // Admin routes
 app.use("/admin", adminRouter);
 
-
-// 404 Not Found middleware
-app.use((req, res, next) => {
-  res.status(404).send(`
-  <style>body{text-align:center;color:blue;padding:100px;background:url('https://ssl.gstatic.com/accounts/embedded/signin_tapyes.gif') center/contain no-repeat;}h1{font-size:50px;margin-bottom:20px;}p{font-size:18px;}</style></head>
-  <body><a style="color:red;" href="/home">home</a><h1>404 Not Found</h1><p>Sorry, the page you are looking for might be in another castle.</p>
-  `);
-});
+// User routes
+app.use("/", userRoute);
 
 const port = process.env.PORT || 3333;
+
 app.listen(port, () => {
   console.log(`App is running on http://127.0.0.1:${port}`);
 });

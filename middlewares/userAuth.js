@@ -1,6 +1,6 @@
-const userModels = require("../models/userModels");
+const { User } = require("../models/userModels");
 
-const OTPStatus = async (req, res, next) => {
+const is_registered = async (req, res, next) => {
     if (req.session.OTPId) {
         next();
     } else {
@@ -8,38 +8,33 @@ const OTPStatus = async (req, res, next) => {
     }
 };
 
-const checkAuthPages = async (req, res, next) => {
+const is_loginRequired = async (req, res, next) => {
     try {
         if (!req.session.token && !req.cookies.token) {
+            req.session.originalUrl = req.originalUrl;
             next();
         } else {
-            const token = req.cookies.token;
-            const user = await userModels.User.findOne({ token });
-            if (user.status === "Blocked") {
-                req.session.destroy((err) => {
-                    if (err) {
-                        console.error("Error destroying session:", err);
-                    }
-                    res.clearCookie("token");
-                    res.redirect("/home");
-                });
+            const user = await User.findOne({ token: req.cookies.token });
+            if (!user) {
+                next();
+            } else {
+                const redirectUrl = req.session.originalUrl || "/";
+                delete req.session.originalUrl;
+                res.redirect(redirectUrl);
             }
         }
     } catch (err) {
-        console.error(
-            "Error checking authentication for login and signup pages:",
-            err.message
-        );
+        console.error("Error checking authentication for login and signup pages:", err.message);
         res.status(500).send("Internal Server Error");
     }
 };
 
+
 const requireLogin = async (req, res, next) => {
     try {
         if (req.session.token || req.cookies.token) {
-            // User is logged in
             const token = req.cookies.token;
-            const user = await userModels.User.findOne({ token });
+            const user = await User.findOne({ token });
             if (!user) {
                 return res.status(401).send("Unauthorized");
             }
@@ -58,7 +53,6 @@ const requireLogin = async (req, res, next) => {
                 next();
             }
         } else {
-            // User is not logged in
             res.locals.loginRequired = true;
             res.locals.loginMessage = "You need to be logged in to access this page.";
             next();
@@ -71,7 +65,7 @@ const requireLogin = async (req, res, next) => {
 
 
 module.exports = {
-    OTPStatus,
-    checkAuthPages,
+    is_registered,
+    is_loginRequired,
     requireLogin,
 };

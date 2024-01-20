@@ -1,23 +1,21 @@
-const userModels = require("../models/userModels");
-const { sendNewPass, deleteExpiredOTPs,  sendOTPs } = require("../config/sendMail");
-const bcrypt = require("bcrypt");
-const otpModel = require("../models/otpModel");
-const { trusted } = require("mongoose");
+const { User } = require("../models/userModels");
+const { sendNewPass, deleteExpiredOTPs, sendOTPs } = require("../config/sendMail");
+const { OTP } = require("../models/otpModel");
+const { makeHash, bcryptCompare } = require("../util/bcryption")
 
 // * User registation page 
 const loadRegister = async (req, res) => {
   try {
     res.render("sign");
   } catch (err) {
-    console.log(err.message);
+    res.render('sign', { msg: err.message })
   }
 };
 
 
 const checkUsers = async () => {
   try {
-    const result = await userModels.User.deleteMany({ is_verified: false });
-    console.log(`${result.deletedCount} users deleted`);
+    return await User.deleteMany({ is_verified: false });
   } catch (error) {
     console.error(error.message);
   }
@@ -31,9 +29,9 @@ const checkRegister = async (req, res) => {
   try {
     await checkUsers()
     const { email, password, username, number, name, gender } = await req.body;
-    const secPass = await securePassword(password);
+    const secPass = await makeHash(password);
 
-    const newUser = new userModels.User({
+    const newUser = new User({
       name: name,
       password: secPass,
       phone: number,
@@ -51,7 +49,7 @@ const checkRegister = async (req, res) => {
       res.render("sign", { msg: "Email already exists" });
     } else {
       console.error(error);
-      res.status(500).json({ error: "Internal server error." });
+      res.render("sign", { msg: error.message });
     }
   }
 };
@@ -73,24 +71,15 @@ const loadOTP = async (req, res) => {
     res.redirect("/OTP");
   } catch (error) {
     console.log(error);
+    res.redirect("/OTP?msg=" + error.message);
   }
 };
 
 // * OTP page
 
 const newOTP = async (req, res) => {
-  res.render("otp", { email: req.session.pmail });
-};
-
-// * for hashing datas using bcrypt
-
-const securePassword = async (pass) => {
-  try {
-    pass = pass.trim()
-    return await bcrypt.hash(pass, 10);
-  } catch (error) {
-    console.log(error.message);
-  }
+  const msg = req.query.msg
+  res.render("otp", { msg, email: req.session.pmail });
 };
 
 // * OTP validation 
@@ -105,7 +94,7 @@ const verifyOTP = async (req, res) => {
       return res.render("otp", { msg: `Provide values for email ${email}`, email: req.session.pmail, valid: req.cookies.token });
     }
 
-    const matchedRecord = await otpModel.OTP.findOne({ email: email });
+    const matchedRecord = await OTP.findOne({ email: email });
 
     if (!matchedRecord) {
       delete req.session.OTPId;
@@ -113,24 +102,24 @@ const verifyOTP = async (req, res) => {
     }
 
     if (matchedRecord.expiresAt < Date.now()) {
-      await otpModel.OTP.deleteOne({ email });
+      await OTP.deleteOne({ email });
       return res.render("otp", { msg: "OTP code has expired. Request a new one.", email: req.session.pmail, valid: req.cookies.token });
     }
 
-    if (bcrypt.compareSync(otp, matchedRecord.otp)) {
+    if (await bcryptCompare(otp, matchedRecord.otp)) {
       // Correct OTP
 
-      await otpModel.OTP.deleteOne({ email: email });
-      const veriy = await userModels.User.updateOne({ email }, { $set: { is_verified: true } });
+      await OTP.deleteOne({ email: email });
+      const veriy = await User.updateOne({ email }, { $set: { is_verified: true } });
 
-      const token = await securePassword(veriy._id);
+      const token = await makeHash(veriy._id);
 
       req.session.token = token;
       res.cookie("token", token, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
 
-      await userModels.User.updateOne(
+      await User.updateOne(
         { email },
         { $set: { token: token } },
         { upsert: true }
@@ -139,14 +128,13 @@ const verifyOTP = async (req, res) => {
       delete req.session.OTPId;
       return res.redirect("/home");
     } else {
-      // Incorrect OTP
       return res.render("otp", { msg: "OTP Is Incorrect", email: req.session.pmail, valid: req.cookies.token });
     }
 
   } catch (error) {
     delete req.session.OTPId;
     console.log(error.message);
-    return res.status(501).send(error.message);
+    res.render("otp", { msg: error.message, email: req.session.pmail, valid: req.cookies.token });
   }
 };
 
@@ -169,7 +157,7 @@ const checkLogin = async (req, res) => {
   try {
     const { email, password, duration, message, subject } = req.body;
 
-    const user = await userModels.User.findOne(
+    const user = await User.findOne(
       { email: email.trim() }
     );
     if (!user) {
@@ -184,31 +172,31 @@ const checkLogin = async (req, res) => {
       res.redirect("/login?toast=Your Account Is Blocked By The Admin");
       return;
     }
-    const data = await userModels.User.findOne({ email });
+    const data = await User.findOne({ email });
     if (data) {
-      if (await bcrypt.compare(password, data.password)) {
-        const data = await userModels.User.findOne({ email });
-        const token = await securePassword(data._id.toString());
+      if (await bcryptCompare(password, data.password)) {
+        const data = await User.findOne({ email });
+        const token = await makeHash(data._id.toString());
 
         req.session.token = token;
         res.cookie("token", token.toString(), {
           maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 
-        const user = await userModels.User.updateOne(
+        const user = await User.updateOne(
           { email },
           { $set: { token: token } },
           { upsert: true }
         );
         res.redirect("/home")
       } else {
-        res.render("login", { toast: "Incorrect password.",msg: "Incorrect password.", valid: req.cookies.token });
+        res.render("login", { toast: "Incorrect password.", msg: "Incorrect password.", valid: req.cookies.token });
       }
     } else {
       res.render("login", { msg: "Incorrect email and password.", toast: "Incorrect email and password.", valid: req.cookies.token });
     }
   } catch (error) {
-    res.status(404).json(error.message);
+    res.render("login", { msg: error.message, toast: "Incorrect email and password.", valid: req.cookies.token });
   }
 };
 
@@ -219,7 +207,7 @@ const loadresetmail = async (req, res) => {
   try {
     res.render("resetmail")
   } catch (error) {
-    res.status(404).redirect("/login?msg=Page Not Found")
+    res.status(404).redirect("/login?toast=Page Not Found")
   }
 }
 
@@ -227,46 +215,48 @@ const loadresetmail = async (req, res) => {
 
 const sendresetmail = async (req, res) => {
   try {
-    const { email } = req.body
-    const user = await userModels.User.findOne({email})
+    let { email } = req.body
+    email = email.trim()
+    const user = await User.findOne({ email })
     if (!user) {
-      res.render("resetmail",{ msg:"your Not a registered user" })
+      res.render("resetmail", { msg: "your Not a registered user" })
+      return
     }
     const OTP = await sendNewPass({
       email,
-      message:`This mail is for resetting password for TRENDS` ,
+      message: `This mail is for resetting password for TRENDS`,
       subject: "Password Restting",
       duration: 4,
     });
     res.redirect("/sendreset")
 
   } catch (error) {
-    res.status(501).json(error.message)
+    res.render("resetmail", { msg: error.message })
   }
 }
 
 // * to load the new the page for new password
 
-const loadnewPassword = async (req,res)=>{
-  try {
-  let {otp,email} = req.query
+const loadnewPassword = async (req, res) => {
+  let { otp, email } = req.query
   otp = otp.trim()
   email = email.trim()
+  try {
 
     if (!email || !otp) {
       res.status(404).send("page Not Fount")
       return
     }
 
-    const matchedRecord = await otpModel.OTP.findOne({ otp, email });
+    const matchedRecord = await OTP.findOne({ otp, email });
     if (!matchedRecord) {
-      res.status(404).send("page Not Fount. Plese Requst For a new one");  
+      res.status(404).send("page Not Fount. Plese Requst For a new one");
       return
     }
 
     if (matchedRecord.expiresAt < Date.now()) {
       res.status(404).send("Link Expired. Please Request For a new link");
-      await otpModel.OTP.deleteOne({ email });
+      await OTP.deleteOne({ email });
 
       return
     }
@@ -274,20 +264,20 @@ const loadnewPassword = async (req,res)=>{
     await res.render("resetPassword", { email: email });
 
   } catch (error) {
-     res.status(404).send(error.message);  
+    res.render("resetPassword", { email: email, msg: error.message });
   }
 }
 
 // * to add new password
 
-const checkNewPassword = async (req,res)=>{
+const checkNewPassword = async (req, res) => {
   try {
-    const {password,email} = req.body
-    const secPass = await securePassword(password);
-    const data = await userModels.User.findOneAndUpdate({email},{$set:{password:secPass}})
+    const { password, email } = req.body
+    const secPass = await makeHash(password);
+    const data = await User.findOneAndUpdate({ email }, { $set: { password: secPass } })
     res.redirect("/login")
   } catch (error) {
-    res.status(404).send(error.message);  
+    res.status(404).render("login", { toast: error.message });
   }
 }
 
@@ -305,12 +295,11 @@ const userLogout = async (req, res) => {
       }
     });
   } catch (error) {
-    console.log("Error in userLogout:", error.message);
     res.status(500).send("Internal Server Error");
   }
 };
 
- 
+
 
 
 module.exports = {
@@ -318,7 +307,7 @@ module.exports = {
   checkLogin,
   loadRegister,
   checkRegister,
-  securePassword,
+  makeHash,
   loadOTP,
   verifyOTP,
   newOTP,

@@ -1,89 +1,51 @@
 const express = require("express");
 const adminRoute = express();
-const adminController = require("../controllers/adminController");
-const productController = require("../controllers/productController")
-const nocache = require("nocache");
-const fs = require("fs")
 const path = require("path");
-const session = require("express-session");
-const { secret } = require("../config/lock");
-const cookieParser = require("cookie-parser");
-const { checkStatus, redirectLogin, OTPStatus } = require("../middlewares/auth");
-const flash = require('express-flash');
-const multer = require("multer");
-const { error } = require("console");
-const { ifError } = require("assert");
+const upload = require("../util/multer");
+const { loadLogin, checkLogin, newOTP, loadOTP, verifyOTP, loadUser, userBlock, userUnblock, addUser, logout } = require("../controllers/adminController");
+const { is_loginRequired, is_admin, is_registered } = require("../middlewares/auth");
+const { loadDashBoard, loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct,  listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory,  editCatogory } = require("../controllers/productController");
 
 
-adminRoute.set("view engine", "ejs");
 adminRoute.set("views", path.join(__dirname, "../views/admin_pages"));
 adminRoute.use(express.static(path.join(__dirname, "../public/assets")));
 adminRoute.locals.title = "TRENDS DASHBOARD";
 
-adminRoute.use(flash());
-adminRoute.use(express.json());
-adminRoute.use(express.urlencoded({ extended: true }));
-adminRoute.use(cookieParser());
-adminRoute.use(session({ secret: secret, resave: false, saveUninitialized: true }));
-adminRoute.use(flash());
-adminRoute.use(nocache());
+// Admin login
+adminRoute.get("/", is_loginRequired, loadLogin);
+adminRoute.get("/login", is_loginRequired, loadLogin);
+adminRoute.post("/login", checkLogin);
 
+// Admin OTP
+adminRoute.get("/verifyOTP", is_registered, newOTP);
+adminRoute.get("/verifyAdmin", is_registered, is_loginRequired, loadOTP);
+adminRoute.post("/verifyAdmin", verifyOTP);
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../public/product_images"));
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage: storage });
+// User Management
+adminRoute.get("/users", is_admin, loadUser);
+adminRoute.get("/userblock/:id", is_admin, userBlock);
+adminRoute.get("/userUnblock/:id", is_admin, userUnblock);
+adminRoute.post("/addUser", is_admin, addUser);
+adminRoute.get("/dashboard", is_admin, loadDashBoard);
+adminRoute.get("/logout", is_admin, logout);
 
+// Product Management
+adminRoute.get("/productDetials", is_admin, loadProducts);
+adminRoute.get("/products", is_admin, loadProducts);
+adminRoute.get("/addProduct", is_admin, loadAddProduct);
+adminRoute.post('/addProduct', is_admin, upload.array('image', 3), addProduct);
+adminRoute.post('/editProduct/:id', is_admin, upload.array('image', 3), editProduct);
+adminRoute.get("/editProduct", is_admin, loadEditProduct);
+adminRoute.get("/deleteProduct/:id", is_admin, deleteProduct);
 
+// Listing/Unlisting product
+adminRoute.get("/list", is_admin, listProduct);
+adminRoute.get("/unlist", is_admin, unlistProduct);
 
-// ! admin login
-adminRoute.get("/", checkStatus, adminController.loadLogin);
-adminRoute.get("/login", checkStatus, adminController.loadLogin);
-adminRoute.post("/login", adminController.checkLogin);
-
-// ! admin otp
-adminRoute.get("/verifyOTP", OTPStatus, adminController.newOTP);
-adminRoute.get("/verifyAdmin", OTPStatus, checkStatus, adminController.loadOTP);
-adminRoute.post("/verifyAdmin", adminController.verifyOTP);
-
-// ! user Managment 
-adminRoute.get("/users", redirectLogin, adminController.loadUser)
-
-adminRoute.get('/userblock/:id', redirectLogin, adminController.userBlock);
-adminRoute.get('/userUnblock/:id', redirectLogin, adminController.userUnblock);
-
-adminRoute.post("/addUser", redirectLogin, adminController.addUser)
-
-adminRoute.get("/dashboard", redirectLogin, productController.loadDashBoard);
-
-adminRoute.get("/logout", redirectLogin, adminController.logout)
-
-
-// ! poduct management
-adminRoute.get("/productDetials", redirectLogin, productController.loadProducts);
-adminRoute.get("/products", redirectLogin, productController.loadProducts);
-
-adminRoute.get("/addProduct", redirectLogin, productController.loadAddProduct)
-adminRoute.post('/addProduct', redirectLogin, upload.array('image', 3), productController.addProduct);
-
-adminRoute.post('/editProduct/:id', redirectLogin, upload.array('image', 3), productController.editProduct)
-adminRoute.get("/editProduct", redirectLogin, productController.loadEditProduct);
-adminRoute.get("/deleteProduct/:id", redirectLogin, productController.deleteProduct)
-
-// ! listing||unlisting product
-adminRoute.get("/list", redirectLogin, productController.listProduct)
-adminRoute.get("/unlist", redirectLogin, productController.unlistProduct)
-
-// ! catogory managment
-adminRoute.get("/catogories", redirectLogin, productController.laodCatagorie);
-adminRoute.post("/catogories", upload.single("file"), redirectLogin, productController.addCatagorie);
-adminRoute.post("/editCatogories/:id", upload.single("file"), redirectLogin, productController.editCatogory);
-adminRoute.get("/deleteCatogory/:id", redirectLogin, productController.deleteCatogory)
+// Category Management
+adminRoute.get("/catogories", is_admin, laodCatagorie);
+adminRoute.post("/catogories", upload.single("file"), is_admin, addCatagorie);
+adminRoute.post("/editCatogories/:id", upload.single("file"), is_admin, editCatogory);
+adminRoute.get("/deleteCatogory/:id", is_admin, deleteCatogory);
 
 module.exports = adminRoute;
-

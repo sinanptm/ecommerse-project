@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <title><%= title %></title>
+    <title>
+        <%= title %>
+    </title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="imgs/theme/favicon.svg">
@@ -50,57 +52,25 @@
                 <h4 class="mtext-105 cl2 txt-center p-b-30">
                     Enter OTP
                 </h4>
-                <% if (typeof msg !== 'undefined') { %>
-                    <p style="color:#ff0000;"><%= msg %></p>
-                <% } %>
-                <input type="hidden" name="email" value="<%= email %>" />
-                <small class="form-text text-left" style="color: red; display: none;" id="error"></small>
-                <div class="mb-3">
-                    <input class="form-control" type="text" id="otp" name="otp" placeholder="Enter OTP">
-                </div>
-                <button class="btn btn-primary w-100">Verify OTP</button>
-                <div class="timer">
-                    Didn't recieve code
-                    <button type="button" style="text-decoration: underline; background: none; border: none; cursor: pointer;" onclick="send('<%= email %>')" id="resend">Click to Resend</button>
-                    <span class="time"></span>
-                </div>
+                <% if (typeof msg !=='undefined' ) { %>
+                    <p style="color:#ff0000;">
+                        <%= msg %>
+                    </p>
+                    <% } %>
+                        <input type="hidden" name="email" value="<%= email %>" />
+                        <small class="form-text text-left" style="color: red; display: none;" id="error"></small>
+                        <div class="mb-3">
+                            <input class="form-control" type="text" id="otp" name="otp" placeholder="Enter OTP">
+                        </div>
+                        <button class="btn btn-primary w-100">Verify OTP</button>
+
             </form>
         </div>
     </main>
 
     <!-- Scripts -->
     <script>
-        function timer(totalSeconds) {
-						document.getElementById("resend").disabled = true;
-				
-						const storedTime = localStorage.getItem("remainingTime");
-						let remainingTime = storedTime ? parseInt(storedTime, 10) : totalSeconds;
-				
-						const interval = setInterval(() => {
-							if (remainingTime <= 0) {
-								clearInterval(interval);
-								document.getElementById("resend").disabled = false;
-								localStorage.removeItem("remainingTime");
-							} else {
-								const minutes = Math.floor(remainingTime / 60);
-								const seconds = remainingTime % 60;
-				
-								document.querySelector(".time").innerHTML = `${minutes}m ${seconds}s`;
-								remainingTime--;
-								localStorage.setItem("remainingTime", remainingTime.toString());
-							}
-						}, 1000);
-					}
-				
-					window.onload = function () {
-						timer(60);
-					};
-				
-					function send(m) {
-						localStorage.removeItem("remainingTime"); 
-						timer(60);
-						window.location = "/admin/verifyAdmin?email=" + m;
-					};
+
         document.addEventListener("DOMContentLoaded", function () {
             const otpInput = document.querySelector('#otp');
             const errorParagraph = document.getElementById('error');

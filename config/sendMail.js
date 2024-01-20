@@ -1,7 +1,8 @@
 const { OTP } = require("../models/otpModel");
 const nodemailer = require("nodemailer");
-const bcrypt = require("bcrypt");
-const { pass, mail } = require("./lock");
+const { makeHash } = require("../util/bcryption")
+require("dotenv").config()
+
 
 var generateOTP = async () => {
   try {
@@ -14,8 +15,8 @@ var generateOTP = async () => {
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: mail,
-    pass: pass,
+    user: process.env.OTP_MAIL,
+    pass: process.env.OTP_PASSWORD,
   },
 });
 
@@ -33,14 +34,6 @@ var sendMail = async (mailOption) => {
     return;
   } catch (error) {
     throw error;
-  }
-};
-
-const hasssss = async (pass) => {
-  try {
-    return await bcrypt.hash(pass, 10);
-  } catch (error) {
-    console.log(error.message);
   }
 };
 
@@ -65,7 +58,7 @@ const sendOTPs = async ({ email, subject = "TRENDS OTP verification", message = 
 
     const otp = await generateOTP();
     const mailOption = {
-      from: mail,
+      from: process.env.OTP_MAIL,
       to: email,
       subject,
       html: `
@@ -77,7 +70,7 @@ const sendOTPs = async ({ email, subject = "TRENDS OTP verification", message = 
 
     await sendMail(mailOption);
 
-    const hashOTP = await hasssss(otp.trim());
+    const hashOTP = await makeHash(otp.trim());
     const expirationTime = new Date(new Date().getTime() + duration * 60 * 1000);
     const newOTP = await new OTP({
       email,
@@ -105,7 +98,7 @@ const sendNewPass = async ({ email, subject = "TRENDS Forget Password", message 
 
     const otp = await generateOTP();
     const mailOption = {
-      from: mail,
+      from: process.env.OTP_MAIL,
       to: email,
       subject,
       html: `

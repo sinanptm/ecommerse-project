@@ -1,8 +1,6 @@
-const adminModel = require("../models/userModels");
-const mongoose = require("mongoose")
+const { Product, Category } = require("../models/productModel")
 const sharp = require("sharp")
 const path = require("path");
-const { log } = require("util");
 
 //  * dashboard loeding
 
@@ -19,7 +17,7 @@ const loadDashBoard = async (req, res) => {
 const loadProducts = async (req, res) => {
   try {
     const msg = req.query.msg
-    const products = await adminModel.Product.aggregate([
+    const products = await Product.aggregate([
       {
         $lookup: {
           from: 'categories',
@@ -46,7 +44,7 @@ const loadProducts = async (req, res) => {
         },
       },
     ]);
-    const categories = await adminModel.Category.find();
+    const categories = await Category.find();
     res.render("products-list", { products, categories, msg });
   } catch (err) {
     console.log(err.message);
@@ -57,7 +55,7 @@ const loadProducts = async (req, res) => {
 const loadAddProduct = async (req, res) => {
   try {
     const msg = req.query.msg;
-    const catogories = await adminModel.Category.find();
+    const catogories = await Category.find();
     res.render("addProducts", { catogories: catogories, msg });
   } catch (error) {
     console.log(error.message);
@@ -83,7 +81,7 @@ const addProduct = async (req, res) => {
 
     const img = await Promise.all(promises);
 
-    const product = new adminModel.Product({
+    const product = new Product({
       name,
       price,
       quantity,
@@ -95,7 +93,7 @@ const addProduct = async (req, res) => {
     });
 
     const savedProduct = await product.save();
-    await adminModel.Category.findByIdAndUpdate(categoryid, { $push: { items: savedProduct._id } });
+    await Category.findByIdAndUpdate(categoryid, { $push: { items: savedProduct._id } });
 
     res.redirect("/admin/addProduct?msg=Product added seccussfully")
 
@@ -122,7 +120,7 @@ const loadEditProduct = async (req, res) => {
       return;
     }
 
-    const product = await adminModel.Product
+    const product = await Product
       .findById(id)
       .populate({
         path: 'categoryid',
@@ -136,7 +134,7 @@ const loadEditProduct = async (req, res) => {
       return;
     }
 
-    const categories = await adminModel.Category.find();
+    const categories = await Category.find();
     res.render("editt-product", { product, categories, type });
   } catch (err) {
     console.error("Error in loadEditProduct:", err);
@@ -154,8 +152,8 @@ const editProduct = async (req, res) => {
 
     const images = req.files.map(file => file.filename);
 
-    const existingProduct = await adminModel.Product.findById(id);
-    
+    const existingProduct = await Product.findById(id);
+
 
 
     const check = async (image) => {
@@ -182,7 +180,7 @@ const editProduct = async (req, res) => {
 
     const img = await Promise.all(promises);
 
-    const updatedProduct = await adminModel.Product.findByIdAndUpdate(id, {
+    const updatedProduct = await Product.findByIdAndUpdate(id, {
       name,
       price,
       quantity,
@@ -193,15 +191,15 @@ const editProduct = async (req, res) => {
     });
 
     if (categoryid !== existingProduct.categoryid.toString()) {
-      const oldCategory = await adminModel.Category.findByIdAndUpdate(
+      const oldCategory = await Category.findByIdAndUpdate(
         existingProduct.categoryid,
         { $pull: { items: existingProduct._id } }
       );
-      const newCategory = await adminModel.Category.findByIdAndUpdate(
+      const newCategory = await Category.findByIdAndUpdate(
         categoryid,
         { $addToSet: { items: existingProduct._id } }
       );
-      
+
       if (req.query.type) {
         res.redirect("/admin/catogories");
       } else {
@@ -232,7 +230,7 @@ const listProduct = async (req, res) => {
       res.redirect("/admin/products");
       return;
     }
-    const product = await adminModel.Product.findOneAndUpdate({_id:id},{$set:{status:"Available"}})
+    const product = await Product.findOneAndUpdate({ _id: id }, { $set: { status: "Available" } })
     res.redirect("/admin/products")
   } catch (error) {
     res.status(404).send(error.message)
@@ -248,7 +246,7 @@ const unlistProduct = async (req, res) => {
       res.redirect("/admin/products");
       return;
     }
-    const product = await adminModel.Product.findOneAndUpdate({_id:id},{$set:{status:"Disabled"}})
+    const product = await Product.findOneAndUpdate({ _id: id }, { $set: { status: "Disabled" } })
     res.redirect("/admin/products")
 
   } catch (error) {
@@ -265,10 +263,10 @@ const deleteProduct = async (req, res) => {
     console.log(1);
     const id = req.params.id;
 
-    const existingProduct = await adminModel.Product.findById(id);
+    const existingProduct = await Product.findById(id);
 
-    await adminModel.Product.findByIdAndDelete(id);
-    await adminModel.Category.findByIdAndUpdate(existingProduct.categoryid, {
+    await Product.findByIdAndDelete(id);
+    await Category.findByIdAndUpdate(existingProduct.categoryid, {
       $pull: { items: id },
     });
 
@@ -284,7 +282,7 @@ const deleteProduct = async (req, res) => {
 
 const laodCatagorie = async (req, res) => {
   try {
-    const categories = await adminModel.Category.find().populate('items');
+    const categories = await Category.find().populate('items');
     res.render("catogories", { categories });
   } catch (error) {
     console.error(error);
@@ -313,7 +311,7 @@ const addCatagorie = async (req, res) => {
 
     const img = await processImage(req.file.filename);
 
-    const newCategory = new adminModel.Category({
+    const newCategory = new Category({
       name,
       description,
       img: img,
@@ -335,11 +333,11 @@ const editCatogory = async (req, res) => {
     const { name, description, type } = req.body;
     const id = req.params.id;
 
-    const existingProduct = await adminModel.Category.findById(id);
+    const existingProduct = await Category.findById(id);
     const file = req.file && req.file.filename;
     img = file || existingProduct.img;
 
-    const category = await adminModel.Category.updateOne(
+    const category = await Category.updateOne(
       { _id: id },
       {
         $set: {
@@ -369,7 +367,7 @@ const editCatogory = async (req, res) => {
 const deleteCatogory = async (req, res) => {
   try {
     const id = req.params.id;
-    const category = await adminModel.Category.deleteOne({ _id: id });
+    const category = await Category.deleteOne({ _id: id });
     res.redirect("/admin/catogories");
   } catch (error) {
     console.error("Error deleting user:", error);

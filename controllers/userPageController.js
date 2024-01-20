@@ -1,12 +1,11 @@
-const userModels = require("../models/userModels");
-const { trusted } = require("mongoose");
+const { Product } = require("../models/productModel")
 
 // * homepage Loading
 
 const loadHome = async (req, res) => {
     try {
-        const products = await userModels.Product.aggregate([
-            { $match: { status:"Available" } },
+        const products = await Product.aggregate([
+            { $match: { status: "Available" } },
             { $sample: { size: 2000 } }
         ]);
         res.render("home", { products, valid: req.cookies.token });
@@ -20,13 +19,13 @@ const loadHome = async (req, res) => {
 // * for showing products 
 const loadProducts = async (req, res) => {
     try {
-        const products = await userModels.Product.
-        find({ status:"Available" })
-        .populate({
-            path: 'categoryid',
-            model: 'Category',
-            select: 'name description img type'
-        });
+        const products = await Product.
+            find({ status: "Available" })
+            .populate({
+                path: 'categoryid',
+                model: 'Category',
+                select: 'name description img type'
+            });
         res.render("product", { products, valid: req.cookies.token });
 
     } catch (error) {
@@ -40,7 +39,7 @@ const laodProductDetials = async (req, res) => {
     try {
         const id = req.query.id;
 
-        const product = await userModels.Product
+        const product = await Product
             .findById(id)
             .populate({
                 path: 'categoryid',
@@ -51,7 +50,7 @@ const laodProductDetials = async (req, res) => {
         if (product && product.categoryid) {
             const categoryId = product.categoryid._id;
 
-            const relatedProducts = await userModels.Product.find({ categoryid: categoryId });
+            const relatedProducts = await Product.find({ categoryid: categoryId });
 
             res.render("product-detail", { product, relatedProducts, valid: req.cookies.token });
         } else {

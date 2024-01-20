@@ -44,32 +44,6 @@ const wishlistSchema = new mongoose.Schema({
 
 const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 
-// Products Schema
-const productsSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
-  price: { type: Number },
-  quantity: { type: Number },
-  status: { type: String },
-  img: { type: Array },
-  categoryid: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-  createdate: { type: Date },
-  discount: { type: Number },
-});
-productsSchema.index({ name: 1, categoryid: 1 }, { unique: true });
-
-const Product = mongoose.model("Product", productsSchema);
-
-
-// Category Schema
-const categorySchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
-  description: { type: String, required: true },
-  type: { type:String },
-  items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-  img: { type: String },
-});
-
-const Category = mongoose.model("Category", categorySchema);
 
 // Coupons Schema
 const couponsSchema = new mongoose.Schema({
@@ -120,21 +94,6 @@ const paymentSchema = new mongoose.Schema({
 
 const Payment = mongoose.model("Payment", paymentSchema);
 
-// Orders Schema
-const ordersSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  orderAmount: { type: Number },
-  deliveryAddress: { type: String },
-  orderDate: { type: Date },
-  orderStatus: { type: String },
-  deliveryDate: { type: Date },
-  ShippingDate: { type: Date },
-  OrderedItems: [{ type: mongoose.Schema.Types.ObjectId, ref: "OrderItem" }],
-  payment: { type: mongoose.Schema.Types.ObjectId, ref: "Payment" },
-});
-
-const Order = mongoose.model("Order", ordersSchema);
-
 // OrderItems Schema
 const orderItemsSchema = new mongoose.Schema({
   orderid: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
@@ -157,6 +116,7 @@ const Banner = mongoose.model("Banner", bannerSchema);
 const adminSchema = new mongoose.Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
+  token: { type: String },
   is_Admin: { type: Boolean, default: false },
 });
 
@@ -166,12 +126,9 @@ module.exports = {
   User,
   Addresse,
   Wishlist,
-  Product,
   Coupon,
-  Category,
   Cart,
   Payment,
-  Order,
   OrderItem,
   Banner,
   Wallet,
