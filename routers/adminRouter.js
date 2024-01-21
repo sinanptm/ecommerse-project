@@ -2,9 +2,10 @@ const express = require("express");
 const adminRoute = express();
 const path = require("path");
 const upload = require("../util/multer");
-const { loadLogin, checkLogin, newOTP, loadOTP, verifyOTP, loadUser, userBlock, userUnblock, addUser, logout } = require("../controllers/adminController");
-const { is_loginRequired, is_admin, is_registered } = require("../middlewares/auth");
+const { loadLogin, checkLogin, newOTP, loadOTP, verifyOTP, loadUser, userBlock, userUnblock, logout } = require("../controllers/adminController");
 const { loadDashBoard, loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct,  listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory,  editCatogory } = require("../controllers/productController");
+
+const { is_loginRequired, is_admin, is_registered } = require("../middlewares/auth");
 
 
 adminRoute.set("views", path.join(__dirname, "../views/admin_pages"));
@@ -25,7 +26,6 @@ adminRoute.post("/verifyAdmin", verifyOTP);
 adminRoute.get("/users", is_admin, loadUser);
 adminRoute.get("/userblock/:id", is_admin, userBlock);
 adminRoute.get("/userUnblock/:id", is_admin, userUnblock);
-adminRoute.post("/addUser", is_admin, addUser);
 adminRoute.get("/dashboard", is_admin, loadDashBoard);
 adminRoute.get("/logout", is_admin, logout);
 
@@ -47,5 +47,6 @@ adminRoute.get("/catogories", is_admin, laodCatagorie);
 adminRoute.post("/catogories", upload.single("file"), is_admin, addCatagorie);
 adminRoute.post("/editCatogories/:id", upload.single("file"), is_admin, editCatogory);
 adminRoute.get("/deleteCatogory/:id", is_admin, deleteCatogory);
+
 
 module.exports = adminRoute;

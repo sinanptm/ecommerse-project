@@ -1,7 +1,7 @@
 const { User } = require("../models/userModels");
 const { sendNewPass, deleteExpiredOTPs, sendOTPs } = require("../config/sendMail");
 const { OTP } = require("../models/otpModel");
-const { makeHash, bcryptCompare } = require("../util/bcryption")
+const { makeHash, bcryptCompare, generateToken  } = require("../util/bcryption")
 
 // * User registation page 
 const loadRegister = async (req, res) => {
@@ -112,7 +112,7 @@ const verifyOTP = async (req, res) => {
       await OTP.deleteOne({ email: email });
       const veriy = await User.updateOne({ email }, { $set: { is_verified: true } });
 
-      const token = await makeHash(veriy._id);
+      const token = await generateToken(veriy._id);
 
       req.session.token = token;
       res.cookie("token", token, {
@@ -176,10 +176,10 @@ const checkLogin = async (req, res) => {
     if (data) {
       if (await bcryptCompare(password, data.password)) {
         const data = await User.findOne({ email });
-        const token = await makeHash(data._id.toString());
 
+        const token = await generateToken(data._id.toString());
         req.session.token = token;
-        res.cookie("token", token.toString(), {
+        res.cookie("token", token, {
           maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 
@@ -307,7 +307,6 @@ module.exports = {
   checkLogin,
   loadRegister,
   checkRegister,
-  makeHash,
   loadOTP,
   verifyOTP,
   newOTP,

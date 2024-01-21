@@ -1,50 +1,47 @@
 const express = require("express");
 const userRoute = express();
-const authController = require("../controllers/userController");
-const pageController = require("../controllers/userPageController")
-const { is_registered, requireLogin, is_loginRequired } = require("../middlewares/userAuth");
 const path = require("path");
-
-
+const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/userController");
+const { loadHome, loadProducts, laodProductDetials, loadAbout, loadBlog, loadContact } = require("../controllers/userPageController");
+const { loadCart, addToCart } = require("../controllers/cartController")
+const { is_registered, requireLogin, is_loginRequired } = require("../middlewares/userAuth");
 
 userRoute.set("views", path.join(__dirname, "../views/user_pages"));
 userRoute.use(express.static(path.join(__dirname, "../public")));
 userRoute.locals.title = "TRENDS";
 
+// Authentication Routes
+userRoute.get("/", loadHome);
+userRoute.get("/login", is_loginRequired, loadLogin);
+userRoute.post("/login", is_loginRequired, checkLogin);
+
+userRoute.get("/sendreset", loadresetmail);
+userRoute.post("/sendreset", sendresetmail);
+userRoute.get("/resetpassword", loadnewPassword);
+userRoute.post("/newPassword", checkNewPassword);
+
+userRoute.get("/verifyOTP", is_loginRequired, is_registered, loadOTP);
+userRoute.get("/OTP", is_loginRequired, is_registered, newOTP);
+userRoute.post("/checkOTP", verifyOTP);
+
+userRoute.get("/register", is_loginRequired, loadRegister);
+userRoute.post("/register", is_loginRequired, checkRegister);
+
+// Page Routes
+userRoute.get("/home", loadHome);
+userRoute.get("/products", loadProducts);
+userRoute.get("/product", laodProductDetials);
+
+userRoute.get("/about", loadAbout);
+
+userRoute.get("/cart", requireLogin, loadCart);
+userRoute.post("/add-to-cart", requireLogin, addToCart)
 
 
-// ! Authentication Routes
+userRoute.get("/blog", loadBlog);
+userRoute.get("/contact", loadContact);
+userRoute.get("/whishlist", loadCart);
 
-userRoute.get("/", pageController.loadHome);
-userRoute.get("/login", is_loginRequired, authController.loadLogin);
-userRoute.post("/login", authController.checkLogin);
-
-userRoute.get("/sendreset", authController.loadresetmail)
-userRoute.post("/sendreset", authController.sendresetmail)
-
-userRoute.get("/resetpassword", authController.loadnewPassword)
-userRoute.post("/newPassword", authController.checkNewPassword)
-
-userRoute.get("/verifyOTP", is_loginRequired, is_registered, authController.loadOTP);
-userRoute.get("/OTP", is_loginRequired, is_registered, authController.newOTP);
-userRoute.post("/checkOTP", authController.verifyOTP);
-
-userRoute.get("/register", is_loginRequired, authController.loadRegister);
-userRoute.post("/register", authController.checkRegister);
-
-// ! Page Routes
-
-userRoute.get("/home", pageController.loadHome);
-userRoute.get("/products", pageController.loadProducts);
-userRoute.get("/product", pageController.laodProductDetials);
-
-userRoute.get("/about", pageController.loadAbout);
-
-userRoute.get("/cart", requireLogin, pageController.loadCart);
-userRoute.get("/blog", pageController.loadBlog);
-userRoute.get("/contact", pageController.loadContact);
-userRoute.get("/whishlist", pageController.loadCart);
-
-userRoute.get("/logout", authController.userLogout);
+userRoute.get("/logout", userLogout);
 
 module.exports = userRoute;

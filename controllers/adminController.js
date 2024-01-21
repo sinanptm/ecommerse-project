@@ -174,37 +174,6 @@ const userUnblock = async (req, res) => {
   }
 };
 
-//  * User Adding
-const addUser = async (req, res) => {
-  try {
-    const { email, password, username, number, name, gender } = await req.body;
-    const secPass = await makeHash(password);
-
-    const newUser = new User({
-      name: name,
-      password: secPass,
-      phone: number,
-      email: email,
-      gender: gender,
-      username: username,
-      createdate: Date.now(),
-    });
-    const savedUser = await newUser.save();
-    console.log(
-      "User registered with id :",
-      savedUser._id + " and the name:" + savedUser.name
-    );
-    res.redirect("/admin/users");
-  } catch (error) {
-    if (error.code === 11000) {
-      const users = await User.find();
-      res.render("users-list", { msg: "Email already exists", users });
-    } else {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error." });
-    }
-  }
-};
 
 
 //  * Aadmin logout 
@@ -233,6 +202,5 @@ module.exports = {
   loadUser,
   userBlock,
   userUnblock,
-  addUser,
   logout,
 };

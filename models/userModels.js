@@ -60,21 +60,22 @@ const Coupon = mongoose.model("Coupon", couponsSchema);
 const walletSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   amount: { type: Number, default: 0 },
-  productid: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
-    required: true,
-  },
+  productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
 });
 
 const Wallet = mongoose.model("Wallet", walletSchema);
 
 // Cart Schema
 const cartSchema = new mongoose.Schema({
-  productsid: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-  quantity: { type: Number },
+  products: [{
+    productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product", unique: true },
+    quantity: Number,
+    price: Number
+  }],
+  totalPrice: { type: Number },
+  items: { type: Number, default: 0 },
   createdate: { type: Date },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", unique: true },
 });
 
 const Cart = mongoose.model("Cart", cartSchema);

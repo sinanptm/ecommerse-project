@@ -311,7 +311,7 @@
                     </thead>
                     <tbody>
                       <% users.forEach(user => { %>
-                      <tr>
+                      <tr class="user<%= user._id %>">
                         <td width="40%">
                           <a href="#" class="itemside">
                             <div class="left">
@@ -344,15 +344,49 @@
                         <td class="text-end">
                           <div class="user-details-buttons">
                             <% if (user.status === "Blocked") { %>
-                                <a href="/admin/userUnblock/<%= user._id %>" class="btn btn-success">Unblock</a>
+                                <a onclick="unblock('<%= user._id %>')" class="btn btn-success">Unblock</a>
                               <% } else { %>
-                                <a href="javascript:void(0);" onclick="confirmBlock('<%= user._id %>')" class="btn btn-warning">Block</a>
+                                <a onclick="block('<%= user._id %>')" class="btn btn-warning">Block</a>
                               <% } %>                                             
-                        </div>
+                          </div>
                         </td>
                       </tr>
                       <% }) %>
                     </tbody>
+                    <script>
+                      async function block(id) {
+                        try {
+                          const response = await $.ajax({
+                            url: "/admin/userblock/" + id,
+                            method: "GET"
+                          });
+                    
+                          const newContent = $(response).find(".user"+id).html();
+                          $(".user"+id).html(newContent);
+                    
+                        } catch (error) {
+                          console.error("Error blocking user:", error);
+                        }
+                      }
+                    
+                      async function unblock(id) {
+                        try {
+                          const response = await $.ajax({
+                            url: "/admin/userUnblock/" + id,
+                            method: "GET"
+                          });
+                    
+                          const newContent = $(response).find(".user"+id).html();
+                          $(".user"+id).html(newContent);
+                    
+                        } catch (error) {
+                          console.error("Error unblocking user:", error);
+                        }
+                      }
+                    </script>
+                    
+                    
+                                      
                   </table>
                 </tbody>
               </table>
@@ -397,15 +431,6 @@
         </div>
       </footer>
     </main>
-    <script>
-      function confirmBlock(id) {
-          var confirmBlock = confirm("Are you sure you want to block this user?");
-          if (confirmBlock) {
-              window.location.href = "/admin/userblock/"+id;
-          }
-      }
-  </script>
-  
     <script src="js/vendors/jquery-3.6.0.min.js"></script>
     <script src="js/vendors/bootstrap.bundle.min.js"></script>
     <script src="js/vendors/select2.min.js"></script>

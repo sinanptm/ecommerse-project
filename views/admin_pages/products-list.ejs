@@ -257,104 +257,105 @@
                     </div>
                 </header> <!-- card-header end// -->
 
-
                 <table class="table table-bordered">
                     <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Image</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Actions</th>
-                        </tr>
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Actions</th>
+                      </tr>
                     </thead>
                     <tbody>
-                        <% products.forEach(product=> { %>
-                            <tr>
-                                <td>
-                                    <a class="itemside" href="/admin/editProduct?id=<%= product._id %>">
-                                        <div class="info">
-                                            <h6 class="mb-0">
-                                                <%= product.name %>
-                                            </h6>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="/resized_images/<%= product.img[0] %>"
-                                                class="img-sm img-thumbnail product-image" alt="Product Image">
-                                        </div>
-                                        <style>
-                                            @media (max-width: 767px) {
-                                                .additional-images {
-                                                    display: none;
-                                                }
-                                            }
-                                
-                                            @media (min-width: 768px) and (max-width: 999px) {
-                                                .additional-images {
-                                                    display: none;
-                                                }
-                                            }
-                                        </style>
-                                        <div class="left additional-images">
-                                            <img src="/resized_images/<%= product.img[1] %>"
-                                                class="img-sm img-thumbnail product-image" alt="Product Image">
-                                        </div>
-                                        <div class="left additional-images">
-                                            <img src="/resized_images/<%= product.img[2] %>"
-                                                class="img-sm img-thumbnail product-image" alt="Product Image">
-                                        </div>
-                                    </a>
-                                </td>
-                                
-                                
-                                <td>
-                                    <%= product.price %>
-                                </td>
-                                <td>
-                                    <% if (product.status=="Available") { %>
-                                        <span class="badge rounded-pill alert-success">
-                                            Listed
-                                        </span>
-                                    <% } else { %>
-                                        <span class="badge rounded-pill alert-warning">
-                                            <%= product.status %>
-                                        </span>
-                                    <% } %>
-                                </td>
-                                <td>
-                                    <%= product.createdate.toISOString().split('T')[0] %>
-                                </td>
-                                <td>
-                                    <a href="/admin/editProduct?id=<%= product._id %>"
-                                        class="btn btn-sm font-sm rounded btn-brand">
-                                        <i class="material-icons md-edit"></i> Edit
-                                    </a>
-                                    <% if (product.status=="Available") { %>
-                                        <a href="/admin/unlist?id=<%= product._id %>"
-                                            class="btn btn-sm font-sm rounded alert-warning">
-                                            Disable
-                                        </a>
-                                    <% } else { %>
-                                        <a href="/admin/list?id=<%= product._id %>"
-                                            class="btn btn-sm font-sm rounded alert-success">
-                                           List
-                                        </a>
-                                    <% } %>
-                                    <a onclick="confirmDelete('<%= product._id %>')"
-                                        class="btn btn-sm font-sm btn-light rounded">
-                                        <i class="material-icons md-delete_forever"></i> Delete
-                                    </a>
-                                </td>
-                            </tr>
-                            <% }) %>
+                      <% products.forEach(product => { %>
+                      <tr class="id<%= product._id %>">
+                        <td>
+                          <a class="itemside" href="/admin/editProduct?id=<%= product._id %>">
+                            <div class="info">
+                              <h6 class="mb-0"><%= product.name %></h6>
+                            </div>
+                          </a>
+                        </td>
+                        <td>
+                          <a class="itemside" href="#">
+                            <div class="left">
+                              <img src="/resized_images/<%= product.img[0] %>" class="img-sm img-thumbnail product-image" alt="Product Image">
+                            </div>
+                            <style>
+                              @media (max-width: 767px), (min-width: 768px) and (max-width: 999px) {
+                                .additional-images {
+                                  display: none;
+                                }
+                              }
+                            </style>
+                            <div class="left additional-images">
+                              <img src="/resized_images/<%= product.img[1] %>" class="img-sm img-thumbnail product-image" alt="Product Image">
+                            </div>
+                            <div class="left additional-images">
+                              <img src="/resized_images/<%= product.img[2] %>" class="img-sm img-thumbnail product-image" alt="Product Image">
+                            </div>
+                          </a>
+                        </td>
+                        <td><%= product.price %></td>
+                        <td>
+                          <% if (product.status == "Available") { %>
+                          <span class="badge rounded-pill alert-success">Listed</span>
+                          <% } else { %>
+                          <span class="badge rounded-pill alert-warning"><%= product.status %></span>
+                          <% } %>
+                        </td>
+                        <td><%= product.createdate.toISOString().split('T')[0] %></td>
+                        <td>
+                          <a href="/admin/editProduct?id=<%= product._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                            <i class="material-icons md-edit"></i> Edit
+                          </a>
+                  
+                          <% if (product.status == "Available") { %>
+                          <a href="#" onclick="unlist('<%= product._id %>')" class="btn btn-sm font-sm rounded alert-warning">Disable</a>
+                          <% } else { %>
+                          <a href="#" onclick="list('<%= product._id %>')" class="btn btn-sm font-sm rounded alert-success">List</a>
+                          <% } %>
+                  
+                          <a href="#" onclick="confirmDelete('<%= product._id %>')" class="btn btn-sm font-sm btn-light rounded">
+                            <i class="material-icons md-delete_forever"></i> Delete
+                          </a>
+                        </td>
+                      </tr>
+                      <% }) %>
                     </tbody>
-                </table>
-            </div> <!-- card end// -->
+                  </table>
+                  </div> <!-- card end// -->
+                  <script>
+                    async function list(id) {
+                      try {
+                        const response = await $.ajax({
+                          url: '/admin/list?id=' + id,
+                          method: "GET"
+                        });
+                        const newContent = $(response).find(".id" + id).html();
+                        $(".id" + id).html(newContent);
+                      } catch (error) {
+                        console.log(error.message);
+                      }
+                    }
+                  
+                    async function unlist(id) {
+                      try {
+                        const response = await $.ajax({
+                          url: '/admin/unlist?id=' + id,
+                          method: "GET"
+                        });
+                        const newContent = $(response).find(".id" + id).html();
+                        $(".id" + id).html(newContent);
+                      } catch (error) {
+                        console.log(error.message);
+                      }
+                    }
+                  </script>
+                  
+                  
             <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">

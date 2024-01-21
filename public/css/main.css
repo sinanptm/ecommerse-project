@@ -300,6 +300,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 }
 
 
+
 /*---------------------------------------------*/
 .limiter-menu-desktop {
   height: 100%;
@@ -323,15 +324,16 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   font-size: larger;
   font-weight: 600;
   color: #000;
+
 }
 
 #logo {
   align-items: center;
   height: 65%;
   margin-right: 55px;
-  font-size: larger;
+  font-size: x-large;
   font-weight: 600;
-  color: #ffffff;
+  color: #141111;
 }
 
 

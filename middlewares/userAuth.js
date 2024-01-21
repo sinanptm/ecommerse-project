@@ -1,5 +1,7 @@
 const { User } = require("../models/userModels");
+const { getUserIdFromToken } = require("../util/bcryption")
 
+ 
 const is_registered = async (req, res, next) => {
     if (req.session.OTPId) {
         next();
@@ -14,8 +16,10 @@ const is_loginRequired = async (req, res, next) => {
             req.session.originalUrl = req.originalUrl;
             next();
         } else {
-            const user = await User.findOne({ token: req.cookies.token });
+            const token = await getUserIdFromToken(req.cookies.token || req.session.token);
+            const user = await User.findOne({ _id:token });
             if (!user) {
+                console.log(user);
                 next();
             } else {
                 const redirectUrl = req.session.originalUrl || "/";
@@ -33,8 +37,8 @@ const is_loginRequired = async (req, res, next) => {
 const requireLogin = async (req, res, next) => {
     try {
         if (req.session.token || req.cookies.token) {
-            const token = req.cookies.token;
-            const user = await User.findOne({ token });
+            const token = await getUserIdFromToken( req.cookies.token)
+            const user = await User.findOne({ _id:token });
             if (!user) {
                 return res.status(401).send("Unauthorized");
             }
@@ -60,6 +64,9 @@ const requireLogin = async (req, res, next) => {
     } catch (err) {
         console.log("Error checking login status:", err.message);
         res.status(500).send("Internal Server Error");
+        req.session.destroy()
+        req.clearCookie("token")
+        res.redirect("/home")
     }
 };
 

@@ -1,588 +1,538 @@
 <%- include('layouts/header.ejs') %>
-<style>
-    body {
-     
-        height: 100vh;
-        margin: 0;
-    }
+	<style>
+		body {
 
-    .size-210 {
-        max-width: 500px;
-        width: 100%;
-    }
-</style>
+			height: 100vh;
+			margin: 0;
+		}
 
-<body class="animsition">
-	<!-- Header -->
-	<header class="header-v3">
-		<!-- Header desktop -->
-		<div class="container-menu-desktop trans-03">
-			<div class="wrap-menu-desktop">
-				<nav class="limiter-menu-desktop p-l-45">
-					
-					<!-- Logo desktop -->		
-					<a href="#" class="logo">
-						<span id="logo">TRENDS</span>
-					</a>
+		.size-210 {
+			max-width: 500px;
+			width: 100%;
+		}
+	</style>
 
-					<!-- Menu desktop -->
-					<div class="menu-desktop">
-						<ul class="main-menu">
-							<li >
-								<a href="/home">Home</a>
-							</li>
+	<body class="animsition">
+		<!-- Header -->
+		<header class="header-v3">
+			<!-- Header desktop -->
+			<div class="container-menu-desktop trans-03">
+				<div class="wrap-menu-desktop">
+					<nav class="limiter-menu-desktop p-l-45">
 
-							<li class="label1" data-label1="hot">
-								<a href="/products">Shop</a>
-							</li>
+						<!-- Logo desktop -->
+						<a href="/home" class="logo">
+							<span id="logo">TRENDS</span>
+						</a>
 
-							<li >
-								<a href="/cart">Cart</a>
-							</li>
+						<!-- Menu desktop -->
+						<div class="menu-desktop">
+							<ul class="main-menu">
+								<li>
+									<a href="/home">Home</a>
+								</li>
 
-							<li>
-								<a href="/blog">Blog</a>
-							</li>
+								<li class="label1" data-label1="hot">
+									<a href="/products">Shop</a>
+								</li>
 
-							<li>
-								<a href="/about">About</a>
-							</li>
+								<li>
+									<a href="/cart">Cart</a>
+								</li>
 
-							<li>
-								<a href="/contact">Contact</a>
-							</li>
-							
+								<li>
+									<a href="/blog">Blog</a>
+								</li>
 
-						</ul>
-					</div>	
+								<li>
+									<a href="/about">About</a>
+								</li>
 
-					<!-- Icon header -->
-					<div class="wrap-icon-header flex-w flex-r-m h-full">							
-						<div class="wrap-icon-header flex-w flex-r-m">
-							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-								<i class="zmdi zmdi-search"></i>
-							</div>
-	
-							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2">
-								<i class="zmdi zmdi-shopping-cart"></i>
-							</div>
+								<li>
+									<a href="/contact">Contact</a>
+								</li>
 
-							<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
-								<i class="zmdi zmdi-favorite-outline"></i>
-							</a>
+
+							</ul>
 						</div>
-					</div>
-					<div>&nbsp;&nbsp;&nbsp;</div>
-				</nav>
-			</div>	
-		</div>
 
-		<!-- Header Mobile -->
-		<div class="wrap-header-mobile">
-			<!-- Logo moblie -->		
-			<div class="logo-mobile">
-				<span id="logo1">TRENDS</span>
+						<!-- Icon header -->
+						<div class="wrap-icon-header flex-w flex-r-m h-full">
+							<div class="wrap-icon-header flex-w flex-r-m">
+								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
+									<i class="zmdi zmdi-search"></i>
+								</div>
+
+								<a href="/cart"
+							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+							data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+							<i class="zmdi zmdi-shopping-cart"></i>
+						 	</a>
+								<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+									data-notify="0">
+									<i class="zmdi zmdi-favorite-outline"></i>
+								</a>
+							</div>
+						</div>
+						<div>&nbsp;&nbsp;&nbsp;</div>
+					</nav>
+				</div>
 			</div>
 
-			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-					<i class="zmdi zmdi-search"></i>
+			<!-- Header Mobile -->
+			<div class="wrap-header-mobile">
+				<!-- Logo moblie -->
+				<div class="logo-mobile">
+					<span id="logo1">TRENDS</span>
 				</div>
 
-				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
-					<i class="zmdi zmdi-shopping-cart"></i>
-				</div>
-
-				<a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="0">
-					<i class="zmdi zmdi-favorite-outline"></i>
-				</a>
-			</div>
-
-			<!-- Button show menu -->
-			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
-				<span class="hamburger-box">
-					<span class="hamburger-inner"></span>
-				</span>
-			</div>
-		</div>
-
-
-		<!-- Menu Mobile -->
-		<div class="menu-mobile">
-			<ul class="main-menu-m">
-				<li>
-					<a href="/home">Home</a>
-					<span class="arrow-main-menu-m">
-						<i class="fa fa-angle-right" aria-hidden="true"></i>
-					</span>
-				</li>
-
-				<li>
-					<a href="/products" class="label1 rs1" data-label1="hot">Shop</a>
-				</li>
-
-				<li>
-					<a href="/cart" >Cart</a>
-				</li>
-
-				<li>
-					<a href="/blog">Blog</a>
-				</li>
-
-				<li>
-					<a href="/about">About</a>
-				</li>
-
-				<li>
-					<a href="/contact">Contact</a>
-				</li>
-				<li>
-					<a href="/logout">Logout</a>
-				</li>
-			</ul>
-		</div>
-
-		<!-- Modal Search -->
-		<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-			<button class="flex-c-m btn-hide-modal-search trans-04">
-				<i class="zmdi zmdi-close"></i>
-			</button>
-
-			<form class="container-search-header">
-				<div class="wrap-search-header">
-					<input class="plh0" type="text" name="search" placeholder="Search...">
-
-					<button class="flex-c-m trans-04">
+				<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+					<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
 						<i class="zmdi zmdi-search"></i>
-					</button>
+					</div>
+
+					<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+						data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+						<i class="zmdi zmdi-shopping-cart"></i>
+					</a>
+					<a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
+						data-notify="0">
+						<i class="zmdi zmdi-favorite-outline"></i>
+					</a>
 				</div>
-			</form>
-		</div>
-	</header>
 
-	<% if (toast!==undefined&&toast!==null) { %>
-        <script>
-            toastr.error('<%= toast %> ');
-        </script>
-    <% } %>
-	<!-- Sidebar -->
-	
-	<!-- Cart -->
-	<div class="wrap-header-cart js-panel-cart">
-		<div class="s-full js-hide-cart"></div>
-
-		<div class="header-cart flex-col-l p-l-65 p-r-25">
-			<div class="header-cart-title flex-w flex-sb-m p-b-8">
-				<span class="mtext-103 cl2">
-					Your Cart
-				</span>
-
-				<div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
-					<i class="zmdi zmdi-close"></i>
+				<!-- Button show menu -->
+				<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+					<span class="hamburger-box">
+						<span class="hamburger-inner"></span>
+					</span>
 				</div>
 			</div>
-			
-			<div class="header-cart-content flex-w js-pscroll">
-				<ul class="header-cart-wrapitem w-full">
-					
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="images/item-cart-02.jpg" alt="IMG">
-						</div>
 
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								Converse All Star
-							</a>
 
-							<span class="header-cart-item-info">
-								1 x $39.00
-							</span>
-						</div>
+			<!-- Menu Mobile -->
+			<div class="menu-mobile">
+				<ul class="main-menu-m">
+					<li>
+						<a href="/home">Home</a>
+						<span class="arrow-main-menu-m">
+							<i class="fa fa-angle-right" aria-hidden="true"></i>
+						</span>
 					</li>
 
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="images/item-cart-03.jpg" alt="IMG">
-						</div>
+					<li>
+						<a href="/products" class="label1 rs1" data-label1="hot">Shop</a>
+					</li>
 
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								Nixon Porter Leather
-							</a>
+					<li>
+						<a href="/cart">Cart</a>
+					</li>
 
-							<span class="header-cart-item-info">
-								1 x $17.00
-							</span>
-						</div>
+					<li>
+						<a href="/blog">Blog</a>
+					</li>
+
+					<li>
+						<a href="/about">About</a>
+					</li>
+
+					<li>
+						<a href="/contact">Contact</a>
+					</li>
+					<li>
+						<a href="/logout">Logout</a>
 					</li>
 				</ul>
-				
-				<div class="w-full">
-					<div class="header-cart-total w-full p-tb-40">
-						Total: $75.00
-					</div>
-
-					<div class="header-cart-buttons flex-w w-full">
-						<a href="/cart" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
-							View Cart
-						</a>
-
-						<a href="/cart" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-							Check Out
-						</a>
-					</div>
-				</div>
 			</div>
-		</div>
-	</div>
 
-
-<br><br><br><br><br><br><br><br>
-    <section class="section-slide d-flex justify-content-center align-items-center">
-        <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg">
-            <!-- Login Form -->
-			<form class="login-form" method="post" action="/login" onsubmit="return validateForm()">
-				<h4 class="mtext-105 cl2 txt-center p-b-30">
-					Login
-				</h4>
-				<% if (typeof msg !== 'undefined') { %>
-				<p style="color:#ff0000;"><%= msg %></p>
-				<% } %>
-				<small class="form-text text-left" style="color: red; display: none;" id="error"></small>
-				<div class="bor8 m-b-20 how-pos4-parent">
-					<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" id="email" name="email"
-						placeholder="Email Address" required>
-					<img class="how-pos4 pointer-none" src="images/icons/icon-email.png" alt="Email Icon"
-						style="width: 20px; height: 20px;">
-				</div>
-				<small class="form-text text-left" style="color: red; display: none;" id="errorpass"></small>
-				<div class="bor8 m-b-30 how-pos4-parent">
-					<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" id="password" type="password"
-						name="password" placeholder="Password" required>
-					<img class="how-pos4 pointer-none" src="images/icons/padlock.png" alt="Password Icon"
-						style="width: 20px; height: 20px;">
-				</div>
-				<button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer" type="submit">
-					Login
+			<!-- Modal Search -->
+			<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+				<button class="flex-c-m btn-hide-modal-search trans-04">
+					<i class="zmdi zmdi-close"></i>
 				</button>
-				<small class="mtext-105 cl2 txt-center p-t-10">
-					<small class="stext-111 cl2 plh3 size-116" style="margin-left: 3px;font-size:10px;margin-right: 0px;">Don't have an account?</small>
-					<a href="/register" class="cpointer" style="font-size: 12px;">Sign Up</a>
-				</small> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-				<small class="mtext-105 cl2 txt-center p-t-10">
-					<small class="stext-111 cl2 plh3 size-116" style="margin-left: 3px;font-size:10px;margin-right: 0px;">Forgot Your Password?</small>
-					<a href="/sendreset" class="cpointer" style="font-size: 12px;">Reset</a>
-				</small>
-			</form>
-			
-			<script>
-				function validateForm() {
-					var email = document.getElementById('email').value;
-					var password = document.getElementById('password').value;
-			
-					// Check for spaces in email
-					if (/\s/.test(email)) {
-						document.getElementById('error').innerHTML = 'Email should not contain spaces.';
-						document.getElementById('error').style.display = 'block';
-						return false;
-					}
-			
-					// Check for valid email format
-					var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-					if (!emailRegex.test(email)) {
-						document.getElementById('error').innerHTML = 'Invalid email format.';
-						document.getElementById('error').style.display = 'block';
-						return false;
-					}
-			
-					// Check for minimum password length
-					if (password.length < 4) {
-						document.getElementById('errorpass').innerHTML = 'Password should be at least 4 characters long.';
-						document.getElementById('errorpass').style.display = 'block';
-						return false;
-					}
-			
-					// If all validations pass, allow form submission
-					return true;
-				}
-			</script>
-			
-        </div>
-    </section>
-<br><br><br><br><br><br><br><br>
-	  
 
+				<form class="container-search-header">
+					<div class="wrap-search-header">
+						<input class="plh0" type="text" name="search" placeholder="Search...">
 
-	<!-- Footer -->
-	<footer class="bg3 p-t-75 p-b-32">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Categories
-					</h4>
-
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Women
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Men
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shoes
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Watches
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Help
-					</h4>
-
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Track Order
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Returns 
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shipping
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								FAQs
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						GET IN TOUCH
-					</h4>
-
-					<p class="stext-107 cl7 size-201">
-						Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
-					</p>
-
-					<div class="p-t-27">
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-facebook"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-instagram"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-pinterest-p"></i>
-						</a>
+						<button class="flex-c-m trans-04">
+							<i class="zmdi zmdi-search"></i>
+						</button>
 					</div>
-				</div>
+				</form>
+			</div>
+		</header>
 
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Newsletter
-					</h4>
+		<% if (toast!==undefined&&toast!==null) { %>
+			<script>
+				toastr.error('<%= toast %> ');
+			</script>
+			<% } %>
 
-					<form>
-						<div class="wrap-input1 w-full p-b-4">
-							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
-							<div class="focus-input1 trans-04"></div>
+
+				<br><br><br><br><br><br><br><br>
+				<section class="section-slide d-flex justify-content-center align-items-center">
+					<div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg">
+						<!-- Login Form -->
+						<form class="login-form" method="post" action="/login" onsubmit="return validateForm()">
+							<h4 class="mtext-105 cl2 txt-center p-b-30">
+								Login
+							</h4>
+							<% if (typeof msg !=='undefined' ) { %>
+								<p style="color:#ff0000;">
+									<%= msg %>
+								</p>
+								<% } %>
+									<small class="form-text text-left" style="color: red; display: none;"
+										id="error"></small>
+									<div class="bor8 m-b-20 how-pos4-parent">
+										<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" id="email"
+											name="email" placeholder="Email Address" required>
+										<img class="how-pos4 pointer-none" src="images/icons/icon-email.png"
+											alt="Email Icon" style="width: 20px; height: 20px;">
+									</div>
+									<small class="form-text text-left" style="color: red; display: none;"
+										id="errorpass"></small>
+									<div class="bor8 m-b-30 how-pos4-parent">
+										<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" id="password"
+											type="password" name="password" placeholder="Password" required>
+										<img class="how-pos4 pointer-none" src="images/icons/padlock.png"
+											alt="Password Icon" style="width: 20px; height: 20px;">
+									</div>
+									<button
+										class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer"
+										type="submit">
+										Login
+									</button>
+									<small class="mtext-105 cl2 txt-center p-t-10">
+										<small class="stext-111 cl2 plh3 size-116"
+											style="margin-left: 3px;font-size:10px;margin-right: 0px;">Don't have an
+											account?</small>
+										<a href="/register" class="cpointer" style="font-size: 12px;">Sign Up</a>
+									</small> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+									<small class="mtext-105 cl2 txt-center p-t-10">
+										<small class="stext-111 cl2 plh3 size-116"
+											style="margin-left: 3px;font-size:10px;margin-right: 0px;">Forgot Your
+											Password?</small>
+										<a href="/sendreset" class="cpointer" style="font-size: 12px;">Reset</a>
+									</small>
+						</form>
+
+						<script>
+							function validateForm() {
+								var email = document.getElementById('email').value;
+								var password = document.getElementById('password').value;
+
+								// Check for spaces in email
+								if (/\s/.test(email)) {
+									document.getElementById('error').innerHTML = 'Email should not contain spaces.';
+									document.getElementById('error').style.display = 'block';
+									return false;
+								}
+
+								// Check for valid email format
+								var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+								if (!emailRegex.test(email)) {
+									document.getElementById('error').innerHTML = 'Invalid email format.';
+									document.getElementById('error').style.display = 'block';
+									return false;
+								}
+
+								// Check for minimum password length
+								if (password.length < 4) {
+									document.getElementById('errorpass').innerHTML = 'Password should be at least 4 characters long.';
+									document.getElementById('errorpass').style.display = 'block';
+									return false;
+								}
+
+								// If all validations pass, allow form submission
+								return true;
+							}
+						</script>
+
+					</div>
+				</section>
+				<br><br><br><br><br><br><br><br>
+
+
+
+				<!-- Footer -->
+				<footer class="bg3 p-t-75 p-b-32">
+					<div class="container">
+						<div class="row">
+							<div class="col-sm-6 col-lg-3 p-b-50">
+								<h4 class="stext-301 cl0 p-b-30">
+									Categories
+								</h4>
+
+								<ul>
+									<li class="p-b-10">
+										<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											Women
+										</a>
+									</li>
+
+									<li class="p-b-10">
+										<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											Men
+										</a>
+									</li>
+
+									<li class="p-b-10">
+										<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											Shoes
+										</a>
+									</li>
+
+									<li class="p-b-10">
+										<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											Watches
+										</a>
+									</li>
+								</ul>
+							</div>
+
+							<div class="col-sm-6 col-lg-3 p-b-50">
+								<h4 class="stext-301 cl0 p-b-30">
+									Help
+								</h4>
+
+								<ul>
+									<li class="p-b-10">
+										<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											Track Order
+										</a>
+									</li>
+
+									<li class="p-b-10">
+										<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											Returns
+										</a>
+									</li>
+
+									<li class="p-b-10">
+										<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											Shipping
+										</a>
+									</li>
+
+									<li class="p-b-10">
+										<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											FAQs
+										</a>
+									</li>
+								</ul>
+							</div>
+
+							<div class="col-sm-6 col-lg-3 p-b-50">
+								<h4 class="stext-301 cl0 p-b-30">
+									GET IN TOUCH
+								</h4>
+
+								<p class="stext-107 cl7 size-201">
+									Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018
+									or call us on (+1) 96 716 6879
+								</p>
+
+								<div class="p-t-27">
+									<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+										<i class="fa fa-facebook"></i>
+									</a>
+
+									<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+										<i class="fa fa-instagram"></i>
+									</a>
+
+									<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+										<i class="fa fa-pinterest-p"></i>
+									</a>
+								</div>
+							</div>
+
+							<div class="col-sm-6 col-lg-3 p-b-50">
+								<h4 class="stext-301 cl0 p-b-30">
+									Newsletter
+								</h4>
+
+								<form>
+									<div class="wrap-input1 w-full p-b-4">
+										<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email"
+											placeholder="email@example.com">
+										<div class="focus-input1 trans-04"></div>
+									</div>
+
+									<div class="p-t-18">
+										<button
+											class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+											Subscribe
+										</button>
+									</div>
+								</form>
+							</div>
 						</div>
 
-						<div class="p-t-18">
-							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-								Subscribe
-							</button>
+						<div class="p-t-40">
+							<div class="flex-c-m flex-w p-b-18">
+								<a href="#" class="m-all-1">
+									<img src="images/icons/icon-pay-01.png" alt="ICON-PAY">
+								</a>
+
+								<a href="#" class="m-all-1">
+									<img src="images/icons/icon-pay-02.png" alt="ICON-PAY">
+								</a>
+
+								<a href="#" class="m-all-1">
+									<img src="images/icons/icon-pay-03.png" alt="ICON-PAY">
+								</a>
+
+								<a href="#" class="m-all-1">
+									<img src="images/icons/icon-pay-04.png" alt="ICON-PAY">
+								</a>
+
+								<a href="#" class="m-all-1">
+									<img src="images/icons/icon-pay-05.png" alt="ICON-PAY">
+								</a>
+							</div>
+
+							<p class="stext-107 cl6 txt-center">
+								<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+								Copyright &copy;
+								<script>document.write(new Date().getFullYear());</script> All rights reserved | Made
+								with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com"
+									target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com"
+									target="_blank">ThemeWagon</a>
+								<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+
+							</p>
 						</div>
-					</form>
-				</div>
-			</div>
+					</div>
+				</footer>
 
-			<div class="p-t-40">
-				<div class="flex-c-m flex-w p-b-18">
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-01.png" alt="ICON-PAY">
-					</a>
 
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-02.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-03.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-04.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-05.png" alt="ICON-PAY">
-					</a>
+				<!-- Back to top -->
+				<div class="btn-back-to-top" id="myBtn">
+					<span class="symbol-btn-back-to-top">
+						<i class="zmdi zmdi-chevron-up"></i>
+					</span>
 				</div>
 
-				<p class="stext-107 cl6 txt-center">
-					<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-
-				</p>
-			</div>
-		</div>
-	</footer>
+				<!-- Modal1 -->
 
 
-	<!-- Back to top -->
-	<div class="btn-back-to-top" id="myBtn">
-		<span class="symbol-btn-back-to-top">
-			<i class="zmdi zmdi-chevron-up"></i>
-		</span>
-	</div>
+				<style>
+					.isotope-item {
+						width: 100%;
+					}
 
-	<!-- Modal1 -->
+					@media(min-width: 576px) {
+						.isotope-item {
+							width: 50%;
+						}
+					}
+
+					@media(min-width: 768px) {
+						.isotope-item {
+							width: 33.33%;
+						}
+					}
+
+					@media(min-width: 992px) {
+						.isotope-item {
+							width: 25%;
+						}
+					}
+				</style>
+
+				<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+				<script src="vendor/animsition/js/animsition.min.js"></script>
+				<script src="vendor/bootstrap/js/popper.js"></script>
+				<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+				<script src="vendor/select2/select2.min.js"></script>
+				<script>
+					$(".js-select2").each(function () {
+						$(this).select2({
+							minimumResultsForSearch: 20,
+							dropdownParent: $(this).next('.dropDownSelect2')
+						});
+					})
+				</script>
+				<script src="vendor/daterangepicker/moment.min.js"></script>
+				<script src="vendor/daterangepicker/daterangepicker.js"></script>
+				<script src="vendor/slick/slick.min.js"></script>
+				<script src="js/slick-custom.js"></script>
+				<script src="vendor/parallax100/parallax100.js"></script>
+				<script>
+					$('.parallax100').parallax100();
+				</script>
+				<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+				<script>
+					$('.gallery-lb').each(function () { // the containers for all your galleries
+						$(this).magnificPopup({
+							delegate: 'a', // the selector for gallery item
+							type: 'image',
+							gallery: {
+								enabled: true
+							},
+							mainClass: 'mfp-fade'
+						});
+					});
+				</script>
+				<script src="vendor/isotope/isotope.pkgd.min.js"></script>
+				<script src="vendor/sweetalert/sweetalert.min.js"></script>
+				<script>
+					$('.js-addwish-b2').on('click', function (e) {
+						e.preventDefault();
+					});
+
+					$('.js-addwish-b2').each(function () {
+						var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+						$(this).on('click', function () {
+							swal(nameProduct, "is added to wishlist !", "success");
+
+							$(this).addClass('js-addedwish-b2');
+							$(this).off('click');
+						});
+					});
+
+					$('.js-addwish-detail').each(function () {
+						var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+
+						$(this).on('click', function () {
+							swal(nameProduct, "is added to wishlist !", "success");
+
+							$(this).addClass('js-addedwish-detail');
+							$(this).off('click');
+						});
+					});
+
+					/*---------------------------------------------*/
+
+					$('.js-addcart-detail').each(function () {
+						var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
+						$(this).on('click', function () {
+							swal(nameProduct, "is added to cart !", "success");
+						});
+					});
+				</script>
+				<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+				<script>
+					$('.js-pscroll').each(function () {
+						$(this).css('position', 'relative');
+						$(this).css('overflow', 'hidden');
+						var ps = new PerfectScrollbar(this, {
+							wheelSpeed: 1,
+							scrollingThreshold: 1000,
+							wheelPropagation: false,
+						});
+
+						$(window).on('resize', function () {
+							ps.update();
+						})
+					});
+				</script>
+				<script src="js/main.js"></script>
 
 
-	<style>
-		.isotope-item {
-		  width: 100%;
-		}
-	  
-		@media(min-width: 576px) {
-		  .isotope-item {
-			width: 50%;
-		  }
-		}
-	  
-		@media(min-width: 768px) {
-		  .isotope-item {
-			width: 33.33%;
-		  }
-		}
-	  
-		@media(min-width: 992px) {
-		  .isotope-item {
-			width: 25%;
-		  }
-		}
-	  </style>
+	</body>
 
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-	<script src="vendor/animsition/js/animsition.min.js"></script>
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-	<script src="vendor/select2/select2.min.js"></script>
-	<script>
-		$(".js-select2").each(function(){
-			$(this).select2({
-				minimumResultsForSearch: 20,
-				dropdownParent: $(this).next('.dropDownSelect2')
-			});
-		})
-	</script>
-	<script src="vendor/daterangepicker/moment.min.js"></script>
-	<script src="vendor/daterangepicker/daterangepicker.js"></script>
-	<script src="vendor/slick/slick.min.js"></script>
-	<script src="js/slick-custom.js"></script>
-	<script src="vendor/parallax100/parallax100.js"></script>
-	<script>
-        $('.parallax100').parallax100();
-	</script>
-	<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
-	<script>
-		$('.gallery-lb').each(function() { // the containers for all your galleries
-			$(this).magnificPopup({
-		        delegate: 'a', // the selector for gallery item
-		        type: 'image',
-		        gallery: {
-		        	enabled:true
-		        },
-		        mainClass: 'mfp-fade'
-		    });
-		});
-	</script>
-	<script src="vendor/isotope/isotope.pkgd.min.js"></script>
-	<script src="vendor/sweetalert/sweetalert.min.js"></script>
-	<script>
-		$('.js-addwish-b2').on('click', function(e){
-			e.preventDefault();
-		});
-
-		$('.js-addwish-b2').each(function(){
-			var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
-			$(this).on('click', function(){
-				swal(nameProduct, "is added to wishlist !", "success");
-
-				$(this).addClass('js-addedwish-b2');
-				$(this).off('click');
-			});
-		});
-
-		$('.js-addwish-detail').each(function(){
-			var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
-
-			$(this).on('click', function(){
-				swal(nameProduct, "is added to wishlist !", "success");
-
-				$(this).addClass('js-addedwish-detail');
-				$(this).off('click');
-			});
-		});
-
-		/*---------------------------------------------*/
-
-		$('.js-addcart-detail').each(function(){
-			var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-			$(this).on('click', function(){
-				swal(nameProduct, "is added to cart !", "success");
-			});
-		});
-	</script>
-	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-	<script>
-		$('.js-pscroll').each(function(){
-			$(this).css('position','relative');
-			$(this).css('overflow','hidden');
-			var ps = new PerfectScrollbar(this, {
-				wheelSpeed: 1,
-				scrollingThreshold: 1000,
-				wheelPropagation: false,
-			});
-
-			$(window).on('resize', function(){
-				ps.update();
-			})
-		});
-	</script>
-	<script src="js/main.js"></script>
-
-	
-</body>
-</html>
+	</html>

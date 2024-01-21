@@ -30,6 +30,12 @@ time, mark, audio, video {
   font: inherit;
   vertical-align: baseline;
 }
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
 
 thead {
   font-weight: 600;

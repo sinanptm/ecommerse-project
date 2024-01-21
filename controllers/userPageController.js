@@ -1,4 +1,6 @@
 const { Product } = require("../models/productModel")
+const { Cart } = require("../models/userModels")
+const { getUserIdFromToken } = require('../util/bcryption')
 
 // * homepage Loading
 
@@ -8,7 +10,10 @@ const loadHome = async (req, res) => {
             { $match: { status: "Available" } },
             { $sample: { size: 2000 } }
         ]);
-        res.render("home", { products, valid: req.cookies.token });
+        const userId = await getUserIdFromToken(req.cookies.token || req.session.token)
+        const cart = await Cart.findOne({ userId })
+        const cartItems = cart ? cart.items || 0 : 0;
+        res.render("home", { products, valid: req.cookies.token,cartItems });
 
     } catch (error) {
         console.error("Error in loadHome:", error);
@@ -19,6 +24,9 @@ const loadHome = async (req, res) => {
 // * for showing products 
 const loadProducts = async (req, res) => {
     try {
+        const userId = await getUserIdFromToken(req.cookies.token || req.session.token)
+        const cart = await Cart.findOne({ userId })
+        const cartItems = cart ? cart.items || 0 : 0;
         const products = await Product.
             find({ status: "Available" })
             .populate({
@@ -26,13 +34,14 @@ const loadProducts = async (req, res) => {
                 model: 'Category',
                 select: 'name description img type'
             });
-        res.render("product", { products, valid: req.cookies.token });
+        res.render("product", { products, valid: req.cookies.token, cartItems });
 
     } catch (error) {
         console.error("Error in loadHome:", error);
         res.status(500).send("Internal Server Error");
     }
 }
+
 
 // * for showing deltials of a product
 const laodProductDetials = async (req, res) => {
@@ -46,13 +55,14 @@ const laodProductDetials = async (req, res) => {
                 model: 'Category',
                 select: 'name description img'
             });
+        const userId = await getUserIdFromToken(req.cookies.token || req.session.token)
+        const cart = await Cart.findOne({ userId })
+        const cartItems = cart ? cart.items || 0 : 0;
 
         if (product && product.categoryid) {
             const categoryId = product.categoryid._id;
-
             const relatedProducts = await Product.find({ categoryid: categoryId });
-
-            res.render("product-detail", { product, relatedProducts, valid: req.cookies.token });
+            res.render("product-detail", { product, relatedProducts, valid: req.cookies.token, cartItems});
         } else {
             res.status(404).send("Product not found");
         }
@@ -62,23 +72,16 @@ const laodProductDetials = async (req, res) => {
     }
 };
 
-// * for showing the cart of a user
-
-const loadCart = async (req, res) => {
-    try {
-        res.render("cart", { valid: req.cookies.token })
-
-    } catch (error) {
-
-    }
-}
 
 
 // * for showing deltials of us
 
 const loadAbout = async (req, res) => {
     try {
-        res.render("about", { valid: req.cookies.token })
+        const userId = await getUserIdFromToken(req.cookies.token || req.session.token)
+        const cart = await Cart.findOne({ userId })
+        const cartItems = cart ? cart.items || 0 : 0;
+        res.render("about", { valid: req.cookies.token,cartItems })
     } catch (error) {
 
     }
@@ -88,7 +91,10 @@ const loadAbout = async (req, res) => {
 
 const loadContact = async (req, res) => {
     try {
-        res.render("contact", { valid: req.cookies.token })
+        const userId = await getUserIdFromToken(req.cookies.token || req.session.token)
+        const cart = await Cart.findOne({ userId })
+        const cartItems = cart ? cart.items || 0 : 0;
+        res.render("contact", { valid: req.cookies.token , cartItems})
 
     } catch (error) {
 
@@ -99,7 +105,10 @@ const loadContact = async (req, res) => {
 
 const loadBlog = async (req, res) => {
     try {
-        res.render("blog", { valid: req.cookies.token })
+        const userId = await getUserIdFromToken(req.cookies.token || req.session.token)
+        const cart = await Cart.findOne({ userId })
+        const cartItems = cart ? cart.items || 0 : 0;
+        res.render("blog", { valid: req.cookies.token, cartItems })
 
     } catch (error) {
 
@@ -113,6 +122,5 @@ module.exports = {
     loadProducts,
     loadAbout,
     loadBlog,
-    loadCart,
     loadContact
 }
