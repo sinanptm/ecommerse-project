@@ -1,7 +1,7 @@
 const { User } = require("../models/userModels");
 const { sendNewPass, deleteExpiredOTPs, sendOTPs } = require("../config/sendMail");
 const { OTP } = require("../models/otpModel");
-const { makeHash, bcryptCompare, generateToken  } = require("../util/bcryption")
+const { makeHash, bcryptCompare, generateToken, getUserIdFromToken } = require("../util/bcryption")
 
 // * User registation page 
 const loadRegister = async (req, res) => {
@@ -302,6 +302,7 @@ const userLogout = async (req, res) => {
 
 
 
+
 module.exports = {
   loadLogin,
   checkLogin,
@@ -314,5 +315,5 @@ module.exports = {
   sendresetmail,
   loadresetmail,
   loadnewPassword,
-  checkNewPassword
+  checkNewPassword,
 };

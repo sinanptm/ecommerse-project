@@ -22,9 +22,9 @@ const transporter = nodemailer.createTransport({
 
 transporter.verify((err, success) => {
   if (err) {
-    console.log(err);
+    console.log('Mail Serviece:',err);
   } else {
-    console.log(success);
+    console.log('Mail Serviece:',success);
   }
 });
 

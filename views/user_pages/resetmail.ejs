@@ -121,10 +121,10 @@
                                     <i class="zmdi zmdi-search"></i>
                                 </div>
                                 <a href="/cart"
-                                class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-                                data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
-                                <i class="zmdi zmdi-shopping-cart"></i>
-                                 </a>
+                                    class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+                                    data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+                                    <i class="zmdi zmdi-shopping-cart"></i>
+                                </a>
 
                                 <a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
                                     data-notify="0">
@@ -149,11 +149,10 @@
                         <i class="zmdi zmdi-search"></i>
                     </div>
 
-                    <a href="/cart"
-                    class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-                    data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
-                    <i class="zmdi zmdi-shopping-cart"></i>
-                     </a>
+                    <a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+                        data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+                        <i class="zmdi zmdi-shopping-cart"></i>
+                    </a>
 
                     <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
                         data-notify="0">
@@ -224,7 +223,7 @@
         </header>
 
 
-     
+
         <br><br><br><br><br><br><br><br>
         <section class="section-slide d-flex justify-content-center align-items-center">
             <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg">
@@ -261,40 +260,40 @@
                         document.getElementById("verifyBtn").addEventListener("click", function (event) {
                             // Reset error message
                             document.getElementById("error").innerText = "";
-                
+
                             // Get the input value
                             var emailInput = document.getElementById("email").value.trim();
-                
+
                             // Space validation
                             if (emailInput.indexOf(" ") !== -1) {
                                 document.getElementById("error").innerText = "Email should not contain spaces";
                                 event.preventDefault();
                                 return;
                             }
-                
+
                             var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                             if (!emailRegex.test(emailInput)) {
                                 document.getElementById("error").innerText = "Invalid email format";
                                 event.preventDefault();
                                 return;
                             }
-                
+
                             // If validation passes, show the success modal
                             openModal();
                         });
                     });
-                
+
                     function openModal() {
                         setTimeout(() => {
                             document.getElementById("successModal").style.display = "block";
                         }, 4000);
                     }
-                
+
                     function closeModal() {
                         document.getElementById("successModal").style.display = "none";
                     }
                 </script>
-                
+
 
 
 

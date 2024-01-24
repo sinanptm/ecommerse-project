@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   gender: { type: String },
   phone: { type: Number },
   password: { type: String, required: true },
-  addressid: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },
+  address: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
   createdate: { type: Date, default: Date.now },
   updated: { type: Boolean, default: false },
   is_verified: { type: Boolean, default: false },

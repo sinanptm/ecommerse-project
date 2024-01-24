@@ -98,6 +98,11 @@
 										data-notify="0">
 										<i class="zmdi zmdi-favorite-outline"></i>
 									</a>&nbsp;&nbsp;&nbsp;
+									<% if (valid) { %>
+										<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+											<i class="zmdi zmdi-account"></i>
+										</a>
+									<% } %>
 						</div>
 						<% if (valid) { %>
 							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-logout"
@@ -165,6 +170,11 @@
 							data-notify="0">
 							<i class="zmdi zmdi-favorite-outline"></i>
 						</a>
+						<% if (valid) { %>
+							<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+								<i class="zmdi zmdi-account"></i>
+							</a>
+						<% } %>
 					</div>
 
 					<!-- Button show menu -->
@@ -289,37 +299,43 @@
 						<span class="mtext-106 cl2">
 							<%= product.price %>
 						</span>
+						<p class="random-text mtext-104 cl3 p-t-23">
+							<%= product.description %>
+						</p>
 
-						<% const randomTexts=[ "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-							, "Random text with more words for variety and length."
-							, "Another example of a longer random text to make it interesting."
-							, "EJS is an awesome templating engine for Node.js applications." ]; %>
-							<p class="random-text mtext-104 cl3 p-t-23">
-								<%= randomTexts[Math.floor(Math.random() * randomTexts.length)] %>
-							</p>
+						<div class="flex-w flex-r-m p-b-10">
+							<form id="cartform">
+								<div class="size-204 flex-w flex-m respon6-next">
 
-							<div class="flex-w flex-r-m p-b-10">
-								<form id="cartform">
-									<div class="size-204 flex-w flex-m respon6-next">
-										<div class="wrap-num-product flex-w m-r-20 m-tb-10">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-minus"></i>
+									<input type="hidden" name="productid" value="<%= product._id %>"><br>
+
+
+									<% if (product.quantity <=0||product.status!=="Available") { %>
+										<p class="flex-c-m stext-101 cl-red  p-lr-15"
+											style="color: rgb(255, 116, 116);">
+											This item is currently out of stock
+										</p>
+									<% } else { %>
+											<div class="wrap-num-product flex-w m-r-20 m-tb-10">
+												<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+													<i class="fs-16 zmdi zmdi-minus"></i>
+												</div>
+												<input class="mtext-104 cl3 txt-center num-product" type="number"
+													name="quantity" value="1">
+												<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+													<i class="fs-16 zmdi zmdi-plus"></i>
+												</div>
 											</div>
-											<input class="mtext-104 cl3 txt-center num-product" type="number"
-												name="quantity" value="1">
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-plus"></i>
-											</div>
-										</div>
-										<input type="hidden" name="productid" value="<%= product._id %>">
+											<button
+												class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+												Add to cart
+											</button>
+									<% } %>
 
-										<button
-											class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-											Add to cart
-										</button>
-									</div>
-								</form>
-							</div>
+
+								</div>
+							</form>
+						</div>
 					</div>
 					<script>
 
@@ -668,38 +684,38 @@
 		});
 	</script>
 
-<script>
-    $(document).ready(function () {
-        async function loadNoti() {
-            try {
-                const response = await $.ajax({
-                    url: '/add-to-cart',
-                    method: 'POST',
-                    data: $('#cartform').serialize()
-                });
-                const newNoti = $(response).find('.cart-noti').html();
-                $('.cart-noti').html(newNoti);
-            } catch (error) {
-                console.error('Error in loadNoti:', error);
-            }
-        }
+	<script>
+		$(document).ready(function () {
+			async function loadNoti() {
+				try {
+					const response = await $.ajax({
+						url: '/add-to-cart',
+						method: 'POST',
+						data: $('#cartform').serialize()
+					});
+					const newNoti = $(response).find('.cart-noti').html();
+					$('.cart-noti').html(newNoti);
+				} catch (error) {
+					console.error('Error in loadNoti:', error);
+				}
+			}
 
-        $('.js-addcart-detail').each(function () {
-            var nameProduct = $(this).closest('.p-lr-0-lg').find('.js-name-detail').text();
+			$('.js-addcart-detail').each(function () {
+				var nameProduct = $(this).closest('.p-lr-0-lg').find('.js-name-detail').text();
 
-            $(this).on('click', async function (e) {
-                e.preventDefault();
+				$(this).on('click', async function (e) {
+					e.preventDefault();
 
-                try {
-                    await swal(nameProduct, 'is added to cart !', 'success');
-                    await loadNoti();
-                } catch (error) {
-                    console.error('Error in click event handler:', error);
-                }
-            });
-        });
-    });
-</script>
+					try {
+						await swal(nameProduct, 'is added to cart !', 'success');
+						await loadNoti();
+					} catch (error) {
+						console.error('Error in click event handler:', error);
+					}
+				});
+			});
+		});
+	</script>
 
 
 

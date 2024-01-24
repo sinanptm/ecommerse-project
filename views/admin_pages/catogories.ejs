@@ -316,18 +316,8 @@
                         </li>
                         <li>
                             <ul>
-                                <% category.items.forEach(function(item,index) { %>
                                     <li>
-                                    <li>
-                                        <span class="custom-link-style" >
-                                            <h6>
-                                                <a href="/admin/editProduct?id=<%= item._id %>&&type=cat"><%= index + 1 %>. <%= item.name %></a>
-                                            </h6>
-                                        </span>
                                     </li>
-
-                        </li>
-                        <% }); %>
                     </ul>
                     </li>
                     <button class="btn btn-primary" data-bs-target="#editCategoryModal<%= category._id %>"
@@ -398,15 +388,7 @@
                                         <label for="description" class="form-label">Description</label>
                                         <input type="text" class="form-control" id="description" name="description" required value="<%= category.description %>" />
                                     </div>
-                                    <strong>To Edit Products</strong>
-                                    <% category.items.forEach(function(item,index) { %>
-                                        
-                                            <a class="custom-link-style" href="/admin/editProduct?id=<%= item._id %>&&type=hnjnh">
-                                                <h6>
-                                                    <%= index + 1 %>. <%= item.name %>
-                                                </h6>
-                                            </a>
-                            <% }); %>
+                                   
                                     <button type="submit" class="btn btn-primary">Save</button>
                                 </form>
                                 

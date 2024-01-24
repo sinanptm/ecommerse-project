@@ -2963,37 +2963,13 @@ input.num-product::-webkit-inner-spin-button {
   width: 60px;
   position: relative;
   margin-right: 20px;
-  cursor: pointer;
+  cursor:auto ;
 }
 
 .how-itemcart1 img {
   width: 100%;
 }
 
-.how-itemcart1::after {
-  content: '\e870';
-  font-family: Linearicons-Free;
-  font-size: 16px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: rgba(0,0,0,0.5);
-  color: #fff;
-  transition: all 0.3s;
-  -webkit-transition: all 0.3s;
-  -o-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  opacity: 0;
-}
 
 .how-itemcart1:hover:after {
   opacity: 1;

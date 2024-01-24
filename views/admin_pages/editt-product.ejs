@@ -281,6 +281,24 @@
                                 <hr class="mb-4 mt-0">
                                 <div class="row">
                                     <div class="col-md-3">
+                                        <h6> Description</h6>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="mb-4">
+                                            <label class="form-label">Product Description</label>
+                                            <textarea required placeholder="Type here" class="form-control"
+                                            name="description" id="productDescription" rows="4">
+                                            <%= product.description %>
+                                        </textarea>
+                                        
+                                            <small class="form-text text-left" style="color: red; display: none;"
+                                                id="errorProductDescription"></small>
+                                        </div>
+                                    </div> <!-- col.// -->
+                                </div> <!-- row.// -->
+                                <hr class="mb-4 mt-0">
+                                <div class="row">
+                                    <div class="col-md-3">
                                         <h6>New Category</h6>
                                     </div>
                                     <div class="col-md-9">

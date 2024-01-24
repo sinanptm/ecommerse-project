@@ -67,7 +67,7 @@ const loadAddProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const { name, price, quantity, status, categoryid, discount } = req.body;
+    const { name, price, quantity, status, categoryid, discount,description } = req.body;
     const images = req.files.map(file => file.filename);
 
     const promises = images.map(async (image) => {
@@ -87,6 +87,7 @@ const addProduct = async (req, res) => {
       quantity,
       status,
       img,
+      description,
       categoryid,
       createdate: new Date(),
       discount,
@@ -148,7 +149,7 @@ const editProduct = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const { name, price, quantity, status, categoryid, discount } = req.body;
+    const { name, price, quantity, status, categoryid, discount, description } = req.body;
 
     const images = req.files.map(file => file.filename);
 
@@ -186,6 +187,7 @@ const editProduct = async (req, res) => {
       quantity,
       status,
       img,
+      description,
       categoryid,
       discount,
     });

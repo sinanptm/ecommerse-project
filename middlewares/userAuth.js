@@ -1,12 +1,34 @@
-const { User } = require("../models/userModels");
+const { User, Cart } = require("../models/userModels");
 const { getUserIdFromToken } = require("../util/bcryption")
 
- 
+const has_token = async (req,res,next)=>{
+    try {
+        if (req.session.token || req.cookies.token) {
+            const token = await getUserIdFromToken(req.cookies.token || req.session.token);
+            const user = await User.findOne({ _id:token });
+            if (!user) {
+                req.session.destroy();
+                req.clearCookie("token")
+            }
+            next()
+        }
+        
+    } catch (error) {
+        console.log('error in credential check:',error.message);
+        next()
+    }
+} 
+
 const is_registered = async (req, res, next) => {
-    if (req.session.OTPId) {
-        next();
-    } else {
-        res.redirect("/register");
+    try {
+        if (req.session.OTPId) {
+            next();
+        } else {
+            res.redirect("/register");
+        }
+    } catch (error) {
+        res.redirect("/home")
+        console.log('error in is_registered',error.message);
     }
 };
 
@@ -70,9 +92,32 @@ const requireLogin = async (req, res, next) => {
     }
 };
 
+const cartItems = async (req, res, next) => {
+    try {
+        if (req.cookies.token || req.session.token) {
+            const userId = await getUserIdFromToken(req.cookies.token || req.session.token)
+            const cart = await Cart.findOne({ userId })
+            res.locals.cartItems = cart ? cart.items || 0 : 0;
+            res.locals.valid = req.cookies.token || req.session.token
+            next();
+        } else {
+            res.locals.cartItems = 0;
+            res.locals.valid = req.cookies.token || req.session.token
+            next();
+        }
+    } catch (error) {
+        res.locals.cartItems = 0;
+        res.locals.valid = req.cookies.token || req.session.token
+        next();
+        console.log("Invalid Credentials:",error.message);
+    }
+}
+
 
 module.exports = {
     is_registered,
     is_loginRequired,
     requireLogin,
+    cartItems,
+    has_token
 };
