@@ -70,9 +70,7 @@ const cartSchema = new mongoose.Schema({
   products: [{
     productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product", unique: true },
     quantity: Number,
-    price: Number
   }],
-  totalPrice: { type: Number },
   items: { type: Number, default: 0 },
   createdate: { type: Date },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", unique: true },
@@ -94,15 +92,6 @@ const paymentSchema = new mongoose.Schema({
 });
 
 const Payment = mongoose.model("Payment", paymentSchema);
-
-// OrderItems Schema
-const orderItemsSchema = new mongoose.Schema({
-  orderid: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
-  productsid: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-  quantity: { type: Number },
-});
-
-const OrderItem = mongoose.model("OrderItem", orderItemsSchema);
 
 // Banner Schema
 const bannerSchema = new mongoose.Schema({
@@ -130,7 +119,6 @@ module.exports = {
   Coupon,
   Cart,
   Payment,
-  OrderItem,
   Banner,
   Wallet,
   Admin,

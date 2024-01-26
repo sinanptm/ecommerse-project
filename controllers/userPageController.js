@@ -112,6 +112,8 @@ const editDetails = async (req, res) => {
     }
 };
 
+// * for adding new address
+
 
 const addAddress = async (req, res) => {
     try {
@@ -138,20 +140,24 @@ const addAddress = async (req, res) => {
 
         const user = await User.findByIdAndUpdate(userId, { $push: { address: address._id } })
 
-        res.status(200).redirect('/account');
+        if (req.query.ad) {
+            res.redirect(req.query.ad)
+        }else{
+            res.status(200).redirect('/account');
+        }
     } catch (error) {
         console.log(error.message);
         res.redirect('/account?msg=' + error.message);
     }
 };
 
+// * for editting address
 
 const edittAddress = async (req, res) => {
     try {
         const { Fname, Lname, companyName, country, streetAdress, city, state, pincode, mobile, email } = req.body;
         const { id } = req.params; // Assuming the addressId is part of the request parameters
-        console.log(Fname, Lname, companyName, country, streetAdress, city, state, pincode, mobile, email);
-        // Update the address using Mongoose or your preferred database library
+      
         const updatedAddress = await Addresse.findByIdAndUpdate(id, {
             $set: {
                 Fname,
@@ -182,7 +188,7 @@ const edittAddress = async (req, res) => {
 };
 
 
-
+// * for deleting address
 const deleteAddress = async (req, res) => {
     try {
 
@@ -196,6 +202,9 @@ const deleteAddress = async (req, res) => {
         res.redirect('/account?msg=' + error.message);
     }
 }
+
+
+
 
 
 // * for showing deltials of us

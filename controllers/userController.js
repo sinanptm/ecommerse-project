@@ -91,19 +91,19 @@ const verifyOTP = async (req, res) => {
     // Check if email and otp are provided
     if (!email || !otp) {
       delete req.session.OTPId;
-      return res.render("otp", { msg: `Provide values for email ${email}`, email: req.session.pmail, valid: req.cookies.token });
+      return res.render("otp", { msg: `Provide values for email ${email}`, email: req.session.pmail, });
     }
 
     const matchedRecord = await OTP.findOne({ email: email });
 
     if (!matchedRecord) {
       delete req.session.OTPId;
-      return res.render("otp", { msg: "No OTP found for the provided email.", email: req.session.pmail, valid: req.cookies.token });
+      return res.render("otp", { msg: "No OTP found for the provided email.", email: req.session.pmail, });
     }
 
     if (matchedRecord.expiresAt < Date.now()) {
       await OTP.deleteOne({ email });
-      return res.render("otp", { msg: "OTP code has expired. Request a new one.", email: req.session.pmail, valid: req.cookies.token });
+      return res.render("otp", { msg: "OTP code has expired. Request a new one.", email: req.session.pmail, });
     }
 
     if (await bcryptCompare(otp, matchedRecord.otp)) {
@@ -128,13 +128,13 @@ const verifyOTP = async (req, res) => {
       delete req.session.OTPId;
       return res.redirect("/home");
     } else {
-      return res.render("otp", { msg: "OTP Is Incorrect", email: req.session.pmail, valid: req.cookies.token });
+      return res.render("otp", { msg: "OTP Is Incorrect", email: req.session.pmail, });
     }
 
   } catch (error) {
     delete req.session.OTPId;
     console.log(error.message);
-    res.render("otp", { msg: error.message, email: req.session.pmail, valid: req.cookies.token });
+    res.render("otp", { msg: error.message, email: req.session.pmail, });
   }
 };
 
@@ -145,7 +145,7 @@ const verifyOTP = async (req, res) => {
 const loadLogin = async (req, res) => {
   try {
     const toast = req.query.toast
-    res.render("login", { toast, valid: req.cookies.token });
+    res.render("login", { toast, });
   } catch (err) {
     res.render("login"), { msg: err.message };
   }
@@ -190,13 +190,13 @@ const checkLogin = async (req, res) => {
         );
         res.redirect("/home")
       } else {
-        res.render("login", { toast: "Incorrect password.", msg: "Incorrect password.", valid: req.cookies.token });
+        res.render("login", { toast: "Incorrect password.", msg: "Incorrect password.", });
       }
     } else {
-      res.render("login", { msg: "Incorrect email and password.", toast: "Incorrect email and password.", valid: req.cookies.token });
+      res.render("login", { msg: "Incorrect email and password.", toast: "Incorrect email and password.", });
     }
   } catch (error) {
-    res.render("login", { msg: error.message, toast: "Incorrect email and password.", valid: req.cookies.token });
+    res.render("login", { msg: error.message, toast: "Incorrect email and password.", });
   }
 };
 

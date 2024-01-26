@@ -30,15 +30,20 @@ const Category = mongoose.model("Category", categorySchema);
 
 // Orders Schema
 const ordersSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     orderAmount: { type: Number },
-    deliveryAddress: { type: String },
+    deliveryAddress: { type: mongoose.Schema.Types.ObjectId, ref: "Addresse" },
     orderDate: { type: Date },
     orderStatus: { type: String },
     deliveryDate: { type: Date },
     ShippingDate: { type: Date },
-    OrderedItems: [{ type: mongoose.Schema.Types.ObjectId, ref: "OrderItem" }],
-    payment: { type: mongoose.Schema.Types.ObjectId, ref: "Payment" },
+    OrderedItems: [{ 
+        productid:{type: mongoose.Schema.Types.ObjectId, ref: "Product"},
+        price:Number,
+        quantity:Number
+    }],
+    payment:String
+    //  { type: mongoose.Schema.Types.ObjectId, ref: "Payment" },
 });
 
 const Order = mongoose.model("Order", ordersSchema);

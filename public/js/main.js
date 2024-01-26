@@ -1,3 +1,67 @@
+function submitEditAddress(addressId) {
+    clearEditAddressErrors();
+
+    const fields = [
+        `editFirstName${addressId}`,
+        `editLastName${addressId}`,
+        `editCompanyName${addressId}`,
+        `editCountry${addressId}`,
+        `editStreetAddress${addressId}`,
+        `editCity${addressId}`,
+        `editState${addressId}`,
+        `editPincode${addressId}`,
+        `editMobile${addressId}`,
+        `editEmail${addressId}`
+    ];
+
+    const errors = [];
+
+    for (const field of fields) {
+        const value = document.getElementById(field).value.trim();
+
+        if (!isValidInput(value)) {
+            errors.push(`Please enter a valid ${field.replace(addressId, "").toLowerCase()}.`);
+        }
+    }
+
+    const email = document.getElementById(`editEmail${addressId}`).value.trim();
+    if (!isValidEmail(email)) {
+        errors.push("Please enter a valid email address.");
+    }
+
+    if (errors.length > 0) {
+        displayEditAddressErrors(errors[0]);
+        return;
+    }
+    console.log();
+
+    const formData = $(`#editAddressForm${addressId}`).serialize();
+
+    $.ajax({
+        url: `/edit-address/${addressId}`,
+        method: "POST",
+        data: formData,
+        success: function (response) {
+            const newData = $(response).find(`.address${addressId}`).html();
+            $(`.address${addressId}`).html(newData);
+
+            $(`#editAddressModal${addressId}`).modal('hide');
+        },
+        error: function (error) {
+            console.error('Error editing address:', error.message);
+        }
+    });
+    event.preventDefault();
+}
+
+function displayEditAddressErrors(error) {
+    const errorContainer = $('.edit-error-container');
+    errorContainer.text(error).show();
+}
+
+function clearEditAddressErrors() {
+    $('.edit-error-container').hide().empty();
+}
 
 
 

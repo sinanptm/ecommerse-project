@@ -3,16 +3,14 @@ const userRoute = express();
 const path = require("path");
 const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/userController");
 const { loadHome, loadProducts, laodProductDetials, laodAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadBlog, loadContact } = require("../controllers/userPageController");
-const { loadCart, addToCart, addQuantity, removeProduct } = require("../controllers/cartController")
-const { is_registered, requireLogin, is_loginRequired, cartItems, has_token } = require("../middlewares/userAuth");
+const { loadCart, addToCart, addQuantity, removeProduct, loadCheckout, addToCheckout, placeOrder, showSuccess } = require("../controllers/cartController")
+const { is_registered, requireLogin, is_loginRequired, cartItems, } = require("../middlewares/userAuth");
 
 userRoute.set("views", path.join(__dirname, "../views/user_pages"));
 userRoute.use(express.static(path.join(__dirname, "../public")));
 userRoute.locals.title = "TRENDS";
-userRoute.use(has_token);
 userRoute.use(cartItems);
 
-//! Authentication Routes
 userRoute.get("/", loadHome);
 userRoute.get("/login", is_loginRequired, loadLogin);
 userRoute.post("/login", is_loginRequired, checkLogin);
@@ -29,7 +27,7 @@ userRoute.post("/checkOTP", verifyOTP);
 userRoute.get("/register", is_loginRequired, loadRegister);
 userRoute.post("/register", is_loginRequired, checkRegister);
 
-//! product Routes
+// ! product Routes
 
 userRoute.get("/home", loadHome);
 userRoute.get("/products", loadProducts);
@@ -41,7 +39,14 @@ userRoute.post("/add-to-cart", requireLogin, addToCart)
 userRoute.post('/quantity-manage/:id', requireLogin, addQuantity)
 userRoute.get('/removeProduct/:id', requireLogin, removeProduct)
 
-// * User Dtails Routes
+// * checkout routes 
+userRoute.post('/to-checkout', requireLogin, addToCheckout)
+userRoute.get('/checkout', requireLogin, loadCheckout)
+userRoute.post("/place-order", requireLogin, placeOrder)
+userRoute.get('/order-success', requireLogin, showSuccess)
+
+
+// * User Profile Routes
 userRoute.get('/account', requireLogin, laodAccount)
 userRoute.post('/edit-details', requireLogin, editDetails)
 userRoute.post('/add-address', requireLogin, addAddress)

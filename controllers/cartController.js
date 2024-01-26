@@ -1,5 +1,5 @@
 const { Cart, User } = require("../models/userModels");
-const { Product } = require("../models/productModel");
+const { Product, Order } = require("../models/productModel");
 const { getUserIdFromToken } = require("../util/bcryption");
 
 
@@ -40,11 +40,9 @@ const addToCart = async (req, res) => {
         userCart.products.push({
           productid: productid,
           quantity: quantity,
-          price: product.price,
         });
       }
 
-      userCart.totalPrice += totalPrice;
       userCart.items = userCart.products.length; // Set the total items based on the unique products
 
       const updatedCart = await userCart.save();
@@ -54,7 +52,6 @@ const addToCart = async (req, res) => {
         products: [{
           productid: productid,
           quantity: quantity,
-          price: product.price,
         }],
         totalPrice: totalPrice,
         items: 1, // Since it's a new cart, there is one unique product
@@ -72,48 +69,40 @@ const addToCart = async (req, res) => {
   }
 };
 
-// * for showing the cart of a user
+
+// * for loading the cart page 
 
 const loadCart = async (req, res) => {
   try {
     const token = req.cookies.token || req.session.token;
     if (!token) {
-
-      const cart = {
-        items: 0,
-      }
-      return res.render("cart", { valid: req.cookies.token, products: [], cart, discountPrice: 0 });
+      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, totalPrice: 0, });
     }
+
     const userId = await getUserIdFromToken(token);
 
     let cart = await Cart.findOne({ userId }).populate({
       path: 'products.productid',
       model: 'Product',
-      select: 'name description price img _id discount quantity'
     });
+
     if (!cart) {
-      cart = {
-        items: 0,
-      }
-      return res.render("cart", { valid: req.cookies.token, products: [], cart, discountPrice: 0 });
+      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, totalPrice: 0 });
     }
 
     const products = cart.products;
-    let discountPrice = 0;
 
-    let totalPrice 
-    for (const cartProduct of products) {
-      const product = cartProduct.productid;
-      if (product.quantity >= 0) {
-        const discountedPrice = product.price * (1 - product.discount / 100);
-        discountPrice += discountedPrice * cartProduct.quantity;
-        totalPrice = cart.totalPrice 
-      }else{
-        totalPrice = cart.totalPrice - product.price
+    const totalPrice = products.reduce((total, product) => {
+      if (product.quantity > 0 && product.productid.status === "Available") {
+        return total + product.productid.price * product.quantity;
       }
-    }
+      return total;
+    }, 0);
 
-    return res.render("cart", { valid: req.cookies.token, products, cart, discountPrice,totalPrice });
+    const filteredProducts = products.filter(product => product.productid.quantity > 0 && product.productid.status === "Available");
+    const productsToCheckout = filteredProducts.map(product => ({ productid: product.productid._id, quantity: product.quantity }));
+
+    return res.render("cart", { products, cart, totalPrice, productsToCheckout });
   } catch (error) {
     console.error(error);
     return res.status(500).send("Internal Server Error");
@@ -121,7 +110,7 @@ const loadCart = async (req, res) => {
 };
 
 
-
+// * ror adding quantity of a product
 
 const addQuantity = async (req, res) => {
   try {
@@ -161,6 +150,8 @@ const addQuantity = async (req, res) => {
   }
 };
 
+// * for removing product from cart
+
 const removeProduct = async (req, res) => {
   try {
     const productId = req.params.id
@@ -187,10 +178,151 @@ const removeProduct = async (req, res) => {
 }
 
 
+// * for sending datas to checkout page 
+
+const addToCheckout = async (req, res) => {
+  try {
+    let { totalprice, products } = req.body;
+    const parsedProducts = Array.isArray(products) ? products : [products];
+    req.session.parsedProducts = parsedProducts
+    req.session.totalAmount = totalprice
+    res.locals.products = parsedProducts;
+    res.redirect(`/checkout?products=${parsedProducts}&&total=${totalprice}`);
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).redirect('/cart');
+  }
+};
+
+
+
+// * for loading checkout 
+const loadCheckout = async (req, res) => {
+  try {
+    const parsedProducts = req.session.parsedProducts
+    const totalAmount = req.session.totalAmount
+    const total = totalAmount
+    const token = req.cookies.token || req.session.token;
+    const userId = await getUserIdFromToken(token);
+
+    if (!total || !token) {
+      return res.status(302).redirect('/cart');
+    }
+
+    let products = parsedProducts
+    try {
+      products = JSON.parse(products);
+    } catch (error) {
+      console.error('Error parsing products:', error.message);
+      return res.status(500).redirect('/cart');
+    }
+
+    const user = await User.findById(userId).populate('address');
+
+    if (!user) {
+      console.log('no userid');
+      return res.status(302).redirect('/cart');
+    }
+
+    if (!Array.isArray(products) || products.length === 0) {
+      console.log('nop product')
+      return res.status(302).redirect('/cart');
+    }
+
+    const productIds = products.map(product => product.productid);
+    const populatedProducts = await Product.find({ _id: { $in: productIds } });
+
+    let totalDiscount = 0;
+    const totalPrices = populatedProducts.map((product, index) => {
+      const discount = product.discount || 0; // Default to 0 if discount is undefined
+      const discountedPrice = (product.price - (product.price * discount / 100)) * products[index].quantity;
+      totalDiscount += (product.price * products[index].quantity) - discountedPrice;
+      return discountedPrice;
+    });
+
+    const totalPrice = totalPrices.reduce((acc, curr) => acc + curr, 0);
+
+    // Render the checkout page
+    res.render("checkout", {
+      user, total, products, totalPrice, totalDiscount
+    });
+
+  } catch (error) {
+    console.error('Error in loadCheckout:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+// * for placing new order 
+const placeOrder = async (req, res) => {
+  try {
+    const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
+    let { totalprice, products, payment_method, address } = req.body
+    const orderDate = Date.now();
+    const deliveryDate = new Date(orderDate);
+    deliveryDate.setDate(deliveryDate.getDate() + 7);
+    products = JSON.parse(products)
+    const productIds = products.map(product => product.productid);
+    const populatedProducts = await Product.find({ _id: { $in: productIds } });
+    const details = populatedProducts.map((product, i) => {
+      return {
+        productid: product._id,
+        price: product.price,
+        quantity: products[i].quantity
+      }
+    })
+
+
+    const newOrder = new Order({
+      userid,
+      orderAmount: totalprice,
+      payment: payment_method,
+      deliveryAddress: address,
+      orderDate,
+      orderStatus: "Processing",
+      deliveryDate,
+      OrderedItems: details
+    });
+    const order = await newOrder.save()
+    res.redirect("/order-success?id="+order._id);
+
+  } catch (error) {
+    console.log(error.message);
+    const parsedProducts = req.session.parsedProducts
+    const totalAmount = req.session.totalAmount
+    res.status(200).redirect(`/checkout?products=${parsedProducts}&&total=${totalAmount}`);
+  }
+}
+
+
+const showSuccess = async(req,res)=>{
+  try {
+    const id = req.query.id
+    const order = await Order.findById(id)
+    .populate('userid')
+    .populate('OrderedItems.productid');
+
+
+    if (!order) {
+      res.redirect("/cart")
+    }
+    res.render('order-success',{order})
+    
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
 
 module.exports = {
   loadCart,
   addToCart,
   addQuantity,
-  removeProduct
+  removeProduct,
+  loadCheckout,
+  addToCheckout,
+  placeOrder,
+  showSuccess
 };

@@ -1,23 +1,6 @@
 const { User, Cart } = require("../models/userModels");
 const { getUserIdFromToken } = require("../util/bcryption")
 
-const has_token = async (req,res,next)=>{
-    try {
-        if (req.session.token || req.cookies.token) {
-            const token = await getUserIdFromToken(req.cookies.token || req.session.token);
-            const user = await User.findOne({ _id:token });
-            if (!user) {
-                req.session.destroy();
-                req.clearCookie("token")
-            }
-            next()
-        }
-        
-    } catch (error) {
-        console.log('error in credential check:',error.message);
-        next()
-    }
-} 
 
 const is_registered = async (req, res, next) => {
     try {
@@ -119,5 +102,4 @@ module.exports = {
     is_loginRequired,
     requireLogin,
     cartItems,
-    has_token
 };
