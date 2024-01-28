@@ -530,7 +530,10 @@
 											<td id="<%= product.productid._id %>"onclick="quantity(event, '<%= product.productid._id %>')"class="column-4">
 												
 												<% if (product.productid.quantity<=0 ||product.productid.status=="Disabled") { %>
-													<strong class="column-2" style="color: #d32f2f;">This iten is Currently Unavailable</strong>
+													<p class="column-2" style="color: #d32f2f;">This iten is Currently Unavailable
+														<a href="/removeProduct/<%= product.productid._id %>" class=" cl8  trans-04 ">
+															<i class="fs-16 zmdi zmdi-delete"></i></a>
+													</p>
 													<% }else{%>
 														<div class="wrap-num-product flex-w m-l-auto m-r-0" <% if(product.productid.quantity <=0) { %>style="display:none;"<% } %>>
 															<% if (product.quantity>1) { %>

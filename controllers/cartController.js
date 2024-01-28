@@ -61,8 +61,14 @@ const addToCart = async (req, res) => {
 
       const newCart = await cart.save();
     }
+    // if (req.query.zz='z') {
+    //   res.status(200).redirect("/products");
+    // } else if(req.query.hh) {
+    //   res.status(200).redirect('/home');
+    // }else{
+      res.redirect("/product?id=" + productid);
+    // }
 
-    res.redirect("/product?id=" + productid);
   } catch (error) {
     console.error(error);
     res.status(500).redirect("/products"); // Handle other errors with a 500 status and redirect
@@ -200,8 +206,7 @@ const addToCheckout = async (req, res) => {
 const loadCheckout = async (req, res) => {
   try {
     const parsedProducts = req.session.parsedProducts
-    const totalAmount = req.session.totalAmount
-    const total = totalAmount
+    const total = req.session.totalAmount
     const token = req.cookies.token || req.session.token;
     const userId = await getUserIdFromToken(token);
 
@@ -233,10 +238,12 @@ const loadCheckout = async (req, res) => {
     const populatedProducts = await Product.find({ _id: { $in: productIds } });
 
     let totalDiscount = 0;
-    const totalPrices = populatedProducts.map((product, index) => {
-      const discount = product.discount || 0; // Default to 0 if discount is undefined
-      const discountedPrice = (product.price - (product.price * discount / 100)) * products[index].quantity;
-      totalDiscount += (product.price * products[index].quantity) - discountedPrice;
+    let subtotal = 0
+    const totalPrices = populatedProducts.map((product, i) => {
+      subtotal = product.price * products[i].quantity
+      const discount = product.discount || 0;
+      const discountedPrice = (product.price - (product.price * discount / 100)) * products[i].quantity;
+      totalDiscount += (product.price * products[i].quantity) - discountedPrice;
       return discountedPrice;
     });
 
@@ -244,7 +251,7 @@ const loadCheckout = async (req, res) => {
 
     // Render the checkout page
     res.render("checkout", {
-      user, total, products, totalPrice, totalDiscount
+      user, subtotal, products, totalPrice, totalDiscount
     });
 
   } catch (error) {
@@ -256,58 +263,82 @@ const loadCheckout = async (req, res) => {
 // * for placing new order 
 const placeOrder = async (req, res) => {
   try {
-    const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
-    let { totalprice, products, payment_method, address } = req.body
+    const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
+    let { totalprice, products, payment_method, address } = req.body;
     const orderDate = Date.now();
     const deliveryDate = new Date(orderDate);
     deliveryDate.setDate(deliveryDate.getDate() + 7);
-    products = JSON.parse(products)
+    products = JSON.parse(products);
     const productIds = products.map(product => product.productid);
     const populatedProducts = await Product.find({ _id: { $in: productIds } });
-    const details = populatedProducts.map((product, i) => {
-      return {
-        productid: product._id,
-        price: product.price,
-        quantity: products[i].quantity
-      }
-    })
 
+    // Update the cart
+    const cart = await Cart.findOne({ userId });
+    if (!cart) {
+      throw new Error("Cart not found for the user");
+    }
+
+    // Calculate total items to be removed from the cart
+    const totalItemsToRemove = products.reduce((acc, curr) => acc + curr.quantity, 0);
+
+    // Check if there are enough items in the cart
+    if (cart.items < totalItemsToRemove) {
+      throw new Error("Insufficient items in the cart");
+    }
+
+    // Remove ordered products from the cart
+    products.forEach(({ productid }) => {
+      cart.products = cart.products.filter(product => product.productid.toString() !== productid);
+    });
+
+    // Update total items in cart
+    cart.items -= totalItemsToRemove;
+
+    // Save the updated cart
+    await cart.save();
+
+    const details = populatedProducts.map((product, i) => ({
+      productid: product._id,
+      price: product.price,
+      quantity: products[i].quantity,
+      name: product.name
+    }));
 
     const newOrder = new Order({
-      userid,
+      userid: userId,
       orderAmount: totalprice,
       payment: payment_method,
       deliveryAddress: address,
       orderDate,
-      orderStatus: "Processing",
+      orderStatus: "1",
       deliveryDate,
       OrderedItems: details
     });
-    const order = await newOrder.save()
-    res.redirect("/order-success?id="+order._id);
-
+    const order = await newOrder.save();
+    res.redirect("/order-success?id=" + order._id);
   } catch (error) {
     console.log(error.message);
-    const parsedProducts = req.session.parsedProducts
-    const totalAmount = req.session.totalAmount
+    const parsedProducts = req.session.parsedProducts;
+    const totalAmount = req.session.totalAmount;
     res.status(200).redirect(`/checkout?products=${parsedProducts}&&total=${totalAmount}`);
   }
-}
+};
 
 
-const showSuccess = async(req,res)=>{
+
+const showSuccess = async (req, res) => {
   try {
     const id = req.query.id
     const order = await Order.findById(id)
-    .populate('userid')
-    .populate('OrderedItems.productid');
+      .populate('userid')
+      .populate('OrderedItems.productid');
 
 
     if (!order) {
       res.redirect("/cart")
     }
-    res.render('order-success',{order})
-    
+    res.render('order-success', { order })
+
   } catch (error) {
     console.log(error.message);
   }

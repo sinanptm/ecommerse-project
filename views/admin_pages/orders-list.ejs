@@ -15,6 +15,20 @@
     <link rel="shortcut icon" type="image/x-icon" href="imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="css/main.css" rel="stylesheet" type="text/css" />
+    <style>
+        .edit-form {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .product-image {
+    width: 60px; /* Set the desired width */
+    height: 40px; /* Set the desired height */
+    object-fit: cover; /* Optional: Ensure the image maintains its aspect ratio */
+    /* Add any other styles you want */
+}
+
+    </style>
 </head>
 
 <body>
@@ -30,18 +44,18 @@
         </div>
         <nav>
             <ul class="menu-aside">
-                <li class="menu-item active">
+                <li class="menu-item">
                     <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-ite8m has-submenu">
-                    <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-shopping_bag"></i>
+                <li class="menu-item has-submenu ">
+                    <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
                     <div class="submenu">
-                        <a href="/admin/products">Product List</a>
-                        <a href="page-categories.html">Categories</a>
+                        <a href="/admin/products" class="active">Product List</a>
+                        <a href="/admin/catogories">Categories</a>
                         <a href="/admin/addProduct">Add product </a>
                     </div>
                 </li>
@@ -52,21 +66,16 @@
                     <div class="submenu">
                         <a href="/admin/users">User Managment</a>
                     </div>
-                </li> 
-               
-                <li class="menu-item has-submenu">
+                </li>
+                <li class="menu-item has-submenu active">
                     <a class="menu-link" href="/admin/orders-list"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
                     <div class="submenu">
                         <a href="/admin/orders-list">Order list 1</a>
-                        <a href="page-orders-2.html">Order list 2</a>
-                        <a href="page-orders-detail.html">Order detail</a>
-                        <a href="page-orders-tracking.html">Order tracking</a>
-                        <a href="page-invoice.html">Invoice</a>
+
                     </div>
                 </li>
-                
                
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
@@ -172,46 +181,139 @@
                             <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            <a class="dropdown-item text-danger" href="admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
                 </ul>
             </div>
         </header>
         <section class="content-main">
-            <div class="row mt-60">
-                <div class="col-sm-12">
-                    <div class="w-50 mx-auto text-center">
-                        <img src="imgs/theme/404.png" width="350" alt="Page Not Found">
-                        <h3 class="mt-40 mb-15">Oops! Page not found</h3>
-                        <p>It's looking like you may have taken a wrong turn. Don't worry... it happens to the best of us. Here's a little tip that might help you get back on track.</p>
-                        <a href="/admin" class="btn btn-primary mt-4"><i class="material-icons md-keyboard_return"></i> Back to main</a>
-                    </div>
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Order List </h2>
+                    <p>Lorem ipsum dolor sit amet.</p>
+                </div>
+                <div>
+                    <input type="text" placeholder="Search order ID" class="form-control bg-white">
                 </div>
             </div>
-        </section> <!-- content-main end// -->
-        <footer class="main-footer font-xs">
-            <div class="row pb-30 pt-15">
-                <div class="col-sm-6">
-                    <script>
-                    document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end">
-                        All rights reserved
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row gx-3">
+                        <div class="col-lg-4 col-md-6 me-auto">
+                            <input type="text" placeholder="Search..." class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select">
+                                <option>Status</option>
+                                <option>Active</option>
+                                <option>Disabled</option>
+                                <option>Show all</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select">
+                                <option>Show 20</option>
+                                <option>Show 30</option>
+                                <option>Show 40</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>no.</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Delivery</th>
+                                    <th scope="col" class="text-end"> Action </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <% orders.forEach((order,i) => { %>
+                                <tr>
+                                    <td><%= i+1 %></td>
+                                    <td><b><%= order.deliveryAddress.Lname %></b></td>
+                                    <td><%= order.deliveryAddress.email %></td>
+                                    <td>$9.00</td>
+                                    <td>
+                                        <span class="badge rounded-pill 
+                                            <% if (order.orderStatus === '1') { %>
+                                                alert-warning
+                                            <% } else if (order.orderStatus === '2') { %>
+                                                alert-info
+                                            <% } else if (order.orderStatus === '3') { %>
+                                                alert-primary
+                                            <% } else if (order.orderStatus === '4') { %>
+                                                alert-success
+                                            <% } %>
+                                        ">
+                                            <% if (order.orderStatus === '1') { %>
+                                                Processing
+                                            <% } else if (order.orderStatus === '2') { %>
+                                                Quality Check
+                                            <% } else if (order.orderStatus === '3') { %>
+                                                Shipped
+                                            <% } else if (order.orderStatus === '4') { %>
+                                                Delivered
+                                            <% } %>
+                                        </span>
+                                    </td>
+                                    
+                                    <td><%= order.deliveryDate.toDateString() %></td>
+                                    <td class="text-end">
+                                        <a href="/admin/order-details?id=<%= order._id %>" class="btn btn-md rounded font-sm">Details</a>
+                                        <a href="/admin/delete-order?id=<%= order._id %>" class="btn btn-danger rounded font-sm">Delete</a>  
+                                      </td>                                      
+                                </tr>
+                               <% }) %>
+                              
+                               
+                            </tbody>
+                        </table>
+                    </div> <!-- table-responsive //end -->
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            <div class="pagination-area mt-15 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                        <li class="page-item"><a class="page-link" href="#">02</a></li>
+                        <li class="page-item"><a class="page-link" href="#">03</a></li>
+                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#">16</a></li>
+                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                    </ul>
+                </nav>
             </div>
-        </footer>
-    </main>
-    <script src="js/vendors/jquery-3.6.0.min.js"></script>
-    <script src="js/vendors/bootstrap.bundle.min.js"></script>
-    <script src="js/vendors/select2.min.js"></script>
-    <script src="js/vendors/perfect-scrollbar.js"></script>
-    <script src="js/vendors/jquery.fullscreen.min.js"></script>
-    <!-- Main Script -->
-    <script src="js/main.js" type="text/javascript"></script>
-</body>
 
-</html>
+        <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+          <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+              <script>
+                document.write(new Date().getFullYear());
+              </script>
+              ©, Evara - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+              <div class="text-sm-end">All rights reserved</div>
+            </div>
+          </div>
+        </footer>
+      </main>
+      <script src="js/vendors/jquery-3.6.0.min.js"></script>
+      <script src="js/vendors/bootstrap.bundle.min.js"></script>
+      <script src="js/vendors/select2.min.js"></script>
+      <script src="js/vendors/perfect-scrollbar.js"></script>
+      <script src="js/vendors/jquery.fullscreen.min.js"></script>
+      <!-- Main Script -->
+      <script src="js/main.js" type="text/javascript"></script>
+    </body>
+  </html>
+  

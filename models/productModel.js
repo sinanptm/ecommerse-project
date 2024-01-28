@@ -10,7 +10,7 @@ const productsSchema = new mongoose.Schema({
     categoryid: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
     createdate: { type: Date },
     discount: { type: Number },
-    description:{type:String}
+    description: { type: String }
 });
 productsSchema.index({ name: 1, categoryid: 1 }, { unique: true });
 
@@ -32,25 +32,36 @@ const Category = mongoose.model("Category", categorySchema);
 const ordersSchema = new mongoose.Schema({
     userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     orderAmount: { type: Number },
-    deliveryAddress: { type: mongoose.Schema.Types.ObjectId, ref: "Addresse" },
+    deliveryAddress: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },
     orderDate: { type: Date },
     orderStatus: { type: String },
     deliveryDate: { type: Date },
     ShippingDate: { type: Date },
-    OrderedItems: [{ 
-        productid:{type: mongoose.Schema.Types.ObjectId, ref: "Product"},
-        price:Number,
-        quantity:Number
+    OrderedItems: [{
+        productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        price: Number,
+        quantity: Number,
+        name: String
     }],
-    payment:String
+    payment: String
     //  { type: mongoose.Schema.Types.ObjectId, ref: "Payment" },
 });
 
 const Order = mongoose.model("Order", ordersSchema);
 
+const cancelReasonschema = new mongoose.Schema({
+    orderid: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
+    userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    reason: String,
+    cancelationTime:Date
+})
+
+const CancelationReson = mongoose.model("CancelationReson",cancelReasonschema)
+
 
 module.exports = {
     Order,
     Product,
-    Category
+    Category,
+    CancelationReson
 }

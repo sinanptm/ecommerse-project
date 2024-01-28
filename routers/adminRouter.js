@@ -3,7 +3,7 @@ const adminRoute = express();
 const path = require("path");
 const upload = require("../util/multer");
 const { loadLogin, checkLogin, newOTP, loadOTP, verifyOTP, loadUser, userBlock, userUnblock, logout } = require("../controllers/adminController");
-const { loadDashBoard, loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct,  listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory,  editCatogory } = require("../controllers/productController");
+const { loadDashBoard, loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, loadOrders, deleteOrder, editOrder, loadOrder } = require("../controllers/productController");
 
 const { is_loginRequired, is_admin, is_registered } = require("../middlewares/auth");
 
@@ -44,9 +44,14 @@ adminRoute.get("/unlist", is_admin, unlistProduct);
 
 // Category Management
 adminRoute.get("/catogories", is_admin, laodCatagorie);
-adminRoute.post("/catogories", upload.single("file"), is_admin, addCatagorie);
-adminRoute.post("/editCatogories/:id", upload.single("file"), is_admin, editCatogory);
+adminRoute.post("/catogories", is_admin, upload.single("file"), addCatagorie);
+adminRoute.post("/editCatogories/:id", is_admin, upload.single("file"), editCatogory);
 adminRoute.get("/deleteCatogory/:id", is_admin, deleteCatogory);
+
+adminRoute.get("/orders-list", is_admin, loadOrders)
+adminRoute.get("/delete-order", is_admin, deleteOrder)
+adminRoute.post('/edit-order/:id', is_admin, editOrder)
+adminRoute.get('/order-details',is_admin,loadOrder)
 
 
 module.exports = adminRoute;

@@ -85,7 +85,7 @@
 										<i class="zmdi zmdi-search"></i>
 									</div>
 
-									<a href="/cart"
+									<a href="/cart" id="icon-header-noti" 
 										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
 										data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
 										<i class="zmdi zmdi-shopping-cart"></i>
@@ -100,7 +100,7 @@
 										<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
 											<i class="zmdi zmdi-account"></i>
 										</a>
-									<% } %>
+										<% } %>
 						</div>
 						<% if (valid) { %>
 							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-logout"
@@ -169,15 +169,15 @@
 							<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
 								<i class="zmdi zmdi-account"></i>
 							</a>
-						<% } %>
 					</div>
+					<% } %>
 
-					<!-- Button show menu -->
-					<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
-						<span class="hamburger-box">
-							<span class="hamburger-inner"></span>
-						</span>
-					</div>
+						<!-- Button show menu -->
+						<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+							<span class="hamburger-box">
+								<span class="hamburger-inner"></span>
+							</span>
+						</div>
 		</div>
 
 
@@ -494,44 +494,72 @@
 			<div class="row isotope-grid">
 				<% products.forEach(function(product) { %>
 					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%= product.categoryid.type %>">
-						<!-- Block2 -->
-						<div class="block2">
-							<div class="block2-pic hov-img0">
-								<img src="/resized_images/<%= product.img[0] %>" alt="IMG-PRODUCT" class="image">
+						<a href="/product?id=<%= product._id %>">
+							<!-- Block2 -->
+							<div class="block2">
+								<div class="block2-pic hov-img0">
+									<img src="/resized_images/<%= product.img[0] %>" alt="IMG-PRODUCT" class="image">
 
-								<a href="/product?id=<%= product._id %>"
-									class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
-									Quick View
-								</a>
-							</div>
-
-							<div class="block2-txt flex-w flex-t p-t-14">
-								<div class="block2-txt-child1 flex-col-l">
-									<a href="product-detail.html"
-										class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-										<%= product.name %>
-									</a>
-
-									<span class="stext-105 cl3">
-										<%= product.price %>
-									</span>
-								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png"
-											alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l"
-											src="images/icons/icon-heart-02.png" alt="ICON">
+									<a href="/product?id=<%= product._id %>"
+										class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
+										Quick View
 									</a>
 								</div>
+
+								<div class="block2-txt flex-w flex-t p-t-14">
+									<div class="block2-txt-child1 flex-col-l">
+										<a href="/product?id=<%= product._id %>"
+											class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+											<%= product.name %>
+										</a>
+
+										<span class="stext-105 cl3">
+											<%= product.price %>
+										</span>
+									</div>
+
+									<div class="block2-txt-child2  flex-r p-t-3" id="cccc">
+										<a href="/product?id=<%= product._id %>" style="margin-top: 2px;"
+											class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+											<img class="icon-heart1 dis-block trans-04"
+												src="images/icons/icon-heart-01.png" alt="ICON">
+											<img class="icon-heart2 dis-block trans-04 ab-t-l"
+												src="images/icons/icon-heart-02.png" alt="ICON">
+										</a>
+										<% if (valid&&product.quantity>=1 ) { %>
+											<a onclick="addToCartHome('<%= product._id %>')" href="#" 
+												class="cl2 hov-cl1 p-l-22 p-r-11 trans-04 ">
+												<i class="zmdi zmdi-shopping-cart" style="font-size: 20px;"></i>
+											</a>
+											<% } %>
+									</div>
+								</div>
 							</div>
-						</div>
+						</a>
 					</div>
-
 					<% }); %>
 			</div>
-
+			<script>
+				async function addToCartHome(id) {
+					try {
+						const res = await $.ajax({
+							url: "/add-to-cart?zz=z",
+							method: "POST",
+							data: { productid: id, quantity: 1 }
+						});
+			
+						const newNoti = $(res).find("#icon-header-noti").html();
+						const cart = $(res).find('#cccc').html();
+			
+						$("#cccc").html(cart);
+						$("#icon-header-noti").html(newNoti);
+					} catch (error) {
+						console.error("Error:", error);
+					}
+				}
+			</script>
+			
+			
 			<!-- Load more -->
 			<div class="flex-c-m flex-w w-full p-t-38">
 				<a href="#" class="flex-c-m how-pagination1 trans-04 m-all-7 active-pagination1">

@@ -596,7 +596,7 @@
 
 								<div class="size-209">
 									<span class="mtext-110 cl2">
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= total %>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= subtotal %>
 									</span>
 								</div>
 							</div>
@@ -610,7 +610,8 @@
 
 								<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
 									<span class="mtext-110 cl2" style="color: #0aa02b;">
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<%= totalDiscount || 0 %>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<%= Math.round(totalDiscount || 0) %>
+
 									</span>
 								</div>
 							</div>
@@ -638,12 +639,12 @@
 
 								<div class="size-209 p-t-1">
 									<strong class="mtext-110 cl2">
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= totalPrice %>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=Math.round(totalPrice) %>
 									</strong>
 								</div>
 							</div>
 							<input type="hidden" name="products" value="<%= JSON.stringify(products) %>">
-							<input type="hidden" name="totalprice" value="<%= totalPrice %>">
+							<input type="hidden" name="totalprice" value="<%= Math.round(totalPrice) %>">
 
 							<button id="place-order-success" type="submit"
 								class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 js-addwish-b2">
@@ -697,8 +698,8 @@
 							<!-- Street Address -->
 							<div class="form-group">
 								<label for="newStreetAddress">Street Address:</label>
-								<input type="text" class="form-control" id="2newStreetAddress" name="streetAdress" minlength="7"
-									required>
+								<input type="text" class="form-control" id="2newStreetAddress" name="streetAdress"
+									minlength="7" required>
 							</div>
 
 							<!-- City, State, and Pincode -->
@@ -718,7 +719,8 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label for="newPincode">Pincode:</label>
-										<input type="number" class="form-control" id="2newPincode" name="pincode" minlength="4">
+										<input type="number" class="form-control" id="2newPincode" name="pincode"
+											minlength="4">
 									</div>
 								</div>
 							</div>
@@ -728,7 +730,8 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="newMobile">Mobile:</label>
-										<input type="number" class="form-control" id="2newMobile" name="mobile" minlength="10">
+										<input type="number" class="form-control" id="2newMobile" name="mobile"
+											minlength="10">
 									</div>
 								</div>
 								<div class="col-md-6">

@@ -22,7 +22,6 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 	<style>
-		
 		.flipkart-address-section {
 			margin-top: 20px;
 		}
@@ -304,934 +303,1114 @@
 	</style>
 
 </head>
+<% if (toast !==undefined && toast !==null) { %>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+	<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
 
-<body class="animsition">
-	<!-- Header -->
-	<header class="header-v3">
-		<!-- Header desktop -->
-		<div class="container-menu-desktop trans-03">
-			<div class="wrap-menu-desktop">
-				<nav class="limiter-menu-desktop p-l-45">
-
-					<!-- Logo desktop -->
-					<a href="/home" class="logo">
-						<span id="logo">TRENDS</span>
-					</a>
-
-					<!-- Menu desktop -->
-					<div class="menu-desktop">
-						<ul class="main-menu">
-							<li>
-								<a href="/home">Home</a>
-							</li>
-
-							<li class="label1" data-label1="hot">
-								<a href="/products">Shop</a>
-							</li>
-
-							<li>
-								<a href="/cart">Cart</a>
-							</li>
-
-							<li>
-								<a href="/blog">Blog</a>
-							</li>
-
-							<li>
-								<a href="/about">About</a>
-							</li>
-
-							<li>
-								<a href="/contact">Contact</a>
-							</li>
+	<script>
+		toastr.success('<%= toast %>');
+	</script>
+	<% } %>
 
 
-						</ul>
-					</div>
+		<body class="animsition">
+			<!-- Header -->
+			<header class="header-v3">
+				<!-- Header desktop -->
+				<div class="container-menu-desktop trans-03">
+					<div class="wrap-menu-desktop">
+						<nav class="limiter-menu-desktop p-l-45">
 
-					<!-- Icon header -->
-					<div class="wrap-icon-header flex-w flex-r-m h-full">
-						<div class="wrap-icon-header flex-w flex-r-m">
-							<!-- Login icon -->
-							<% if (valid===undefined) { %>
-								<a href="/login"
-									class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-login"
-									data-toggle="tooltip" title="Login">
-									<i class="zmdi zmdi-alert-circle"></i>
-								</a>
-								<% } %>
+							<!-- Logo desktop -->
+							<a href="/home" class="logo">
+								<span id="logo">TRENDS</span>
+							</a>
+
+							<!-- Menu desktop -->
+							<div class="menu-desktop">
+								<ul class="main-menu">
+									<li>
+										<a href="/home">Home</a>
+									</li>
+
+									<li class="label1" data-label1="hot">
+										<a href="/products">Shop</a>
+									</li>
+
+									<li>
+										<a href="/cart">Cart</a>
+									</li>
+
+									<li>
+										<a href="/blog">Blog</a>
+									</li>
+
+									<li>
+										<a href="/about">About</a>
+									</li>
+
+									<li>
+										<a href="/contact">Contact</a>
+									</li>
 
 
-									<div
-										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-										<i class="zmdi zmdi-search"></i>
-									</div>
+								</ul>
+							</div>
 
-									<a href="/cart"
-										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-										data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
-										<i class="zmdi zmdi-shopping-cart"></i>
-									</a>
-
-									<a href="#"
-										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-										data-notify="0">
-										<i class="zmdi zmdi-favorite-outline"></i>
-									</a>&nbsp;&nbsp;
-									<% if (valid) { %>
-										<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
-											<i class="zmdi zmdi-account"></i>
+							<!-- Icon header -->
+							<div class="wrap-icon-header flex-w flex-r-m h-full">
+								<div class="wrap-icon-header flex-w flex-r-m">
+									<!-- Login icon -->
+									<% if (valid===undefined) { %>
+										<a href="/login"
+											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-login"
+											data-toggle="tooltip" title="Login">
+											<i class="zmdi zmdi-alert-circle"></i>
 										</a>
 										<% } %>
-						</div>
-					</div>
-					<% if (valid) { %>
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-logout" data-toggle="modal"
-							data-target="#logoutModal">
-							<i class="zmdi zmdi-power-off"></i>
-						</div>
-						<% } %>
-			</div>
 
 
-			<!-- Logout Modal -->
-			<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
-				aria-hidden="true">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="logoutModalLabel">Logout Confirmation</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							Are you sure you want to logout?
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-							<a href="/logout" class="btn btn-primary">Logout</a>
-						</div>
-					</div>
-				</div>
-			</div>
+											<div
+												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
+												<i class="zmdi zmdi-search"></i>
+											</div>
 
-		</div>
-		</nav>
-		</div>
-		</div>
+											<a href="/cart"
+												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+												data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+												<i class="zmdi zmdi-shopping-cart"></i>
+											</a>
 
-		<!-- Header Mobile -->
-		<div class="wrap-header-mobile">
-			<!-- Logo moblie -->
-			<div class="logo-mobile">
-				<span id="logo1">TRENDS</span>
-			</div>
-			<% if (valid==undefined) { %>
-				<a href="/login" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-login"
-					data-toggle="tooltip" title="Login">
-					<i class="zmdi zmdi-alert-circle"></i>
-				</a>&nbsp;&nbsp;
-				<% } %>
-
-					<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-							<i class="zmdi zmdi-search"></i>
-						</div>
-
-						<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-							data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
-							<i class="zmdi zmdi-shopping-cart"></i>
-						</a>
-
-						<a href="#"
-							class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
-							data-notify="0">
-							<i class="zmdi zmdi-favorite-outline"></i>
-						</a>
-						<% if (valid) { %>
-							<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
-								<i class="zmdi zmdi-account"></i>
-							</a>
-							<% } %>
+											<a href="#"
+												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+												data-notify="0">
+												<i class="zmdi zmdi-favorite-outline"></i>
+											</a>&nbsp;&nbsp;
+											<% if (valid) { %>
+												<a href="/account"
+													class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+													<i class="zmdi zmdi-account"></i>
+												</a>
+												<% } %>
+								</div>
+							</div>
+							<% if (valid) { %>
+								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-logout"
+									data-toggle="modal" data-target="#logoutModal">
+									<i class="zmdi zmdi-power-off"></i>
+								</div>
+								<% } %>
 					</div>
 
-					<!-- Button show menu -->
-					<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
-						<span class="hamburger-box">
-							<span class="hamburger-inner"></span>
-						</span>
-					</div>
-		</div>
 
-
-		<!-- Menu Mobile -->
-		<div class="menu-mobile">
-			<ul class="main-menu-m">
-				<li>
-					<a href="/home">Home</a>
-					<span class="arrow-main-menu-m">
-						<i class="fa fa-angle-right" aria-hidden="true"></i>
-					</span>
-				</li>
-
-				<li>
-					<a href="/products" class="label1 rs1" data-label1="hot">Shop</a>
-				</li>
-
-				<li>
-					<a href="/cart">Cart</a>
-				</li>
-
-				<li>
-					<a href="/blog">Blog</a>
-				</li>
-
-				<li>
-					<a href="/about">About</a>
-				</li>
-
-				<li>
-					<a href="/contact">Contact</a>
-				</li>
-				<li>
-					<a href="/logout">Logout</a>
-				</li>
-			</ul>
-		</div>
-
-		<!-- Modal Search -->
-		<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-			<button class="flex-c-m btn-hide-modal-search trans-04">
-				<i class="zmdi zmdi-close"></i>
-			</button>
-
-			<form class="container-search-header">
-				<div class="wrap-search-header">
-					<input class="plh0" type="text" name="search" placeholder="Search...">
-
-					<button class="flex-c-m trans-04">
-						<i class="zmdi zmdi-search"></i>
-					</button>
-				</div>
-			</form>
-		</div>
-	</header>
-
-		<!-- Title page -->
-		<section class="bg-img1 txt-center p-lr-15 p-tb-92"
-			style="background-image: url('https://img.freepik.com/premium-photo/shopping-concept-supermarket-trolley-money-gifts-background_494741-3263.jpg?w=826');">
-			<h2 class="ltext-105 cl0 txt-center">
-				Profile
-			</h2>
-		</section>
-
-
-	<!-- User Account Details Section -->
-	<section class="bg0 p-t-23 p-b-130">
-		<div class="container">
-			<div class="p-b-10">
-				<h3 class="ltext-103 cl5">
-					Personal Informations
-				</h3>
-			</div>
-
-			<!-- User Account Content -->
-			<div class="row">
-				<div class="col-md-6">
-					<!-- User Account Details -->
-
-					<div class="block2-txt flex-w flex-t p-t-14">
-						<div class="block2-txt-child1 flex-col-l">
-							<!-- Display User Information -->
-							<div class="block2-txt-child1 flex-col-l">
-								<!-- Display User Information -->
-								<form class="personal-info-form" id="userDetailsForm">
-									<!-- Name -->
-									<% if (msg !==null && typeof(msg) !=='undefined' ) { %>
-										<p class="error" id="emailError"
-											style="color: rgb(240, 22, 22); font-size: larger;">
-											<%= msg %>
-										</p>
-										<% } %>
-											<div class="form-group">
-												<div class="input-group">
-													<div>
-														<input type="text" id="name" name="name"
-															class="bigger-text input-field" value="<%= user.name %>"
-															readonly>
-														<small class="error-message" id="nameError"></small>
-													</div>
-													<button class="edittt" type="button"
-														onclick="toggleEdit('name')">Edit</button>
-												</div>
-											</div>
-
-											<!-- Username -->
-											<div class="form-group">
-												<div class="input-group">
-													<div>
-														<input type="text" id="username" name="username"
-															class="bigger-text input-field" value="<%= user.username %>"
-															readonly>
-														<small class="error-message" id="usernameError"></small>
-													</div>
-													<button class="edittt" type="button"
-														onclick="toggleEdit('username')">Edit</button>
-												</div>
-											</div>
-
-											<!-- Email -->
-											<div class="form-group">
-												<div class="input-group">
-													<div>
-														<input type="email" id="email" name=""
-															class="bigger-text input-field" value="<%= user.email %>"
-															readonly>
-														<small class="error-message" id="emailError"></small>
-													</div>
-												</div>
-											</div>
-
-											<!-- Gender -->
-											<div class="form-group">
-												<div class="input-group">
-													<div>
-														<label for="gender" class="sr-only">Gender:</label>
-														<select id="gender" name="gender"
-															class="bigger-text input-field" <% if (!editing) { %>
-															disabled <% } %>>
-																<option value="male" <% if (user.gender==='male' ) { %>
-																	selected <% } %>>Male</option>
-																<option value="female" <% if (user.gender==='female' ) {
-																	%> selected <% } %>>Female</option>
-														</select>
-														<small class="error-message" id="genderError"></small>
-													</div>
-													<button class="edittt" type="button"
-														onclick="toggleEdit('gender')">Edit</button>
-												</div>
-											</div>
-
-											<!-- Phone -->
-											<div class="form-group">
-												<div class="input-group">
-													<div>
-														<label for="phone" class="sr-only">Phone:</label>
-														<input type="tel" minlength="10" id="phone" name="phone"
-															class="bigger-text input-field"
-															value="<%= user.phone || 'N/A' %>" readonly>
-														<small class="error-message" id="phoneError"></small>
-													</div>
-													<button class="edittt" type="button"
-														onclick="toggleEdit('phone')">Edit</button>
-												</div>
-											</div>
-
-											<div id="submitContainer" style="display: none;">
-												<button type="button" class="submit-btn"
-													onclick="update()">Submit</button>
-											</div>
-								</form>
+					<!-- Logout Modal -->
+					<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+						aria-labelledby="logoutModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="logoutModalLabel">Logout Confirmation</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									Are you sure you want to logout?
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+									<a href="/logout" class="btn btn-primary">Logout</a>
+								</div>
 							</div>
 						</div>
 					</div>
 
+				</div>
+				</nav>
+				</div>
+				</div>
 
+				<!-- Header Mobile -->
+				<div class="wrap-header-mobile">
+					<!-- Logo moblie -->
+					<div class="logo-mobile">
+						<span id="logo1">TRENDS</span>
+					</div>
+					<% if (valid==undefined) { %>
+						<a href="/login" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-login"
+							data-toggle="tooltip" title="Login">
+							<i class="zmdi zmdi-alert-circle"></i>
+						</a>&nbsp;&nbsp;
+						<% } %>
+
+							<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+								<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
+									<i class="zmdi zmdi-search"></i>
+								</div>
+
+								<a href="/cart"
+									class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+									data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+									<i class="zmdi zmdi-shopping-cart"></i>
+								</a>
+
+								<a href="#"
+									class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
+									data-notify="0">
+									<i class="zmdi zmdi-favorite-outline"></i>
+								</a>
+								<% if (valid) { %>
+									<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+										<i class="zmdi zmdi-account"></i>
+									</a>
+									<% } %>
+							</div>
+
+							<!-- Button show menu -->
+							<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+								<span class="hamburger-box">
+									<span class="hamburger-inner"></span>
+								</span>
+							</div>
 				</div>
 
 
-				<div class="flipkart-address-section col-md-6">
-					<!-- Addresses -->
-					<div class="flipkart-address-block flipkart-block2-txt flex-w flex-t p-t-14">
-						<div class="flipkart-address-block-child1 flex-col-l">
-							<!-- Button for Adding New Address -->
-							<h4 class="flipkart-section-heading flipkart-heading"
-								style="font-size: 28px; padding-bottom: 10px;">
-								Addresses
-							</h4>
+				<!-- Menu Mobile -->
+				<div class="menu-mobile">
+					<ul class="main-menu-m">
+						<li>
+							<a href="/home">Home</a>
+							<span class="arrow-main-menu-m">
+								<i class="fa fa-angle-right" aria-hidden="true"></i>
+							</span>
+						</li>
 
-							<!-- Add New Address Button -->
-							<button
-								class="flipkart-add-address bg1 bor1 flipkart-btn-add-address stext-101 cl0 size-103  p-lr-15"
-								style="font-size: 18px; background-color: #4e4e4e; color: white;" type="button"
-								data-toggle="modal" data-target="#addAddressModal">
-								Add New Address
+						<li>
+							<a href="/products" class="label1 rs1" data-label1="hot">Shop</a>
+						</li>
+
+						<li>
+							<a href="/cart">Cart</a>
+						</li>
+
+						<li>
+							<a href="/blog">Blog</a>
+						</li>
+
+						<li>
+							<a href="/about">About</a>
+						</li>
+
+						<li>
+							<a href="/contact">Contact</a>
+						</li>
+						<li>
+							<a href="/logout">Logout</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- Modal Search -->
+				<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+					<button class="flex-c-m btn-hide-modal-search trans-04">
+						<i class="zmdi zmdi-close"></i>
+					</button>
+
+					<form class="container-search-header">
+						<div class="wrap-search-header">
+							<input class="plh0" type="text" name="search" placeholder="Search...">
+
+							<button class="flex-c-m trans-04">
+								<i class="zmdi zmdi-search"></i>
 							</button>
-							<br><br>
-							<!-- Addresses List -->
-							<% if (user.address && user.address.length> 0) { %>
-								<ul class="flipkart-address-list flipkart-list" style="list-style: none; padding: 0;">
-									<% user.address.forEach(function (address) { %>
-										<li class="flipkart-address-item flipkart-item address<%= address._id %>"
-											style="border: 1px solid #ddd; margin-bottom: 10px; padding: 10px; position: relative;">
-											<div class="flipkart-address-box flipkart-box">
-												<div class="flipkart-address-details flipkart-details">
-													<p class="flipkart-stext-107 cl7 "
-														style="font-size: 18px; margin-bottom: 8px;">
-														<%= address.streetAdress %>, <%= address.city %> - <%=
-																	address.state %> road,<br>
-																	<%= address.city %> - <%= address.pincode %>
-													</p>
-													<p class="flipkart-stext-107 cl7 "
-														style="font-size: 18px; margin-bottom: 8px;">
-														Mobile: <%= address.mobile %>, Email: <%= address.email %>
-													</p>
-												</div>
-												<div class="flipkart-address-actions flipkart-actions">
-													<div class="flipkart-dropdown dropdown"
-														style="position: absolute; top: 5px; right: 5px; ">
-														<button class="dropdown-btn" style="font-size: xx-large;">&#8285;</button>
-														<div class="flipkart-dropdown-content dropdown-content">
-															<button class="edit-btn" data-toggle="modal"
-																data-target="#editAddressModal<%= address._id %>">Edit</button>
-															<a href="/delete-address/<%= address._id %>"
-																style="display: block; padding: 10px;">Delete</a>
+						</div>
+					</form>
+				</div>
+			</header>
+
+			<!-- Title page -->
+			<section class="bg-img1 txt-center p-lr-15 p-tb-92"
+				style="background-image: url('https://www.tatvasoft.com/outsourcing/wp-content/uploads/2022/07/What-is-eCommerce-How-does-eCommerce-work.jpg');">
+				<h2 class="ltext-105 cl0 txt-center">
+					Profile
+				</h2>
+			</section>
+
+
+			<!-- User Account Details Section -->
+			<section class="bg0 p-t-23 p-b-130">
+				<div class="container">
+					<div class="p-b-10">
+						<h3 class="ltext-103 cl5">
+							Personal Informations
+						</h3>
+					</div>
+
+					<!-- User Account Content -->
+					<div class="row">
+						<div class="col-md-6">
+							<!-- User Account Details -->
+
+							<div class="block2-txt  flex-w flex-t p-t-14"
+								style="border: 1px solid #ddd; padding: 10px;">
+								<div class="block2-txt-child1 flex-col-l">
+									<!-- Display User Information -->
+									<div class="block2-txt-child1 flex-col-l">
+										<!-- Display User Information -->
+										<form class="personal-info-form" id="userDetailsForm">
+											<!-- Name -->
+											<% if (msg !==null && typeof(msg) !=='undefined' ) { %>
+												<p class="error" id="emailError"
+													style="color: rgb(240, 22, 22); font-size: larger;">
+													<%= msg %>
+												</p>
+												<% } %>
+													<div class="form-group">
+														<div class="input-group">
+															<div>
+																<input type="text" id="name" name="name"
+																	class="bigger-text input-field"
+																	value="<%= user.name %>" readonly>
+																<small class="error-message" id="nameError"></small>
+															</div>
+															<button class="edittt" type="button"
+																onclick="toggleEdit('name')">Edit</button>
+														</div>
+													</div>
+
+													<!-- Username -->
+													<div class="form-group">
+														<div class="input-group">
+															<div>
+																<input type="text" id="username" name="username"
+																	class="bigger-text input-field"
+																	value="<%= user.username %>" readonly>
+																<small class="error-message" id="usernameError"></small>
+															</div>
+															<button class="edittt" type="button"
+																onclick="toggleEdit('username')">Edit</button>
+														</div>
+													</div>
+
+													<!-- Email -->
+													<div class="form-group">
+														<div class="input-group">
+															<div>
+																<input type="email" id="email" name=""
+																	class="bigger-text input-field"
+																	value="<%= user.email %>" readonly>
+																<small class="error-message" id="emailError"></small>
+															</div>
+														</div>
+													</div>
+
+													<!-- Gender -->
+													<div class="form-group">
+														<div class="input-group">
+															<div>
+																<label for="gender" class="sr-only">Gender:</label>
+																<select id="gender" name="gender"
+																	class="bigger-text input-field" <% if (!editing) {
+																	%>
+																	disabled <% } %>>
+																		<option value="male" <% if (user.gender==='male'
+																			) { %>
+																			selected <% } %>>Male</option>
+																		<option value="female" <% if
+																			(user.gender==='female' ) { %> selected <% }
+																				%>>Female</option>
+																</select>
+																<small class="error-message" id="genderError"></small>
+															</div>
+															<button class="edittt" type="button"
+																onclick="toggleEdit('gender')">Edit</button>
+														</div>
+													</div>
+
+
+													<!-- Phone -->
+													<div class="form-group">
+														<div class="input-group">
+															<div>
+																<label for="phone" class="sr-only">Phone:</label>
+																<input type="tel" minlength="10" id="phone" name="phone"
+																	class="bigger-text input-field"
+																	value="<%= user.phone || 'N/A' %>" readonly>
+																<small class="error-message" id="phoneError"></small>
+															</div>
+															<button class="edittt" type="button"
+																onclick="toggleEdit('phone')">Edit</button>
+														</div>
+													</div>
+													<!-- Password Reset Modal -->
+													<div class="modal fade" id="passwordResetModal" tabindex="-1"
+														aria-labelledby="passwordResetModalLabel" aria-hidden="true">
+														<div class="modal-dialog modal-dialog-centered">
+															<div class="modal-content">
+																<div class="modal-header">
+																	<h5 class="modal-title"
+																		id="passwordResetModalLabel">
+																		Password Reset Verification Sent</h5>
+																	<button type="button" class="btn-close"
+																		data-bs-dismiss="modal"
+																		aria-label="Close"></button>
+																</div>
+																<div class="modal-body">
+																	<p>A password reset verification has been sent to
+																		your
+																		email. Please check your email inbox and follow
+																		the
+																		instructions to reset your password.</p>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<!-- Your existing HTML code -->
+													<div class="form-group">
+														<div class="input-group">
+															<div>
+																Forgot Your Password
+																<a onclick="resetmail('<%= user.email %>')"
+																	style="color: #1e88e5;">Click Here</a>
+															</div>
+														</div>
+													</div>
+
+
+													<br><br>
+
+													<div id="submitContainer" style="display: none;">
+														<button type="button" class="submit-btn"
+															onclick="update()">Submit</button>
+													</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row mt-4" id="orders">
+						    <div class="col-md-12">
+						        <div class="flipkart-address-block-child1 flex-col-l">
+						            <h3 class="ltext-103 cl5">Orders</h3>
+						            <% if (orders && orders.length > 0) { %>
+						                <% orders.forEach(order => { %>
+						                    <div class="order-details border rounded p-4 mb-4">
+						                        <div class="d-flex justify-content-between align-items-center mb-3">
+						                            <h4 class="mb-0">Order ID: <%= order._id %></h4>
+						                            <span class="badge rounded-pill 
+						                                <% if (order.orderStatus === '1') { %> bg-warning
+						                                <% } else if (order.orderStatus === '2') { %> bg-info
+						                                <% } else if (order.orderStatus === '3') { %> bg-primary
+						                                <% } else if (order.orderStatus === '4') { %> bg-success
+						                                <% } %> text-white">
+						                                <% if (order.orderStatus === '1') { %> Processing
+						                                <% } else if (order.orderStatus === '2') { %> Quality Check
+						                                <% } else if (order.orderStatus === '3') { %> Shipped
+						                                <% } else if (order.orderStatus === '4') { %> Delivered
+						                                <% } %>
+						                            </span>
+						                        </div>
+						                        <p>Order Amount: $<%= order.orderAmount %></p>
+						                        <p>Expected Delivery Time: <%= order.deliveryDate.toDateString()  %></p>
+						                        <p>Ordered Items:</p>
+						                        <ul class="list-unstyled">
+						                            <% order.OrderedItems.forEach(item => { %>
+						                                <li>
+						                                    <strong><%= item.productid.name %></strong>
+						                                    - Quantity: <%= item.quantity %>
+						                                    - Price: $<%= item.price %>
+						                                </li>
+						                            <% }); %>
+						                        </ul>
+						                        <button class="btn btn-danger" data-toggle="modal"
+						                            data-target="#cancelModal<%= order._id %>">Cancel</button>
+						                    </div>
+										
+						                    <!-- Cancel Modal -->
+						                    <div class="modal fade" id="cancelModal<%= order._id %>" tabindex="-1"
+						                        role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+						                        <div class="modal-dialog" role="document">
+						                            <div class="modal-content">
+						                                <div class="modal-header">
+						                                    <h5 class="modal-title" id="cancelModalLabel">Cancel Order</h5>
+						                                    <button type="button" class="close" data-dismiss="modal"
+						                                        aria-label="Close">
+						                                        <span aria-hidden="true">&times;</span>
+						                                    </button>
+						                                </div>
+						                                <div class="modal-body">
+						                                    <form id="cancelOrder">
+						                                        <input type="hidden" name="orderId" value="<%= order._id %>">
+						                                        <div class="form-group">
+						                                            <label for="cancelReason">Reason for cancellation:</label>
+						                                            <textarea class="form-control" id="cancelReason" name="cancelReason"
+						                                                rows="3" required></textarea>
+						                                        </div>
+						                                        <button type="button" onclick="cancelOrder('<%= order._id %>')" class="btn btn-danger">Confirm
+						                                            Cancellation</button>
+						                                    </form>
+						                                </div>
+						                            </div>
+						                        </div>
+						                    </div>
+						                <% }); %>
+						                <script>
+						                    async function cancelOrder(id) {
+						                        try {
+						                            const formdata = $("#cancelOrder").serialize();
+						                            const response = await $.ajax({
+						                                url: '/cancel-order',
+						                                method: "POST",
+						                                data: formdata
+						                            });
+						                            // const newContent = $(response).find('.flipkart-address-block-child1').html();
+						                            // $('#cancelModal'+id).modal('hide');
+						                            // $("#orders").html(newContent);
+													window.location.reload();
+						                        } catch (error) {
+						                            console.log(error.message);
+						                        }
+						                    }
+						                </script>
+						            <% } else { %>
+						                <h5>No orders found.</h5>
+						            <% } %>
+						        </div>
+						    </div>
+						</div>
+
+						<div class="flipkart-address-section col-md-6">
+							<!-- Addresses -->
+							<div class="flipkart-address-block flipkart-block2-txt flex-w flex-t p-t-14 "
+								style="border: 1px solid #ddd; padding: 15px;">
+								<div class="flipkart-address-block-child1 flex-col-l">
+									<!-- Button for Adding New Address -->
+									<h3 class="flipkart-section-heading flipkart-heading"
+										style="font-size: 38px; padding-bottom: 25px;color: #333;">
+										Addresses
+									</h3>
+
+									<!-- Add New Address Button -->
+									<button
+										class="flipkart-add-address bg1 bor1 flipkart-btn-add-address stext-101 cl0 size-103  p-lr-15"
+										style="font-size: 18px; background-color: #4e4e4e; color: white;" type="button"
+										data-toggle="modal" data-target="#addAddressModal">
+										Add New Address
+									</button>
+									<br><br>
+									<!-- Addresses List -->
+									<% if (user.address && user.address.length> 0) { %>
+										<ul class="flipkart-address-list flipkart-list"
+											style="list-style: none; padding: 0;">
+											<% user.address.forEach(function (address) { %>
+												<li class="flipkart-address-item flipkart-item address<%= address._id %>"
+													style="border: 1px solid #ddd; margin-bottom: 10px; padding: 10px; position: relative;">
+													<div class="flipkart-address-box flipkart-box">
+														<div class="flipkart-address-details flipkart-details">
+															<p class="flipkart-stext-107 cl7 "
+																style="font-size: 18px; margin-bottom: 8px;">
+																<%= address.streetAdress %>, <%= address.city %> - <%=
+																			address.state %> road,<br>
+																			<%= address.city %> - <%= address.pincode %>
+															</p>
+															<p class="flipkart-stext-107 cl7 "
+																style="font-size: 18px; margin-bottom: 8px;">
+																Mobile: <%= address.mobile %>, Email: <%= address.email
+																		%>
+															</p>
+														</div>
+														<div class="flipkart-address-actions flipkart-actions">
+															<div class="flipkart-dropdown dropdown"
+																style="position: absolute; top: 5px; right: 5px; ">
+																<button class="dropdown-btn"
+																	style="font-size: xx-large;">&#8285;</button>
+																<div class="flipkart-dropdown-content dropdown-content">
+																	<button class="edit-btn" data-toggle="modal"
+																		data-target="#editAddressModal<%= address._id %>">Edit</button>
+																	<a href="/delete-address/<%= address._id %>"
+																		style="display: block; padding: 10px;">Delete</a>
+																</div>
+															</div>
+														</div>
+													</div>
+												</li>
+												<!-- Edit Address Modal -->
+												<div class="modal fade" id="editAddressModal<%= address._id %>"
+													tabindex="-1" role="dialog" aria-labelledby="editAddressModalLabel"
+													aria-hidden="true">
+													<div class="modal-dialog" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="editAddressModalLabel">Edit
+																	Address
+																</h5>
+															</div>
+															<div class="modal-body">
+																<form id="editAddressForm<%= address._id %>">
+																	<!-- First Name and Last Name -->
+																	<div class="row">
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label
+																					for="editFirstName<%= address._id %>">First
+																					Name:</label>
+																				<input type="text" class="form-control"
+																					value="<%= address.Fname %>"
+																					id="editFirstName<%= address._id %>"
+																					name="Fname" required>
+																			</div>
+																		</div>
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label
+																					for="editLastName<%= address._id %>">Last
+																					Name:</label>
+																				<input type="text" class="form-control"
+																					value="<%= address.Lname %>"
+																					id="editLastName<%= address._id %>"
+																					name="Lname" required>
+																			</div>
+																		</div>
+																	</div>
+
+																	<!-- Company Name -->
+																	<div class="form-group">
+																		<label
+																			for="editCompanyName<%= address._id %>">Company
+																			Name:</label>
+																		<input type="text" class="form-control"
+																			value="<%= address.companyName %>"
+																			id="editCompanyName<%= address._id %>"
+																			name="companyName">
+																	</div>
+
+																	<!-- Country -->
+																	<div class="form-group">
+																		<label
+																			for="editCountry<%= address._id %>">Country:</label>
+																		<input type="text" class="form-control"
+																			value="<%= address.country %>"
+																			id="editCountry<%= address._id %>"
+																			name="country" required>
+																	</div>
+
+																	<!-- Street Address -->
+																	<div class="form-group">
+																		<label
+																			for="editStreetAddress<%= address._id %>">Street
+																			Address:</label>
+																		<input type="text" class="form-control"
+																			value="<%= address.streetAdress %>"
+																			id="editStreetAddress<%= address._id %>"
+																			name="streetAdress" required>
+																	</div>
+
+																	<!-- City, State, and Pincode -->
+																	<div class="row">
+																		<div class="col-md-4">
+																			<div class="form-group">
+																				<label
+																					for="editCity<%= address._id %>">City:</label>
+																				<input type="text" class="form-control"
+																					value="<%= address.city %>"
+																					id="editCity<%= address._id %>"
+																					name="city" required>
+																			</div>
+																		</div>
+																		<div class="col-md-4">
+																			<div class="form-group">
+																				<label
+																					for="editState<%= address._id %>">State:</label>
+																				<input type="text" class="form-control"
+																					value="<%= address.state %>"
+																					id="editState<%= address._id %>"
+																					name="state" required>
+																			</div>
+																		</div>
+																		<div class="col-md-4">
+																			<div class="form-group">
+																				<label
+																					for="editPincode<%= address._id %>">Pincode:</label>
+																				<input type="number"
+																					class="form-control"
+																					value="<%= address.pincode %>"
+																					id="editPincode<%= address._id %>"
+																					name="pincode" required>
+																			</div>
+																		</div>
+																	</div>
+
+																	<!-- Mobile and Email -->
+																	<div class="row">
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label
+																					for="editMobile<%= address._id %>">Mobile:</label>
+																				<input type="number"
+																					class="form-control"
+																					value="<%= address.mobile %>"
+																					id="editMobile<%= address._id %>"
+																					name="mobile" required>
+																			</div>
+																		</div>
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label
+																					for="editEmail<%= address._id %>">Email:</label>
+																				<input type="email" class="form-control"
+																					value="<%= address.email %>"
+																					id="editEmail<%= address._id %>"
+																					name="email" required>
+																			</div>
+																		</div>
+																	</div>
+
+																	<div class="edit-error-container alert alert-danger mt-3"
+																		style="display: none;"></div>
+
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-secondary"
+																			data-dismiss="modal">Close</button>
+																		<button type="button" class="btn btn-primary"
+																			onclick="submitEditAddress('<%= address._id %>')">Save
+																			Changes</button>
+																	</div>
+																</form>
+															</div>
 														</div>
 													</div>
 												</div>
+
+
+												<% }); %>
+										</ul>
+										<% } else { %>
+											<div class="flipkart-flex-center flex-center">
+												<p class="flipkart-stext-107 cl7 hov-cl1 trans-04"
+													style="font-size: 18px; color: #333;">
+													No addresses found.
+												</p>
 											</div>
-										</li>
-										<!-- Edit Address Modal -->
-										<div class="modal fade" id="editAddressModal<%= address._id %>" tabindex="-1"
-											role="dialog" aria-labelledby="editAddressModalLabel" aria-hidden="true">
-											<div class="modal-dialog" role="document">
-												<div class="modal-content">
-													<div class="modal-header">
-														<h5 class="modal-title" id="editAddressModalLabel">Edit Address
-														</h5>
-													</div>
-													<div class="modal-body">
-														<form id="editAddressForm<%= address._id %>">
-															<!-- First Name and Last Name -->
-															<div class="row">
-																<div class="col-md-6">
-																	<div class="form-group">
-																		<label
-																			for="editFirstName<%= address._id %>">First
-																			Name:</label>
-																		<input type="text" class="form-control"
-																			value="<%= address.Fname %>"
-																			id="editFirstName<%= address._id %>"
-																			name="Fname" required>
-																	</div>
-																</div>
-																<div class="col-md-6">
-																	<div class="form-group">
-																		<label for="editLastName<%= address._id %>">Last
-																			Name:</label>
-																		<input type="text" class="form-control"
-																			value="<%= address.Lname %>"
-																			id="editLastName<%= address._id %>"
-																			name="Lname" required>
-																	</div>
-																</div>
-															</div>
+											<% } %>
 
-															<!-- Company Name -->
-															<div class="form-group">
-																<label for="editCompanyName<%= address._id %>">Company
-																	Name:</label>
-																<input type="text" class="form-control"
-																	value="<%= address.companyName %>"
-																	id="editCompanyName<%= address._id %>"
-																	name="companyName">
-															</div>
 
-															<!-- Country -->
-															<div class="form-group">
-																<label
-																	for="editCountry<%= address._id %>">Country:</label>
-																<input type="text" class="form-control"
-																	value="<%= address.country %>"
-																	id="editCountry<%= address._id %>" name="country"
-																	required>
-															</div>
+								</div>
+							</div>
+						</div>
 
-															<!-- Street Address -->
-															<div class="form-group">
-																<label for="editStreetAddress<%= address._id %>">Street
-																	Address:</label>
-																<input type="text" class="form-control"
-																	value="<%= address.streetAdress %>"
-																	id="editStreetAddress<%= address._id %>"
-																	name="streetAdress" required>
-															</div>
 
-															<!-- City, State, and Pincode -->
-															<div class="row">
-																<div class="col-md-4">
-																	<div class="form-group">
-																		<label
-																			for="editCity<%= address._id %>">City:</label>
-																		<input type="text" class="form-control"
-																			value="<%= address.city %>"
-																			id="editCity<%= address._id %>" name="city"
-																			required>
-																	</div>
-																</div>
-																<div class="col-md-4">
-																	<div class="form-group">
-																		<label
-																			for="editState<%= address._id %>">State:</label>
-																		<input type="text" class="form-control"
-																			value="<%= address.state %>"
-																			id="editState<%= address._id %>"
-																			name="state" required>
-																	</div>
-																</div>
-																<div class="col-md-4">
-																	<div class="form-group">
-																		<label
-																			for="editPincode<%= address._id %>">Pincode:</label>
-																		<input type="number" class="form-control"
-																			value="<%= address.pincode %>"
-																			id="editPincode<%= address._id %>"
-																			name="pincode" required>
-																	</div>
-																</div>
-															</div>
 
-															<!-- Mobile and Email -->
-															<div class="row">
-																<div class="col-md-6">
-																	<div class="form-group">
-																		<label
-																			for="editMobile<%= address._id %>">Mobile:</label>
-																		<input type="number" class="form-control"
-																			value="<%= address.mobile %>"
-																			id="editMobile<%= address._id %>"
-																			name="mobile" required>
-																	</div>
-																</div>
-																<div class="col-md-6">
-																	<div class="form-group">
-																		<label
-																			for="editEmail<%= address._id %>">Email:</label>
-																		<input type="email" class="form-control"
-																			value="<%= address.email %>"
-																			id="editEmail<%= address._id %>"
-																			name="email" required>
-																	</div>
-																</div>
-															</div>
 
-															<div class="edit-error-container alert alert-danger mt-3"
-																style="display: none;"></div>
+					</div>
 
-															<div class="modal-footer">
-																<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-																<button type="button" class="btn btn-primary"onclick="submitEditAddress('<%= address._id %>')">Save Changes</button>
-															</div>
-														</form>
-													</div>
-												</div>
-											</div>
+				</div>
+				</div>
+			</section>
+
+
+			<!-- Add Address Modal -->
+			<div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog"
+				aria-labelledby="addAddressModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
+						</div>
+						<div class="modal-body">
+							<form id="newAddressForm">
+								<!-- First Name and Last Name -->
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="newFirstName">First Name:</label>
+											<input type="text" class="form-control" id="newFirstName" name="Fname">
 										</div>
-
-										
-										<% }); %>
-								</ul>
-								<% } else { %>
-									<div class="flipkart-flex-center flex-center">
-										<p class="flipkart-stext-107 cl7 hov-cl1 trans-04"
-											style="font-size: 18px; color: #333;">
-											No addresses found.
-										</p>
 									</div>
-									<% } %>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="newLastName">Last Name:</label>
+											<input type="text" class="form-control" id="newLastName" name="Lname">
+										</div>
+									</div>
+								</div>
 
+								<!-- Company Name -->
+								<div class="form-group">
+									<label for="newCompanyName">Company Name:</label>
+									<input type="text" class="form-control" id="newCompanyName" name="companyName">
+								</div>
+
+								<!-- Country -->
+								<div class="form-group">
+									<label for="newCountry">Country:</label>
+									<input type="text" class="form-control" id="newCountry" name="country">
+								</div>
+
+								<!-- Street Address -->
+								<div class="form-group">
+									<label for="newStreetAddress">Street Address:</label>
+									<input type="text" class="form-control" id="newStreetAddress" name="streetAdress"
+										required>
+								</div>
+
+								<!-- City, State, and Pincode -->
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label for="newCity">City:</label>
+											<input type="text" class="form-control" id="newCity" name="city">
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label for="newState">State:</label>
+											<input type="text" class="form-control" id="newState" name="state">
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label for="newPincode">Pincode:</label>
+											<input type="number" class="form-control" id="newPincode" name="pincode">
+										</div>
+									</div>
+								</div>
+
+								<!-- Mobile and Email -->
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="newMobile">Mobile:</label>
+											<input type="number" class="form-control" id="newMobile" name="mobile">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="newEmail">Email:</label>
+											<input type="email" class="form-control" id="newEmail" name="email">
+										</div>
+									</div>
+								</div>
+
+								<div class="error-container alert alert-danger mt-3" style="display: none;">
+								</div>
+
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+									<button type="button" class="btn btn-primary" onclick="submitNewAddress()">Save
+										Address</button>
+								</div>
+							</form>
 
 						</div>
 					</div>
 				</div>
 			</div>
 
-		</div>
-		</div>
-	</section>
 
 
-	<!-- Add Address Modal -->
-	<div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog" aria-labelledby="addAddressModalLabel"
-		aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
-				</div>
-				<div class="modal-body">
-					<form id="newAddressForm">
-						<!-- First Name and Last Name -->
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="newFirstName">First Name:</label>
-									<input type="text" class="form-control" id="newFirstName" name="Fname">
-								</div>
+
+
+
+
+			<!-- Footer -->
+			<footer class="bg3 p-t-75 p-b-32">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-6 col-lg-3 p-b-50">
+							<h4 class="stext-301 cl0 p-b-30">
+								Categories
+							</h4>
+
+							<ul>
+								<li class="p-b-10">
+									<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+										Women
+									</a>
+								</li>
+
+								<li class="p-b-10">
+									<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+										Men
+									</a>
+								</li>
+
+								<li class="p-b-10">
+									<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+										Shoes
+									</a>
+								</li>
+
+								<li class="p-b-10">
+									<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+										Watches
+									</a>
+								</li>
+							</ul>
+						</div>
+
+						<div class="col-sm-6 col-lg-3 p-b-50">
+							<h4 class="stext-301 cl0 p-b-30">
+								Help
+							</h4>
+
+							<ul>
+								<li class="p-b-10">
+									<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+										Track Order
+									</a>
+								</li>
+
+								<li class="p-b-10">
+									<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+										Returns
+									</a>
+								</li>
+
+								<li class="p-b-10">
+									<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+										Shipping
+									</a>
+								</li>
+
+								<li class="p-b-10">
+									<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+										FAQs
+									</a>
+								</li>
+							</ul>
+						</div>
+
+						<div class="col-sm-6 col-lg-3 p-b-50">
+							<h4 class="stext-301 cl0 p-b-30">
+								GET IN TOUCH
+							</h4>
+
+							<p class="stext-107 cl7 size-201">
+								Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or
+								call us
+								on (+1) 96 716 6879
+							</p>
+
+							<div class="p-t-27">
+								<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+									<i class="fa fa-facebook"></i>
+								</a>
+
+								<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+									<i class="fa fa-instagram"></i>
+								</a>
+
+								<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+									<i class="fa fa-pinterest-p"></i>
+								</a>
 							</div>
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="newLastName">Last Name:</label>
-									<input type="text" class="form-control" id="newLastName" name="Lname">
+						</div>
+
+						<div class="col-sm-6 col-lg-3 p-b-50">
+							<h4 class="stext-301 cl0 p-b-30">
+								Newsletter
+							</h4>
+
+							<form>
+								<div class="wrap-input1 w-full p-b-4">
+									<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email"
+										placeholder="email@example.com">
+									<div class="focus-input1 trans-04"></div>
 								</div>
-							</div>
-						</div>
 
-						<!-- Company Name -->
-						<div class="form-group">
-							<label for="newCompanyName">Company Name:</label>
-							<input type="text" class="form-control" id="newCompanyName" name="companyName">
-						</div>
-
-						<!-- Country -->
-						<div class="form-group">
-							<label for="newCountry">Country:</label>
-							<input type="text" class="form-control" id="newCountry" name="country">
-						</div>
-
-						<!-- Street Address -->
-						<div class="form-group">
-							<label for="newStreetAddress">Street Address:</label>
-							<input type="text" class="form-control" id="newStreetAddress" name="streetAdress" required>
-						</div>
-
-						<!-- City, State, and Pincode -->
-						<div class="row">
-							<div class="col-md-4">
-								<div class="form-group">
-									<label for="newCity">City:</label>
-									<input type="text" class="form-control" id="newCity" name="city">
+								<div class="p-t-18">
+									<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+										Subscribe
+									</button>
 								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="form-group">
-									<label for="newState">State:</label>
-									<input type="text" class="form-control" id="newState" name="state">
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="form-group">
-									<label for="newPincode">Pincode:</label>
-									<input type="number" class="form-control" id="newPincode" name="pincode">
-								</div>
-							</div>
+							</form>
+						</div>
+					</div>
+
+					<div class="p-t-40">
+						<div class="flex-c-m flex-w p-b-18">
+							<a href="#" class="m-all-1">
+								<img src="images/icons/icon-pay-01.png" alt="ICON-PAY">
+							</a>
+
+							<a href="#" class="m-all-1">
+								<img src="images/icons/icon-pay-02.png" alt="ICON-PAY">
+							</a>
+
+							<a href="#" class="m-all-1">
+								<img src="images/icons/icon-pay-03.png" alt="ICON-PAY">
+							</a>
+
+							<a href="#" class="m-all-1">
+								<img src="images/icons/icon-pay-04.png" alt="ICON-PAY">
+							</a>
+
+							<a href="#" class="m-all-1">
+								<img src="images/icons/icon-pay-05.png" alt="ICON-PAY">
+							</a>
 						</div>
 
-						<!-- Mobile and Email -->
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="newMobile">Mobile:</label>
-									<input type="number" class="form-control" id="newMobile" name="mobile">
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="newEmail">Email:</label>
-									<input type="email" class="form-control" id="newEmail" name="email">
-								</div>
-							</div>
-						</div>
+						<p class="stext-107 cl6 txt-center">
+							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+							Copyright &copy;
+							<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with
+							<i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com"
+								target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com"
+								target="_blank">ThemeWagon</a>
+							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 
-						<div class="error-container alert alert-danger mt-3" style="display: none;">
-						</div>
-
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-							<button type="button" class="btn btn-primary" onclick="submitNewAddress()">Save
-								Address</button>
-						</div>
-					</form>
-
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-
-
-
-
-
-	<!-- Footer -->
-	<footer class="bg3 p-t-75 p-b-32">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Categories
-					</h4>
-
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Women
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Men
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shoes
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Watches
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Help
-					</h4>
-
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Track Order
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Returns
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shipping
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								FAQs
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						GET IN TOUCH
-					</h4>
-
-					<p class="stext-107 cl7 size-201">
-						Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us
-						on (+1) 96 716 6879
-					</p>
-
-					<div class="p-t-27">
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-facebook"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-instagram"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-pinterest-p"></i>
-						</a>
+						</p>
 					</div>
 				</div>
+			</footer>
 
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Newsletter
-					</h4>
 
-					<form>
-						<div class="wrap-input1 w-full p-b-4">
-							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email"
-								placeholder="email@example.com">
-							<div class="focus-input1 trans-04"></div>
-						</div>
-
-						<div class="p-t-18">
-							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-								Subscribe
-							</button>
-						</div>
-					</form>
-				</div>
+			<!-- Back to top -->
+			<div class="btn-back-to-top" id="myBtn">
+				<span class="symbol-btn-back-to-top">
+					<i class="zmdi zmdi-chevron-up"></i>
+				</span>
 			</div>
 
-			<div class="p-t-40">
-				<div class="flex-c-m flex-w p-b-18">
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-01.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-02.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-03.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-04.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-05.png" alt="ICON-PAY">
-					</a>
-				</div>
-
-				<p class="stext-107 cl6 txt-center">
-					<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-					Copyright &copy;
-					<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i
-						class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com"
-						target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com"
-						target="_blank">ThemeWagon</a>
-					<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-
-				</p>
-			</div>
-		</div>
-	</footer>
+			<!-- Modal1 -->
 
 
-	<!-- Back to top -->
-	<div class="btn-back-to-top" id="myBtn">
-		<span class="symbol-btn-back-to-top">
-			<i class="zmdi zmdi-chevron-up"></i>
-		</span>
-	</div>
+			<style>
+				.isotope-item {
+					width: 100%;
+				}
 
-	<!-- Modal1 -->
+				@media(min-width: 576px) {
+					.isotope-item {
+						width: 50%;
+					}
+				}
+
+				@media(min-width: 768px) {
+					.isotope-item {
+						width: 33.33%;
+					}
+				}
+
+				@media(min-width: 992px) {
+					.isotope-item {
+						width: 25%;
+					}
+				}
+			</style>
+			<script>
+				function resetmail(email) {
+					$('body').css('cursor', 'wait');
+
+					$.ajax({
+						url: "/sendreset",
+						method: 'POST',
+						data: { email: email },
+						success: (res) => {
+							$('body').css('cursor', '');
+							$('#passwordResetModal').modal('show'); // Show the modal when the password reset verification is sent
+						},
+						error: () => {
+							$('body').css('cursor', 'auto');
+							console.log('error');
+						}
+					});
+				}
+			</script>
+			<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+			<script src="vendor/animsition/js/animsition.min.js"></script>
+			<script src="vendor/bootstrap/js/popper.js"></script>
+			<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+			<script src="vendor/select2/select2.min.js"></script>
+			<script>
+				$(".js-select2").each(function () {
+					$(this).select2({
+						minimumResultsForSearch: 20,
+						dropdownParent: $(this).next('.dropDownSelect2')
+					});
+				})
 
 
-	<style>
-		.isotope-item {
-			width: 100%;
-		}
+			</script>
+			<script src="vendor/daterangepicker/moment.min.js"></script>
+			<script src="vendor/daterangepicker/daterangepicker.js"></script>
+			<script src="vendor/slick/slick.min.js"></script>
+			<script src="js/slick-custom.js"></script>
+			<script src="vendor/parallax100/parallax100.js"></script>
+			<script>
+				$('.parallax100').parallax100();
+			</script>
+			<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+			<script>
+				$('.gallery-lb').each(function () { // the containers for all your galleries
+					$(this).magnificPopup({
+						delegate: 'a', // the selector for gallery item
+						type: 'image',
+						gallery: {
+							enabled: true
+						},
+						mainClass: 'mfp-fade'
+					});
+				});
+			</script>
+			<script src="vendor/isotope/isotope.pkgd.min.js"></script>
+			<script src="vendor/sweetalert/sweetalert.min.js"></script>
+			<script>
+				$('.js-addwish-b2').on('click', function (e) {
+					e.preventDefault();
+				});
 
-		@media(min-width: 576px) {
-			.isotope-item {
-				width: 50%;
-			}
-		}
+				$('.js-addwish-b2').each(function () {
+					var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+					$(this).on('click', function () {
+						swal(nameProduct, "is added to wishlist !", "success");
 
-		@media(min-width: 768px) {
-			.isotope-item {
-				width: 33.33%;
-			}
-		}
+						$(this).addClass('js-addedwish-b2');
+						$(this).off('click');
+					});
+				});
 
-		@media(min-width: 992px) {
-			.isotope-item {
-				width: 25%;
-			}
-		}
-	</style>
+				$('.js-addwish-detail').each(function () {
+					var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
 
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-	<script src="vendor/animsition/js/animsition.min.js"></script>
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-	<script src="vendor/select2/select2.min.js"></script>
-	<script>
-		$(".js-select2").each(function () {
-			$(this).select2({
-				minimumResultsForSearch: 20,
-				dropdownParent: $(this).next('.dropDownSelect2')
-			});
-		})
+					$(this).on('click', function () {
+						swal(nameProduct, "is added to wishlist !", "success");
 
+						$(this).addClass('js-addedwish-detail');
+						$(this).off('click');
+					});
+				});
 
-	</script>
-	<script src="vendor/daterangepicker/moment.min.js"></script>
-	<script src="vendor/daterangepicker/daterangepicker.js"></script>
-	<script src="vendor/slick/slick.min.js"></script>
-	<script src="js/slick-custom.js"></script>
-	<script src="vendor/parallax100/parallax100.js"></script>
-	<script>
-		$('.parallax100').parallax100();
-	</script>
-	<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
-	<script>
-		$('.gallery-lb').each(function () { // the containers for all your galleries
-			$(this).magnificPopup({
-				delegate: 'a', // the selector for gallery item
-				type: 'image',
-				gallery: {
-					enabled: true
-				},
-				mainClass: 'mfp-fade'
-			});
-		});
-	</script>
-	<script src="vendor/isotope/isotope.pkgd.min.js"></script>
-	<script src="vendor/sweetalert/sweetalert.min.js"></script>
-	<script>
-		$('.js-addwish-b2').on('click', function (e) {
-			e.preventDefault();
-		});
+				/*---------------------------------------------*/
 
-		$('.js-addwish-b2').each(function () {
-			var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
-			$(this).on('click', function () {
-				swal(nameProduct, "is added to wishlist !", "success");
+				$('.js-addcart-detail').each(function () {
+					var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
+					$(this).on('click', function () {
+						swal(nameProduct, "is added to cart !", "success");
+					});
+				});
+			</script>
+			<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+			<script>
+				$('.js-pscroll').each(function () {
+					$(this).css('position', 'relative');
+					$(this).css('overflow', 'hidden');
+					var ps = new PerfectScrollbar(this, {
+						wheelSpeed: 1,
+						scrollingThreshold: 1000,
+						wheelPropagation: false,
+					});
 
-				$(this).addClass('js-addedwish-b2');
-				$(this).off('click');
-			});
-		});
+					$(window).on('resize', function () {
+						ps.update();
+					})
+				});
+			</script>
+			<script src="js/main.js"></script>
 
-		$('.js-addwish-detail').each(function () {
-			var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
-
-			$(this).on('click', function () {
-				swal(nameProduct, "is added to wishlist !", "success");
-
-				$(this).addClass('js-addedwish-detail');
-				$(this).off('click');
-			});
-		});
-
-		/*---------------------------------------------*/
-
-		$('.js-addcart-detail').each(function () {
-			var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-			$(this).on('click', function () {
-				swal(nameProduct, "is added to cart !", "success");
-			});
-		});
-	</script>
-	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-	<script>
-		$('.js-pscroll').each(function () {
-			$(this).css('position', 'relative');
-			$(this).css('overflow', 'hidden');
-			var ps = new PerfectScrollbar(this, {
-				wheelSpeed: 1,
-				scrollingThreshold: 1000,
-				wheelPropagation: false,
-			});
-
-			$(window).on('resize', function () {
-				ps.update();
-			})
-		});
-	</script>
-	<script src="js/main.js"></script>
-
-</body>
+		</body>
 
 </html>

@@ -2,9 +2,9 @@ const express = require("express");
 const userRoute = express();
 const path = require("path");
 const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/userController");
-const { loadHome, loadProducts, laodProductDetials, laodAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadBlog, loadContact } = require("../controllers/userPageController");
+const { loadHome, loadProducts, laodProductDetials, laodAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadBlog, loadContact, loadEror, cancelOrder } = require("../controllers/userPageController");
 const { loadCart, addToCart, addQuantity, removeProduct, loadCheckout, addToCheckout, placeOrder, showSuccess } = require("../controllers/cartController")
-const { is_registered, requireLogin, is_loginRequired, cartItems, } = require("../middlewares/userAuth");
+const { is_registered, requireLogin, is_loginRequired, cartItems } = require("../middlewares/userAuth");
 
 userRoute.set("views", path.join(__dirname, "../views/user_pages"));
 userRoute.use(express.static(path.join(__dirname, "../public")));
@@ -52,12 +52,37 @@ userRoute.post('/edit-details', requireLogin, editDetails)
 userRoute.post('/add-address', requireLogin, addAddress)
 userRoute.post('/edit-address/:id', requireLogin, edittAddress)
 userRoute.get('/delete-address/:id', requireLogin, deleteAddress)
+userRoute.post('/cancel-order', requireLogin, cancelOrder)
 
 userRoute.get("/about", loadAbout);
 userRoute.get("/blog", loadBlog);
 userRoute.get("/contact", loadContact);
 userRoute.get("/whishlist", loadCart);
 
+userRoute.get('/error-page', loadEror)
 userRoute.get("/logout", userLogout);
 
+
 module.exports = userRoute;
+
+
+
+
+// userRoute.get('/clear-session', (req, res) => {
+//     // Clear all cookies
+//     const cookies = Object.keys(req.cookies);
+//     cookies.forEach(cookie => {
+//         res.clearCookie(cookie);
+//     });
+
+//     // Clear session data
+//     req.session.destroy((err) => {
+//         if (err) {
+//             console.error('Error clearing session:', err);
+//             res.status(500).send('Error clearing session');
+//         } else {
+//             console.log('Session cleared successfully');
+//             res.redirect('/'); // Redirect to home page or any other page
+//         }
+//     });
+// });

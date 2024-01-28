@@ -1,6 +1,9 @@
-const { Product, Category } = require("../models/productModel")
+const { Product, Category, Order } = require("../models/productModel")
 const sharp = require("sharp")
 const path = require("path");
+const { getUserIdFromToken } = require("../util/bcryption");
+const { Addresse, User } = require("../models/userModels");
+const { log } = require("console");
 
 //  * dashboard loeding
 
@@ -67,7 +70,7 @@ const loadAddProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const { name, price, quantity, status, categoryid, discount,description } = req.body;
+    const { name, price, quantity, status, categoryid, discount, description } = req.body;
     const images = req.files.map(file => file.filename);
 
     const promises = images.map(async (image) => {
@@ -377,6 +380,91 @@ const deleteCatogory = async (req, res) => {
   }
 };
 
+// * for laoding all the orders
+
+const loadOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().populate('deliveryAddress');
+    res.render(`orders-list`, { orders })
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+// * for deleting a order
+
+const loadOrder = async (req, res) => {
+  try {
+    const id = req.query.id
+    if (!id) {
+      return res.status(304).redirect('/admin/orders-list')
+     
+    }
+
+    const order = await Order.findById(id)
+      .populate('userid')
+      .populate('deliveryAddress');
+
+      
+    if (!order) {
+      return res.status(304).redirect('/admin/orders-list')
+    }
+
+    res.render('order-details', { order })
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+// * for editting a order 
+const editOrder = async (req, res) => {
+  try {
+    const id = req.params.id
+    if (!id) {
+       return res.status(304).redirect('/admin/order-details?id='+id)
+    }
+    const status = req.body.status
+    const order = await Order.findByIdAndUpdate(id,{$set:{orderStatus:status}})
+    if (!order) {
+      return res.status(304).redirect('/admin/order-details?id='+id)
+    }
+    res.status(200).redirect('/admin/order-details?id='+id)
+
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+
+
+
+// * for deleting a order
+
+const deleteOrder = async (req, res) => {
+  try {
+    const id = req.query.id
+    if (!id) {
+      return res.status(304).redirect('/admin/orders-list')
+    }
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(304).redirect('/admin/orders-list')
+    }
+    await Order.findByIdAndDelete(id);
+    res.status(200).redirect('/admin/orders-list')
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).redirect('/admin/orders-list')
+  }
+}
+
+
+
 module.exports = {
   loadDashBoard,
   loadProducts,
@@ -390,5 +478,9 @@ module.exports = {
   deleteProduct,
   loadEditProduct,
   listProduct,
-  unlistProduct
+  unlistProduct,
+  loadOrders,
+  deleteOrder,
+  editOrder,
+  loadOrder
 };

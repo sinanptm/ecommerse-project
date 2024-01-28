@@ -119,6 +119,7 @@ const verifyOTP = async (req, res) => {
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
 
+
       await User.updateOne(
         { email },
         { $set: { token: token } },
@@ -215,7 +216,12 @@ const loadresetmail = async (req, res) => {
 
 const sendresetmail = async (req, res) => {
   try {
-    let { email } = req.body
+    let email
+    if (req.query.email) {
+      email = req.query.email
+    }else{
+      email  = req.body.email
+    }
     email = email.trim()
     const user = await User.findOne({ email })
     if (!user) {
@@ -228,7 +234,6 @@ const sendresetmail = async (req, res) => {
       subject: "Password Restting",
       duration: 4,
     });
-    res.redirect("/sendreset")
 
   } catch (error) {
     res.render("resetmail", { msg: error.message })
@@ -250,14 +255,16 @@ const loadnewPassword = async (req, res) => {
 
     const matchedRecord = await OTP.findOne({ otp, email });
     if (!matchedRecord) {
-      res.status(404).send("page Not Fount. Plese Requst For a new one");
+      res.status(404)
+      res.redirect(`/error-page?msg=page Not Fount. Plese Requst For a new one&&toast=to reset your password request for new mail `)
+
       return
     }
 
     if (matchedRecord.expiresAt < Date.now()) {
-      res.status(404).send("Link Expired. Please Request For a new link");
+      res.status(404)
+      res.redirect(`/error-page?msg=Link Expired. Please Request For a new link&&toast=to reset your password request for new mail `)
       await OTP.deleteOne({ email });
-
       return
     }
 
@@ -275,7 +282,11 @@ const checkNewPassword = async (req, res) => {
     const { password, email } = req.body
     const secPass = await makeHash(password);
     const data = await User.findOneAndUpdate({ email }, { $set: { password: secPass } })
-    res.redirect("/login")
+    if (req.session.token||req.cookies.token) {
+      res.redirect('/account?toast=Password Changed')
+    }else{
+      res.redirect("/login")
+    }
   } catch (error) {
     res.status(404).render("login", { toast: error.message });
   }

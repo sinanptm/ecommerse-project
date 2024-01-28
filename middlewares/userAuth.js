@@ -42,10 +42,10 @@ const is_loginRequired = async (req, res, next) => {
 const requireLogin = async (req, res, next) => {
     try {
         if (req.session.token || req.cookies.token) {
-            const token = await getUserIdFromToken( req.cookies.token)
+            const token = await getUserIdFromToken( req.session.token || req.cookies.token )
             const user = await User.findOne({ _id:token });
             if (!user) {
-                return res.status(401).send("Unauthorized");
+                return res.redirect('/error-page?msg=Unotherized&&toast=there is no user with ',token,'token')
             }
             if (user.status === "Blocked") {
                 req.session.destroy((err) => {
@@ -97,9 +97,19 @@ const cartItems = async (req, res, next) => {
 }
 
 
+// const errorHandler = (err, req, res, next) => {
+//     console.error('Error occurred:', err); // Log the error
+//     console.error(err.stack); // Log the stack trace
+//     res.status(500).render('error-page', { msg: 'Internal Server Error' });
+// };
+
+
+
+
 module.exports = {
     is_registered,
     is_loginRequired,
     requireLogin,
     cartItems,
+    
 };

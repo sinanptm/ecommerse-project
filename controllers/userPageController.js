@@ -1,4 +1,4 @@
-const { Product } = require("../models/productModel")
+const { Product, Order,CancelationReson } = require("../models/productModel")
 const { Cart, User, Addresse } = require("../models/userModels")
 const { getUserIdFromToken } = require('../util/bcryption')
 
@@ -70,9 +70,17 @@ const laodProductDetials = async (req, res) => {
 const laodAccount = async (req, res) => {
     try {
         const token = req.cookies.token || req.session.token;
-        const userId = await getUserIdFromToken(token);
+        let userid
+        if (token) {
+            userid = await getUserIdFromToken(token);
+        } else {
+            return res.status(304).redirect('/')
+        }
 
-        const user = await User.findById(userId).populate('address');
+        const user = await User.findById(userid).populate('address');
+        const orders = await Order.find({ userid })
+            .populate('userid')
+            .populate('OrderedItems.productid')
 
         const msg = req.query.msg;
         if (!user) {
@@ -80,7 +88,7 @@ const laodAccount = async (req, res) => {
             return res.redirect('/home');
         }
 
-        res.render('account-details', { user, editing: true, msg });
+        res.render('account-details', { user, editing: true, msg, toast: req.query.toast, orders });
     } catch (error) {
         console.error(error);
         res.redirect('/home');
@@ -142,7 +150,7 @@ const addAddress = async (req, res) => {
 
         if (req.query.ad) {
             res.redirect(req.query.ad)
-        }else{
+        } else {
             res.status(200).redirect('/account');
         }
     } catch (error) {
@@ -157,7 +165,7 @@ const edittAddress = async (req, res) => {
     try {
         const { Fname, Lname, companyName, country, streetAdress, city, state, pincode, mobile, email } = req.body;
         const { id } = req.params; // Assuming the addressId is part of the request parameters
-      
+
         const updatedAddress = await Addresse.findByIdAndUpdate(id, {
             $set: {
                 Fname,
@@ -187,6 +195,30 @@ const edittAddress = async (req, res) => {
     }
 };
 
+// * for Canceling a order 
+const cancelOrder = async (req, res) => {
+    try {
+        const { orderId, cancelReason } = req.body;
+        const userid = await getUserIdFromToken(req.cookies.token || req.session.token)
+        if (!userid||!orderId) {
+            res.status(302).redirect("/account")
+        }
+        const newReason = new CancelationReson({
+            userid,
+            orderid:orderId,
+            cancelationTime:Date.now(),
+            reason:cancelReason
+        })
+        await newReason.save()
+
+        const order = await Order.findByIdAndDelete(orderId)
+        res.status(200).redirect('/account')
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).redirect('/account?msg=' + error.message);
+    }
+}
+
 
 // * for deleting address
 const deleteAddress = async (req, res) => {
@@ -202,6 +234,7 @@ const deleteAddress = async (req, res) => {
         res.redirect('/account?msg=' + error.message);
     }
 }
+
 
 
 
@@ -242,7 +275,17 @@ const loadBlog = async (req, res) => {
 }
 
 
-
+// * for showing erros
+const loadEror = async (req, res) => {
+    try {
+        if (!req.query.msg) {
+            res.redirect('/')
+        }
+        res.render('error', { toast: req.query.toast, msg: req.query.msg })
+    } catch (error) {
+        console.log('error on error page ' + error.message)
+    }
+}
 
 module.exports = {
     loadHome,
@@ -255,5 +298,7 @@ module.exports = {
     editDetails,
     addAddress,
     deleteAddress,
-    edittAddress
+    edittAddress,
+    loadEror,
+    cancelOrder
 }
