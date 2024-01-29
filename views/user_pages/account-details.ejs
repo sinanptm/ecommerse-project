@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<title>Home 03</title>
+	<title><%= title %></title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/png" href="images/icons/favicon.png" />
@@ -313,6 +313,19 @@
 	</script>
 	<% } %>
 
+	<% if (loginRequired) { %>
+		<div id="loginModal" class="hello">
+			<div class="hello-content">
+				<p class="ppp">
+					<%= loginMessage %>
+				</p>
+				<a class="aaa" href="/login">Login</a>
+				<a class="aaa" href="/register">Sign Up</a>
+				<a class="bbb" href="javascript:void(0);" onclick="goBack()">Go Back</a>
+			</div>
+		</div>
+		<% } %>
+	
 
 		<body class="animsition">
 			<!-- Header -->
@@ -597,7 +610,7 @@
 													<div class="form-group">
 														<div class="input-group">
 															<div>
-																<input type="email" id="email" name=""
+																<input type="email" id="email" name="email"
 																	class="bigger-text input-field"
 																	value="<%= user.email %>" readonly>
 																<small class="error-message" id="emailError"></small>
@@ -612,11 +625,9 @@
 																<label for="gender" class="sr-only">Gender:</label>
 																<select id="gender" name="gender"
 																	class="bigger-text input-field" <% if (!editing) {
-																	%>
-																	disabled <% } %>>
+																	%> disabled <% } %>>
 																		<option value="male" <% if (user.gender==='male'
-																			) { %>
-																			selected <% } %>>Male</option>
+																			) { %> selected <% } %>>Male</option>
 																		<option value="female" <% if
 																			(user.gender==='female' ) { %> selected <% }
 																				%>>Female</option>
@@ -627,7 +638,6 @@
 																onclick="toggleEdit('gender')">Edit</button>
 														</div>
 													</div>
-
 
 													<!-- Phone -->
 													<div class="form-group">
@@ -643,41 +653,15 @@
 																onclick="toggleEdit('phone')">Edit</button>
 														</div>
 													</div>
-													<!-- Password Reset Modal -->
-													<div class="modal fade" id="passwordResetModal" tabindex="-1"
-														aria-labelledby="passwordResetModalLabel" aria-hidden="true">
-														<div class="modal-dialog modal-dialog-centered">
-															<div class="modal-content">
-																<div class="modal-header">
-																	<h5 class="modal-title"
-																		id="passwordResetModalLabel">
-																		Password Reset Verification Sent</h5>
-																	<button type="button" class="btn-close"
-																		data-bs-dismiss="modal"
-																		aria-label="Close"></button>
-																</div>
-																<div class="modal-body">
-																	<p>A password reset verification has been sent to
-																		your
-																		email. Please check your email inbox and follow
-																		the
-																		instructions to reset your password.</p>
-																</div>
-															</div>
-														</div>
-													</div>
 
 													<!-- Your existing HTML code -->
 													<div class="form-group">
 														<div class="input-group">
-															<div>
-																Forgot Your Password
-																<a onclick="resetmail('<%= user.email %>')"
-																	style="color: #1e88e5;">Click Here</a>
-															</div>
+															To Change Your Password
+															<button class="ssbutton" style="color: #0056b3;"
+																type="button" id="open">Click me </button>
 														</div>
 													</div>
-
 
 													<br><br>
 
@@ -686,100 +670,151 @@
 															onclick="update()">Submit</button>
 													</div>
 										</form>
+
+										<dialog>
+											<form id="change-password">
+												<span>
+													<label for="oldpass">Old Password:</label>
+													<input type="password" id="oldpass" name="oldpass" required>
+													<% if (err !==null && typeof (err) !=='undefined' ) { %>
+														<p class="error" id="passError"
+															style="color: rgb(240, 22, 22); font-size: larger;">
+															<%= err %>
+														</p>
+														<% } %>
+															<br><br>
+												</span>
+												<label for="newpass">New Password:</label>
+												<input minlength="4" type="password" id="newpass" name="password"
+													required>
+												<br><br>
+												<label for="confirmpass">Confirm Password:</label>
+												<input type="password" id="confirmpass" name="confirmpass" required>
+												<!-- New error field for confirming password -->
+												<p class="error" id="confirmPassError"
+													style="color: rgb(240, 22, 22); font-size: larger;"></p>
+												<br><br>
+												<button class="ssbutton" id="submitt" type="button">Submit</button>
+												<div>
+													Forgot Your Password
+													<a onclick="resetmail('<%= user.email %>')"
+														style="color: #1e88e5;">Click Here</a>
+												</div>
+											</form>
+											<br>
+
+											<div>
+												<button id="close">Close</button>
+											</div>
+
+										</dialog>
+
 									</div>
 								</div>
 							</div>
 						</div>
 
 						<div class="row mt-4" id="orders">
-						    <div class="col-md-12">
-						        <div class="flipkart-address-block-child1 flex-col-l">
-						            <h3 class="ltext-103 cl5">Orders</h3>
-						            <% if (orders && orders.length > 0) { %>
-						                <% orders.forEach(order => { %>
-						                    <div class="order-details border rounded p-4 mb-4">
-						                        <div class="d-flex justify-content-between align-items-center mb-3">
-						                            <h4 class="mb-0">Order ID: <%= order._id %></h4>
-						                            <span class="badge rounded-pill 
+							<div class="col-md-12">
+								<div class="flipkart-address-block-child1 flex-col-l">
+									<h3 class="ltext-103 cl5">Orders</h3>
+									<% if (orders && orders.length> 0) { %>
+										<% orders.forEach(order=> { %>
+											<div class="order-details border rounded p-4 mb-4">
+												<div class="d-flex justify-content-between align-items-center mb-3">
+													<h4 class="mb-0">Order ID: <%= order._id %>
+													</h4>
+													<span class="badge rounded-pill 
 						                                <% if (order.orderStatus === '1') { %> bg-warning
 						                                <% } else if (order.orderStatus === '2') { %> bg-info
 						                                <% } else if (order.orderStatus === '3') { %> bg-primary
 						                                <% } else if (order.orderStatus === '4') { %> bg-success
 						                                <% } %> text-white">
-						                                <% if (order.orderStatus === '1') { %> Processing
-						                                <% } else if (order.orderStatus === '2') { %> Quality Check
-						                                <% } else if (order.orderStatus === '3') { %> Shipped
-						                                <% } else if (order.orderStatus === '4') { %> Delivered
-						                                <% } %>
-						                            </span>
-						                        </div>
-						                        <p>Order Amount: $<%= order.orderAmount %></p>
-						                        <p>Expected Delivery Time: <%= order.deliveryDate.toDateString()  %></p>
-						                        <p>Ordered Items:</p>
-						                        <ul class="list-unstyled">
-						                            <% order.OrderedItems.forEach(item => { %>
-						                                <li>
-						                                    <strong><%= item.productid.name %></strong>
-						                                    - Quantity: <%= item.quantity %>
-						                                    - Price: $<%= item.price %>
-						                                </li>
-						                            <% }); %>
-						                        </ul>
-						                        <button class="btn btn-danger" data-toggle="modal"
-						                            data-target="#cancelModal<%= order._id %>">Cancel</button>
-						                    </div>
-										
-						                    <!-- Cancel Modal -->
-						                    <div class="modal fade" id="cancelModal<%= order._id %>" tabindex="-1"
-						                        role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
-						                        <div class="modal-dialog" role="document">
-						                            <div class="modal-content">
-						                                <div class="modal-header">
-						                                    <h5 class="modal-title" id="cancelModalLabel">Cancel Order</h5>
-						                                    <button type="button" class="close" data-dismiss="modal"
-						                                        aria-label="Close">
-						                                        <span aria-hidden="true">&times;</span>
-						                                    </button>
-						                                </div>
-						                                <div class="modal-body">
-						                                    <form id="cancelOrder">
-						                                        <input type="hidden" name="orderId" value="<%= order._id %>">
-						                                        <div class="form-group">
-						                                            <label for="cancelReason">Reason for cancellation:</label>
-						                                            <textarea class="form-control" id="cancelReason" name="cancelReason"
-						                                                rows="3" required></textarea>
-						                                        </div>
-						                                        <button type="button" onclick="cancelOrder('<%= order._id %>')" class="btn btn-danger">Confirm
-						                                            Cancellation</button>
-						                                    </form>
-						                                </div>
-						                            </div>
-						                        </div>
-						                    </div>
-						                <% }); %>
-						                <script>
-						                    async function cancelOrder(id) {
-						                        try {
-						                            const formdata = $("#cancelOrder").serialize();
-						                            const response = await $.ajax({
-						                                url: '/cancel-order',
-						                                method: "POST",
-						                                data: formdata
-						                            });
-						                            // const newContent = $(response).find('.flipkart-address-block-child1').html();
-						                            // $('#cancelModal'+id).modal('hide');
-						                            // $("#orders").html(newContent);
-													window.location.reload();
-						                        } catch (error) {
-						                            console.log(error.message);
-						                        }
-						                    }
-						                </script>
-						            <% } else { %>
-						                <h5>No orders found.</h5>
-						            <% } %>
-						        </div>
-						    </div>
+														<% if (order.orderStatus==='1' ) { %> Processing
+															<% } else if (order.orderStatus==='2' ) { %> Quality Check
+																<% } else if (order.orderStatus==='3' ) { %> Shipped
+																	<% } else if (order.orderStatus==='4' ) { %>
+																		Delivered
+																		<% } %>
+													</span>
+												</div>
+												<p>Order Amount: $<%= order.orderAmount %>
+												</p>
+												<p>Expected Delivery Time: <%= order.deliveryDate.toDateString() %>
+												</p>
+												<p>Ordered Items:</p>
+												<ul class="list-unstyled">
+													<% order.OrderedItems.forEach(item=> { %>
+														<li>
+															<strong>
+																<%= item.productid.name %>
+															</strong>
+															- Quantity: <%= item.quantity %>
+																- Price: $<%= item.price %>
+														</li>
+														<% }); %>
+												</ul>
+												<button class="btn btn-danger" data-toggle="modal"
+													data-target="#cancelModal<%= order._id %>">Cancel</button>
+											</div>
+
+											<!-- Cancel Modal -->
+											<div class="modal fade" id="cancelModal<%= order._id %>" tabindex="-1"
+												role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+												<div class="modal-dialog" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="cancelModalLabel">Cancel Order
+															</h5>
+															<button type="button" class="close" data-dismiss="modal"
+																aria-label="Close">
+																<span aria-hidden="true">&times;</span>
+															</button>
+														</div>
+														<div class="modal-body">
+															<form id="cancelOrder">
+																<input type="hidden" name="orderId"
+																	value="<%= order._id %>">
+																<div class="form-group">
+																	<label for="cancelReason">Reason for
+																		cancellation:</label>
+																	<textarea class="form-control" id="cancelReason"
+																		name="cancelReason" rows="3"
+																		required></textarea>
+																</div>
+																<button type="button"
+																	onclick="cancelOrder('<%= order._id %>')"
+																	class="btn btn-danger">Confirm
+																	Cancellation</button>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
+											<% }); %>
+												<script>
+													async function cancelOrder(id) {
+														try {
+															const formdata = $("#cancelOrder").serialize();
+															const response = await $.ajax({
+																url: '/cancel-order',
+																method: "POST",
+																data: formdata
+															});
+															// const newContent = $(response).find('.flipkart-address-block-child1').html();
+															// $('#cancelModal'+id).modal('hide');
+															// $("#orders").html(newContent);
+															window.location.reload();
+														} catch (error) {
+															console.log(error.message);
+														}
+													}
+												</script>
+												<% } else { %>
+													<h5>No orders found.</h5>
+													<% } %>
+								</div>
+							</div>
 						</div>
 
 						<div class="flipkart-address-section col-md-6">
@@ -1298,6 +1333,70 @@
 				@media(min-width: 992px) {
 					.isotope-item {
 						width: 25%;
+					}
+				}
+
+				dialog {
+					width: 400px;
+					padding: 20px;
+					background-color: white;
+					border: 1px solid #ccc;
+					border-radius: 5px;
+					box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+					position: fixed;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					z-index: 1000;
+					display: none;
+					animation: fadeIn 0.3s ease-in-out;
+				}
+
+				dialog::backdrop {
+					background-color: rgba(0, 0, 0, 0.9);
+				}
+
+				dialog.open {
+					display: block;
+				}
+
+				dialog form {
+					display: grid;
+					gap: 10px;
+				}
+
+				dialog label {
+					margin-bottom: 5px;
+				}
+
+				dialog input[type="password"] {
+					width: calc(100% - 20px);
+					padding: 8px;
+					border: 1px solid #ccc;
+					border-radius: 5px;
+					box-sizing: border-box;
+				}
+
+				dialog button {
+					background-color: #007bff;
+					color: white;
+					border: none;
+					padding: 10px 20px;
+					border-radius: 5px;
+					cursor: pointer;
+				}
+
+				dialog button:hover {
+					background-color: #0056b3;
+				}
+
+				@keyframes fadeIn {
+					from {
+						opacity: 0;
+					}
+
+					to {
+						opacity: 1;
 					}
 				}
 			</style>

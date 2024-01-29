@@ -58,13 +58,13 @@ const requireLogin = async (req, res, next) => {
             } else {
                 res.locals.loginRequired = false;
                 res.locals.loginMessage = "You need to be logged in to access this page.";
-
                 next();
             }
         } else {
             res.locals.loginRequired = true;
             res.locals.loginMessage = "You need to be logged in to access this page.";
             next();
+            console.log(65777);
         }
     } catch (err) {
         console.log("Error checking login status:", err.message);

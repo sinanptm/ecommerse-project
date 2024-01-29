@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<title>TRENDS</title>
+	<title><%= title %></title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/png" href="images/icons/favicon.png" />
@@ -259,7 +259,6 @@
 
 </script>
 
-
 <% if (loginRequired) { %>
 	<div id="loginModal" class="hello">
 		<div class="hello-content">
@@ -267,13 +266,15 @@
 				<%= loginMessage %>
 			</p>
 			<a class="aaa" href="/login">Login</a>
-			<a class="aaa" href="/signup">Sign Up</a>
+			<a class="aaa" href="/register">Sign Up</a>
 			<a class="bbb" href="javascript:void(0);" onclick="goBack()">Go Back</a>
 		</div>
 	</div>
 	<% } %>
 
 
+
+	
 
 		<!-- Header -->
 		<header class="header-v3">
@@ -646,6 +647,7 @@
 							<input type="hidden" name="products" value="<%= JSON.stringify(products) %>">
 							<input type="hidden" name="totalprice" value="<%= Math.round(totalPrice) %>">
 
+
 							<button id="place-order-success" type="submit"
 								class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 js-addwish-b2">
 								Place Order
@@ -795,15 +797,7 @@
 		</div>
 
 
-		<div class="flex-c-m flex-w w-full p-t-38">
-			<a href="#" class="flex-c-m how-pagination1 trans-04 m-all-7 active-pagination1">
-				1
-			</a>
-
-			<a href="#" class="flex-c-m how-pagination1 trans-04 m-all-7">
-				2
-			</a>
-		</div>
+		
 		</div>
 		<br><br><br>
 		<!-- Footer -->

@@ -1,17 +1,25 @@
-const { Product, Order,CancelationReson } = require("../models/productModel")
-const { Cart, User, Addresse } = require("../models/userModels")
-const { getUserIdFromToken } = require('../util/bcryption')
+const { Product, Order, CancelationReson,Category } = require("../models/productModel")
+const { User, Addresse } = require("../models/userModels")
+const { getUserIdFromToken, bcryptCompare, makeHash } = require('../util/bcryption')
 
 // * homepage Loading
 
 const loadHome = async (req, res) => {
     try {
-        const products = await Product.aggregate([
-            { $match: { status: "Available" } },
-            { $sample: { size: 2000 } }
-        ]);
+        const page = parseInt(req.query.page,10) || 1; 
+        const limit = 12; 
+        const totalCount = await Product.countDocuments({ status: "Available" });
+        const totalPages = Math.ceil(totalCount / limit);
 
-        res.render("home", { products, });
+        const skip = (page - 1) * limit;
+
+        const products = await Product.find({ status: "Available" })
+            .skip(skip)
+            .limit(limit)
+            .lean();
+
+        // Render the home page with pagination information
+        res.render("home", { products, totalPages, currentPage: page });
 
     } catch (error) {
         console.error("Error in loadHome:", error);
@@ -19,23 +27,31 @@ const loadHome = async (req, res) => {
     }
 };
 
+
+
+
 // * for showing products 
 const loadProducts = async (req, res) => {
     try {
-        const products = await Product.
-            find({ status: "Available" })
-            .populate({
-                path: 'categoryid',
-                model: 'Category',
-                select: 'name description img type'
-            });
-        res.render("product", { products, });
+        const page = parseInt(req.query.page, 10) || 1; 
+        const totalCount = await Product.countDocuments({ status: "Available" });
+        const limit = 12; 
+        const totalPages = Math.ceil(totalCount / limit); // Corrected total pages calculation
+        const skip = (page - 1) * limit;
+
+        const products = await Product.find({ status: "Available" }).populate({
+            path: 'categoryid',
+            model: 'Category',
+            select: 'name description img type'
+        }).limit(limit).skip(skip);
+
+        res.render("product", { products, totalPages, currentPage: page });
 
     } catch (error) {
-        console.error("Error in loadHome:", error);
+        console.error("Error in loadProducts:", error);
         res.status(500).send("Internal Server Error");
     }
-}
+};
 
 
 // * for showing deltials of a product
@@ -83,12 +99,13 @@ const laodAccount = async (req, res) => {
             .populate('OrderedItems.productid')
 
         const msg = req.query.msg;
+
         if (!user) {
             res.status(404);
             return res.redirect('/home');
         }
 
-        res.render('account-details', { user, editing: true, msg, toast: req.query.toast, orders });
+        res.render('account-details', { user, editing: true, msg, toast: req.query.toast, orders, err: req.query.err });
     } catch (error) {
         console.error(error);
         res.redirect('/home');
@@ -159,6 +176,28 @@ const addAddress = async (req, res) => {
     }
 };
 
+// * for Changing password
+
+const changePassword = async (req, res) => {
+    try {
+        const userid = await getUserIdFromToken(req.session.token || req.cookies.token);
+        const { password, oldpass } = req.body;
+        const user = await User.findById(userid);
+        if (await bcryptCompare(oldpass, user.password) == false) {
+            return res.status(302).redirect('/account?err=Incorrect password')
+        } else {
+            const pass = await makeHash(password);
+            console.log(password);
+            await User.findByIdAndUpdate(userid, { $set: { password: pass } });
+            res.redirect('/account?err=password changed')
+        }
+    } catch (error) {
+        console.log(error.message);
+        return res.status(404).redirect('/account?msg=error in changin passwerd ' + error.message);
+    }
+}
+
+
 // * for editting address
 
 const edittAddress = async (req, res) => {
@@ -182,8 +221,6 @@ const edittAddress = async (req, res) => {
         });
 
         if (!updatedAddress) {
-            // Handle the case where the address with the given ID is not found
-            console.log('0214');
             return res.status(404).redirect('/account?msg=Address not found');
         }
 
@@ -200,14 +237,14 @@ const cancelOrder = async (req, res) => {
     try {
         const { orderId, cancelReason } = req.body;
         const userid = await getUserIdFromToken(req.cookies.token || req.session.token)
-        if (!userid||!orderId) {
+        if (!userid || !orderId) {
             res.status(302).redirect("/account")
         }
         const newReason = new CancelationReson({
             userid,
-            orderid:orderId,
-            cancelationTime:Date.now(),
-            reason:cancelReason
+            orderid: orderId,
+            cancelationTime: Date.now(),
+            reason: cancelReason
         })
         await newReason.save()
 
@@ -300,5 +337,6 @@ module.exports = {
     deleteAddress,
     edittAddress,
     loadEror,
-    cancelOrder
+    cancelOrder,
+    changePassword
 }

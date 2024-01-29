@@ -2,7 +2,9 @@
 <html lang="en">
 
 <head>
-	<title>Home 03</title>
+	<title>
+		<%= title %>
+	</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/png" href="images/icons/favicon.png" />
@@ -84,7 +86,7 @@
 										<i class="zmdi zmdi-search"></i>
 									</div>
 
-									<a href="/cart"
+									<a href="/cart" id="jhdwkjaladadwkj"
 										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
 										data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
 										<i class="zmdi zmdi-shopping-cart"></i>
@@ -99,42 +101,42 @@
 										<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
 											<i class="zmdi zmdi-account"></i>
 										</a>
-									<% } %>
-								</div>
-						</div>
-						<% if (valid) { %>
-							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-logout"
-								data-toggle="modal" data-target="#logoutModal">
-								<i class="zmdi zmdi-power-off"></i>
-							</div>
-							<% } %>
-					</div>
-
-
-					<!-- Logout Modal -->
-					<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
-						aria-labelledby="logoutModalLabel" aria-hidden="true">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="logoutModalLabel">Logout Confirmation</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-								<div class="modal-body">
-									Are you sure you want to logout?
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-									<a href="/logout" class="btn btn-primary">Logout</a>
-								</div>
-							</div>
+										<% } %>
 						</div>
 					</div>
-
+					<% if (valid) { %>
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-logout" data-toggle="modal"
+							data-target="#logoutModal">
+							<i class="zmdi zmdi-power-off"></i>
+						</div>
+						<% } %>
 			</div>
-			</nav>
+
+
+			<!-- Logout Modal -->
+			<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="logoutModalLabel">Logout Confirmation</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							Are you sure you want to logout?
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+							<a href="/logout" class="btn btn-primary">Logout</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		</nav>
 		</div>
 		</div>
 
@@ -156,7 +158,8 @@
 							<i class="zmdi zmdi-search"></i>
 						</div>
 
-						<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+						<a href="/cart" id="jhdwkjaladadwkj"
+							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
 							data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
 							<i class="zmdi zmdi-shopping-cart"></i>
 						</a>
@@ -170,7 +173,7 @@
 							<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
 								<i class="zmdi zmdi-account"></i>
 							</a>
-						<% } %>
+							<% } %>
 					</div>
 
 					<!-- Button show menu -->
@@ -394,8 +397,8 @@
 
 
 	<!-- Product -->
-	<section class="bg0 p-t-23 p-b-130">
-		<div class="container">
+	<section class="bg0 p-t-23 p-b-130" id="productOverview">
+		<div class="container" id="container">
 			<div class="p-b-10">
 				<h3 class="ltext-103 cl5">
 					Product Overview
@@ -406,52 +409,62 @@
 				<% products.forEach(function(product) { %>
 					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
 						<!-- Block2 -->
-						<div class="block2">
-							<div class="block2-pic hov-img0">
-								<img src="/resized_images/<%= product.img[0] %>" alt="IMG-PRODUCT" class="image">
+						<a href="/product?id=<%= product._id %>">
+							<div class="block2">
+								<div class="block2-pic hov-img0">
+									<img src="/resized_images/<%= product.img[0] %>" alt="IMG-PRODUCT" class="image">
+									
+										<% if (valid ===undefined||valid===null) { %>
+											<a href="/login?toast=to access cart you should login first "
+												class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
+												Add To Cart
+											</a>
+										<% }else if(product.quantity >= 1) {%>
+											<a onclick="addToCartHome('<%= product._id %>')" id="cccc"
+												class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
+												Add To Cart
+											</a>
+										<% } %>
 
-								<a href="/product?id=<%= product._id %>"
-									class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
-									Quick View
-								</a>
-							</div>
-
-							<div class="block2-txt flex-w flex-t p-t-14">
-								<div class="block2-txt-child1 flex-col-l">
-									<a href="product-detail.html"
-										class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-										<%= product.name %>
-									</a>
-
-									<span class="stext-105 cl3">
-										<%= product.price %>
-									</span>
 								</div>
 
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png"
-											alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l"
-											src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
+
+								<div class="block2-txt flex-w flex-t p-t-14">
+									<div class="block2-txt-child1 flex-col-l">
+										<a href="product-detail.html"
+											class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+											<%= product.name %>
+										</a>
+
+										<span class="stext-105 cl3">
+											<%= product.price %>
+										</span>
+									</div>
+
+									<div class="block2-txt-child2 flex-r p-t-3">
+										<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+											<img class="icon-heart1 dis-block trans-04"
+												src="images/icons/icon-heart-01.png" alt="ICON">
+											<img class="icon-heart2 dis-block trans-04 ab-t-l"
+												src="images/icons/icon-heart-02.png" alt="ICON">
+										</a>
+									</div>
 								</div>
 							</div>
-						</div>
 					</div>
+					</a>
 
 					<% }); %>
 			</div>
 
 			<!-- Pagination -->
-			<div class="flex-c-m flex-w w-full p-t-38">
-				<a href="#" class="flex-c-m how-pagination1 trans-04 m-all-7 active-pagination1">
-					1
-				</a>
-
-				<a href="#" class="flex-c-m how-pagination1 trans-04 m-all-7">
-					2
-				</a>
+			<div class="flex-c-m flex-w w-full p-t-38" id="pagination"> 
+				<% for (let i=1; i <=totalPages; i++) { %>
+					<button onclick="homePagePagination('<%= i %>')"
+						class="flex-c-m how-pagination1 trans-04 m-all-7 <% if (currentPage === i) { %>active-pagination1<% } %>">
+						<%= i %>
+					</button>
+					<% } %>
 			</div>
 		</div>
 	</section>
@@ -736,3 +749,6 @@
 </body>
 
 </html>
+
+
+

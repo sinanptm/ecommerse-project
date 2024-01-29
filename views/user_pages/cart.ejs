@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<title>TRENDS</title>
+	<title><%= title %></title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/png" href="images/icons/favicon.png" />
@@ -158,66 +158,7 @@
 		opacity: 0.8;
 	}
 
-	.hello {
-		display: none;
-		position: fixed;
-		z-index: 1;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		overflow: auto;
-		background-color: rgba(0, 0, 0, 0.5);
-	}
 
-	.hello-content {
-		background-color: #fefefe;
-		margin: 15% auto;
-		padding: 20px;
-		border: 1px solid #888;
-		width: 80%;
-		max-width: 400px;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		border-radius: 8px;
-		position: relative;
-		z-index: 2;
-		/* Ensure modal content is above the overlay */
-	}
-
-	.ppp {
-		margin: 10px 0;
-	}
-
-	.aaa {
-		display: block;
-		padding: 10px;
-		margin-top: 10px;
-		text-align: center;
-		background-color: #4caf50;
-		color: white;
-		text-decoration: none;
-		border-radius: 5px;
-	}
-
-	.aaa:hover {
-		background-color: #45a049;
-	}
-
-	.bbb {
-		display: block;
-		padding: 10px;
-		margin-top: 10px;
-		text-align: center;
-		background-color: #f44336;
-		/* Red color for "Go Back" button */
-		color: white;
-		text-decoration: none;
-		border-radius: 5px;
-	}
-
-	.bbb:hover {
-		background-color: #d32f2f;
-	}
 
 	.body-disabled {
 		overflow: hidden;
@@ -249,20 +190,6 @@
 	}
 
 </script>
-
-
-<% if (loginRequired) { %>
-	<div id="loginModal" class="hello">
-		<div class="hello-content">
-			<p class="ppp">
-				<%= loginMessage %>
-			</p>
-			<a class="aaa" href="/login">Login</a>
-			<a class="aaa" href="/signup">Sign Up</a>
-			<a class="bbb" href="javascript:void(0);" onclick="goBack()">Go Back</a>
-		</div>
-	</div>
-	<% } %>
 
 
 
@@ -574,10 +501,12 @@
 																			style="cursor: pointer;" type="number"
 																			name="quantity" value="<%= product.quantity %>"
 																			min="0">
-																		<div onclick="updateQuantity('<%= product.productid._id %>', 1)"
-																			class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-																			<i class="fs-16 zmdi zmdi-plus"></i>
-																		</div>
+																		<% if ( product.quantity<product.productid.quantity ) { %>
+																			<div onclick="updateQuantity('<%= product.productid._id %>', 1)"
+																				class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+																				<i class="fs-16 zmdi zmdi-plus"></i>
+																			</div>
+																		<% } %>
 													</div>
 													<% } %>
 												
@@ -692,17 +621,9 @@
 		</form>
 
 
-		<div class="flex-c-m flex-w w-full p-t-38">
-			<a href="#" class="flex-c-m how-pagination1 trans-04 m-all-7 active-pagination1">
-				1
-			</a>
-
-			<a href="#" class="flex-c-m how-pagination1 trans-04 m-all-7">
-				2
-			</a>
+		
 		</div>
-		</div>
-		<br><br><br>
+		<br><br><br><br><br><br><br><br>
 		<!-- Footer -->
 		<footer class="bg3 p-t-75 p-b-32">
 			<div class="container">

@@ -1,3 +1,171 @@
+
+
+async function product_listing_PagePagination(pageNumber) {
+    try {
+        const response = await $.ajax({
+            url: "products?page=" + pageNumber,
+            method: "GET"
+        });
+        const newProductOverview = $(response).find('#container').html();
+        const newPagination = $(response).find('#pagination').html();
+        $('#pagination').html(newPagination);
+        $('#container').html(newProductOverview);
+    } catch (error) {
+        console.error('Error occurred while fetching pagination data:', error);
+    }
+}
+
+
+async function homePagePagination(pageNumber) {
+    try {
+        const response = await $.ajax({
+            url: "/home?page=" + pageNumber,
+            method: "GET"
+        });
+        const newProductOverview = $(response).find('#container').html();
+        const newPagination = $(response).find('#pagination').html();
+        $('#pagination').html(newPagination);
+        $('#container').html(newProductOverview);
+    } catch (error) {
+        console.error('Error occurred while fetching pagination data:', error);
+    }
+}
+
+$(document).ready(function () {
+    $('#submitt').on("click", async () => {
+        // Retrieve form data
+        let formdata = $('#change-password').serialize();
+
+        // Extract password and confirmation password values
+        let password = $('#newpass').val();
+        let confirmPassword = $('#confirmpass').val();
+
+        // Check if password and confirmation password match
+        if (password !== confirmPassword) {
+            // Display error message for confirmation password mismatch
+            $('#confirmPassError').text("Password and Confirm Password do not match.");
+            return; // Prevent form submission
+        } else {
+            // Clear the confirmation password error if passwords match
+            $('#confirmPassError').text("");
+        }
+
+        // Check if password length is at least four characters
+        if (password.length < 4) {
+            // Display error message for password length
+            $('#confirmPassError').text("Password must be at least four characters long.");
+            return; // Prevent form submission
+        } else {
+            // Clear the password length error if password is valid
+            $('#confirmPassError').text("");
+        }
+
+        // Additional space validation
+        if (password.includes(" ")) {
+            // Display error message for space in password
+            $('#confirmPassError').text("Password cannot contain spaces.");
+            return; // Prevent form submission
+        } else {
+            // Clear the space validation error if password is valid
+            $('#confirmPassError').text("");
+        }
+
+        try {
+            const res = await $.ajax({
+                url: "/change-password",
+                method: "POST",
+                data: formdata,
+            });
+            const newform = $(res).find('#change-password').html();
+            const msg = $(res).find("#userDetailsForm").html();
+            $('#change-password').html(newform);
+            $('#userDetailsForm').html(msg);
+            console.log(1231212323);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    const openBtn = document.querySelector("#open");
+    const closeBtn = document.querySelector('#close');
+    const dialog = document.querySelector("dialog");
+
+    openBtn.addEventListener("click", () => {
+        dialog.classList.add('open');
+        dialog.showModal();
+    });
+
+    closeBtn.addEventListener("click", () => {
+        dialog.classList.remove('open');
+        dialog.close(); 
+    });
+
+    dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) {
+            dialog.classList.remove('open');
+            dialog.close();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && dialog.classList.contains('open')) {
+            dialog.classList.remove('open');
+            dialog.close();
+        }
+    });
+});
+
+
+
+
+
+
+
+async function addToCartProductPage(id) {
+    try {
+        const res = await $.ajax({
+            url: `/addtocart?id=${id}`,
+            method: "GET"
+        });
+        console.log(res);
+
+        const newNoti = $(res).find("#jhdwkjadwkj").html();
+        const cart = $(res).find('#cccc').html();
+
+        $("#cccc").html(cart);
+        $("#jhdwkjadwkj").html(newNoti);
+
+        // Show success message
+        swal("Success!", "Product added to cart.", "success");
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+
+
+async function addToCartHome(id) {
+    try {
+        const res = await $.ajax({
+            url: `/addtocart?id=${id}&&ss=ss`,
+            method: "GET"
+        });
+
+        const newNoti = $(res).find("#jhdwkjaladadwkj").html();
+        const cart = $(res).find('#cccc').html();
+
+        $("#cccc").html(cart);
+        $("#jhdwkjaladadwkj").html(newNoti);
+        if (res) {
+
+            swal("Success!", "Product added to cart.", "success");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+
 function submitEditAddress(addressId) {
     clearEditAddressErrors();
 

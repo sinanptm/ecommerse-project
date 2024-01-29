@@ -13,8 +13,13 @@ const addToCart = async (req, res) => {
     let { productid, quantity } = req.body;
     quantity = Number(quantity)
     const userId = await getUserIdFromToken(token);
+    const user = await User.findById(userId)
+    if (!user) {
+      return res.status(304).redirect('/login?toast=to add a product to cart you should register first')
+    }
     const userCart = await Cart.findOne({ userId });
     const product = await Product.findById(productid);
+
 
     if (product.quantity <= 0) {
       // Handle the case where the product quantity is zero or less
@@ -61,13 +66,8 @@ const addToCart = async (req, res) => {
 
       const newCart = await cart.save();
     }
-    // if (req.query.zz='z') {
-    //   res.status(200).redirect("/products");
-    // } else if(req.query.hh) {
-    //   res.status(200).redirect('/home');
-    // }else{
-      res.redirect("/product?id=" + productid);
-    // }
+
+    res.redirect("/product?id=" + productid);
 
   } catch (error) {
     console.error(error);
@@ -75,6 +75,74 @@ const addToCart = async (req, res) => {
   }
 };
 
+
+
+const addToCartProductPage = async (req, res) => {
+  try {
+    const token = req.cookies.token || req.session.token;
+    let { id, } = req.query;
+    const productid = id;
+    let quantity = 1;
+    quantity = Number(quantity)
+    const userId = await getUserIdFromToken(token);
+    const userCart = await Cart.findOne({ userId });
+    const product = await Product.findById(productid);
+
+    if (product.quantity <= 0) {
+      res.status(400).redirect("/products");
+      return;
+    }
+
+    const totalPrice = product.price * quantity;
+
+    if (userCart) {
+      const existingProductIndex = userCart.products.findIndex(
+        (item) => item.productid.toString() === productid
+      );
+
+      if (existingProductIndex !== -1) {
+        // Update the quantity if the product already exists in the cart
+        userCart.products[existingProductIndex].quantity += quantity;
+
+        userCart.markModified('products');
+      } else {
+        // Add the product to the cart if it doesn't exist
+        userCart.products.push({
+          productid: productid,
+          quantity: quantity,
+        });
+      }
+
+      userCart.items = userCart.products.length; // Set the total items based on the unique products
+
+      const updatedCart = await userCart.save();
+    } else {
+      // Create a new cart if the user doesn't have one
+      const cart = new Cart({
+        products: [{
+          productid: productid,
+          quantity: quantity,
+        }],
+        totalPrice: totalPrice,
+        items: 1, // Since it's a new cart, there is one unique product
+        userId: userId,
+        createdate: new Date(),
+      });
+
+      const newCart = await cart.save();
+    }
+    if (req.query.ss) {
+      res.status(200).redirect('/home')
+    } else {
+      res.status(200).redirect("/products");
+    }
+
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).redirect("/products"); // Handle other errors with a 500 status and redirect
+  }
+};
 
 // * for loading the cart page 
 
@@ -108,7 +176,7 @@ const loadCart = async (req, res) => {
     const filteredProducts = products.filter(product => product.productid.quantity > 0 && product.productid.status === "Available");
     const productsToCheckout = filteredProducts.map(product => ({ productid: product.productid._id, quantity: product.quantity }));
 
-    return res.render("cart", { products, cart, totalPrice, productsToCheckout });
+    return res.render("cart", { products, cart, totalPrice, productsToCheckout, toast: req.query.toast });
   } catch (error) {
     console.error(error);
     return res.status(500).send("Internal Server Error");
@@ -193,7 +261,7 @@ const addToCheckout = async (req, res) => {
     req.session.parsedProducts = parsedProducts
     req.session.totalAmount = totalprice
     res.locals.products = parsedProducts;
-    res.redirect(`/checkout?products=${parsedProducts}&&total=${totalprice}`);
+    res.redirect(`/checkout?t=${totalprice}`);
   } catch (error) {
     console.log(error.message);
     res.status(400).redirect('/cart');
@@ -208,8 +276,15 @@ const loadCheckout = async (req, res) => {
     const parsedProducts = req.session.parsedProducts
     const total = req.session.totalAmount
     const token = req.cookies.token || req.session.token;
+    if (!token) {
+      
+    }
     const userId = await getUserIdFromToken(token);
 
+    if (total !== req.query.t) {
+      return res.status(304).redirect('/cart')
+    }
+   
     if (!total || !token) {
       return res.status(302).redirect('/cart');
     }
@@ -251,7 +326,7 @@ const loadCheckout = async (req, res) => {
 
     // Render the checkout page
     res.render("checkout", {
-      user, subtotal, products, totalPrice, totalDiscount
+      user, subtotal, products, totalPrice, totalDiscount, parsedProducts
     });
 
   } catch (error) {
@@ -272,29 +347,33 @@ const placeOrder = async (req, res) => {
     const productIds = products.map(product => product.productid);
     const populatedProducts = await Product.find({ _id: { $in: productIds } });
 
+    const outOfStockProducts = populatedProducts.filter(product => product.quantity <= 0);
+    if (outOfStockProducts.length > 0) {
+      return res.redirect(`/checkout?t=${req.session.totalAmount}&&msg=some products where out of stock plese chect you cart again`);
+    }
+
     // Update the cart
     const cart = await Cart.findOne({ userId });
     if (!cart) {
       throw new Error("Cart not found for the user");
     }
 
-    // Calculate total items to be removed from the cart
     const totalItemsToRemove = products.reduce((acc, curr) => acc + curr.quantity, 0);
-
-    // Check if there are enough items in the cart
     if (cart.items < totalItemsToRemove) {
       throw new Error("Insufficient items in the cart");
     }
 
-    // Remove ordered products from the cart
-    products.forEach(({ productid }) => {
-      cart.products = cart.products.filter(product => product.productid.toString() !== productid);
-    });
+    for (const product of products) {
+      const index = cart.products.findIndex(p => p.productid.toString() === product.productid);
+      if (index !== -1) {
+        cart.products.splice(index, 1);
+      } else {
+        throw new Error(`Product ${product.productid} not found in the cart`);
+      }
+    }
 
-    // Update total items in cart
     cart.items -= totalItemsToRemove;
 
-    // Save the updated cart
     await cart.save();
 
     const details = populatedProducts.map((product, i) => ({
@@ -303,6 +382,12 @@ const placeOrder = async (req, res) => {
       quantity: products[i].quantity,
       name: product.name
     }));
+
+    for (const product of populatedProducts) {
+      product.quantity -= 1;
+      await product.save();
+    }
+
 
     const newOrder = new Order({
       userid: userId,
@@ -318,11 +403,10 @@ const placeOrder = async (req, res) => {
     res.redirect("/order-success?id=" + order._id);
   } catch (error) {
     console.log(error.message);
-    const parsedProducts = req.session.parsedProducts;
-    const totalAmount = req.session.totalAmount;
-    res.status(200).redirect(`/checkout?products=${parsedProducts}&&total=${totalAmount}`);
+    res.status(500).send("Failed to place order: " + error.message);
   }
 };
+
 
 
 
@@ -355,5 +439,7 @@ module.exports = {
   loadCheckout,
   addToCheckout,
   placeOrder,
-  showSuccess
+  showSuccess,
+  addToCartProductPage
 };
+
