@@ -31,64 +31,83 @@ async function homePagePagination(pageNumber) {
     }
 }
 
+async function resetmail(email) {
+    $('body').css('cursor', 'wait');
+    const dialog = document.querySelector("dialog");
+    await $.ajax({
+        url: "/sendreset",
+        method: 'POST',
+        data: { email: email },
+        success: (res) => {
+            $('body').css('cursor', '');
+
+            dialog.classList.remove('open');
+            dialog.close();
+
+            $('#emailSendingMessage').text('To change your password verification mail has been sent to your email!');
+            $('#emailSendingModal').modal('show');
+        },
+        error: (xhr, status, error) => {
+            $('body').css('cursor', 'auto');
+        }
+    });
+}
+
+var dialog = document.querySelector("dialog");
+
+
 $(document).ready(function () {
     $('#submitt').on("click", async () => {
         // Retrieve form data
         let formdata = $('#change-password').serialize();
 
-        // Extract password and confirmation password values
         let password = $('#newpass').val();
         let confirmPassword = $('#confirmpass').val();
 
-        // Check if password and confirmation password match
         if (password !== confirmPassword) {
-            // Display error message for confirmation password mismatch
             $('#confirmPassError').text("Password and Confirm Password do not match.");
             return; // Prevent form submission
         } else {
-            // Clear the confirmation password error if passwords match
             $('#confirmPassError').text("");
         }
 
-        // Check if password length is at least four characters
         if (password.length < 4) {
-            // Display error message for password length
             $('#confirmPassError').text("Password must be at least four characters long.");
             return; // Prevent form submission
         } else {
-            // Clear the password length error if password is valid
             $('#confirmPassError').text("");
         }
 
-        // Additional space validation
         if (password.includes(" ")) {
-            // Display error message for space in password
             $('#confirmPassError').text("Password cannot contain spaces.");
             return; // Prevent form submission
         } else {
-            // Clear the space validation error if password is valid
             $('#confirmPassError').text("");
         }
 
         try {
+
             const res = await $.ajax({
                 url: "/change-password",
                 method: "POST",
                 data: formdata,
             });
             const newform = $(res).find('#change-password').html();
-            const msg = $(res).find("#userDetailsForm").html();
+            let newbu = $(res).find('#sssss').html()
+            dialog.classList.add('open');
+            dialog.showModal();
+
             $('#change-password').html(newform);
-            $('#userDetailsForm').html(msg);
-            console.log(1231212323);
+            $('#sssss').html(newbu);
+
         } catch (error) {
             console.error(error);
         }
     });
+            const closeBtn = document.querySelector('#close');
 
     const openBtn = document.querySelector("#open");
-    const closeBtn = document.querySelector('#close');
-    const dialog = document.querySelector("dialog");
+
 
     openBtn.addEventListener("click", () => {
         dialog.classList.add('open');
@@ -97,7 +116,7 @@ $(document).ready(function () {
 
     closeBtn.addEventListener("click", () => {
         dialog.classList.remove('open');
-        dialog.close(); 
+        dialog.close();
     });
 
     dialog.addEventListener('click', (event) => {
@@ -117,17 +136,12 @@ $(document).ready(function () {
 
 
 
-
-
-
-
 async function addToCartProductPage(id) {
     try {
         const res = await $.ajax({
             url: `/addtocart?id=${id}`,
             method: "GET"
         });
-        console.log(res);
 
         const newNoti = $(res).find("#jhdwkjadwkj").html();
         const cart = $(res).find('#cccc').html();
@@ -157,7 +171,6 @@ async function addToCartHome(id) {
         $("#cccc").html(cart);
         $("#jhdwkjaladadwkj").html(newNoti);
         if (res) {
-
             swal("Success!", "Product added to cart.", "success");
         }
     } catch (error) {

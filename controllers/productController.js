@@ -1,9 +1,6 @@
 const { Product, Category, Order } = require("../models/productModel")
 const sharp = require("sharp")
 const path = require("path");
-const { getUserIdFromToken } = require("../util/bcryption");
-const { Addresse, User } = require("../models/userModels");
-const { log } = require("console");
 
 //  * dashboard loeding
 
@@ -19,7 +16,10 @@ const loadDashBoard = async (req, res) => {
 //  * product management
 const loadProducts = async (req, res) => {
   try {
-    const msg = req.query.msg
+    const perPage = 10;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * perPage;
+
     const products = await Product.aggregate([
       {
         $lookup: {
@@ -30,7 +30,7 @@ const loadProducts = async (req, res) => {
         },
       },
       {
-        $unwind: '$category', // Unwind the array created by $lookup (as it's a single match)
+        $unwind: '$category',
       },
       {
         $project: {
@@ -40,19 +40,24 @@ const loadProducts = async (req, res) => {
           quantity: 1,
           status: 1,
           img: 1,
-          category: '$category.name', // Rename the category name field
+          category: '$category.name',
           discription: "$category.description",
           createdate: 1,
           discount: 1,
         },
       },
-    ]);
-    const categories = await Category.find();
-    res.render("products-list", { products, categories, msg });
+    ]).skip(skip).limit(perPage);
+    const count = await Product.countDocuments();
+    const totalPages = Math.ceil(count / perPage);
+    res.render("products-list", { products, totalPages, currentPage: page });
   } catch (err) {
     console.log(err.message);
   }
 };
+
+
+
+
 
 //  * add products
 const loadAddProduct = async (req, res) => {
@@ -65,6 +70,8 @@ const loadAddProduct = async (req, res) => {
     res.status(404).json(error.message);
   }
 };
+
+
 
 // * to add now product
 
@@ -287,13 +294,19 @@ const deleteProduct = async (req, res) => {
 
 const laodCatagorie = async (req, res) => {
   try {
-    const categories = await Category.find().populate('items');
-    res.render("catogories", { categories });
+    const perPage = 4;
+    const page = parseInt(req.query.page) || 1
+    const skip = (page - 1) * perPage
+    const categories = await Category.find().skip(skip).limit(perPage)
+    const count = await Category.countDocuments();
+    const totalPages = Math.ceil(count / perPage)
+    res.render("catogories", { categories, totalPages, currentPage: page });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 // * for adding new catogorie
 
@@ -367,6 +380,7 @@ const editCatogory = async (req, res) => {
     res.redirect("/admin/catogories");
   }
 };
+
 // * Delte catogotie
 
 const deleteCatogory = async (req, res) => {
@@ -380,12 +394,18 @@ const deleteCatogory = async (req, res) => {
   }
 };
 
+
 // * for laoding all the orders
 
 const loadOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate('deliveryAddress');
-    res.render(`orders-list`, { orders })
+    const perPage = 4;
+    const page = parseInt(req.query.page) || 1
+    const skip = (page - 1) * perPage
+    const count = await Order.countDocuments()
+    const totalPages = Math.ceil(count / perPage)
+    const orders = await Order.find().populate('deliveryAddress').skip(skip).limit(perPage)
+    res.render(`orders-list`, { orders, totalPages, currentPage: page })
 
   } catch (error) {
     console.log(error.message);
@@ -400,14 +420,14 @@ const loadOrder = async (req, res) => {
     const id = req.query.id
     if (!id) {
       return res.status(304).redirect('/admin/orders-list')
-     
+
     }
 
     const order = await Order.findById(id)
       .populate('userid')
       .populate('deliveryAddress');
 
-      
+
     if (!order) {
       return res.status(304).redirect('/admin/orders-list')
     }
@@ -425,14 +445,14 @@ const editOrder = async (req, res) => {
   try {
     const id = req.params.id
     if (!id) {
-       return res.status(304).redirect('/admin/order-details?id='+id)
+      return res.status(304).redirect('/admin/order-details?id=' + id)
     }
     const status = req.body.status
-    const order = await Order.findByIdAndUpdate(id,{$set:{orderStatus:status}})
+    const order = await Order.findByIdAndUpdate(id, { $set: { orderStatus: status } })
     if (!order) {
-      return res.status(304).redirect('/admin/order-details?id='+id)
+      return res.status(304).redirect('/admin/order-details?id=' + id)
     }
-    res.status(200).redirect('/admin/order-details?id='+id)
+    res.status(200).redirect('/admin/order-details?id=' + id)
 
   } catch (error) {
     console.log(error.message);

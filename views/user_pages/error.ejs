@@ -11,7 +11,9 @@
             width: 100%;
         }
     </style>
-    <title><%= title %></title>
+    <title>
+        <%= title %>
+    </title>
 
     <body class="animsition">
         <!-- Header -->
@@ -171,8 +173,7 @@
             </script>
             <% } %>
 
-
-
+                <!-- Error Page Section -->
                 <!-- Error Page Section -->
                 <section class="sec-error-page bg0 p-t-65 p-b-60">
                     <div class="container">
@@ -189,15 +190,95 @@
                                         </div>
                                         <% } %>
                                             <!-- End EJS Error Message -->
-                                            <a href="/" class="btn btn-primary mt-4">Go Back to Home</a>
+                                            <a href="/" class="btn btn-primary mt-4">Go Back to Home Page</a>
+                                            <!-- Additional Elements -->
+                                            <div class="mt-5">
+                                                <h3 class="mtext-106 cl2 p-b-10">What you can do:</h3>
+                                                <ul class="list-unstyled">
+                                                    <li>Check your internet connection and try refreshing the page.</li>
+                                                    <li>Clear your browser's cache and cookies, then try again.</li>
+                                                    <li>Contact our support team at <a
+                                                            href="mailto:felistob@gmail.com">felistob@gmail.com</a>
+                                                        for further assistance.</li>
+                                                    <li>Explore more content on our website:</li>
+                                                </ul>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <a href="/blog" class="btn btn-outline-primary btn-block">Visit
+                                                            Our Blog</a>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <a href="/products"
+                                                            class="btn btn-outline-primary btn-block">Shop Now</a>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <a href="/contact"
+                                                            class="btn btn-outline-primary btn-block">Contact Us</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                <style>
+                    .sec-error-page {
+                        background-color: #f8f9fa;
+                    }
 
+                    .mtext-105 {
+                        font-size: 2.5rem;
+                        font-weight: bold;
+                        color: #333;
+                    }
+
+                    .stext-117 {
+                        font-size: 1.2rem;
+                        color: #666;
+                    }
+
+                    .alert {
+                        border-radius: 0.5rem;
+                    }
+
+                    .btn-primary {
+                        background-color: #007bff;
+                        border-color: #007bff;
+                    }
+
+                    .btn-outline-primary {
+                        color: #007bff;
+                        border-color: #007bff;
+                    }
+
+                    .btn-social {
+                        color: #fff;
+                        background-color: #007bff;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 5px;
+                        font-weight: bold;
+                    }
+
+                    .btn-social:hover {
+                        background-color: #0056b3;
+                    }
+
+                    .cl2 {
+                        color: #333;
+                    }
+
+                    .list-inline-item {
+                        margin-right: 10px;
+                    }
+
+                    .list-unstyled li {
+                        margin-bottom: 10px;
+                    }
+                </style>
 
 
                 <!-- Footer -->

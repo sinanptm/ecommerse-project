@@ -247,13 +247,20 @@
                             <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer"
                                 id="verifyBtn">
                                 Verify
-                            </button>
-                            <div id="successModal" class="modal">
-                                <div class="modal-content">
-                                    <span class="close" onclick="closeModal()">&times;</span>
-                                    <p>Email Has Been Sent To Your Email!</p>
+                            </button><br>
+                           <span>Go back to login! <a href="/login" s>login</a></span>
+                            <% if (send) { %>
+                                <div id="successModal" class="modal">
+                                    <div class="modal-content">
+                                        <span class="close">&times;</span>
+                                        <p>Veryfication mail Has Been Sent To Your Email!</p>
+                                    </div>
                                 </div>
-                            </div>
+                                <% } %>
+
+
+
+
                 </form>
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
@@ -278,20 +285,11 @@
                                 return;
                             }
 
-                            // If validation passes, show the success modal
-                            openModal();
+
                         });
                     });
 
-                    function openModal() {
-                        setTimeout(() => {
-                            document.getElementById("successModal").style.display = "block";
-                        }, 4000);
-                    }
 
-                    function closeModal() {
-                        document.getElementById("successModal").style.display = "none";
-                    }
                 </script>
 
 
@@ -491,7 +489,19 @@
                 }
             }
         </style>
+        <script>
+            var send = '<%= send %>';
+            $(document).ready(function () {
+                if (send) {
+                    $('#successModal').show();
 
+                    // Close the modal when the close button is clicked
+                    $('.close').click(function () {
+                        $('#successModal').hide();
+                    });
+                }
+            });
+        </script>
 
         <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
         <script src="vendor/animsition/js/animsition.min.js"></script>

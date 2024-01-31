@@ -4,11 +4,10 @@ const path = require("path");
 const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/userController");
 const { loadHome, loadProducts, laodProductDetials, laodAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadBlog, loadContact, loadEror, cancelOrder, changePassword } = require("../controllers/userPageController");
 const { loadCart, addToCart, addQuantity, removeProduct, loadCheckout, addToCheckout, placeOrder, showSuccess, addToCartProductPage } = require("../controllers/cartController")
-const { is_registered, requireLogin, is_loginRequired, cartItems } = require("../middlewares/userAuth");
+const { is_registered, requireLogin, is_loginRequired, cartItems,handleUndefinedRoutes } = require("../middlewares/userAuth");
 
 userRoute.set("views", path.join(__dirname, "../views/user_pages"));
 userRoute.use(express.static(path.join(__dirname, "../public")));
-userRoute.locals.title = "TRENDS";
 userRoute.use(cartItems);
 
 userRoute.get("/", loadHome);
@@ -65,14 +64,8 @@ userRoute.get("/whishlist", loadCart);
 
 userRoute.get('/error-page', loadEror)
 userRoute.get("/logout", userLogout);
-userRoute.get('/dialog', (req, res) => {
-    try {
-        res.render('dailog')
-    } catch (error) {
-        console.log(error.message);
-    }
-})
 
+userRoute.use(handleUndefinedRoutes);
 
 module.exports = userRoute;
 

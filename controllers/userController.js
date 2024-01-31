@@ -112,22 +112,22 @@ const verifyOTP = async (req, res) => {
       await OTP.deleteOne({ email: email });
       const veriy = await User.updateOne({ email }, { $set: { is_verified: true } });
 
-      const token = await generateToken(veriy._id);
+      // const token = await generateToken(veriy._id);
 
-      req.session.token = token;
-      res.cookie("token", token, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
+      // req.session.token = token;
+      // res.cookie("token", token, {
+      //   maxAge: 30 * 24 * 60 * 60 * 1000,
+      // });
 
 
-      await User.updateOne(
-        { email },
-        { $set: { token: token } },
-        { upsert: true }
-      );
+      // await User.updateOne(
+      //   { email },
+      //   { $set: { token: token } },
+      //   { upsert: true }
+      // );
 
       delete req.session.OTPId;
-      return res.redirect("/home");
+      return res.redirect("/login");
     } else {
       return res.render("otp", { msg: "OTP Is Incorrect", email: req.session.pmail, });
     }
@@ -177,8 +177,7 @@ const checkLogin = async (req, res) => {
     if (data) {
       if (await bcryptCompare(password, data.password)) {
         const data = await User.findOne({ email });
-
-        const token = await generateToken(data._id.toString());
+        token = await generateToken(data._id.toString());
         req.session.token = token;
         res.cookie("token", token, {
           maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -206,7 +205,7 @@ const checkLogin = async (req, res) => {
 
 const loadresetmail = async (req, res) => {
   try {
-    res.render("resetmail")
+    res.render("resetmail",{send:false})
   } catch (error) {
     res.status(404).redirect("/login?toast=Page Not Found")
   }
@@ -225,7 +224,7 @@ const sendresetmail = async (req, res) => {
     email = email.trim()
     const user = await User.findOne({ email })
     if (!user) {
-      res.render("resetmail", { msg: "your Not a registered user" })
+      res.render("resetmail", { msg: "your Not a registered user",send:false})
       return
     }
     const OTP = await sendNewPass({
@@ -234,9 +233,10 @@ const sendresetmail = async (req, res) => {
       subject: "Password Restting",
       duration: 4,
     });
+    return res.status(200).render('resetmail',{send:true})
 
   } catch (error) {
-    res.render("resetmail", { msg: error.message })
+    res.render("resetmail", { msg: error.message ,send:false})
   }
 }
 

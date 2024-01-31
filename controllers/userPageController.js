@@ -187,7 +187,6 @@ const changePassword = async (req, res) => {
             return res.status(302).redirect('/account?err=Incorrect password')
         } else {
             const pass = await makeHash(password);
-            console.log(password);
             await User.findByIdAndUpdate(userid, { $set: { password: pass } });
             res.redirect('/account?err=password changed')
         }

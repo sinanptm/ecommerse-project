@@ -234,7 +234,7 @@
                                     <th scope="col" class="text-end"> Action </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody  id="content-mains">
                                <% orders.forEach((order,i) => { %>
                                 <tr>
                                     <td><%= i+1 %></td>
@@ -279,15 +279,18 @@
                     </div> <!-- table-responsive //end -->
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
-            <div class="pagination-area mt-15 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+            <div class="pagination-area mt-30 mb-50">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-start" id="pagination">
+                        <% if (currentPage > 1) { %>
+                            <li class="page-item"><a class="page-link" href="#" onclick="ordersPagePagination('<%= currentPage - 1 %>')"><i class="material-icons md-chevron_left"></i></a></li>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= currentPage === i ? 'active' : '' %>"><a class="page-link" href="#" onclick="ordersPagePagination('<%= i %>')"><%= i %></a></li>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <li class="page-item"><a class="page-link" href="#" onclick="ordersPagePagination('<%= currentPage + 1 %>')"><i class="material-icons md-chevron_right"></i></a></li>
+                        <% } %>
                     </ul>
                 </nav>
             </div>

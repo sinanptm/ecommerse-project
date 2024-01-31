@@ -128,14 +128,22 @@ const verifyOTP = async (req, res) => {
 
 const loadUser = async (req, res) => {
   try {
+    const perPage = 6;
+    const page= parseInt(req.query.page)||1
+    const skip = (page - 1)*perPage
+    const users = await User.find().skip(skip).limit(perPage)
     const msg = req.query.msg
-    const users = await User.find();
-    res.render("users-list", { users, msg });
+    const count = await User.countDocuments();
+    const totalPages = Math.ceil(count/perPage)
+
+    res.render("users-list", { users, msg ,totalPages,currentPage:page });
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).send("Internal Server Error");
   }
 };
+
+
 
 //  * User Blocking
 const userBlock = async (req, res) => {

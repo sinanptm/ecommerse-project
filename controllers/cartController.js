@@ -277,14 +277,14 @@ const loadCheckout = async (req, res) => {
     const total = req.session.totalAmount
     const token = req.cookies.token || req.session.token;
     if (!token) {
-      
+
     }
     const userId = await getUserIdFromToken(token);
 
     if (total !== req.query.t) {
       return res.status(304).redirect('/cart')
     }
-   
+
     if (!total || !token) {
       return res.status(302).redirect('/cart');
     }
@@ -400,7 +400,9 @@ const placeOrder = async (req, res) => {
       OrderedItems: details
     });
     const order = await newOrder.save();
-    res.redirect("/order-success?id=" + order._id);
+
+    res.redirect("/order-success?id="+order._id);
+
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Failed to place order: " + error.message);
@@ -412,15 +414,21 @@ const placeOrder = async (req, res) => {
 
 const showSuccess = async (req, res) => {
   try {
+
     const id = req.query.id
+    if (!id) {
+      return res.status(304).redirect("/cart")
+    }
+
     const order = await Order.findById(id)
       .populate('userid')
       .populate('OrderedItems.productid');
 
-
-    if (!order) {
-      res.redirect("/cart")
+    if (!order || Date.now() - order.orderDate > 300000) {
+      return res.status(304).redirect("/account");
     }
+
+
     res.render('order-success', { order })
 
   } catch (error) {

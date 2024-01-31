@@ -1,3 +1,98 @@
+
+
+
+async function ordersPagePagination(pageNumber) {
+	try {
+		const response = await $.ajax({
+			url: "/admin/orders-list?page=" + pageNumber,
+			method: "GET"
+		});
+		// console.log(response);
+		const newProductOverview = $(response).find('#content-mains').html();
+		const newPagination = $(response).find('.pagination-area').html();
+		$('#content-main').html(newProductOverview);
+		$('.pagination-area').html(newPagination);
+	} catch (error) {
+		console.error('Error occurred while fetching pagination data:', error);
+	}
+}
+
+async function usersPagePagination(pageNumber) {
+	try {
+		const response = await $.ajax({
+			url: "/admin/users?page=" + pageNumber,
+			method: "GET"
+		});
+		const newProductOverview = $(response).find('#content-main').html();
+		const newPagination = $(response).find('.pagination-area').html();
+		$('#content-main').html(newProductOverview);
+		$('.pagination-area').html(newPagination);
+	} catch (error) {
+		console.error('Error occurred while fetching pagination data:', error);
+	}
+}
+
+async function productsPagePagination(pageNumber) {
+	try {
+		const response = await $.ajax({
+			url: "/admin/products?page=" + pageNumber,
+			method: "GET"
+		});
+		const newProductOverview = $(response).find('#content-main').html();
+		const newPagination = $(response).find('.pagination-area').html();
+		$('#content-main').html(newProductOverview);
+		$('.pagination-area').html(newPagination);
+	} catch (error) {
+		console.error('Error occurred while fetching pagination data:', error);
+	}
+}
+
+async function catogoriesPagePagination(pageNumber) {
+	try {
+		const response = await $.ajax({
+			url: "/admin/catogories?page=" + pageNumber,
+			method: "GET"
+		});
+		const newProductOverview = $(response).find('#content-main').html();
+		const newPagination = $(response).find('.pagination-area').html();
+		$('#content-main').html(newProductOverview);
+		$('.pagination-area').html(newPagination);
+	} catch (error) {
+		console.error('Error occurred while fetching pagination data:', error);
+	}
+}
+
+
+async function list(id) {
+	try {
+	  const response = await $.ajax({
+		url: '/admin/list?id=' + id,
+		method: "GET"
+	  });
+	  const newContent = $(response).find(".id" + id).html();
+	  $(".id" + id).html(newContent);
+	} catch (error) {
+	  console.log(error.message);
+	}
+  }
+
+  async function unlist(id) {
+	try {
+	  const response = await $.ajax({
+		url: '/admin/unlist?id=' + id,
+		method: "GET"
+	  });
+	  const newContent = $(response).find(".id" + id).html();
+	  $(".id" + id).html(newContent);
+	} catch (error) {
+	  console.log(error.message);
+	}
+  }
+
+
+
+
+  
 (function ($) {
     "use strict";
 	//===== jquery code for sidebar menu

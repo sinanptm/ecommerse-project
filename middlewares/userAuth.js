@@ -77,31 +77,30 @@ const requireLogin = async (req, res, next) => {
 
 const cartItems = async (req, res, next) => {
     try {
+        res.locals.title = "TRENDS"
         if (req.cookies.token || req.session.token) {
-            const userId = await getUserIdFromToken(req.cookies.token || req.session.token)
+            const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
             const cart = await Cart.findOne({ userId })
             res.locals.cartItems = cart ? cart.items || 0 : 0;
-            res.locals.valid = req.cookies.token || req.session.token
+            res.locals.valid = req.cookies.token || req.session.token;
             next();
         } else {
             res.locals.cartItems = 0;
-            res.locals.valid = req.cookies.token || req.session.token
+            res.locals.valid = req.cookies.token || req.session.token;
             next();
         }
     } catch (error) {
         res.locals.cartItems = 0;
-        res.locals.valid = req.cookies.token || req.session.token
+        res.locals.valid = req.cookies.token || req.session.token;
         next();
         console.log("Invalid Credentials:",error.message);
     }
 }
 
 
-// const errorHandler = (err, req, res, next) => {
-//     console.error('Error occurred:', err); // Log the error
-//     console.error(err.stack); // Log the stack trace
-//     res.status(500).render('error-page', { msg: 'Internal Server Error' });
-// };
+const  handleUndefinedRoutes = (req, res, next)=> {
+    res.status(404).render('error', { msg: 'Page not found' ,toast:"the page is maded yet"}); 
+}
 
 
 
@@ -111,5 +110,6 @@ module.exports = {
     is_loginRequired,
     requireLogin,
     cartItems,
+    handleUndefinedRoutes
     
 };
