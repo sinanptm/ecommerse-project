@@ -1,6 +1,7 @@
 const { Product, Category, Order } = require("../models/productModel")
 const sharp = require("sharp")
 const path = require("path");
+const mongoose = require('mongoose')
 
 //  * dashboard loeding
 
@@ -131,13 +132,38 @@ const loadEditProduct = async (req, res) => {
       return;
     }
 
-    const product = await Product
-      .findById(id)
-      .populate({
-        path: 'categoryid',
-        model: 'Category',
-        select: 'name description' // Adjust the fields as needed
-      });
+    const product = await Product.aggregate([
+      { $match: { _id: mongoose.Types.ObjectId.createFromHexString(id) } },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "categoryid",
+          foreignField: "_id",
+          as: "category"
+        }
+      },
+      { $unwind: { path: "$category", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          name: 1,
+          price: 1,
+          quantity: 1,
+          status: 1,
+          category: {
+            name: 1,
+            description: 1,
+            _id: 1
+          },
+          description: 1,
+          createdate: 1,
+          discount: 1,
+          img0: { $arrayElemAt: ["$img", 0] },
+          img1: { $arrayElemAt: ["$img", 1] },
+          img2: { $arrayElemAt: ["$img", 2] }
+        }
+      }
+    ]);
+
 
     if (!product) {
       console.error("Product not found");
@@ -146,7 +172,7 @@ const loadEditProduct = async (req, res) => {
     }
 
     const categories = await Category.find();
-    res.render("editt-product", { product, categories, type });
+    res.render("editt-product", { product:product[0], categories, type });
   } catch (err) {
     console.error("Error in loadEditProduct:", err);
     res.status(500).send("Internal Server Error");
@@ -405,39 +431,88 @@ const loadOrders = async (req, res) => {
     const count = await Order.countDocuments()
     const totalPages = Math.ceil(count / perPage)
     const orders = await Order.find().populate('deliveryAddress').skip(skip).limit(perPage)
-    res.render(`orders-list`, { orders, totalPages, currentPage: page })
+    console.log(orders[0].deliveryAddress.Lname );
+    res.render(`orders-list`, { orders, totalPages, currentPage: page });
 
   } catch (error) {
     console.log(error.message);
   }
 }
+
 
 
 // * for deleting a order
 
 const loadOrder = async (req, res) => {
   try {
-    const id = req.query.id
+    const id = req.query.id;
     if (!id) {
-      return res.status(304).redirect('/admin/orders-list')
-
+      return res.status(304).redirect('/admin/orders-list');
     }
 
-    const order = await Order.findById(id)
-      .populate('userid')
-      .populate('deliveryAddress');
+    const order = await Order.aggregate([
+      { $match: { _id: mongoose.Types.ObjectId.createFromHexString(id) } },
+      {
+        $lookup: {
+          from: 'users', // Assuming 'users' is the name of your user collection
+          localField: 'userid',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        $lookup: {
+          from: 'addresses', // Assuming 'addresses' is the name of your address collection
+          localField: 'deliveryAddress',
+          foreignField: '_id',
+          as: 'deliveryAddress'
+        }
+      },
+      { $unwind: "$user" },
+      { $unwind: "$deliveryAddress" },
+      {
+        $project: {
+          _id: 1,
+          orderAmount: 1,
+          orderDate: 1,
+          orderStatus: 1,
+          deliveryDate: 1,
+          ShippingDate: 1,
+          payment: 1,
+          'user.email': 1,
+          'user.username': 1,
+          'user.name': 1,
+          'user.gender': 1,
+          'user.phone': 1,
+          'user.createdate': 1,
+          'user.updated': 1,
+          'user.is_verified': 1,
+          'user.status': 1,
+          'deliveryAddress.Fname': 1,
+          'deliveryAddress.Lname': 1,
+          'deliveryAddress.companyName': 1,
+          'deliveryAddress.country': 1,
+          'deliveryAddress.streetAdress': 1,
+          'deliveryAddress.city': 1,
+          'deliveryAddress.state': 1,
+          'deliveryAddress.pincode': 1,
+          'deliveryAddress.mobile': 1,
+          'deliveryAddress.email': 1,
+        }
+      }
+    ]);
 
-
-    if (!order) {
-      return res.status(304).redirect('/admin/orders-list')
+    if (!order || order.length === 0) {
+      return res.status(304).redirect('/admin/orders-list');
     }
 
-    res.render('order-details', { order })
+    res.render('order-details', { order: order[0] });
 
   } catch (error) {
     console.log(error.message);
   }
-}
+};
+
 
 
 // * for editting a order 
@@ -452,6 +527,7 @@ const editOrder = async (req, res) => {
     if (!order) {
       return res.status(304).redirect('/admin/order-details?id=' + id)
     }
+    
     res.status(200).redirect('/admin/order-details?id=' + id)
 
   } catch (error) {
@@ -489,18 +565,18 @@ module.exports = {
   loadDashBoard,
   loadProducts,
   loadAddProduct,
-  addProduct,
   laodCatagorie,
+  loadOrders,
+  loadOrder,
+  loadEditProduct,
+  addProduct,
   addCatagorie,
   editCatogory,
   deleteCatogory,
   editProduct,
   deleteProduct,
-  loadEditProduct,
   listProduct,
   unlistProduct,
-  loadOrders,
   deleteOrder,
   editOrder,
-  loadOrder
 };

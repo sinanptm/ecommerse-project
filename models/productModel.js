@@ -10,7 +10,8 @@ const productsSchema = new mongoose.Schema({
     categoryid: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
     createdate: { type: Date },
     discount: { type: Number },
-    description: { type: String }
+    description: { type: String },
+    sales:Number
 });
 productsSchema.index({ name: 1, categoryid: 1 }, { unique: true });
 

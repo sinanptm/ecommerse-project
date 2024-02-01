@@ -71,10 +71,20 @@
                                     data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
                                     <i class="zmdi zmdi-shopping-cart"></i>
                                 </a>
-                                <a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+                                <% if (valid) { %>
+                                    <a href="whishlist"
+                                        class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+                                        data-notify="<%= whishItems %>">
+                                        <i class="zmdi zmdi-favorite-outline"></i>
+                                    </a>&nbsp;&nbsp;&nbsp;
+                                <% }else{ %>
+                                <a href="/login"
+                                    class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
                                     data-notify="0">
                                     <i class="zmdi zmdi-favorite-outline"></i>
-                                </a>
+                                </a>&nbsp;&nbsp;&nbsp;
+                                <% } %>
+                                
 
                             </div>
                         </div>
@@ -179,21 +189,22 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="text-center">
-                                    <h2 class="mtext-105 cl2 p-b-10">Oops! Something went wrong.</h2>
-                                    <p class="stext-117 cl6 p-t-15">We're sorry, but an error occurred while processing
-                                        your request.</p>
-                                    <!-- EJS Error Message -->
-                                    <% if (msg) { %>
-                                        <div class="alert alert-danger mt-3" role="alert">
-                                            <%= msg %>
-                                        </div>
-                                        <% } %>
-                                            <!-- End EJS Error Message -->
-                                            <a href="/" class="btn btn-primary mt-4">Go Back to Home Page</a>
-                                            <!-- Additional Elements -->
-                                            <div class="mt-5">
-                                                <h3 class="mtext-106 cl2 p-b-10">What you can do:</h3>
+                                
+                                        <div class="col-sm-12">
+                                            <div class="w-50 mx-auto text-center">
+                                                <img src="images/404.png" width="350" alt="Page Not Found">
+                                                <h3 class="mt-40 mb-15">Oops! Page not found</h3>
+                                                <% if (msg) { %>
+                                                    <br>
+                                                    <span class="alert alert-warning mt-3">
+                                                        <% if (msg!=="Page not found") { %>
+                                                            <%= msg %>
+                                                        <% } %>
+                                                    </span>
+                                                    <br>
+                                                    <br>
+                                                    <% } %>
+                                                <p>It's looking like you may have taken a wrong turn. Don't worry... it happens to the best of us. Here's a little tip that might help you get back on track.</p>
                                                 <ul class="list-unstyled">
                                                     <li>Check your internet connection and try refreshing the page.</li>
                                                     <li>Clear your browser's cache and cookies, then try again.</li>
@@ -202,21 +213,11 @@
                                                         for further assistance.</li>
                                                     <li>Explore more content on our website:</li>
                                                 </ul>
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <a href="/blog" class="btn btn-outline-primary btn-block">Visit
-                                                            Our Blog</a>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <a href="/products"
-                                                            class="btn btn-outline-primary btn-block">Shop Now</a>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <a href="/contact"
-                                                            class="btn btn-outline-primary btn-block">Contact Us</a>
-                                                    </div>
-                                                </div>
+                                                <a href="/admin" class="btn btn-primary mt-4"><i class="material-icons md-keyboard_return"></i> Back to main</a>
                                             </div>
+                             
+                                   
+                                           
 
                                 </div>
                             </div>
@@ -224,61 +225,7 @@
                     </div>
                 </section>
 
-                <style>
-                    .sec-error-page {
-                        background-color: #f8f9fa;
-                    }
-
-                    .mtext-105 {
-                        font-size: 2.5rem;
-                        font-weight: bold;
-                        color: #333;
-                    }
-
-                    .stext-117 {
-                        font-size: 1.2rem;
-                        color: #666;
-                    }
-
-                    .alert {
-                        border-radius: 0.5rem;
-                    }
-
-                    .btn-primary {
-                        background-color: #007bff;
-                        border-color: #007bff;
-                    }
-
-                    .btn-outline-primary {
-                        color: #007bff;
-                        border-color: #007bff;
-                    }
-
-                    .btn-social {
-                        color: #fff;
-                        background-color: #007bff;
-                        border: none;
-                        padding: 8px 16px;
-                        border-radius: 5px;
-                        font-weight: bold;
-                    }
-
-                    .btn-social:hover {
-                        background-color: #0056b3;
-                    }
-
-                    .cl2 {
-                        color: #333;
-                    }
-
-                    .list-inline-item {
-                        margin-right: 10px;
-                    }
-
-                    .list-unstyled li {
-                        margin-bottom: 10px;
-                    }
-                </style>
+              
 
 
                 <!-- Footer -->

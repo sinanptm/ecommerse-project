@@ -1,5 +1,19 @@
 
+async function changeStatus(id) {
+	try {
+		const formdata = $('#statuschange').serialize();
+		const res = await $.ajax({
+			url: "/admin/edit-order/" + id,
+			method: 'POST',
+			data: formdata
+		});
+		const newContent = $(res).find(".steps").html();
+		$('.steps').html(newContent);
 
+	} catch (error) {
+		console.log(error.message);
+	}
+}
 
 async function ordersPagePagination(pageNumber) {
 	try {
@@ -16,6 +30,7 @@ async function ordersPagePagination(pageNumber) {
 		console.error('Error occurred while fetching pagination data:', error);
 	}
 }
+
 
 async function usersPagePagination(pageNumber) {
 	try {

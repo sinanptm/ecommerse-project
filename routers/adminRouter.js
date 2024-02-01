@@ -4,8 +4,7 @@ const path = require("path");
 const upload = require("../util/multer");
 const { loadLogin, checkLogin, newOTP, loadOTP, verifyOTP, loadUser, userBlock, userUnblock, logout } = require("../controllers/adminController");
 const { loadDashBoard, loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, loadOrders, deleteOrder, editOrder, loadOrder } = require("../controllers/productController");
-
-const { is_loginRequired, is_admin, is_registered } = require("../middlewares/auth");
+const { is_loginRequired, is_admin, is_registered, handleUndefinedRoutes } = require("../middlewares/auth");
 
 
 adminRoute.set("views", path.join(__dirname, "../views/admin_pages"));
@@ -53,5 +52,6 @@ adminRoute.get("/delete-order", is_admin, deleteOrder)
 adminRoute.post('/edit-order/:id', is_admin, editOrder)
 adminRoute.get('/order-details',is_admin,loadOrder)
 
+adminRoute.use(handleUndefinedRoutes)
 
 module.exports = adminRoute;

@@ -90,15 +90,25 @@
 								</div>
 
 								<a href="/cart"
-							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-							data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
-							<i class="zmdi zmdi-shopping-cart"></i>
-						 	</a>
-
-								<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-									data-notify="0">
-									<i class="zmdi zmdi-favorite-outline"></i>
+									class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+									data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+									<i class="zmdi zmdi-shopping-cart"></i>
 								</a>
+
+								<% if (valid) { %>
+									<a href="whishlist"
+										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+										data-notify="<%= whishItems %>">
+										<i class="zmdi zmdi-favorite-outline"></i>
+									</a>&nbsp;&nbsp;&nbsp;
+									<% }else{ %>
+										<a href="/login"
+											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+											data-notify="0">
+											<i class="zmdi zmdi-favorite-outline"></i>
+										</a>&nbsp;&nbsp;&nbsp;
+										<% } %>
+
 							</div>
 						</div>
 						<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
@@ -118,16 +128,24 @@
 						<i class="zmdi zmdi-search"></i>
 					</div>
 
-					<a href="/cart"
-							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-							data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
-							<i class="zmdi zmdi-shopping-cart"></i>
-						 	</a>
-
-					<a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
-						data-notify="0">
-						<i class="zmdi zmdi-favorite-outline"></i>
+					<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+						data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+						<i class="zmdi zmdi-shopping-cart"></i>
 					</a>
+
+					<% if (valid) { %>
+						<a href="whishlist" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+							data-notify="<%= whishItems %>">
+							<i class="zmdi zmdi-favorite-outline"></i>
+						</a>&nbsp;&nbsp;&nbsp;
+						<% }else{ %>
+							<a href="/login"
+								class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+								data-notify="0">
+								<i class="zmdi zmdi-favorite-outline"></i>
+							</a>&nbsp;&nbsp;&nbsp;
+							<% } %>
+
 				</div>
 
 				<!-- Button show menu -->
@@ -236,7 +254,8 @@
 							</div>
 							<!-- Add this code below the password field -->
 							<!-- Add this line below the "Password" error div -->
-							<small class="form-text text-left" style="color: red; display: none;" id="errorconfirmPassword"></small>
+							<small class="form-text text-left" style="color: red; display: none;"
+								id="errorconfirmPassword"></small>
 
 							<div class="bor8 m-b-30 how-pos4-parent">
 								<input required class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="password"
@@ -445,57 +464,57 @@
 				const signupErrorGender = document.getElementById('errorgender');
 				const signupErrorPassword = document.getElementById('errorpass');
 				const signupErrorConfirmPassword = document.getElementById('errorconfirmPassword');
-		
+
 				function validateForm() {
 					// Reset all error messages and styles
 					resetErrors();
-		
+
 					// Validate Confirm Password
 					var password = signupPasswordInput.value;
 					var confirmPassword = confirmPasswordInput.value;
-		
+
 					if (password !== confirmPassword) {
 						signupErrorConfirmPassword.style.display = "block";
 						signupErrorConfirmPassword.textContent = "Passwords do not match!";
 						return false;
 					}
-		
+
 					// Validate Name
 					if (!validateInput(signupNameInput, signupErrorName, "Name")) {
 						return false;
 					}
-		
+
 					// Validate Number
 					if (!validateInput(signupNumberInput, signupErrorNumber, "Number")) {
 						return false;
 					}
-		
+
 					// Validate Username
 					if (!validateInput(signupUsernameInput, signupErrorUsername, "Username")) {
 						return false;
 					}
-		
+
 					// Validate Email
 					const enteredEmail = signupEmailInput.value;
 					if (!validateInput(signupEmailInput, signupErrorEmail, "Email") || !isValidEmail(enteredEmail)) {
 						return false;
 					}
-		
+
 					// Validate Gender
 					if (!validateInput(signupGenderInput, signupErrorGender, "Gender")) {
 						return false;
 					}
-		
+
 					// Validate Password
 					const enteredPassword = signupPasswordInput.value;
 					if (!validateInput(signupPasswordInput, signupErrorPassword, "Password") || !isValidPassword(enteredPassword)) {
 						return false;
 					}
-		
+
 					// All validations passed
 					return true;
 				}
-		
+
 				// Function to validate input against spaces
 				function validateInput(inputElement, errorElement, fieldName) {
 					const enteredValue = inputElement.value.trim();
@@ -510,7 +529,7 @@
 						return true;
 					}
 				}
-		
+
 				// Function to validate email format
 				function isValidEmail(email) {
 					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -523,12 +542,12 @@
 						return true;
 					}
 				}
-		
+
 				// Function to validate password (replace with your logic) and space
 				function isValidPassword(password) {
 					return password.length >= 4; // Add your password validation logic here
 				}
-		
+
 				// Function to reset all error messages and styles
 				function resetErrors() {
 					const errorElements = [
@@ -536,23 +555,23 @@
 						signupErrorEmail, signupErrorGender, signupErrorPassword,
 						signupErrorConfirmPassword
 					];
-		
+
 					errorElements.forEach(element => {
 						element.textContent = "";
 						element.style.display = "none";
 					});
-		
+
 					const inputElements = [
 						signupNameInput, signupNumberInput, signupUsernameInput,
 						signupEmailInput, signupGenderInput, signupPasswordInput,
 						confirmPasswordInput
 					];
-		
+
 					inputElements.forEach(element => {
 						element.style.border = "";
 					});
 				}
-		
+
 				// Hook into the form's onsubmit event
 				const signupForm = document.querySelector('.login-form');
 				signupForm.addEventListener("submit", function (event) {
@@ -563,7 +582,7 @@
 				});
 			});
 		</script>
-		
+
 
 		<style>
 			.isotope-item {

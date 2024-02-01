@@ -1,13 +1,14 @@
-const { Product, Order, CancelationReson,Category } = require("../models/productModel")
-const { User, Addresse } = require("../models/userModels")
+const { default: mongoose } = require("mongoose");
+const { Product, Order, CancelationReson, Category } = require("../models/productModel")
+const { User, Addresse, Wishlist } = require("../models/userModels")
 const { getUserIdFromToken, bcryptCompare, makeHash } = require('../util/bcryption')
 
 // * homepage Loading
 
 const loadHome = async (req, res) => {
     try {
-        const page = parseInt(req.query.page,10) || 1; 
-        const limit = 12; 
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = 12;
         const totalCount = await Product.countDocuments({ status: "Available" });
         const totalPages = Math.ceil(totalCount / limit);
 
@@ -18,7 +19,23 @@ const loadHome = async (req, res) => {
             .limit(limit)
             .lean();
 
-        // Render the home page with pagination information
+        let userid = products[0]._id
+        if (req.cookies.token||req.session.token) {
+            userid = await getUserIdFromToken(req.cookies.token||req.session.token);
+
+        }
+        const wishlist = await Wishlist.findOne({ userid });
+
+        products.forEach(product => {
+            product.whishlist = false;
+        });
+
+        if (wishlist) {
+            products.forEach(product => {
+                product.whishlist = wishlist.products.includes(product._id);
+            });
+        }
+        products[0].wishlist=true
         res.render("home", { products, totalPages, currentPage: page });
 
     } catch (error) {
@@ -28,23 +45,33 @@ const loadHome = async (req, res) => {
 };
 
 
-
-
 // * for showing products 
 const loadProducts = async (req, res) => {
     try {
-        const page = parseInt(req.query.page, 10) || 1; 
+        const page = parseInt(req.query.page, 10) || 1;
         const totalCount = await Product.countDocuments({ status: "Available" });
-        const limit = 12; 
-        const totalPages = Math.ceil(totalCount / limit); // Corrected total pages calculation
+        const limit = 12;
+        const totalPages = Math.ceil(totalCount / limit);
         const skip = (page - 1) * limit;
 
-        const products = await Product.find({ status: "Available" }).populate({
-            path: 'categoryid',
-            model: 'Category',
-            select: 'name description img type'
-        }).limit(limit).skip(skip);
+        let products = await Product.find({ status: "Available" }).limit(limit).skip(skip).lean();
+        let userid = products[0]._id
+        if (req.cookies.token||req.session.token) {
+            userid = await getUserIdFromToken(req.cookies.token||req.session.token);
 
+        }
+        const wishlist = await Wishlist.findOne({ userid });
+
+        products.forEach(product => {
+            product.whishlist = false;
+        });
+
+        if (wishlist) {
+            products.forEach(product => {
+                product.whishlist = wishlist.products.includes(product._id);
+            });
+        }
+        products[0].wishlist=true
         res.render("product", { products, totalPages, currentPage: page });
 
     } catch (error) {
@@ -54,26 +81,33 @@ const loadProducts = async (req, res) => {
 };
 
 
+
 // * for showing deltials of a product
 const laodProductDetials = async (req, res) => {
     try {
         const id = req.query.id;
 
-        const product = await Product
-            .findById(id)
-            .populate({
-                path: 'categoryid',
-                model: 'Category',
-                select: 'name description img'
-            });
+        let product = await Product.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId.createFromHexString(id) } },
+            {
+                $lookup: {
+                    from: 'categories',
+                    foreignField: "_id",
+                    localField: "categoryid",
+                    as: "category"
+                }
+            }
+        ])
+        product = product[0]
 
-        if (product && product.categoryid) {
-            const categoryId = product.categoryid._id;
+        if (product && product.category) {
+            const categoryId = product.category[0]._id;
             const relatedProducts = await Product.find({ categoryid: categoryId });
             res.render("product-detail", { product, relatedProducts, });
         } else {
             res.status(404).send("Product not found");
         }
+
     } catch (error) {
         console.error("Error in loadProductDetails:", error);
         res.status(500).send("Internal Server Error");
@@ -93,10 +127,31 @@ const laodAccount = async (req, res) => {
             return res.status(304).redirect('/')
         }
 
-        const user = await User.findById(userid).populate('address');
-        const orders = await Order.find({ userid })
-            .populate('userid')
-            .populate('OrderedItems.productid')
+        const user = await User.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId.createFromHexString(userid) } },
+            {
+                $lookup: {
+                    from: "addresses",
+                    foreignField: "_id",
+                    localField: "address",
+                    as: "address"
+                }
+            },
+        ])
+
+
+        const orders = await Order.aggregate([
+            { $match: { userid: mongoose.Types.ObjectId.createFromHexString(userid) } }, // Match against userid field
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "OrderedItems.productid",
+                    foreignField: "_id",
+                    as: 'OrderedItems'
+                }
+            },
+        ]);
+
 
         const msg = req.query.msg;
 
@@ -105,13 +160,12 @@ const laodAccount = async (req, res) => {
             return res.redirect('/home');
         }
 
-        res.render('account-details', { user, editing: true, msg, toast: req.query.toast, orders, err: req.query.err });
+        res.render('account-details', { user: user[0], editing: true, msg, toast: req.query.toast, orders, err: req.query.err });
     } catch (error) {
         console.error(error);
         res.redirect('/home');
     }
 };
-
 
 
 // * Editt details 
@@ -322,6 +376,8 @@ const loadEror = async (req, res) => {
         console.log('error on error page ' + error.message)
     }
 }
+
+
 
 module.exports = {
     loadHome,

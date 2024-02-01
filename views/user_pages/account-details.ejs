@@ -397,11 +397,21 @@
 														<i class="zmdi zmdi-shopping-cart"></i>
 													</a>
 
-													<a href="#"
+													<% if (valid) { %>
+														<a href="whishlist"
+															class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+															data-notify="<%= whishItems %>">
+															<i class="zmdi zmdi-favorite-outline"></i>
+														</a>&nbsp;&nbsp;&nbsp;
+													<% }else{ %>
+													<a href="/login"
 														class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
 														data-notify="0">
 														<i class="zmdi zmdi-favorite-outline"></i>
-													</a>&nbsp;&nbsp;
+													</a>&nbsp;&nbsp;&nbsp;
+													<% } %>
+													
+
 													<% if (valid) { %>
 														<a href="/account"
 															class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
@@ -472,11 +482,20 @@
 											<i class="zmdi zmdi-shopping-cart"></i>
 										</a>
 
-										<a href="#"
-											class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
+										<% if (valid) { %>
+											<a href="whishlist"
+												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+												data-notify="<%= whishItems %>">
+												<i class="zmdi zmdi-favorite-outline"></i>
+											</a>&nbsp;&nbsp;&nbsp;
+										<% }else{ %>
+										<a href="/login"
+											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
 											data-notify="0">
 											<i class="zmdi zmdi-favorite-outline"></i>
-										</a>
+										</a>&nbsp;&nbsp;&nbsp;
+										<% } %>
+										
 										<% if (valid) { %>
 											<a href="/account"
 												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
@@ -778,23 +797,34 @@
 														</div>
 														<p>Order Amount: $<%= order.orderAmount %>
 														</p>
-														<p>Expected Delivery Time: <%= order.deliveryDate.toDateString()
+														
+														<% if (order.orderStatus !== '4') { %>
+															<p>Expected Delivery on: <%= order.deliveryDate.toDateString()
+																%>
+															</p>
+															<% }else{ %>
+																<p> Delivered on: <%= order.deliveryDate.toDateString()
 																%>
 														</p>
-														<p>Ordered Items:</p>
+															<% }%>
+														<p style="border-bottom: 1px solid black; width: 23%;"> Ordered Items</p>
 														<ul class="list-unstyled">
 															<% order.OrderedItems.forEach(item=> { %>
 																<li>
 																	<strong>
-																		<%= item.productid.name %>
-																	</strong>
+																		<%= item.name %>
+																	</strong> <!-- Display product name -->
 																	- Quantity: <%= item.quantity %>
+																		<!-- Display quantity -->
 																		- Price: $<%= item.price %>
+																			<!-- Display price -->
 																</li>
 																<% }); %>
 														</ul>
-														<button class="btn btn-danger" data-toggle="modal"
-															data-target="#cancelModal<%= order._id %>">Cancel</button>
+														<% if (order.orderStatus !== '4') { %>
+															<button class="btn btn-danger" data-toggle="modal"
+																data-target="#cancelModal<%= order._id %>">Cancel</button>
+															<% } %>
 													</div>
 
 													<!-- Cancel Modal -->
@@ -827,6 +857,7 @@
 																			onclick="cancelOrder('<%= order._id %>')"
 																			class="btn btn-danger">Confirm
 																			Cancellation</button>
+
 																	</form>
 																</div>
 															</div>
@@ -842,9 +873,7 @@
 																		method: "POST",
 																		data: formdata
 																	});
-																	// const newContent = $(response).find('.flipkart-address-block-child1').html();
-																	// $('#cancelModal'+id).modal('hide');
-																	// $("#orders").html(newContent);
+
 																	window.location.reload();
 																} catch (error) {
 																	console.log(error.message);

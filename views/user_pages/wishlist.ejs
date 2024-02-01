@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>
+		<%= title %>
+	</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/png" href="images/icons/favicon.png" />
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" type="text/css" href="fonts/linearicons-v1.0.0/icon-font.min.css">
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+	<link rel="stylesheet" type="text/css" href="vendor/slick/slick.css">
+	<link rel="stylesheet" type="text/css" href="vendor/MagnificPopup/magnific-popup.css">
+	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<style>
+	/* Styles for Modal */
+	.custom-modal {
+		display: none;
+		position: fixed;
+		z-index: 1;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+
+	.custom-modal-container {
+		background-color: #fefefe;
+		margin: 10% auto;
+		padding: 20px;
+		border: 1px solid #888;
+		width: 80%;
+		max-width: 400px;
+		position: relative;
+	}
+
+	.wishlist-section {
+		padding: 50px 0;
+	}
+
+	.wishlist-heading {
+		font-size: 32px;
+		margin-bottom: 20px;
+		text-align: center;
+	}
+
+	.wishlist-list {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		gap: 20px;
+	}
+
+	.wishlist-item {
+		background-color: #f9f9f9;
+		border-radius: 8px;
+		overflow: hidden;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	}
+
+	.wishlist-image {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.wishlist-image img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	.wishlist-details {
+		padding: 20px;
+	}
+
+	.wishlist-title {
+		font-size: 20px;
+		margin-bottom: 10px;
+	}
+
+	.wishlist-price {
+		font-size: 18px;
+		margin-bottom: 10px;
+	}
+
+	.wishlist-discount,
+	.wishlist-sales {
+		font-size: 16px;
+		margin-bottom: 10px;
+	}
+
+	.wishlist-actions {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.delete-basket,
+	.show-details {
+		padding: 10px 20px;
+		border: none;
+		border-radius: 5px;
+		font-size: 16px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+	}
+
+	.delete-basket {
+		background-color: #ff6b6b;
+		color: #fff;
+	}
+
+	.delete-basket:hover {
+		background-color: #ff5252;
+	}
+
+	.show-details {
+		background-color: #4caf50;
+		color: #fff;
+	}
+
+	.show-details:hover {
+		background-color: #43a047;
+	}
+</style>
+
+<script>
+	function openModal() {
+		document.getElementById("loginModal").style.display = "block";
+		document.body.classList.add("body-disabled");
+	}
+
+	function closeModal() {
+		document.getElementById("loginModal").style.display = "none";
+		document.body.classList.remove("body-disabled");
+	}
+
+	window.onload = openModal;
+
+	function goBack() {
+		window.history.back()
+	}
+	function openConfirmationModal(id) {
+		document.getElementById('aaaconfirmationModal' + id).style.display = 'block';
+	}
+
+	function closeConfirmationModal(id) {
+		document.getElementById('aaaconfirmationModal' + id).style.display = 'none';
+	}
+
+</script>
+
+
+
+<!-- Header -->
+<header class="header-v3">
+	<!-- Header desktop -->
+	<div class="container-menu-desktop trans-03">
+		<div class="wrap-menu-desktop">
+			<nav class="limiter-menu-desktop p-l-45">
+
+				<!-- Logo desktop -->
+				<a href="/home" class="logo">
+					<span id="logo">TRENDS</span>
+				</a>
+
+				<!-- Menu desktop -->
+				<div class="menu-desktop">
+					<ul class="main-menu">
+						<li>
+							<a href="/home">Home</a>
+						</li>
+
+						<li class="label1" data-label1="hot">
+							<a href="/products">Shop</a>
+						</li>
+
+						<li>
+							<a href="/cart">Cart</a>
+						</li>
+
+						<li>
+							<a href="/blog">Blog</a>
+						</li>
+
+						<li>
+							<a href="/about">About</a>
+						</li>
+
+						<li>
+							<a href="/contact">Contact</a>
+						</li>
+
+
+					</ul>
+				</div>
+
+				<!-- The rest of your cart page content goes here -->
+
+				<!-- Icon header -->
+				<!-- Icon header -->
+				<div class="wrap-icon-header flex-w flex-r-m h-full">
+					<div class="wrap-icon-header flex-w flex-r-m">
+						<!-- Login icon -->
+						<% if (valid===undefined) { %>
+							<a href="/login" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-login"
+								data-toggle="tooltip" title="Login">
+								<i class="zmdi zmdi-alert-circle"></i>
+							</a>
+							<% } %>
+
+
+								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
+									<i class="zmdi zmdi-search"></i>
+								</div>
+								<div class="jfdsfd">
+
+									<a href="/cart"
+										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+										data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+										<i class="zmdi zmdi-shopping-cart"></i>
+									</a>
+								</div>
+								<div class="whishshs">
+									<% if (valid) { %>
+										<a href="whishlist"
+											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+											data-notify="<%= whishItems %>">
+											<i class="zmdi zmdi-favorite-outline"></i>
+										</a>&nbsp;&nbsp;&nbsp;
+										<% }else{ %>
+											<a href="/login"
+												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+												data-notify="0">
+												<i class="zmdi zmdi-favorite-outline"></i>
+											</a>&nbsp;&nbsp;&nbsp;
+											<% } %>
+
+								</div>
+
+								<% if (valid) { %>
+									<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+										<i class="zmdi zmdi-account"></i>
+									</a>
+									<% } %>
+					</div>
+					<% if (valid) { %>
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-logout" data-toggle="modal"
+							data-target="#logoutModal">
+							<i class="zmdi zmdi-power-off"></i>
+						</div>
+						<% } %>
+				</div>
+
+
+				<!-- Logout Modal -->
+				<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
+					aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="logoutModalLabel">Logout Confirmation
+								</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								Are you sure you want to logout?
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+								<a href="/logout" class="btn btn-primary">Yes,I do!</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+		</div>
+		</nav>
+	</div>
+	</div>
+
+	<!-- Header Mobile -->
+	<div class="wrap-header-mobile">
+		<!-- Logo moblie -->
+		<div class="logo-mobile">
+			<span id="logo1">TRENDS</span>
+		</div>
+		<% if (valid===undefined) { %>
+			<a href="/login" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-login"
+				data-toggle="tooltip" title="Login">
+				<i class="zmdi zmdi-alert-circle"></i>
+			</a>&nbsp;&nbsp;
+			<% } %>
+
+				<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+					<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
+						<i class="zmdi zmdi-search"></i>
+					</div>
+
+					<div class="jfdsfd">
+						<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+							data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+							<i class="zmdi zmdi-shopping-cart"></i>
+						</a>
+					</div>
+
+					<div class="whishshs">
+						<% if (valid) { %>
+							<a href="whishlist"
+								class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+								data-notify="<%= whishItems %>">
+								<i class="zmdi zmdi-favorite-outline"></i>
+							</a>&nbsp;&nbsp;&nbsp;
+							<% }else{ %>
+								<a href="/login"
+									class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+									data-notify="0">
+									<i class="zmdi zmdi-favorite-outline"></i>
+								</a>&nbsp;&nbsp;&nbsp;
+								<% } %>
+
+					</div>
+
+					<% if (valid) { %>
+						<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+							<i class="zmdi zmdi-account"></i>
+						</a>
+						<% } %>
+				</div>
+
+				<!-- Button show menu -->
+				<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+					<span class="hamburger-box">
+						<span class="hamburger-inner"></span>
+					</span>
+				</div>
+	</div>
+
+
+	<!-- Menu Mobile -->
+	<div class="menu-mobile">
+		<ul class="main-menu-m">
+			<li>
+				<a href="/home">Home</a>
+				<span class="arrow-main-menu-m">
+					<i class="fa fa-angle-right" aria-hidden="true"></i>
+				</span>
+			</li>
+
+			<li>
+				<a href="/products" class="label1 rs1" data-label1="hot">Shop</a>
+			</li>
+
+			<li>
+				<a href="/cart">Cart</a>
+			</li>
+
+			<li>
+				<a href="/blog">Blog</a>
+			</li>
+
+			<li>
+				<a href="/about">About</a>
+			</li>
+
+			<li>
+				<a href="/contact">Contact</a>
+			</li>
+			<li>
+				<a href="/logout">Logout</a>
+			</li>
+		</ul>
+	</div>
+
+	<!-- Modal Search -->
+	<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+		<button class="flex-c-m btn-hide-modal-search trans-04">
+			<i class="zmdi zmdi-close"></i>
+		</button>
+
+		<form class="container-search-header">
+			<div class="wrap-search-header">
+				<input class="plh0" type="text" name="search" placeholder="Search...">
+
+				<button class="flex-c-m trans-04">
+					<i class="zmdi zmdi-search"></i>
+				</button>
+			</div>
+		</form>
+	</div>
+</header>
+
+
+
+<!-- Title page -->
+<section class="bg-img1 txt-center p-lr-15 p-tb-92"
+	style="background-image: url('https://geekflare.com/wp-content/uploads/2023/03/wishlist-apps.png');">
+	<h2 class="ltext-105 cl0 txt-center">
+		My Wishlist
+	</h2>
+</section>
+
+
+
+<!-- wishlist.ejs -->
+<section class="wishlist-section">
+	<div class="container">
+		<div class="wishlist-list">
+			<% products.forEach(product=> { %>
+				<div class="wishlist-item">
+					<a href="/product?id=<%= product._id %>">
+						<div class="wishlist-image">
+							<img src="/resized_images/<%= product.img[0] %>" alt="Product Image">
+						</div>
+						<div class="wishlist-details">
+							<div class="wishlist-info">
+								<h3 class="wishlist-title">
+									<a href="/product?id=<%= product._id %>">
+										<%= product.name %>
+									</a>
+								</h3>
+								<p class="wishlist-price">$<%= product.price.toFixed(2) %>
+								</p>
+								<% if(product.discount){ %>
+									<p class="wishlist-discount">Discount: <%= product.discount %> %</p>
+									<% } %>
+										<% if (product.sales) { %>
+											<p class="wishlist-sales">Sales: <%= product.sales %>
+											</p>
+											<% } %>
+							</div>
+							<div class="wishlist-actions">
+								<button onclick="remoWhishProduct('<%= product._id %>')"
+									class="btn btn-warning delete-basket ">
+									<i class="fs-16 zmdi zmdi-delete"></i> Remove
+								</button>
+								<button onclick="add_to_cart_whishPage('<%= product._id %>')"
+									class="btn btn-primary show-details">Add To Cart</button>
+							</div>
+						</div>
+					</a>
+				</div>
+				<% }) %>
+		</div>
+	</div>
+</section>
+
+
+
+
+<footer class="bg3 p-t-75 p-b-32">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6 col-lg-3 p-b-50">
+				<h4 class="stext-301 cl0 p-b-30">
+					Categories
+				</h4>
+
+				<ul>
+					<li class="p-b-10">
+						<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							Women
+						</a>
+					</li>
+
+					<li class="p-b-10">
+						<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							Men
+						</a>
+					</li>
+
+					<li class="p-b-10">
+						<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							Shoes
+						</a>
+					</li>
+
+					<li class="p-b-10">
+						<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							Watches
+						</a>
+					</li>
+				</ul>
+			</div>
+
+			<div class="col-sm-6 col-lg-3 p-b-50">
+				<h4 class="stext-301 cl0 p-b-30">
+					Help
+				</h4>
+
+				<ul>
+					<li class="p-b-10">
+						<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							Track Order
+						</a>
+					</li>
+
+					<li class="p-b-10">
+						<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							Returns
+						</a>
+					</li>
+
+					<li class="p-b-10">
+						<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							Shipping
+						</a>
+					</li>
+
+					<li class="p-b-10">
+						<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							FAQs
+						</a>
+					</li>
+				</ul>
+			</div>
+
+			<div class="col-sm-6 col-lg-3 p-b-50">
+				<h4 class="stext-301 cl0 p-b-30">
+					GET IN TOUCH
+				</h4>
+
+				<p class="stext-107 cl7 size-201">
+					Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY
+					10018 or
+					call us
+					on (+1) 96 716 6879
+				</p>
+
+				<div class="p-t-27">
+					<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+						<i class="fa fa-facebook"></i>
+					</a>
+
+					<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+						<i class="fa fa-instagram"></i>
+					</a>
+
+					<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+						<i class="fa fa-pinterest-p"></i>
+					</a>
+				</div>
+			</div>
+
+			<div class="col-sm-6 col-lg-3 p-b-50">
+				<h4 class="stext-301 cl0 p-b-30">
+					Newsletter
+				</h4>
+
+				<form>
+					<div class="wrap-input1 w-full p-b-4">
+						<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email"
+							placeholder="example@gmail.com">
+						<div class="focus-input1 trans-04"></div>
+					</div>
+
+					<div class="p-t-18">
+						<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+							Subscribe
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="p-t-40">
+			<div class="flex-c-m flex-w p-b-18">
+				<a href="#" class="m-all-1">
+					<img src="images/icons/icon-pay-01.png" alt="ICON-PAY">
+				</a>
+
+				<a href="#" class="m-all-1">
+					<img src="images/icons/icon-pay-02.png" alt="ICON-PAY">
+				</a>
+
+				<a href="#" class="m-all-1">
+					<img src="images/icons/icon-pay-03.png" alt="ICON-PAY">
+				</a>
+
+				<a href="#" class="m-all-1">
+					<img src="images/icons/icon-pay-04.png" alt="ICON-PAY">
+				</a>
+
+				<a href="#" class="m-all-1">
+					<img src="images/icons/icon-pay-05.png" alt="ICON-PAY">
+				</a>
+			</div>
+
+			<p class="stext-107 cl6 txt-center">
+				<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+				Copyright &copy;
+				<script>document.write(new Date().getFullYear());</script> All rights reserved |
+				Made with
+				<i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com"
+					target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com"
+					target="_blank">ThemeWagon</a>
+				<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+
+			</p>
+		</div>
+	</div>
+</footer>
+
+
+<!-- Back to top -->
+<div class="btn-back-to-top" id="myBtn">
+	<span class="symbol-btn-back-to-top">
+		<i class="zmdi zmdi-chevron-up"></i>
+	</span>
+</div>
+
+
+<script>
+
+	async function updateQuantity(id, change) {
+		try {
+			const quantityElement = document.getElementById(`quantity${id}`);
+			let quantity = parseInt(quantityElement.value) + change;
+			quantity = Math.max(quantity, 1);
+
+			const res = await $.ajax({
+				url: "/quantity-manage/" + id,
+				method: "POST",
+				data: { quantity: quantity },
+			});
+
+			const newContent = $(res).find(`#${id}`).html();
+			const price = $(res).find(`#prPrice${id}`).html();
+			const totals = $(res).find(`#totals`).html();
+
+			$(`#${id}`).html(newContent);
+			$(`#prPrice${id}`).html(price);
+			$(`#totals`).html(totals);
+		} catch (error) {
+			console.error("Error updating quantity:", error.message);
+		}
+	}
+</script>
+
+<!--===============================================================================================-->
+<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+<script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+<script src="vendor/bootstrap/js/popper.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+<script src="vendor/select2/select2.min.js"></script>
+<script>
+	$(".js-select2").each(function () {
+		$(this).select2({
+			minimumResultsForSearch: 20,
+			dropdownParent: $(this).next('.dropDownSelect2')
+		});
+	})
+</script>
+<!--===============================================================================================-->
+<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+<!--===============================================================================================-->
+<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<script>
+	$('.js-pscroll').each(function () {
+		$(this).css('position', 'relative');
+		$(this).css('overflow', 'hidden');
+		var ps = new PerfectScrollbar(this, {
+			wheelSpeed: 1,
+			scrollingThreshold: 1000,
+			wheelPropagation: false,
+		});
+
+		$(window).on('resize', function () {
+			ps.update();
+		})
+	});
+</script>
+<!--===============================================================================================-->
+<script src="js/main.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+</body>
+
+</html>

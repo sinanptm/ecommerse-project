@@ -48,8 +48,14 @@ const is_loginRequired = async (req, res, next) => {
   }
 };
 
+const  handleUndefinedRoutes = (req, res, next)=> {
+  res.status(404).render('404', { msg: 'Page not found' ,toast:"the page is maded yet"}); 
+}
+
+
 module.exports = {
   is_loginRequired,
   is_admin,
   is_registered,
+  handleUndefinedRoutes
 };

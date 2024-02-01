@@ -1,5 +1,73 @@
 
 
+async function add_to_cart_whishPage(id) {
+    try {
+        const res = await $.ajax({
+            url: `/add-to-cart?whish=ss`,
+            method: "POST",
+            data: { quantity: 1, productid: id }
+        })
+        const noti = $(res).find(".jfdsfd").html();
+        console.log(noti);
+        $('.jfdsfd').html(noti)
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+async function remoWhishProduct(id) {
+    try {
+        const res = await $.ajax({
+            url: '/remove-from-whishlist?id='+id+"&&ss=ss",
+            method: "GET"
+        })
+        const newNoti = $(res).find(".whishshs").html()
+        console.log(newNoti);
+        const list = $(res).find(".wishlist-list").html()
+        $(".whishshs").html(newNoti)
+        $(".wishlist-list").html(list)
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+async function products_whishlist(e, id, name) {
+    try {
+        const clickedButton = event.target;
+        const parentDiv = clickedButton.parentElement;
+        const imgElement = parentDiv.querySelector("img");
+
+        if (imgElement.id === "add") {
+            const res = await $.ajax({
+                url: "/add-to-whishlist?id=" + id,
+                method: "GET",
+            })
+            const newicon = $(res).find('#whish' + id).html();
+            const newNoti = $(res).find("#whishshs").html()
+            $('#whish' + id).html(newicon);
+            $("#whishshs").html(newNoti)
+
+            swal(name, " is added to wishlist !", "success");
+            
+        } else if (imgElement.id === "remove") {
+            const res = await $.ajax({
+                url: "/remove-from-whishlist?id=" + id,
+                method: "GET",
+            })
+            const newicon = $(res).find('#whish' + id).html();
+            const newNoti = $(res).find("#whishshs").html()
+            $('#whish' + id).html(newicon);
+            $("#whishshs").html(newNoti)
+            
+        }
+
+    } catch (error) {
+
+    }
+}
+
+
 async function product_listing_PagePagination(pageNumber) {
     try {
         const response = await $.ajax({

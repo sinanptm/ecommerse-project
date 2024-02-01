@@ -1,6 +1,7 @@
-const { Cart, User } = require("../models/userModels");
+const { Cart, User, Wishlist } = require("../models/userModels");
 const { Product, Order } = require("../models/productModel");
 const { getUserIdFromToken } = require("../util/bcryption");
+const mongoose = require("mongoose")
 
 
 
@@ -22,8 +23,6 @@ const addToCart = async (req, res) => {
 
 
     if (product.quantity <= 0) {
-      // Handle the case where the product quantity is zero or less
-      // You may want to display an error or redirect the user
       res.status(400).redirect("/products");
       return;
     }
@@ -36,7 +35,6 @@ const addToCart = async (req, res) => {
       );
 
       if (existingProductIndex !== -1) {
-        // Update the quantity if the product already exists in the cart
         userCart.products[existingProductIndex].quantity += quantity;
 
         userCart.markModified('products');
@@ -66,8 +64,13 @@ const addToCart = async (req, res) => {
 
       const newCart = await cart.save();
     }
+    if (req.query.whish) {
+      res.status(200).redirect("/whishlist")
+    }else{
+      res.status(200).redirect("/product?id=" + productid);
 
-    res.redirect("/product?id=" + productid);
+    }
+    
 
   } catch (error) {
     console.error(error);
@@ -159,6 +162,7 @@ const loadCart = async (req, res) => {
       path: 'products.productid',
       model: 'Product',
     });
+
 
     if (!cart) {
       return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, totalPrice: 0 });
@@ -296,8 +300,22 @@ const loadCheckout = async (req, res) => {
       console.error('Error parsing products:', error.message);
       return res.status(500).redirect('/cart');
     }
-
-    const user = await User.findById(userId).populate('address');
+    let user = await User.aggregate([
+      {
+        $match: {
+          _id: mongoose.Types.ObjectId.createFromHexString(userId)
+        }
+      },
+      {
+        $lookup: {
+          from: "addresses",
+          localField: "address",
+          foreignField: "_id",
+          as: "address"
+        }
+      }
+    ]);
+    user = user[0]
 
     if (!user) {
       console.log('no userid');
@@ -401,7 +419,7 @@ const placeOrder = async (req, res) => {
     });
     const order = await newOrder.save();
 
-    res.redirect("/order-success?id="+order._id);
+    res.redirect("/order-success?id=" + order._id);
 
   } catch (error) {
     console.log(error.message);
@@ -420,14 +438,38 @@ const showSuccess = async (req, res) => {
       return res.status(304).redirect("/cart")
     }
 
-    const order = await Order.findById(id)
-      .populate('userid')
-      .populate('OrderedItems.productid');
+
+    let order = await Order.aggregate([
+      { $match: { _id: mongoose.Types.ObjectId.createFromHexString(id) } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userid",
+          foreignField: "_id",
+          as: "userid"
+        }
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "OrderedItems.productid",
+          foreignField: "_id",
+          as: "OrderedItems"
+        }
+      }
+    ])
+    order = order[0]
 
     if (!order || Date.now() - order.orderDate > 300000) {
       return res.status(304).redirect("/account");
     }
 
+    await Promise.all(order.OrderedItems.map(async (product) => {
+      await Product.updateOne(
+        { _id: product._id },
+        { $inc: { sales: 1 } }
+      );
+    }));
 
     res.render('order-success', { order })
 
@@ -436,6 +478,86 @@ const showSuccess = async (req, res) => {
   }
 }
 
+const loadWhishList = async (req, res) => {
+  try {
+    const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
+
+    const existingWishlist = await Wishlist.findOne({ userid });
+
+    if (existingWishlist) {
+      const products = await Product.find({ _id: { $in: existingWishlist.products } });
+      res.render("wishlist", { products });
+    } else {
+      res.render("wishlist", { products: [] }); 
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
+const addToWhishlist = async (req, res) => {
+  try {
+    const id = req.query.id;
+    if (!id) {
+      res.status(400).redirect('/products')
+    } else {
+      const p = await Product.findById(id);
+      if (!p) {
+        res.status(404).redirect('/products')
+      }
+    }
+    const userid = await getUserIdFromToken(req.cookies.token || req.session.token)
+    const userWhish = await Wishlist.findOne({ userid });
+    if (userWhish) {
+      userWhish.products.push(id)
+      await userWhish.save()
+    } else {
+      const newWhish = new Wishlist({
+        products: [id],
+        userid
+      });
+      await newWhish.save()
+    }
+    res.status(200).redirect('/products')
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const removeFromWhishlist = async (req, res) => {
+  try {
+    const id = req.query.id;
+    if (!id) {
+      res.status(400).redirect('/products')
+    } else {
+      const p = await Product.findById(id);
+      if (!p) {
+        res.status(404).redirect('/products')
+      }
+    }
+    const userid = await getUserIdFromToken(req.cookies.token || req.session.token)
+
+    const updateResult = await Wishlist.updateOne(
+      { userid },
+      { $pull: { products: id } }
+    );
+
+    if (req.query.ss) {
+      res.status(200).redirect("/whishlist")
+    } else {
+      res.status(200).redirect('/products');
+
+    }
+
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 
 
@@ -448,6 +570,9 @@ module.exports = {
   addToCheckout,
   placeOrder,
   showSuccess,
-  addToCartProductPage
+  addToCartProductPage,
+  loadWhishList,
+  addToWhishlist,
+  removeFromWhishlist
 };
 
