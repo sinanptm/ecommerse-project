@@ -181,7 +181,7 @@
                             <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a> -->
                             <!-- <div class="dropdown-divider"></div> -->
-                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li> 
                 </ul>
@@ -225,7 +225,7 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>no.</th>
+                                    <th>Order ID</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Total</th>
@@ -235,44 +235,49 @@
                                 </tr>
                             </thead>
                             <tbody  id="content-mains">
-                               <% orders.forEach((order,i) => { %>
-                                <tr>
-                                    <td><%= i+1 %></td>
-                                    <td><b><%= order.deliveryAddress.Lname %></b></td>
-                                    <td><%= order.deliveryAddress.email %></td>
-                                    <td><%= order.orderAmount %></td>
-                                    <td>
-                                        <span class="badge rounded-pill 
-                                            <% if (order.orderStatus === '1') { %>
-                                                alert-warning
-                                            <% } else if (order.orderStatus === '2') { %>
-                                                alert-info
-                                            <% } else if (order.orderStatus === '3') { %>
-                                                alert-primary
-                                            <% } else if (order.orderStatus === '4') { %>
-                                                alert-success
-                                            <% } %>
-                                        ">
-                                            <% if (order.orderStatus === '1') { %>
-                                                Processing
-                                            <% } else if (order.orderStatus === '2') { %>
-                                                Quality Check
-                                            <% } else if (order.orderStatus === '3') { %>
-                                                Shipped
-                                            <% } else if (order.orderStatus === '4') { %>
-                                                Delivered
-                                            <% } %>
-                                        </span>
-                                    </td>
-                                    
-                                    
-                                    <td><%= order.deliveryDate.toDateString() %></td>
-                                    <td class="text-end">
-                                        <a href="/admin/order-details?id=<%= order._id %>" class="btn btn-md rounded font-sm">Details</a>
-                                        <a href="/admin/delete-order?id=<%= order._id %>" class="btn btn-danger rounded font-sm">Delete</a>  
-                                      </td>                                      
-                                </tr>
-                               <% }) %>
+                                <% if (orders) { %>
+                                    <% orders.forEach((order, i) => { %>
+                                        <tr>
+                                            <td>#SK<%= i + 1 %></td>
+                                            <td><b><%= order.deliveryAddress.Lname || "N/A" %></b></td>
+                                            <td><%= order.deliveryAddress.email || "N/A" %></td>
+                                            <td><%= order.orderAmount || "N/A" %></td>
+                                            <td>
+                                                <span class="badge rounded-pill 
+                                                    <% if (order.orderStatus === '1') { %>
+                                                        alert-warning
+                                                    <% } else if (order.orderStatus === '2') { %>
+                                                        alert-info
+                                                    <% } else if (order.orderStatus === '3') { %>
+                                                        alert-primary
+                                                    <% } else if (order.orderStatus === '4') { %>
+                                                        alert-success
+                                                    <% } %>
+                                                ">
+                                                    <% if (order.orderStatus === '1') { %>
+                                                        Processing
+                                                    <% } else if (order.orderStatus === '2') { %>
+                                                        Quality Check
+                                                    <% } else if (order.orderStatus === '3') { %>
+                                                        Shipped
+                                                    <% } else if (order.orderStatus === '4') { %>
+                                                        Delivered
+                                                    <% } %>
+                                                </span>
+                                            </td>
+                                            <td><%= order.deliveryDate ? order.deliveryDate.toDateString() : "N/A" %></td>
+                                            <td class="text-end">
+                                                <a href="/admin/order-details?id=<%= order._id %>" class="btn btn-md rounded font-sm">Details</a>
+                                                <a href="/admin/delete-order?id=<%= order._id %>" class="btn btn-danger rounded font-sm">Delete</a>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7">No Orders Yet</td>
+                                    </tr>
+                                <% } %>
+                                
                               
                                
                             </tbody>

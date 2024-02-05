@@ -71,21 +71,22 @@
 								<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
 									data-notify="0">
 									<i class="zmdi zmdi-favorite-outline"></i>
-								</a><% if (valid) { %>
+								</a>
+								<% if (valid) { %>
 									<a href="whishlist"
 										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
 										data-notify="<%= whishItems %>">
 										<i class="zmdi zmdi-favorite-outline"></i>
 									</a>&nbsp;&nbsp;&nbsp;
-								<% }else{ %>
-								<a href="/login"
-									class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-									data-notify="0">
-									<i class="zmdi zmdi-favorite-outline"></i>
-								</a>&nbsp;&nbsp;&nbsp;
-								<% } %>
-								
-								
+									<% }else{ %>
+										<a href="/login"
+											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+											data-notify="0">
+											<i class="zmdi zmdi-favorite-outline"></i>
+										</a>&nbsp;&nbsp;&nbsp;
+										<% } %>
+
+
 							</div>
 						</div>
 						<div>&nbsp;&nbsp;&nbsp;</div>
@@ -110,19 +111,18 @@
 						<i class="zmdi zmdi-shopping-cart"></i>
 					</a>
 					<% if (valid) { %>
-						<a href="whishlist"
-							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+						<a href="whishlist" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
 							data-notify="<%= whishItems %>">
 							<i class="zmdi zmdi-favorite-outline"></i>
 						</a>&nbsp;&nbsp;&nbsp;
-					<% }else{ %>
-					<a href="/login"
-						class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-						data-notify="0">
-						<i class="zmdi zmdi-favorite-outline"></i>
-					</a>&nbsp;&nbsp;&nbsp;
-					<% } %>
-					
+						<% }else{ %>
+							<a href="/login"
+								class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+								data-notify="0">
+								<i class="zmdi zmdi-favorite-outline"></i>
+							</a>&nbsp;&nbsp;&nbsp;
+							<% } %>
+
 				</div>
 
 				<!-- Button show menu -->
@@ -169,22 +169,7 @@
 				</ul>
 			</div>
 
-			<!-- Modal Search -->
-			<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-				<button class="flex-c-m btn-hide-modal-search trans-04">
-					<i class="zmdi zmdi-close"></i>
-				</button>
-
-				<form class="container-search-header">
-					<div class="wrap-search-header">
-						<input class="plh0" type="text" name="search" placeholder="Search...">
-
-						<button class="flex-c-m trans-04">
-							<i class="zmdi zmdi-search"></i>
-						</button>
-					</div>
-				</form>
-			</div>
+			
 		</header>
 
 		<% if (toast!==undefined&&toast!==null) { %>
@@ -199,14 +184,37 @@
 					<div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg">
 						<!-- Login Form -->
 						<form class="login-form" method="post" action="/login" onsubmit="return validateForm()">
-							<h4 class="mtext-105 cl2 txt-center p-b-30">
-								Login
-							</h4>
+							<h4 class="mtext-105 cl2 txt-center p-b-30">Login</h4>
 							<% if (typeof msg !=='undefined' ) { %>
 								<p style="color:#ff0000;">
 									<%= msg %>
 								</p>
 								<% } %>
+
+									<style>
+										[popover] {
+											position: fixed;
+											inset: 0;
+											width: fit-content;
+											height: fit-content;
+											margin: auto;
+											border: solid;
+											padding: 0.25em;
+											overflow: auto;
+											color: CanvasText;
+											background-color: Canvas;
+										}
+									</style>
+
+									<div class="position-relative">
+										<label class="btn" type="button" 
+											>For Demo user <button id="popoverBtn" popovertarget="popoverContent" type="button">Click Here</button></label>
+										<div c id="popoverContent" popover>
+											<p><strong>Email:</strong>demouser@gmail.com</p>
+											<p><strong>Password:</strong> 1111</p>
+										</div>
+									</div>
+
 									<small class="form-text text-left" style="color: red; display: none;"
 										id="error"></small>
 									<div class="bor8 m-b-20 how-pos4-parent">
@@ -225,9 +233,7 @@
 									</div>
 									<button
 										class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer"
-										type="submit">
-										Login
-									</button>
+										type="submit">Login</button>
 									<small class="mtext-105 cl2 txt-center p-t-10">
 										<small class="stext-111 cl2 plh3 size-116"
 											style="margin-left: 3px;font-size:10px;margin-right: 0px;">Don't have an
@@ -241,6 +247,7 @@
 										<a href="/sendreset" class="cpointer" style="font-size: 12px;">Reset</a>
 									</small>
 						</form>
+
 
 						<script>
 							function validateForm() {

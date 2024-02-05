@@ -2,7 +2,9 @@
 <html lang="en">
 
 <head>
-	<title><%= title %></title>
+	<title>
+		<%= title %>
+	</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/png" href="images/icons/favicon.png" />
@@ -274,7 +276,7 @@
 
 
 
-	
+
 
 		<!-- Header -->
 		<header class="header-v3">
@@ -352,20 +354,20 @@
 												data-notify="<%= whishItems %>">
 												<i class="zmdi zmdi-favorite-outline"></i>
 											</a>&nbsp;&nbsp;&nbsp;
-										<% }else{ %>
-										<a href="/login"
-											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-											data-notify="0">
-											<i class="zmdi zmdi-favorite-outline"></i>
-										</a>&nbsp;&nbsp;&nbsp;
-										<% } %>
-										
-										<% if (valid) { %>
-											<a href="/account"
-												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
-												<i class="zmdi zmdi-account"></i>
-											</a>
-											<% } %>
+											<% }else{ %>
+												<a href="/login"
+													class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+													data-notify="0">
+													<i class="zmdi zmdi-favorite-outline"></i>
+												</a>&nbsp;&nbsp;&nbsp;
+												<% } %>
+
+													<% if (valid) { %>
+														<a href="/account"
+															class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+															<i class="zmdi zmdi-account"></i>
+														</a>
+														<% } %>
 							</div>
 							<% if (valid) { %>
 								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-logout"
@@ -435,19 +437,20 @@
 									data-notify="<%= whishItems %>">
 									<i class="zmdi zmdi-favorite-outline"></i>
 								</a>&nbsp;&nbsp;&nbsp;
-							<% }else{ %>
-							<a href="/login"
-								class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-								data-notify="0">
-								<i class="zmdi zmdi-favorite-outline"></i>
-							</a>&nbsp;&nbsp;&nbsp;
-							<% } %>
-							
-							<% if (valid) { %>
-								<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
-									<i class="zmdi zmdi-account"></i>
-								</a>
-								<% } %>
+								<% }else{ %>
+									<a href="/login"
+										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+										data-notify="0">
+										<i class="zmdi zmdi-favorite-outline"></i>
+									</a>&nbsp;&nbsp;&nbsp;
+									<% } %>
+
+										<% if (valid) { %>
+											<a href="/account"
+												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+												<i class="zmdi zmdi-account"></i>
+											</a>
+											<% } %>
 						</div>
 
 						<!-- Button show menu -->
@@ -494,22 +497,7 @@
 				</ul>
 			</div>
 
-			<!-- Modal Search -->
-			<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-				<button class="flex-c-m btn-hide-modal-search trans-04">
-					<i class="zmdi zmdi-close"></i>
-				</button>
-
-				<form class="container-search-header">
-					<div class="wrap-search-header">
-						<input class="plh0" type="text" name="search" placeholder="Search...">
-
-						<button class="flex-c-m trans-04">
-							<i class="zmdi zmdi-search"></i>
-						</button>
-					</div>
-				</form>
-			</div>
+			
 		</header>
 
 
@@ -534,7 +522,7 @@
 			</div>
 		</div>
 
-		<form class="bg0 p-t-75 p-b-85" id="placeOrder" method="post" action="/place-order">
+		<form class="bg0 p-t-75 p-b-85" id="placeOrder">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
@@ -586,16 +574,11 @@
 
 							<div class="bor8 m-b-20 how-pos4-parent payment-method">
 								<input type="radio" id="online_payment" name="payment_method" value="online_payment"
-									disabled class="payment-input">
+									class="payment-input">
 								<label for="online_payment" class="payment-label">
 									<span class="stext-111 cl2 size-116 sss">Online Payment</span>
-									<span class="stext-111 cl2 size-116 unavailable-text">(Currently Unavailable)</span>
 								</label>
 							</div>
-
-
-
-
 						</div>
 					</div>
 
@@ -666,11 +649,10 @@
 							<input type="hidden" name="totalprice" value="<%= Math.round(totalPrice) %>">
 
 
-							<button id="place-order-success" type="submit"
+							<button id="place-order-success"
 								class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 js-addwish-b2">
 								Place Order
 							</button>
-
 						</div>
 					</div>
 				</div>
@@ -813,9 +795,15 @@
 				</div>
 			</div>
 		</div>
-
-
+		<div id="paymentFailedMessage" style="display: none; background-color: #f8d7da; color: #721c24; padding: 15px; border: 1px solid #f5c6cb; border-radius: 5px; position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 9999; width: 300px; text-align: center;margin-top: 400px;">
+			<span style="font-weight: bold;">Payment Failed:</span> Please try again.
+			<button style="border: none; background-color: transparent; color: #721c24; font-weight: bold; position: absolute; top: 5px; right: 5px; cursor: pointer;" onclick="hidePaymentFailedMessage()">X</button>
+		</div>
 		
+		
+
+
+
 		</div>
 		<br><br><br>
 		<!-- Footer -->
@@ -979,11 +967,15 @@
 				<i class="zmdi zmdi-chevron-up"></i>
 			</span>
 		</div>
+		<style>
+			.aaa
+			{
+				color: #169dd2;
+			}
+		</style>
 
-
-
-
-		<!--===============================================================================================-->
+		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+		<!--==============================================================================================-->
 		<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
 		<!--===============================================================================================-->
 		<script src="vendor/animsition/js/animsition.min.js"></script>
@@ -1022,7 +1014,6 @@
 		<!--===============================================================================================-->
 		<script src="js/main.js"></script>
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 
 
 		</body>

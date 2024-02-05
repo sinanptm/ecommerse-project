@@ -57,7 +57,7 @@
                             <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a> -->
                             <!-- <div class="dropdown-divider"></div> -->
-                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li> 
                 </ul> 
@@ -67,6 +67,28 @@
             <div class="card mx-auto card-login">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Login</h4>
+                    <style>
+                        [popover] {
+                            position: fixed;
+                            inset: 0;
+                            width: fit-content;
+                            height: fit-content;
+                            margin: auto;
+                            border: solid;
+                            padding: 0.25em;
+                            overflow: auto;
+                            color: CanvasText;
+                            background-color: Canvas;
+                        }
+                    </style>
+
+                    <div class="position-relative">
+                        <label class="btn" type="button" >For Demo  <button id="popoverBtn" popovertarget="popoverContent" class="btn" type="button" style="color: rgb(95, 102, 238);text-decoration: underline;">Click Here</button></label>
+                        <div c id="popoverContent" popover>
+                            <p><strong>Email:</strong>admin@gmail.com</p>
+                            <p><strong>Password:</strong> 1111</p>
+                        </div>
+                    </div>
                     <form method="post" action="/admin/login" id="loginForm">
                         <% if (typeof msg !== 'undefined') { %>
                             <p style="color:#ff0000;"><%= msg %></p>

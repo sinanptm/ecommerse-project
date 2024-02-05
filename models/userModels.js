@@ -77,20 +77,7 @@ const cartSchema = new mongoose.Schema({
 
 const Cart = mongoose.model("Cart", cartSchema);
 
-// Payment Schema
-const paymentSchema = new mongoose.Schema({
-  orderid: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  amount: { type: Number },
-  currency: { type: String },
-  status: { type: String },
-  paymentMethod: { type: String },
-  transactionid: { type: mongoose.Schema.Types.ObjectId },
-  createdate: { type: Date },
-  updated: { type: Date },
-});
 
-const Payment = mongoose.model("Payment", paymentSchema);
 
 // Banner Schema
 const bannerSchema = new mongoose.Schema({
@@ -117,7 +104,6 @@ module.exports = {
   Wishlist,
   Coupon,
   Cart,
-  Payment,
   Banner,
   Wallet,
   Admin,

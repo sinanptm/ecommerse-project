@@ -2,9 +2,9 @@ const express = require("express");
 const adminRoute = express();
 const path = require("path");
 const upload = require("../util/multer");
-const { loadLogin, checkLogin, newOTP, loadOTP, verifyOTP, loadUser, userBlock, userUnblock, logout } = require("../controllers/adminController");
-const { loadDashBoard, loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, loadOrders, deleteOrder, editOrder, loadOrder } = require("../controllers/productController");
-const { is_loginRequired, is_admin, is_registered, handleUndefinedRoutes } = require("../middlewares/auth");
+const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout } = require("../controllers/adminController");
+const { loadDashBoard, loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, loadOrders, deleteOrder, editOrder, loadOrder, creatOrderReport, sales_reportXL,getReportPDF } = require("../controllers/productController");
+const { is_loginRequired, is_admin, handleUndefinedRoutes } = require("../middlewares/auth");
 
 
 adminRoute.set("views", path.join(__dirname, "../views/admin_pages"));
@@ -16,41 +16,47 @@ adminRoute.get("/", is_loginRequired, loadLogin);
 adminRoute.get("/login", is_loginRequired, loadLogin);
 adminRoute.post("/login", checkLogin);
 
-// Admin OTP
-adminRoute.get("/verifyOTP", is_registered, newOTP);
-adminRoute.get("/verifyAdmin", is_registered, is_loginRequired, loadOTP);
-adminRoute.post("/verifyAdmin", verifyOTP);
+//! Admin OTP
+// adminRoute.get("/verifyOTP", is_registered, newOTP);
+// adminRoute.get("/verifyAdmin", is_registered, is_loginRequired, loadOTP);
+// adminRoute.post("/verifyAdmin", verifyOTP);
+
+adminRoute.use(is_admin)
+
+adminRoute.get("/dashboard", loadDashBoard);
+adminRoute.post('/order-report', creatOrderReport)
+adminRoute.post('/sales-report/:type', sales_reportXL)
+adminRoute.post("/get-report-pdf/:type",getReportPDF)
 
 // User Management
-adminRoute.get("/users", is_admin, loadUser);
-adminRoute.get("/userblock/:id", is_admin, userBlock);
-adminRoute.get("/userUnblock/:id", is_admin, userUnblock);
-adminRoute.get("/dashboard", is_admin, loadDashBoard);
-adminRoute.get("/logout", is_admin, logout);
+adminRoute.get("/users", loadUser);
+adminRoute.get("/userblock/:id", userBlock);
+adminRoute.get("/userUnblock/:id", userUnblock);
+adminRoute.get("/logout", logout);
 
 // Product Management
-adminRoute.get("/productDetials", is_admin, loadProducts);
-adminRoute.get("/products", is_admin, loadProducts);
-adminRoute.get("/addProduct", is_admin, loadAddProduct);
-adminRoute.post('/addProduct', is_admin, upload.array('image', 3), addProduct);
-adminRoute.post('/editProduct/:id', is_admin, upload.array('image', 3), editProduct);
-adminRoute.get("/editProduct", is_admin, loadEditProduct);
-adminRoute.get("/deleteProduct/:id", is_admin, deleteProduct);
+adminRoute.get("/productDetials", loadProducts);
+adminRoute.get("/products", loadProducts);
+adminRoute.get("/addProduct", loadAddProduct);
+adminRoute.post('/addProduct', upload.array('image', 3), addProduct);
+adminRoute.post('/editProduct/:id', upload.array('image', 3), editProduct);
+adminRoute.get("/editProduct", loadEditProduct);
+adminRoute.get("/deleteProduct/:id", deleteProduct);
 
 // Listing/Unlisting product
-adminRoute.get("/list", is_admin, listProduct);
-adminRoute.get("/unlist", is_admin, unlistProduct);
+adminRoute.get("/list", listProduct);
+adminRoute.get("/unlist", unlistProduct);
 
 // Category Management
-adminRoute.get("/catogories", is_admin, laodCatagorie);
-adminRoute.post("/catogories", is_admin, upload.single("file"), addCatagorie);
-adminRoute.post("/editCatogories/:id", is_admin, upload.single("file"), editCatogory);
-adminRoute.get("/deleteCatogory/:id", is_admin, deleteCatogory);
+adminRoute.get("/catogories", laodCatagorie);
+adminRoute.post("/catogories", upload.single("file"), addCatagorie);
+adminRoute.post("/editCatogories/:id", upload.single("file"), editCatogory);
+adminRoute.get("/deleteCatogory/:id", deleteCatogory);
 
-adminRoute.get("/orders-list", is_admin, loadOrders)
-adminRoute.get("/delete-order", is_admin, deleteOrder)
-adminRoute.post('/edit-order/:id', is_admin, editOrder)
-adminRoute.get('/order-details',is_admin,loadOrder)
+adminRoute.get("/orders-list", loadOrders)
+adminRoute.get("/delete-order", deleteOrder)
+adminRoute.post('/edit-order/:id', editOrder)
+adminRoute.get('/order-details', loadOrder)
 
 adminRoute.use(handleUndefinedRoutes)
 

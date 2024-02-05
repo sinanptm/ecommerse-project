@@ -11,7 +11,7 @@ const productsSchema = new mongoose.Schema({
     createdate: { type: Date },
     discount: { type: Number },
     description: { type: String },
-    sales:Number
+    sales: { type: Number, default: 13 }
 });
 productsSchema.index({ name: 1, categoryid: 1 }, { unique: true });
 
@@ -23,7 +23,9 @@ const categorySchema = new mongoose.Schema({
     description: { type: String, required: true },
     type: { type: String },
     items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    createdate:Date,
     img: { type: String },
+    sales: { type: Number, default: 0 }
 });
 
 const Category = mongoose.model("Category", categorySchema);
@@ -44,8 +46,14 @@ const ordersSchema = new mongoose.Schema({
         quantity: Number,
         name: String
     }],
-    payment: String
-    //  { type: mongoose.Schema.Types.ObjectId, ref: "Payment" },
+    online_payment: {
+        currency: { type: String },
+        status: { type: String },
+        transactionid: String,
+        createdate: { type: Date },
+    },
+    offlinePayment: Boolean,
+    paymentStatus: String
 });
 
 const Order = mongoose.model("Order", ordersSchema);
@@ -54,10 +62,10 @@ const cancelReasonschema = new mongoose.Schema({
     orderid: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
     userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     reason: String,
-    cancelationTime:Date
+    cancelationTime: Date
 })
 
-const CancelationReson = mongoose.model("CancelationReson",cancelReasonschema)
+const CancelationReson = mongoose.model("CancelationReson", cancelReasonschema)
 
 
 module.exports = {

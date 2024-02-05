@@ -386,22 +386,7 @@
 		</ul>
 	</div>
 
-	<!-- Modal Search -->
-	<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-		<button class="flex-c-m btn-hide-modal-search trans-04">
-			<i class="zmdi zmdi-close"></i>
-		</button>
-
-		<form class="container-search-header">
-			<div class="wrap-search-header">
-				<input class="plh0" type="text" name="search" placeholder="Search...">
-
-				<button class="flex-c-m trans-04">
-					<i class="zmdi zmdi-search"></i>
-				</button>
-			</div>
-		</form>
-	</div>
+	
 </header>
 
 
@@ -448,8 +433,12 @@
 									class="btn btn-warning delete-basket ">
 									<i class="fs-16 zmdi zmdi-delete"></i> Remove
 								</button>
-								<button onclick="add_to_cart_whishPage('<%= product._id %>')"
-									class="btn btn-primary show-details">Add To Cart</button>
+								<% if (product.quantity>0 && product.status =='Available') { %>
+									<button onclick="add_to_cart_whishPage('<%= product._id %>')"
+										class="btn btn-primary show-details">Add To Cart</button>
+								<% }else{ %>
+									<p class="btn btn-warning ">Out Of Stock</p>
+								<% } %>
 							</div>
 						</div>
 					</a>
@@ -457,7 +446,7 @@
 				<% }) %>
 		</div>
 	</div>
-</section>
+</section><br><br><br><br><br><br><br><br><br><br><br>
 
 
 

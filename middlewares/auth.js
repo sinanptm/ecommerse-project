@@ -19,13 +19,17 @@ const is_admin = async (req, res, next) => {
   }
 };
 
-const is_registered = async (req, res, next) => {
-  if (req.session.OTPId) {
-    next();
-  } else {
-    res.redirect("/admin/login");
-  }
-};
+// * for admin login otp serveice
+
+// const is_registered = async (req, res, next) => {
+//   if (req.session.OTPId) {
+//     next();
+//   } else {
+//     res.redirect("/admin/login");
+//   }
+// };
+
+
 
 const is_loginRequired = async (req, res, next) => {
   try {
@@ -56,6 +60,6 @@ const  handleUndefinedRoutes = (req, res, next)=> {
 module.exports = {
   is_loginRequired,
   is_admin,
-  is_registered,
+  // is_registered,
   handleUndefinedRoutes
 };

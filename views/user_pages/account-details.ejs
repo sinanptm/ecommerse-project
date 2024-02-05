@@ -549,21 +549,7 @@
 						</div>
 
 						<!-- Modal Search -->
-						<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-							<button class="flex-c-m btn-hide-modal-search trans-04">
-								<i class="zmdi zmdi-close"></i>
-							</button>
-
-							<form class="container-search-header">
-								<div class="wrap-search-header">
-									<input class="plh0" type="text" name="search" placeholder="Search...">
-
-									<button class="flex-c-m trans-04">
-										<i class="zmdi zmdi-search"></i>
-									</button>
-								</div>
-							</form>
-						</div>
+						
 					</header>
 
 					<!-- Title page -->
@@ -768,125 +754,7 @@
 									</div>
 								</div>
 
-								<div class="row mt-4" id="orders">
-									<div class="col-md-12">
-										<div class="flipkart-address-block-child1 flex-col-l">
-											<h3 class="ltext-103 cl5">Orders</h3>
-											<% if (orders && orders.length> 0) { %>
-												<% orders.forEach(order=> { %>
-													<div class="order-details border rounded p-4 mb-4">
-														<div
-															class="d-flex justify-content-between align-items-center mb-3">
-															<h4 class="mb-0">Order ID: <%= order._id %>
-															</h4>
-															<span class="badge rounded-pill 
-						                                <% if (order.orderStatus === '1') { %> bg-warning
-						                                <% } else if (order.orderStatus === '2') { %> bg-info
-						                                <% } else if (order.orderStatus === '3') { %> bg-primary
-						                                <% } else if (order.orderStatus === '4') { %> bg-success
-						                                <% } %> text-white">
-																<% if (order.orderStatus==='1' ) { %> Processing
-																	<% } else if (order.orderStatus==='2' ) { %> Quality
-																		Check
-																		<% } else if (order.orderStatus==='3' ) { %>
-																			Shipped
-																			<% } else if (order.orderStatus==='4' ) { %>
-																				Delivered
-																				<% } %>
-															</span>
-														</div>
-														<p>Order Amount: $<%= order.orderAmount %>
-														</p>
-														
-														<% if (order.orderStatus !== '4') { %>
-															<p>Expected Delivery on: <%= order.deliveryDate.toDateString()
-																%>
-															</p>
-															<% }else{ %>
-																<p> Delivered on: <%= order.deliveryDate.toDateString()
-																%>
-														</p>
-															<% }%>
-														<p style="border-bottom: 1px solid black; width: 23%;"> Ordered Items</p>
-														<ul class="list-unstyled">
-															<% order.OrderedItems.forEach(item=> { %>
-																<li>
-																	<strong>
-																		<%= item.name %>
-																	</strong> <!-- Display product name -->
-																	- Quantity: <%= item.quantity %>
-																		<!-- Display quantity -->
-																		- Price: $<%= item.price %>
-																			<!-- Display price -->
-																</li>
-																<% }); %>
-														</ul>
-														<% if (order.orderStatus !== '4') { %>
-															<button class="btn btn-danger" data-toggle="modal"
-																data-target="#cancelModal<%= order._id %>">Cancel</button>
-															<% } %>
-													</div>
-
-													<!-- Cancel Modal -->
-													<div class="modal fade" id="cancelModal<%= order._id %>"
-														tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel"
-														aria-hidden="true">
-														<div class="modal-dialog" role="document">
-															<div class="modal-content">
-																<div class="modal-header">
-																	<h5 class="modal-title" id="cancelModalLabel">Cancel
-																		Order
-																	</h5>
-																	<button type="button" class="close"
-																		data-dismiss="modal" aria-label="Close">
-																		<span aria-hidden="true">&times;</span>
-																	</button>
-																</div>
-																<div class="modal-body">
-																	<form id="cancelOrder">
-																		<input type="hidden" name="orderId"
-																			value="<%= order._id %>">
-																		<div class="form-group">
-																			<label for="cancelReason">Reason for
-																				cancellation:</label>
-																			<textarea class="form-control"
-																				id="cancelReason" name="cancelReason"
-																				rows="3" required></textarea>
-																		</div>
-																		<button type="button"
-																			onclick="cancelOrder('<%= order._id %>')"
-																			class="btn btn-danger">Confirm
-																			Cancellation</button>
-
-																	</form>
-																</div>
-															</div>
-														</div>
-													</div>
-													<% }); %>
-														<script>
-															async function cancelOrder(id) {
-																try {
-																	const formdata = $("#cancelOrder").serialize();
-																	const response = await $.ajax({
-																		url: '/cancel-order',
-																		method: "POST",
-																		data: formdata
-																	});
-
-																	window.location.reload();
-																} catch (error) {
-																	console.log(error.message);
-																}
-															}
-														</script>
-														<% } else { %>
-															<h5>No orders found.</h5>
-															<% } %>
-										</div>
-									</div>
-								</div>
-
+								
 								<div class="flipkart-address-section col-md-6">
 									<!-- Addresses -->
 									<div class="flipkart-address-block flipkart-block2-txt flex-w flex-t p-t-14 "
@@ -1233,6 +1101,128 @@
 					</div>
 
 
+					<div class="row mt-4" id="orders">
+									<div class="col-md-12">
+										<div class="flipkart-address-block-child1 flex-col-l">
+											<h3 class="ltext-103 cl5">Orders</h3>
+											<% if (orders && orders.length> 0) { %>
+												<% orders.forEach(order=> { %>
+													<div class="order-details border rounded p-4 mb-4">
+														<div
+															class="d-flex justify-content-between align-items-center mb-3">
+															<h4 class="mb-0">Order ID: <%= order._id %>
+															</h4>
+															<span class="badge rounded-pill 
+						                                <% if (order.orderStatus === '1') { %> bg-warning
+						                                <% } else if (order.orderStatus === '2') { %> bg-info
+						                                <% } else if (order.orderStatus === '3') { %> bg-primary
+						                                <% } else if (order.orderStatus === '4') { %> bg-success
+						                                <% } else if (order.orderStatus === '5') { %> bg-danger
+						                                <% } %> text-white">
+																<% if (order.orderStatus==='1' ) { %> Processing
+																	<% } else if (order.orderStatus==='2' ) { %> Quality
+																		Check
+																		<% } else if (order.orderStatus==='3' ) { %>
+																			Shipped
+																			<% } else if (order.orderStatus==='4' ) { %>
+																				Delivered
+																				<% } else if (order.orderStatus==='5' ) { %>
+																					Canceled
+																					<% } %>
+																				 
+															</span>
+														</div>
+														<p>Order Amount: $<%= order.orderAmount %>
+														</p>
+														
+														<% if (order.orderStatus !== '4') { %>
+															<p>Expected Delivery on: <%= order.deliveryDate.toDateString()
+																%>
+															</p>
+															<% }else{ %>
+																<p> Delivered on: <%= order.deliveryDate.toDateString()
+																%>
+														</p>
+															<% }%>
+														<p > Ordered Items:</p>
+														<ul class="list-unstyled">
+															<% order.OrderedItems.forEach(item=> { %>
+																<li>
+																	<strong>
+																		<%= item.name %>
+																	</strong> <!-- Display product name -->
+																	- Quantity: <%= item.quantity %>
+																		<!-- Display quantity -->
+																		- Price: $<%= item.price %>
+																			<!-- Display price -->
+																</li>
+																<% }); %>
+														</ul>
+														<% if (order.orderStatus !== '4'||order.orderStatus !== '5') { %>
+															<button class="btn btn-danger" data-toggle="modal"
+																data-target="#cancelModal<%= order._id %>">Cancel</button>
+															<% } %>
+													</div>
+
+													<!-- Cancel Modal -->
+													<div class="modal fade" id="cancelModal<%= order._id %>"
+														tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel"
+														aria-hidden="true">
+														<div class="modal-dialog" role="document">
+															<div class="modal-content">
+																<div class="modal-header">
+																	<h5 class="modal-title" id="cancelModalLabel">Cancel
+																		Order
+																	</h5>
+																	<button type="button" class="close"
+																		data-dismiss="modal" aria-label="Close">
+																		<span aria-hidden="true">&times;</span>
+																	</button>
+																</div>
+																<div class="modal-body">
+																	<form id="cancelOrder">
+																		<input type="hidden" name="orderId"
+																			value="<%= order._id %>">
+																		<div class="form-group">
+																			<label for="cancelReason">Reason for
+																				cancellation:</label>
+																			<textarea class="form-control"
+																				id="cancelReason" name="cancelReason"
+																				rows="3" required></textarea>
+																		</div>
+																		<button type="button"
+																			onclick="cancelOrder('<%= order._id %>')"
+																			class="btn btn-danger">Confirm
+																			Cancellation</button>
+																	</form>
+																</div>
+															</div>
+														</div>
+													</div>
+													<% }); %>
+														<script>
+															async function cancelOrder(id) {
+																try {
+																	const formdata = $("#cancelOrder").serialize();
+																	const response = await $.ajax({
+																		url: '/cancel-order',
+																		method: "POST",
+																		data: formdata
+																	});
+
+																	window.location.reload();
+																} catch (error) {
+																	console.log(error.message);
+																}
+															}
+														</script>
+														<% } else { %>
+															<h5>No orders found.</h5>
+															<br><br><br><br><br>
+															<% } %>
+										</div>
+									</div>
+								</div>
 
 
 

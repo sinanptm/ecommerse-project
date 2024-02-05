@@ -1,28 +1,106 @@
 
 
+
+$("#placeOrder").submit((e) => {
+    e.preventDefault();
+    $.ajax({
+        url: "/place-order",
+        method: "POST",
+        data: $('#placeOrder').serialize(),
+        success: function (res) {
+
+            if (res.status == 200) {
+                window.location.href = '/order-success?id=' + res.id
+            }
+            else if (res.success) {
+                var options = {
+                    "key": "" + res.key_id + "",
+                    "amount": res.amount,
+                    "currency": "INR",
+                    "name": "Trends Payment",
+                    "description": "Payment for online Purchase",
+                    "image": "https://wallpapercave.com/wp/wp5390765.jpg",
+                    "order_id": "" + res.order_id + "",
+                    "handler": function (response) {
+                        $.ajax({
+                            url: '/online-payment',
+                            method: "POST",
+                            data: {
+                                order: res,
+                                payment: response,
+                            },
+                            success: (ress) => {
+                                if (ress.fail) {
+                                    alert("payment failed")
+                                } else {
+                                    window.location.href = '/order-success?id=' + ress.orderid
+                                }
+
+                            }
+                        })
+                    },
+                    "prefill": {
+                        "contact": "" + res.contact + "",
+                        "name": "" + res.name + "",
+                        "email": "" + res.email + ""
+                    },
+                    "notes": {
+                        "description": "" + res.description + ""
+                    },
+                    "theme": {
+                        "color": "#169dd2"
+                    }
+                };
+                var razorpayObject = new Razorpay(options);
+                razorpayObject.on('payment.failed', function (response) {
+                    $("#paymentFailedMessage").show();
+                });
+                razorpayObject.open();
+            }
+            else {
+                alert(res.msg);
+            }
+        }
+    })
+})
+
+function hidePaymentFailedMessage() {
+    $("#paymentFailedMessage").hide();
+}
+
+
 async function add_to_cart_whishPage(id) {
     try {
-        const res = await $.ajax({
-            url: `/add-to-cart?whish=ss`,
-            method: "POST",
-            data: { quantity: 1, productid: id }
-        })
-        const noti = $(res).find(".jfdsfd").html();
-        console.log(noti);
+        const response = await $.ajax({
+            url: '/add-to-cart',
+            method: 'POST',
+            data: { quantity: 1, productid: id, wish: 'ss' },
+        });
+        if (response.stock == false) {
+            alert("product is outof stock")
+        }
+        const noti = $(response).find(".jfdsfd").html();
+        const wishlistContent = $(response).find('.wishlist-content').html();
+        const whishpro = $(response).find(".wishlist-item").html()
+        $('.wishlist-content').html(wishlistContent);
         $('.jfdsfd').html(noti)
+        $(".wishlist-item").html(whishpro)
+        if (response.stock == false) {
+            alert("product out of stock")
+        }
     } catch (error) {
-        console.log(error.message);
+        console.error('Error adding to cart:', error);
+        $('.notification').text('An error occurred while adding to cart. Please try again later.');
     }
 }
 
 async function remoWhishProduct(id) {
     try {
         const res = await $.ajax({
-            url: '/remove-from-whishlist?id='+id+"&&ss=ss",
+            url: '/remove-from-whishlist?id=' + id + "&&ss=ss",
             method: "GET"
         })
         const newNoti = $(res).find(".whishshs").html()
-        console.log(newNoti);
         const list = $(res).find(".wishlist-list").html()
         $(".whishshs").html(newNoti)
         $(".wishlist-list").html(list)
@@ -49,7 +127,7 @@ async function products_whishlist(e, id, name) {
             $("#whishshs").html(newNoti)
 
             swal(name, " is added to wishlist !", "success");
-            
+
         } else if (imgElement.id === "remove") {
             const res = await $.ajax({
                 url: "/remove-from-whishlist?id=" + id,
@@ -59,7 +137,7 @@ async function products_whishlist(e, id, name) {
             const newNoti = $(res).find("#whishshs").html()
             $('#whish' + id).html(newicon);
             $("#whishshs").html(newNoti)
-            
+
         }
 
     } catch (error) {
@@ -172,7 +250,7 @@ $(document).ready(function () {
             console.error(error);
         }
     });
-            const closeBtn = document.querySelector('#close');
+    const closeBtn = document.querySelector('#close');
 
     const openBtn = document.querySelector("#open");
 
@@ -606,22 +684,27 @@ function hideSubmitButton() {
         }
     });
 
-
-    /*==================================================================
-    [ Show / hide modal search ]*/
-    $('.js-show-modal-search').on('click', function () {
-        $('.modal-search-header').addClass('show-modal-search');
-        $(this).css('opacity', '0');
+    $(document).ready(function() {
+        $('.js-show-modal-search').on('click', function() {
+            $('.search-input-container').toggle();
+        });
     });
 
-    $('.js-hide-modal-search').on('click', function () {
-        $('.modal-search-header').removeClass('show-modal-search');
-        $('.js-show-modal-search').css('opacity', '1');
-    });
+    // /*==================================================================
+    // [ Show / hide modal search ]*/
+    // $('.js-show-modal-search').on('click', function () {
+    //     $('.modal-search-header').addClass('show-modal-search');
+    //     $(this).css('opacity', '0');
+    // });
 
-    $('.container-search-header').on('click', function (e) {
-        e.stopPropagation();
-    });
+    // $('.js-hide-modal-search').on('click', function () {
+    //     $('.modal-search-header').removeClass('show-modal-search');
+    //     $('.js-show-modal-search').css('opacity', '1');
+    // });
+
+    // $('.container-search-header').on('click', function (e) {
+    //     e.stopPropagation();
+    // });
 
 
     /*==================================================================

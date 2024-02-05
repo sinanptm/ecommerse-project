@@ -1,7 +1,6 @@
-const { default: mongoose } = require("mongoose");
-const { Product, Order, CancelationReson, Category } = require("../models/productModel")
-const { User, Addresse, Wishlist } = require("../models/userModels")
-const { getUserIdFromToken, bcryptCompare, makeHash } = require('../util/bcryption')
+const { Product, Order, CancelationReson, Category } = require("../../models/productModel")
+const { User, Addresse, Wishlist } = require("../../models/userModels")
+const { getUserIdFromToken, bcryptCompare, makeHash, createHexId, isValidObjectId } = require('../../util/validations')
 
 // * homepage Loading
 
@@ -20,8 +19,8 @@ const loadHome = async (req, res) => {
             .lean();
 
         let userid = products[0]._id
-        if (req.cookies.token||req.session.token) {
-            userid = await getUserIdFromToken(req.cookies.token||req.session.token);
+        if (req.cookies.token || req.session.token) {
+            userid = await getUserIdFromToken(req.cookies.token || req.session.token);
 
         }
         const wishlist = await Wishlist.findOne({ userid });
@@ -35,7 +34,7 @@ const loadHome = async (req, res) => {
                 product.whishlist = wishlist.products.includes(product._id);
             });
         }
-        products[0].wishlist=true
+        products[0].wishlist = true
         res.render("home", { products, totalPages, currentPage: page });
 
     } catch (error) {
@@ -56,8 +55,8 @@ const loadProducts = async (req, res) => {
 
         let products = await Product.find({ status: "Available" }).limit(limit).skip(skip).lean();
         let userid = products[0]._id
-        if (req.cookies.token||req.session.token) {
-            userid = await getUserIdFromToken(req.cookies.token||req.session.token);
+        if (req.cookies.token || req.session.token) {
+            userid = await getUserIdFromToken(req.cookies.token || req.session.token);
 
         }
         const wishlist = await Wishlist.findOne({ userid });
@@ -71,7 +70,7 @@ const loadProducts = async (req, res) => {
                 product.whishlist = wishlist.products.includes(product._id);
             });
         }
-        products[0].wishlist=true
+        products[0].wishlist = true
         res.render("product", { products, totalPages, currentPage: page });
 
     } catch (error) {
@@ -87,8 +86,13 @@ const laodProductDetials = async (req, res) => {
     try {
         const id = req.query.id;
 
+        if (! await isValidObjectId(id)) {
+            res.status(400).redirect('/product-id-error');
+            return;
+        }
+
         let product = await Product.aggregate([
-            { $match: { _id: mongoose.Types.ObjectId.createFromHexString(id) } },
+            { $match: { _id: await createHexId(id) } },
             {
                 $lookup: {
                     from: 'categories',
@@ -128,7 +132,7 @@ const laodAccount = async (req, res) => {
         }
 
         const user = await User.aggregate([
-            { $match: { _id: mongoose.Types.ObjectId.createFromHexString(userid) } },
+            { $match: { _id: await createHexId(userid) } },
             {
                 $lookup: {
                     from: "addresses",
@@ -141,7 +145,7 @@ const laodAccount = async (req, res) => {
 
 
         const orders = await Order.aggregate([
-            { $match: { userid: mongoose.Types.ObjectId.createFromHexString(userid) } }, // Match against userid field
+            { $match: { userid: await createHexId(userid) } }, // Match against userid field
             {
                 $lookup: {
                     from: "products",
@@ -289,26 +293,27 @@ const edittAddress = async (req, res) => {
 const cancelOrder = async (req, res) => {
     try {
         const { orderId, cancelReason } = req.body;
-        const userid = await getUserIdFromToken(req.cookies.token || req.session.token)
+        const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
+
         if (!userid || !orderId) {
-            res.status(302).redirect("/account")
+            return res.status(302).redirect("/account");
         }
         const newReason = new CancelationReson({
             userid,
             orderid: orderId,
             cancelationTime: Date.now(),
             reason: cancelReason
-        })
-        await newReason.save()
+        });
 
-        const order = await Order.findByIdAndDelete(orderId)
-        res.status(200).redirect('/account')
+        await newReason.save();
+        const order = await Order.findByIdAndUpdate(orderId, { $set: { orderStatus: "5" } });
+
+        res.status(200).redirect('/account');
     } catch (error) {
         console.log(error.message);
         res.status(500).redirect('/account?msg=' + error.message);
     }
-}
-
+};
 
 // * for deleting address
 const deleteAddress = async (req, res) => {

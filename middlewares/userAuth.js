@@ -1,5 +1,5 @@
 const { User, Cart, Wishlist } = require("../models/userModels");
-const { getUserIdFromToken } = require("../util/bcryption")
+const { getUserIdFromToken } = require("../util/validations")
 
 
 const is_registered = async (req, res, next) => {
@@ -64,7 +64,6 @@ const requireLogin = async (req, res, next) => {
             res.locals.loginRequired = true;
             res.locals.loginMessage = "You need to be logged in to access this page.";
             next();
-            console.log(65777);
         }
     } catch (err) {
         console.log("Error checking login status:", err.message);
@@ -103,7 +102,7 @@ const cartItems = async (req, res, next) => {
 
 
 const handleUndefinedRoutes = (req, res, next) => {
-    res.status(404).render('error', { msg: 'Page not found', toast: "the page is maded yet" });
+    res.status(404).render('error', { msg: 'Page not found', toast: "the page is maded yet" ,title:`404` });
 }
 
 

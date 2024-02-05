@@ -247,22 +247,7 @@
 			</ul>
 		</div>
 
-		<!-- Modal Search -->
-		<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-			<button class="flex-c-m btn-hide-modal-search trans-04">
-				<i class="zmdi zmdi-close"></i>
-			</button>
-
-			<form class="container-search-header">
-				<div class="wrap-search-header">
-					<input class="plh0" type="text" name="search" placeholder="Search...">
-
-					<button class="flex-c-m trans-04">
-						<i class="zmdi zmdi-search"></i>
-					</button>
-				</div>
-			</form>
-		</div>
+		
 	</header>
 
 
@@ -556,19 +541,35 @@
 										</span>
 									</div>
 
-									<div class="block2-txt-child2  flex-r p-t-3" id="whish<%= product._id %>">
-										<div onclick="products_whishlist(event,'<%= product._id %>','<%= product.name %>')"
-											style="margin-top: 2px;"
-											class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-											<% if (product.whishlist==true) { %>
-												<img id="remove" class=" dis-block trans-04 "
-													src="images/icons/icon-heart-02.png" alt="ICON">
-												<% } else { %>
-													<img id="add" class=" dis-block trans-04 "
-														src="images/icons/icon-heart-01.png" alt="ICON">
-													<% } %>
+									<% if (valid==undefined||valid== null) { %>
+										<div class="block2-txt-child2  flex-r p-t-3" id="whish<%= product._id %>">
+											<a href="/login?toast=to access Whishlist you should login first "
+												style="margin-top: 2px;"
+												class="dis-block pos-relative ">
+												<% if (product.whishlist==true) { %>
+													<img id="remove" class=" dis-block trans-04 "
+														src="images/icons/icon-heart-02.png" alt="ICON">
+													<% } else { %>
+														<img id="add" class=" dis-block trans-04 "
+															src="images/icons/icon-heart-01.png" alt="ICON">
+														<% } %>
+													</a>
 										</div>
-									</div>
+										<% }else{ %>
+											<div class="block2-txt-child2  flex-r p-t-3" id="whish<%= product._id %>">
+												<div onclick="products_whishlist(event,'<%= product._id %>','<%= product.name %>')"
+													style="margin-top: 2px;"
+													class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+													<% if (product.whishlist==true) { %>
+														<img id="remove" class=" dis-block trans-04 "
+															src="images/icons/icon-heart-02.png" alt="ICON">
+														<% } else { %>
+															<img id="add" class=" dis-block trans-04 "
+																src="images/icons/icon-heart-01.png" alt="ICON">
+															<% } %>
+												</div>
+											</div>
+									<% } %>
 								</div>
 							</div>
 						</a>

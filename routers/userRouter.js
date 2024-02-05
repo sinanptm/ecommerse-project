@@ -1,9 +1,9 @@
 const express = require("express");
 const userRoute = express();
 const path = require("path");
-const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/userController");
-const { loadHome, loadProducts, laodProductDetials, laodAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadBlog, loadContact, loadEror, cancelOrder, changePassword } = require("../controllers/userPageController");
-const { loadCart, addToCart, addQuantity, removeProduct, loadCheckout, addToCheckout, placeOrder, showSuccess, addToCartProductPage, loadWhishList, addToWhishlist, removeFromWhishlist } = require("../controllers/cartController")
+const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/user/userController");
+const { loadHome, loadProducts, laodProductDetials, laodAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadBlog, loadContact, loadEror, cancelOrder, changePassword } = require("../controllers/user/userPageController");
+const { loadCart, addToCart, addQuantity, removeProduct, loadCheckout, addToCheckout, online_payment, placeOrder, showSuccess, addToCartProductPage, loadWhishList, addToWhishlist, removeFromWhishlist } = require("../controllers/user/cartController")
 const { is_registered, requireLogin, is_loginRequired, cartItems, handleUndefinedRoutes } = require("../middlewares/userAuth");
 
 userRoute.set("views", path.join(__dirname, "../views/user_pages"));
@@ -50,6 +50,7 @@ userRoute.get('/remove-from-whishlist', requireLogin, removeFromWhishlist);
 userRoute.post('/to-checkout', requireLogin, addToCheckout)
 userRoute.get('/checkout', requireLogin, loadCheckout)
 userRoute.post("/place-order", requireLogin, placeOrder)
+userRoute.post("/online-payment", requireLogin, online_payment)
 userRoute.get('/order-success', requireLogin, showSuccess)
 
 // * User Profile Routes
@@ -70,15 +71,18 @@ userRoute.get("/logout", userLogout);
 
 userRoute.use(handleUndefinedRoutes);
 
+
+
+
+
 module.exports = userRoute;
-
-
 
 
 // userRoute.get('/clear-session', (req, res) => {
 //     // Clear all cookies
 //     const cookies = Object.keys(req.cookies);
-//     cookies.forEach(cookie => {
+//     cookies.forEach(cookie ,i=> {
+//         console.log("Cleared Cokiee: ",i ,cookie);
 //         res.clearCookie(cookie);
 //     });
 

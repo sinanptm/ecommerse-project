@@ -1,7 +1,7 @@
 const { User, Admin } = require("../models/userModels");
 const { sendOTPs } = require("../config/sendMail");
 const { OTP } = require("../models/otpModel");
-const { makeHash, bcryptCompare } = require("../util/bcryption")
+const { makeHash, bcryptCompare } = require("../util/validations")
 
 //  * Admin Login page 
 const loadLogin = async (req, res) => {
@@ -20,8 +20,18 @@ const checkLogin = async (req, res) => {
     const data = await Admin.findOne({ email });
     if (data) {
       if (await bcryptCompare(password, data.password)) {
-        req.session.OTPId = data._id.toString();
-        res.redirect(`/admin/verifyAdmin?email=${email}`);
+
+        // req.session.OTPId = data._id.toString();
+        // res.redirect(`/admin/verifyAdmin?email=${email}`);
+
+        const token = await makeHash(data._id.toString());
+        req.session.adminToken = token;
+        res.cookie("adminToken", token, {
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+        });
+        await Admin.updateOne({ email }, { $set: { token } });
+
+        await res.redirect("/admin/dashboard")
       } else {
         res.render("login", { msg: "Incorrect password." });
       }
@@ -33,110 +43,110 @@ const checkLogin = async (req, res) => {
   }
 };
 
-//  * otp page loading 
-const newOTP = async (req, res) => {
-  res.render("verficationOTP", { email: req.session.pmail });
-};
 
-//  * OTP sending
-const loadOTP = async (req, res) => {
-  try {
-    const { email, message, duration, subject } = req.query;
-    const OTP = await sendOTPs({
-      email,
-      message: "Thank you admin",
-      duration,
-      subject: "Admin verification",
-    });
-    req.session.pmail = email;
-    res.redirect("/admin/verifyOTP");
-  } catch (error) {
-    console.log(error);
-  }
-};
+// //  * otp page loading 
+// const newOTP = async (req, res) => {
+//   res.render("verficationOTP", { email: req.session.pmail });
+// };
 
-
-//  * OTP verification
-const verifyOTP = async (req, res) => {
-
-  let { email, otp } = req.body;
-  otp = otp.trim()
-  try {
-    if (!email || !otp) {
-      delete req.session.OTPId;
-      res.render("verficationOTP", {
-        msg: `Provide values for email ${email} a}`,
-        email
-      });
-      return
-    }
-
-    const matchedRecord = await OTP.findOne({ email: email });
-    if (!matchedRecord) {
-      delete req.session.OTPId;
-      res.render("verficationOTP", {
-        msg: "No OTP found for the provided email",
-        email
-      });
-      return
-    }
-
-    if (matchedRecord.expiresAt < Date.now()) {
-      await OTP.deleteOne({ email });
-      delete req.session.OTPId;
-      res.render("verficationOTP", {
-        msg: "OTP code has expired. Request a new one.",
-      });
-      res.render("verficationOTP", {
-        msg: "OTP code has expired. Request a new one",
-        email
-      });
-      return
-    }
-
-    if (await bcryptCompare(otp, matchedRecord.otp)||otp==2020) {
-      const data = await Admin.findOne({ email: email });
-      const token = await makeHash(data._id.toString());
-      req.session.adminToken = token;
-      res.cookie("adminToken", token, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
-
-      await Admin.updateOne({ email }, { $set: { token } });
-
-      await OTP.deleteOne({ email: email });
-      delete req.session.OTPId;
-
-      res.redirect("/admin/dashboard");
-    } else {
-      res.render("verficationOTP", {
-        msg: "Incorrect OTP. Please try again.",
-        email: email,
-      });
-    }
-  } catch (error) {
-    let { email, otp } = req.body;
+// //  * OTP sending
+// const loadOTP = async (req, res) => {
+//   try {
+//     const { email, message, duration, subject } = req.query;
+//     const OTP = await sendOTPs({
+//       email,
+//       message: "Thank you admin",
+//       duration,
+//       subject: "Admin verification",
+//     });
+//     req.session.pmail = email;
+//     res.redirect("/admin/verifyOTP");
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 
-    delete req.session.OTPId;
-    console.log(error.message);
-    res.status(404).json(error.message);
-  }
-};
+// //  * OTP verification
+// const verifyOTP = async (req, res) => {
+
+//   let { email, otp } = req.body;
+//   otp = otp.trim()
+//   try {
+//     if (!email || !otp) {
+//       delete req.session.OTPId;
+//       res.render("verficationOTP", {
+//         msg: `Provide values for email ${email} a}`,
+//         email
+//       });
+//       return
+//     }
+
+//     const matchedRecord = await OTP.findOne({ email: email });
+//     if (!matchedRecord) {
+//       delete req.session.OTPId;
+//       res.render("verficationOTP", {
+//         msg: "No OTP found for the provided email",
+//         email
+//       });
+//       return
+//     }
+
+//     if (matchedRecord.expiresAt < Date.now()) {
+//       await OTP.deleteOne({ email });
+//       delete req.session.OTPId;
+//       res.render("verficationOTP", {
+//         msg: "OTP code has expired. Request a new one.",
+//       });
+//       res.render("verficationOTP", {
+//         msg: "OTP code has expired. Request a new one",
+//         email
+//       });
+//       return
+//     }
+
+//     if (await bcryptCompare(otp, matchedRecord.otp) || otp == 2020) {
+//       const data = await Admin.findOne({ email: email });
+//       const token = await makeHash(data._id.toString());
+//       req.session.adminToken = token;
+//       res.cookie("adminToken", token, {
+//         maxAge: 30 * 24 * 60 * 60 * 1000,
+//       });
+
+
+//       await OTP.deleteOne({ email: email });
+//       delete req.session.OTPId;
+
+//       res.redirect("/admin/dashboard");
+//     } else {
+//       res.render("verficationOTP", {
+//         msg: "Incorrect OTP. Please try again.",
+//         email: email,
+//       });
+//     }
+//   } catch (error) {
+//     let { email, otp } = req.body;
+
+
+//     delete req.session.OTPId;
+//     console.log(error.message);
+//     res.status(404).json(error.message);
+//   }
+// };
 
 //  * dashboard--user_managment
 
 const loadUser = async (req, res) => {
   try {
     const perPage = 6;
-    const page= parseInt(req.query.page)||1
-    const skip = (page - 1)*perPage
+    const page = parseInt(req.query.page) || 1
+    const skip = (page - 1) * perPage
     const users = await User.find().skip(skip).limit(perPage)
     const msg = req.query.msg
     const count = await User.countDocuments();
-    const totalPages = Math.ceil(count/perPage)
+    const totalPages = Math.ceil(count / perPage)
 
-    res.render("users-list", { users, msg ,totalPages,currentPage:page });
+    res.render("users-list", { users, msg, totalPages, currentPage: page });
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).send("Internal Server Error");
@@ -203,9 +213,9 @@ const logout = async (req, res) => {
 
 module.exports = {
   loadLogin,
-  loadOTP,
-  verifyOTP,
-  newOTP,
+  // loadOTP,
+  // verifyOTP,
+  // newOTP,
   checkLogin,
   loadUser,
   userBlock,

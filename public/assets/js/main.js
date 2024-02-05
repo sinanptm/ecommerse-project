@@ -1,4 +1,28 @@
 
+
+const dialog = document.querySelector("dialog");
+const closeBtn = document.querySelector('#close');
+const openBtn = document.querySelector("#Open");
+
+openBtn.addEventListener('click', () => {
+	dialog.classList.add('open');
+	dialog.showModal();
+})
+
+closeBtn.addEventListener("click", () => {
+	dialog.classList.remove('open');
+	dialog.close();
+});
+
+dialog.addEventListener('click', (event) => {
+	if (event.target === dialog) {
+		dialog.classList.remove('open');
+		dialog.close();
+	}
+});
+
+
+
 async function changeStatus(id) {
 	try {
 		const formdata = $('#statuschange').serialize();

@@ -159,22 +159,7 @@
                 </ul>
             </div>
 
-            <!-- Modal Search -->
-            <div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-                <button class="flex-c-m btn-hide-modal-search trans-04">
-                    <i class="zmdi zmdi-close"></i>
-                </button>
-
-                <form class="container-search-header">
-                    <div class="wrap-search-header">
-                        <input class="plh0" type="text" name="search" placeholder="Search...">
-
-                        <button class="flex-c-m trans-04">
-                            <i class="zmdi zmdi-search"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
+           
         </header>
 
         <% if (toast!==undefined&&toast!==null) { %>
@@ -508,3 +493,208 @@
     </body>
 
     </html>
+
+
+
+    <script>
+
+function orderConfirmation() {
+    // Add your validation logic here
+
+    // If validation passes, show SweetAlert confirmation
+    Swal.fire({
+        title: 'Confirm Order',
+        text: 'Are you sure you want to place the order?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, place order'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // User clicked "Yes, place order", you can proceed with submitting the form or any other action
+               // Check the selected payment option
+               const paymentOption = document.querySelector('input[name="billingOption"]:checked').value;
+           if(paymentOption === 'Razor-Online'){
+                // If the selected payment option is online, initiate Razorpay payment
+             
+                initiateRazorpayPayment();
+           }else if(paymentOption === 'COD')
+           {
+            Swal.fire({
+                title: 'Order Placed!',
+                html: 'Hello, [User Name]!<br>Your order has been confirmed.<br><br>',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'View Orders',
+                cancelButtonText: 'Continue Shopping'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Handle the "View Orders" action here (e.g., submit form and redirect to orders page)
+                    document.getElementById('checkoutForm').action = '/checkOut/cod';
+                    document.getElementById('checkoutForm').submit();
+                } else {
+                    // Handle the "Continue Shopping" action here (e.g., submit form and redirect to shopping page)
+                    document.getElementById('checkoutForm').submit();
+                }
+            });
+           }
+           else if(paymentOption === 'Wallet')
+           {
+            Swal.fire({
+                title: 'Order Placed!',
+                html: 'Hello, [User Name]!<br>Your order has been confirmed.<br><br>',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'View Orders',
+                cancelButtonText: 'Continue Shopping'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Handle the "View Orders" action here (e.g., submit form and redirect to orders page)
+                    document.getElementById('checkoutForm').action = '/checkOut/Wallet';
+                    document.getElementById('checkoutForm').submit();
+                } else {
+                    // Handle the "Continue Shopping" action here (e.g., submit form and redirect to shopping page)
+                    document.getElementById('checkoutForm').submit();
+                }
+            });
+           }
+
+
+           
+
+        }
+    });
+}
+
+function initiateRazorpayPayment() {
+
+    const ajaxUrl = '/checkOut/online'; 
+
+    const requestBody = {
+        amount: 100,  // The amount in the smallest currency unit (e.g., paisa for INR)
+        currency: 'INR',  // The currency code (e.g., INR for Indian Rupees)
+        receipt: 'abhishekabtr@gmail.com',  // A unique identifier for the order (can be an email or any unique string)
+        payment_capture: 1,  // Automatically capture the payment after creation (1 for true, 0 for false)
+       add:selectedAddressIndex
+    };
+    
+
+    // Perform an Ajax request to create a Razorpay order
+    $.ajax({
+        
+        url: ajaxUrl,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(requestBody),
+        success: function (response) {
+            // Check if order creation is successful
+            console.log('Razorpay Order Creation Response:', response);
+
+            if (response.success) {
+          
+                console.log(response.mongodbOrderId)
+                
+                // Initiate Razorpay payment with the received response
+                var formData = {
+                    key: response.key_id,
+                    amount: response.amount,
+                    currency: 'INR',
+                    name: response.product_name,
+                    description: response.description,
+                    image: '',
+                    order_id: response.orderId,  // Corrected to use response.orderId
+                   // mongodbOrderId:response.mongodbOrderId,
+                   handler: function (paymentResponse) {
+                    // Handle the successful payment response
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Payment Succeeded',
+                        text: 'Your payment was successful!',
+                        timer: 2000, // Auto close after 2 seconds
+                        showConfirmButton: false, // Hide the "OK" button
+                        willClose: () => {
+                            // Make the AJAX request to '/success'
+                            $.ajax({
+                                url: '/success',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify({
+                                    razorpayOrderId: response.orderId,
+                                    paymentResponse: paymentResponse,
+                                    mongodbOrderIds: response.mongodbOrderId,
+                                }),
+                                success: function (serverResponse) {
+                                    
+                                    console.log('Server Response:', serverResponse);
+                                    window.location.href = "/profile?tab=orders";
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Ajax error:', status, error);
+                                }
+                            });
+                        }
+                    });
+                    
+                },
+                    prefill: {  // Fixed comment syntax
+                        contact: response.contact,
+                        name: response.name,
+                        email: response.email
+                    }
+                };
+        
+                // Call the Razorpay payment handler with the options
+                var rzp = new Razorpay(formData);
+
+                // Handle payment failure
+                rzp.on('payment.failed', function (response) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment failed',
+                        text: 'Oops! Something went wrong with your payment.',
+                        timer: 2000, // Auto close after 2 seconds
+                        showConfirmButton: false, // Hide the "OK" button
+                        willClose: () => {
+                            // Handle the failed payment response
+                            $.ajax({
+                                url: '/failure',  // Adjust the URL based on your server setup
+                                type: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify({
+                                    razorpayOrderId: response.razorpay_order_id,
+                                    error: response.error,
+                                    paymentResponse: response,
+                                    mongodbOrderIds: response.notes.mongodbOrderId
+                                }),
+                                success: function (serverResponse) {
+                                    console.log('Server Response:', serverResponse);
+                                    window.location.href = "/profile?tab=orders";
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Ajax error:', status, error);
+                                }
+                            });
+                        }
+                    });
+                });
+                
+                
+
+                rzp.open();
+            } else {
+                // Handle error
+                console.error(response.error);
+            }
+        },
+        error: function (xhr, status, error) {
+            // Handle Ajax error
+            console.error('Ajax error:', status, error);
+        }
+    });
+}
+    </script>

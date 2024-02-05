@@ -1,17 +1,193 @@
-const { Product, Category, Order } = require("../models/productModel")
 const sharp = require("sharp")
 const path = require("path");
-const mongoose = require('mongoose')
+const exceljs = require("exceljs")
+const puppeteer = require('puppeteer')
+const { Product, Category, Order, CancelationReson } = require("../models/productModel")
+const { User } = require("../models/userModels")
+const { createHexId } = require('../util/validations');
 
-//  * dashboard loeding
+// * to load dashbord
 
-const loadDashBoard = async (req, res) => {
+const loadDashBoard = async (re, res) => {
   try {
-    res.render("dashboard");
-  } catch (err) {
-    console.log(err.message);
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // Start of the current month
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0); // End of the current monthF
+
+    const revenue = await Order.aggregate([{
+
+      $group: {
+        _id: null,
+        total: { $sum: '$orderAmount' }
+      }
+
+    }])
+
+    const totalorder = await Order.countDocuments()
+
+    const products = await Order.aggregate([
+      { $unwind: '$OrderedItems' },
+      { $group: { _id: null, total: { $sum: '$OrderedItems.quantity' } } }
+    ])
+
+    const catagery = await Category.countDocuments()
+    const availableproducts = await Product.countDocuments()
+
+    const totalproducts = revenue.length > 0 ? products[0].total : 0;
+    const totalRevenue = revenue.length > 0 ? revenue[0].total : 0;
+
+    const monthlySales = await Order.aggregate([
+      {
+        $match: {
+          orderDate: {
+            $gte: startOfMonth,
+            $lt: endOfMonth
+          }
+        }
+      },
+      {
+        $group: {
+          _id: { $month: '$orderDate' }, // Group by month instead of day
+          total: { $sum: '$orderAmount' },
+          totalOrders: { $sum: 1 } // Count the number of orders
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          total: 1,
+          totalOrders: 1
+        }
+      },
+      {
+        $sort: {
+          month: 1 // Sort the result by month if needed
+        }
+      }
+    ]);
+
+
+    const monthlyUserRegistrations = await User.aggregate([
+      {
+        $match: {
+          createdate: {
+            $gte: startOfMonth,
+            $lt: endOfMonth
+          }
+        }
+      },
+      {
+        $group: {
+          _id: { $dayOfMonth: '$createdate' },
+          total: { $sum: 1 },
+          users: { $push: { name: '$name', email: '$email', date: '$createdate' } }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          day: '$_id',
+          total: 1,
+          users: 1,
+          name: 1
+        }
+      }
+    ]);
+
+
+
+    const monthlyProductDetails = await Product.aggregate([
+      {
+        $match: {
+          createdate: {
+            $gte: startOfMonth,
+            $lt: endOfMonth
+          }
+        }
+      },
+      {
+        $group: {
+          _id: { $month: '$createdate' },
+          total: { $sum: 1 },
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          total: 1,
+        }
+      },
+      {
+        $sort: {
+          month: 1
+        }
+      }
+    ]);
+
+    const currentMonthSales = await Order.aggregate([
+      {
+        $match: {
+          orderDate: {
+            $gte: startOfMonth,
+            $lt: endOfMonth
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$orderAmount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          totalRevenue: 1
+        }
+      }
+    ]);
+
+    const currentWeekSales = await Order.aggregate([
+      {
+        $match: {
+          orderDate: {
+            $gte: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6),
+            $lt: now
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$orderAmount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          totalRevenue: 1
+        }
+      }
+    ]);
+
+
+    const newusers = await User.find({ is_verified: true }).limit(3).sort({ createdate: -1 })
+    const mostSaledProducts = await Product.find().limit(6).sort({ sales: -1 })
+
+
+
+    res.render('dashboard', { availableproducts, totalproducts, totalRevenue, totalorder, catagery, currentWeekSales, monthlySales, monthlyUserRegistrations, monthlyProductDetails, currentMonthSales, newusers, mostSaledProducts })
+
+  } catch (error) {
+    console.log(error.message);
   }
-};
+}
+
+
+
+
 
 
 //  * product management
@@ -82,8 +258,8 @@ const addProduct = async (req, res) => {
     const images = req.files.map(file => file.filename);
 
     const promises = images.map(async (image) => {
-      const originalImagePath = path.join(__dirname, '../public/product_images', image);
-      const resizedPath = path.join(__dirname, '../public/resized_images', image);
+      const originalImagePath = await path.join(__dirname, `../public/product_images/${image}`);
+      const resizedPath = path.join(__dirname, `../public/resized_images/${image}` );
       await sharp(originalImagePath)
         .resize({ height: 1486, width: 1200, fit: 'fill' })
         .toFile(resizedPath);
@@ -120,20 +296,24 @@ const addProduct = async (req, res) => {
     }
   }
 };
+
+
 // * to edit a product
 
 const loadEditProduct = async (req, res) => {
   try {
     const id = req.query.id;
     const type = req.query.type
-    if (!id) {
+
+    const pp = await Product.findOne({ _id: id })
+    if (!id || !pp) {
       console.log("Redirecting to /admin/products");
-      res.redirect("/admin/products");
+      res.status(400).redirect("/admin/productscsa");
       return;
     }
 
     const product = await Product.aggregate([
-      { $match: { _id: mongoose.Types.ObjectId.createFromHexString(id) } },
+      { $match: { _id: await createHexId(id) } },
       {
         $lookup: {
           from: "categories",
@@ -172,10 +352,10 @@ const loadEditProduct = async (req, res) => {
     }
 
     const categories = await Category.find();
-    res.render("editt-product", { product:product[0], categories, type });
+    res.render("editt-product", { product: product[0], categories, type });
   } catch (err) {
     console.error("Error in loadEditProduct:", err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send('/admin/dafsad');
   }
 };
 
@@ -191,12 +371,12 @@ const editProduct = async (req, res) => {
 
     const existingProduct = await Product.findById(id);
 
-
+    
 
     const check = async (image) => {
       if (image) {
-        const originalImagePath = path.join(__dirname, '../public/product_images', image);
-        const resizedPath = path.join(__dirname, '../public/resized_images', image);
+        const originalImagePath = await path.join(__dirname, `../public/product_images/${image}`);
+        const resizedPath = path.join(__dirname, `../public/resized_images/${image}` );
         await sharp(originalImagePath)
           .resize({ height: 1486, width: 1200, fit: 'fill' })
           .toFile(resizedPath);
@@ -359,7 +539,8 @@ const addCatagorie = async (req, res) => {
       name,
       description,
       img: img,
-      type
+      type,
+      createdate: Date.now()
     });
 
     const category = await newCategory.save();
@@ -431,7 +612,6 @@ const loadOrders = async (req, res) => {
     const count = await Order.countDocuments()
     const totalPages = Math.ceil(count / perPage)
     const orders = await Order.find().populate('deliveryAddress').skip(skip).limit(perPage)
-    console.log(orders[0].deliveryAddress.Lname );
     res.render(`orders-list`, { orders, totalPages, currentPage: page });
 
   } catch (error) {
@@ -451,7 +631,7 @@ const loadOrder = async (req, res) => {
     }
 
     const order = await Order.aggregate([
-      { $match: { _id: mongoose.Types.ObjectId.createFromHexString(id) } },
+      { $match: { _id: await createHexId(id) } },
       {
         $lookup: {
           from: 'users', // Assuming 'users' is the name of your user collection
@@ -479,6 +659,9 @@ const loadOrder = async (req, res) => {
           deliveryDate: 1,
           ShippingDate: 1,
           payment: 1,
+          online_payment: 1,
+          offlinePayment: 1,
+          paymentStatus: 1,
           'user.email': 1,
           'user.username': 1,
           'user.name': 1,
@@ -525,9 +708,10 @@ const editOrder = async (req, res) => {
     const status = req.body.status
     const order = await Order.findByIdAndUpdate(id, { $set: { orderStatus: status } })
     if (!order) {
+      console.log('no order to edit');
       return res.status(304).redirect('/admin/order-details?id=' + id)
     }
-    
+
     res.status(200).redirect('/admin/order-details?id=' + id)
 
   } catch (error) {
@@ -545,10 +729,12 @@ const deleteOrder = async (req, res) => {
   try {
     const id = req.query.id
     if (!id) {
+      console.log('no id ');
       return res.status(304).redirect('/admin/orders-list')
     }
     const order = await Order.findById(id);
     if (!order) {
+      console.log('no order');
       return res.status(304).redirect('/admin/orders-list')
     }
     await Order.findByIdAndDelete(id);
@@ -558,6 +744,268 @@ const deleteOrder = async (req, res) => {
     res.status(400).redirect('/admin/orders-list')
   }
 }
+
+
+const creatOrderReport = async (req, res) => {
+  try {
+    const orders = await Order.find().populate("deliveryAddress");
+    const workbook = new exceljs.Workbook();
+    const worksheet = workbook.addWorksheet("Sales Report");
+
+    worksheet.columns = [
+      { header: "S no", key: "S_no" },
+      { header: "Name", key: "name" },
+      { header: "Email ID", key: "email" },
+      { header: "Mobile", key: "mobile" },
+      { header: "Order Amount", key: "orderAmount" },
+      { header: "Order Date", key: "orderDate" },
+      { header: "Order Status", key: "orderStatus" },
+      { header: "Payment Status", key: "paymentStatus" },
+      { header: "Payment Method", key: "paymentMethod" }, // Fixed typo in key name
+    ];
+
+    orders.forEach((order, index) => {
+      let orderStatus = () => {
+        if (order.orderStatus === '1') {
+          return "Processing";
+        } else if (order.orderStatus === '2') {
+          return 'Quality Check';
+        } else if (order.orderStatus === "3") {
+          return "Shipped";
+        } else if (order.orderStatus === '4') {
+          return 'Delivered';
+        }
+      };
+
+      // Additional error handling for orderDate
+      let orderDateString = "";
+      if (order.orderDate instanceof Date) {
+        orderDateString = order.orderDate.toLocaleString('en-IN');
+      } else {
+        console.error(`Invalid orderDate for order at index ${index}: ${order.orderDate}`);
+      }
+
+      worksheet.addRow({
+        S_no: index + 1,
+        name: order.deliveryAddress?.Lname || "",
+        email: order.deliveryAddress?.email || "",
+        mobile: order.deliveryAddress?.mobile || "",
+        orderAmount: order.orderAmount || "",
+        orderDate: orderDateString || "",
+        orderStatus: orderStatus(),
+        paymentStatus: order.paymentStatus || "",
+        paymentMethod: order.offlinePayment ? "Cash on Delivery" : "Online Payment",
+      });
+    });
+
+
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true };
+    });
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="Orders_report.xlsx"');
+
+    await workbook.xlsx.write(res);
+
+    res.status(200).end();
+
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).redirect('/admin/dashboard');
+  }
+};
+
+
+
+
+const sales_reportXL = async (req, res) => {
+  try {
+    const type = req.params.type;
+    let reportData;
+
+    // Count the number of cancellation reasons and total orders
+    const orderCancels = await CancelationReson.countDocuments();
+    const totalOrders = await Order.countDocuments();
+
+    let products; // Declare products variable outside of the if block
+    let categories; // Declare categories variable outside of the if block
+
+    // ! monthly report
+    if (type === 'monthly') {
+      // Get the current month
+      const currentMonth = new Date().getMonth() + 1;
+
+      // Aggregate total revenue for the current month
+      const revenueData = await Order.aggregate([
+        { $match: { $expr: { $eq: [{ $month: "$orderDate" }, currentMonth] } } },
+        { $group: { _id: null, totalRevenue: { $sum: "$orderAmount" } } }
+      ]);
+
+      // Aggregate new products created in the current month
+      const newProductsData = await Product.aggregate([
+        { $match: { $expr: { $eq: [{ $month: "$createdate" }, currentMonth] } } },
+        { $count: "count" }
+      ]);
+
+      // Aggregate new users registered in the current month
+      const newUsersData = await User.aggregate([
+        { $match: { $expr: { $eq: [{ $month: "$createdate" }, currentMonth] } } },
+        { $count: "count" }
+      ]);
+
+      const newCategoriesData = await Category.aggregate([
+        { $match: { $expr: { $eq: [{ $month: "$createdate" }, currentMonth] } } },
+        { $count: "count" }
+      ]);
+
+      reportData = {
+        type: "Monthly",
+        totalRevenue: revenueData.length > 0 ? revenueData[0].totalRevenue : 0,
+        newProducts: newProductsData.length > 0 ? newProductsData[0].count : 0,
+        newUsers: newUsersData.length > 0 ? newUsersData[0].count : 0,
+        newCategories: newCategoriesData.length > 0 ? newCategoriesData[0].count : 0,
+        cancelledOrders: orderCancels,
+        totalOrders: totalOrders,
+      };
+
+      // Fetch all new products and their sales for the current month
+      const startOfMonth = new Date(new Date().getFullYear(), currentMonth - 1, 1);
+      const endOfMonth = new Date(new Date().getFullYear(), currentMonth, 0);
+      products = await Product.find({ createdate: { $gte: startOfMonth, $lte: endOfMonth } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
+      categories = await Category.find({ createdate: { $gte: startOfMonth, $lte: endOfMonth } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
+
+      // ! Weekly report 
+    } else if (type === 'weekly') {
+      // Get the start and end dates of the current week
+      const today = new Date();
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - today.getDay());
+      const endOfWeek = new Date(today);
+      endOfWeek.setDate(today.getDate() + (6 - today.getDay()));
+
+      // Aggregate total revenue for the current week
+      const revenueData = await Order.aggregate([
+        { $match: { orderDate: { $gte: startOfWeek, $lte: endOfWeek } } },
+        { $group: { _id: null, totalRevenue: { $sum: "$orderAmount" } } }
+      ]);
+
+      // Count new products created in the current week
+      const newProductsData = await Product.aggregate([
+        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek] }, { $lte: ["$createdate", endOfWeek] }] } } },
+        { $count: "count" }
+      ]);
+
+      const newCategoriesData = await Category.aggregate([
+        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek] }, { $lte: ["$createdate", endOfWeek] }] } } },
+        { $count: "count" }
+      ]);
+
+      // Count new users registered in the current week
+      const newUsersData = await User.aggregate([
+        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek] }, { $lte: ["$createdate", endOfWeek] }] } } },
+        { $count: "count" }
+      ]);
+
+      reportData = {
+        type: "Weekly",
+        totalRevenue: revenueData.length > 0 ? revenueData[0].totalRevenue : 0,
+        newProducts: newProductsData.length > 0 ? newProductsData[0].count : 0,
+        newUsers: newUsersData.length > 0 ? newUsersData[0].count : 0,
+        cancelledOrders: orderCancels,
+        totalOrders: totalOrders,
+        newCategories: newCategoriesData.length > 0 ? newCategoriesData[0].count : 0
+      };
+
+      // Fetch all new products and their sales for the current week
+      products = await Product.find({ createdate: { $gte: startOfWeek, $lte: endOfWeek } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
+      categories = await Category.find({ createdate: { $gte: startOfWeek, $lte: endOfWeek } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
+    }
+
+    const workbook = new exceljs.Workbook();
+    const worksheet = workbook.addWorksheet("Sales Report");
+
+    worksheet.columns = [
+      { header: "Type", key: "type", width: 15 },
+      { header: "Total Revenue", key: "totalRevenue", width: 15 },
+      { header: "Products added", key: "newProducts", width: 10 },
+      { header: "New Products", key: "products", width: 15 },
+      { header: "Sales", key: "pSales", width: 5 },
+      { header: "Categories added", key: "newCategories", width: 10 },
+      { header: "New Categories", key: "categories", width: 15 }, // Corrected key name
+      { header: "Sales", key: "cSales", width: 5 },
+      { header: "New Users", key: "newUsers", width: 25 },
+      { header: "Cancelled Orders", key: "cancelledOrders", width: 15 },
+      { header: "Total Orders", key: "totalOrders", width: 15 },
+    ];
+
+    worksheet.addRow(reportData);
+    if (products && products.length > 0) {
+      products.forEach((product) => {
+        worksheet.addRow({ newProducts: product.name, pSales: product.sales }); // Corrected key name
+      });
+    } else {
+      worksheet.addRow({ newProducts: 0, pSales: 0 }); // Corrected key name
+    }
+    if (categories && categories.length > 0) {
+      categories.forEach((category) => {
+        worksheet.addRow({ newCategories: category.name, cSales: category.sales }); // Corrected key name
+      });
+    } else {
+      worksheet.addRow({ newCategories: 0, cSales: 0 }); // Corrected key name
+    }
+
+
+
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true };
+    });
+
+    worksheet.getRow(1).height = 20;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${reportData.type}_sales_report.xlsx"`);
+
+    await workbook.xlsx.write(res);
+
+    res.status(200).end();
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+const getReportPDF = async (req, res) => {
+  try {
+    const browser = await puppeteer.launch({ headless: true }); // Opt-in to the new Headless mode
+    const page = await browser.newPage();
+    await page.goto('http://127.0.0.1:3333/home', {
+      waitUntil: 'networkidle2',
+    });
+    await page.setViewport({ width: 1680, height: 1050 });
+    const pdf = await page.pdf({
+      format: "A4",
+      preferCSSPageSize:true,
+
+    });
+
+    await browser.close();
+
+
+
+    res.download(path.join(__dirname,"../public/salesReports"),(err)=>{
+      if (err) {
+        console.log(err);
+      }
+  })
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+
 
 
 
@@ -579,4 +1027,7 @@ module.exports = {
   unlistProduct,
   deleteOrder,
   editOrder,
+  creatOrderReport,
+  sales_reportXL,
+  getReportPDF
 };
