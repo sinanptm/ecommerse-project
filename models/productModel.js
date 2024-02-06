@@ -23,7 +23,7 @@ const categorySchema = new mongoose.Schema({
     description: { type: String, required: true },
     type: { type: String },
     items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-    createdate:Date,
+    createdate: { type: Date },
     img: { type: String },
     sales: { type: Number, default: 0 }
 });
@@ -35,7 +35,20 @@ const Category = mongoose.model("Category", categorySchema);
 const ordersSchema = new mongoose.Schema({
     userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     orderAmount: { type: Number },
-    deliveryAddress: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },
+    deliveryAddress: {
+        id: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },
+        Fname: { type: String },
+        Lname: { type: String },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        companyName: { type: String },
+        country: { type: String },
+        streetAdress: { type: String },
+        city: { type: String },
+        state: { type: String },
+        pincode: { type: Number },
+        mobile: { type: Number },
+        email: { type: String },
+    },
     orderDate: { type: Date },
     orderStatus: { type: String },
     deliveryDate: { type: Date },

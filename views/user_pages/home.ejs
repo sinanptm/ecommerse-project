@@ -498,10 +498,10 @@
 			<!-- Pagination -->
 			<div class="flex-c-m flex-w w-full p-t-38" id="pagination"> 
 				<% for (let i=1; i <=totalPages; i++) { %>
-					<button onclick="homePagePagination('<%= i %>')"
+					<a href="/home?page=<%= i %>"
 						class="flex-c-m how-pagination1 trans-04 m-all-7 <% if (currentPage === i) { %>active-pagination1<% } %>">
 						<%= i %>
-					</button>
+					</a>
 					<% } %>
 			</div>
 		</div>

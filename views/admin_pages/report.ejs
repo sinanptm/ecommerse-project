@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= reportData.type %> Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .order-container {
+            margin-top: 20px;
+        }
+        .order-item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .order-info {
+            margin-bottom: 10px;
+        }
+        .ordered-items {
+            margin-bottom: 10px;
+        }
+        .ordered-items li {
+            list-style: none;
+            margin-bottom: 5px;
+        }
+        .online-payment {
+            background-color: #e9e9e9;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .payment-status {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        p {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><%= reportData.type %> Report</h1>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Total Revenue</th>
+                    <th>New Products</th>
+                    <th>New Users</th>
+                    <th>New Categories</th>
+                    <th>Cancelled Orders</th>
+                    <th>Total Orders</th>
+                    <th>Payment Pending Orders</th> <!-- New column for successful orders -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><%= reportData.totalRevenue %></td>
+                    <td><%= reportData.newProducts %></td>
+                    <td><%= reportData.newUsers %></td>
+                    <td><%= reportData.newCategories %></td>
+                    <td><%= reportData.cancelledOrders %></td>
+                    <td><%= reportData.totalOrders %></td>
+                    <td><%= paymentPendingOrders %></td> <!-- Display successful orders -->
+                </tr>
+            </tbody>
+        </table>  
+        <h2>New Products</h2>
+        <% if (products.length > 0) { %>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                        <tr>
+                            <td><%= product.name %></td>
+                            <td><%= product.sales %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No products to display.</p>
+        <% } %>
+        <h2>New Categories</h2>
+        <% if (categories.length > 0) { %>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% categories.forEach(category => { %>
+                        <tr>
+                            <td><%= category.name %></td>
+                            <td><%= category.sales %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No categories to display.</p>
+        <% } %>
+        <h2>Best Products</h2>
+        <% if (bestProducts.length > 0) { %>
+            <ul>
+                <% bestProducts.forEach(product => { %>
+                    <li><%= product.name %> - <%= product.sales %> sales</li>
+                <% }); %>
+            </ul>
+        <% } else { %>
+            <p>No best products to display.</p>
+        <% } %>
+        <h2>Best Categories</h2>
+        <% if (bestCatogories.length > 0) { %>
+            <ul>
+                <% bestCatogories.forEach(category => { %>
+                    <li><%= category.name %> - <%= category.sales %> sales</li>
+                <% }); %>
+            </ul>
+        <% } else { %>
+            <p>No best categories to display.</p>
+        <% } %>
+
+        <h2>Recent Orders</h2>
+        <div class="order-container">
+            <% orders.forEach(order => { %>
+                <div class="order-item">
+                    <p class="order-info">
+                        <strong>Order ID:</strong> <%= order._id %><br>
+                        <strong>Order Amount:</strong> <%= order.orderAmount %><br>
+                        <strong>User ID:</strong> <%= order.userid %><br>
+                        <!-- Displaying Delivery Address -->
+                        <strong>Delivery Address:</strong><br>
+                        <%= order.deliveryAddress.streetAdress %>,<br>
+                        <%= order.deliveryAddress.city %>, <%= order.deliveryAddress.state %>, <%= order.deliveryAddress.pincode %><br>
+                        <%= order.deliveryAddress.country %><br>
+                        <!-- End of Delivery Address -->
+                        <strong>Order Date:</strong> <%= order.orderDate.toDateString() %><br>
+                        <strong>Order Status:</strong> <%= order.orderStatus %><br>
+                        <strong>Delivery Date:</strong> <%= order.deliveryDate.toDateString() %><br>
+                    </p>
+                    <!-- Display ordered items -->
+                    <ul class="ordered-items">
+                        <% order.OrderedItems.forEach(item => { %>
+                            <li>
+                                <strong>Name:</strong> <%= item.name %><br>
+                                <strong>Price:</strong> <%= item.price %><br>
+                                <strong>Quantity:</strong> <%= item.quantity %><br>
+                            </li>
+                        <% }); %>
+                    </ul>
+                    <!-- Display online payment details if offlinePayment is false -->
+                    <% if (!order.offlinePayment) { %>
+                        <div class="online-payment">
+                            <strong>Online Payment Details:</strong><br>
+                            <strong>Currency:</strong> <%= order.online_payment.currency %><br>
+                            <strong>Status:</strong> <%= order.online_payment.status %><br>
+                            <strong>Transaction ID:</strong> <%= order.online_payment.transactionid %><br>
+                            <strong>Created Date:</strong> <%= order.online_payment.createdate %><br>
+                        </div>
+                    <% } %>
+                    <!-- Display payment status -->
+                    <p class="payment-status">
+                        <strong>Payment Status:</strong> <%= order.paymentStatus %><br>
+                    </p>
+                </div>
+            <% }); %>
+        </div>
+        
+    </div>
+    
+</body>
+</html>

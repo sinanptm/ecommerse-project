@@ -1,4 +1,4 @@
-const { Cart, User, Wishlist } = require("../../models/userModels");
+const { Cart, User, Wishlist, Addresse } = require("../../models/userModels");
 const { Product, Order, Category } = require("../../models/productModel");
 const { getUserIdFromToken, createHexId, isValidObjectId } = require("../../util/validations");
 const crypto = require("crypto")
@@ -486,11 +486,26 @@ const placeOrder = async (req, res) => {
     });
     const details = await Promise.all(detailsPromises);
 
+    address = await Addresse.findById(address)
+
     const newOrder = new Order({
       userid: userId,
       orderAmount: totalprice,
       paymentStatus: 'pending',
-      deliveryAddress: address,
+      deliveryAddress: {
+        id:address._id,
+        Fname:address.Fname,
+        Lname:address.Lname,
+        userId:address.userId,
+        companyName:address.companyName,
+        country:address.country,
+        streetAdress:address.streetAdress,
+        city:address.city,
+        state:address.state,
+        pincode:address.pincode,
+        mobile:address.mobile,
+        email:address.email,
+      },
       orderDate,
       orderStatus: "1",
       deliveryDate,

@@ -252,15 +252,15 @@
                                 <hr class="mb-4 mt-0">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <h6> Discount</h6>
+                                        <h6> Discount (in %)</h6>
                                     </div>
                                     <div class="col-md-9">
                                         <div class="mb-4">
                                             <label class="form-label"></label>
-                                            <input type="number" required name="discount" placeholder="0000.0"
-                                                class="form-control" id="productDiscount" min="0">
+                                            <input type="number" required name="discount" placeholder="Enter discount percentage"
+                                                class="form-control" id="productDiscount" min="0" max="100">
                                             <small class="form-text text-left" style="color: red; display: none;"
-                                                id="errorProductDiscount"></small>
+                                                id="errorProductDiscount">Discount must be between 0 and 99</small>
                                         </div>
                                     </div> <!-- col.// -->
                                 </div> <!-- row.// -->
@@ -345,58 +345,97 @@
     </main>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const productNameInput = document.getElementById('productName');
-            const errorProductName = document.getElementById('errorProductName');
-            const productQuantityInput = document.getElementById('productQuantity');
-            const errorProductQuantity = document.getElementById('errorProductQuantity');
-            const productStatusSelect = document.getElementById('productStatus');
-            const errorProductStatus = document.getElementById('errorProductStatus');
-            const productPriceInput = document.getElementById('productPrice');
-            const errorProductPrice = document.getElementById('errorProductPrice');
-            const productDiscountInput = document.getElementById('productDiscount');
-            const errorProductDiscount = document.getElementById('errorProductDiscount');
-            const productCategoryInput = document.getElementsByName('categoryid');
-            const errorProductCategory = document.getElementById('errorProductCategory');
+    const productNameInput = document.getElementById('productName');
+    const errorProductName = document.getElementById('errorProductName');
+    const productQuantityInput = document.getElementById('productQuantity');
+    const errorProductQuantity = document.getElementById('errorProductQuantity');
+    const productStatusSelect = document.getElementById('productStatus');
+    const errorProductStatus = document.getElementById('errorProductStatus');
+    const productPriceInput = document.getElementById('productPrice');
+    const errorProductPrice = document.getElementById('errorProductPrice');
+    const productDiscountInput = document.getElementById('productDiscount');
+    const errorProductDiscount = document.getElementById('errorProductDiscount');
+    const productCategoryInput = document.getElementsByName('categoryid');
+    const errorProductCategory = document.getElementById('errorProductCategory');
 
-            productNameInput.addEventListener("input", function (event) {
-                validateInput(event, errorProductName, "Product title");
-            });
+    productNameInput.addEventListener("input", function (event) {
+        validateInput(event, errorProductName, "Product title");
+    });
 
-            productQuantityInput.addEventListener("input", function (event) {
-                validateInput(event, errorProductQuantity, "Quantity");
-            });
+    productQuantityInput.addEventListener("input", function (event) {
+        validateQuantity(event, errorProductQuantity, "Quantity");
+    });
 
-            productStatusSelect.addEventListener("change", function (event) {
-                validateInput(event, errorProductStatus, "Status");
-            });
+    productStatusSelect.addEventListener("change", function (event) {
+        validateInput(event, errorProductStatus, "Status");
+    });
 
-            productPriceInput.addEventListener("input", function (event) {
-                validateInput(event, errorProductPrice, "Cost in INR");
-            });
+    productPriceInput.addEventListener("input", function (event) {
+        validatePrice(event, errorProductPrice, "Cost in INR");
+    });
 
-            productDiscountInput.addEventListener("input", function (event) {
-                validateInput(event, errorProductDiscount, "Discount");
-            });
+    productDiscountInput.addEventListener("input", function (event) {
+        validateDiscount(event, errorProductDiscount, "Discount");
+    });
 
-            productCategoryInput.forEach(function (categoryInput) {
-                categoryInput.addEventListener("change", function (event) {
-                    validateInput(event, errorProductCategory, "Category");
-                });
-            });
-
-            function validateInput(event, errorElement, fieldName) {
-                const enteredValue = event.target.value;
-                if (enteredValue.trim() === "") {
-                    errorElement.textContent = fieldName + " cannot be empty";
-                    errorElement.style.display = "block";
-                    event.target.style.border = "1px solid red";
-                } else {
-                    errorElement.textContent = "";
-                    errorElement.style.display = "none";
-                    event.target.style.border = "";
-                }
-            }
+    productCategoryInput.forEach(function (categoryInput) {
+        categoryInput.addEventListener("change", function (event) {
+            validateInput(event, errorProductCategory, "Category");
         });
+    });
+
+    function validateInput(event, errorElement, fieldName) {
+        const enteredValue = event.target.value;
+        if (enteredValue.trim() === "") {
+            errorElement.textContent = fieldName + " cannot be empty";
+            errorElement.style.display = "block";
+            event.target.style.border = "1px solid red";
+        } else {
+            errorElement.textContent = "";
+            errorElement.style.display = "none";
+            event.target.style.border = "";
+        }
+    }
+
+    function validateQuantity(event, errorElement, fieldName) {
+        const enteredValue = parseInt(event.target.value);
+        if (enteredValue <= 0) {
+            errorElement.textContent = fieldName + " must be greater than zero";
+            errorElement.style.display = "block";
+            event.target.style.border = "1px solid red";
+        } else {
+            errorElement.textContent = "";
+            errorElement.style.display = "none";
+            event.target.style.border = "";
+        }
+    }
+
+    function validatePrice(event, errorElement, fieldName) {
+        const enteredValue = parseFloat(event.target.value);
+        if (enteredValue <= 0) {
+            errorElement.textContent = fieldName + " must be greater than zero";
+            errorElement.style.display = "block";
+            event.target.style.border = "1px solid red";
+        } else {
+            errorElement.textContent = "";
+            errorElement.style.display = "none";
+            event.target.style.border = "";
+        }
+    }
+
+    function validateDiscount(event, errorElement, fieldName) {
+        const enteredValue = parseFloat(event.target.value);
+        if (enteredValue < 0 || enteredValue >= 100) {
+            errorElement.textContent = "Discount must be between 0 and 99";
+            errorElement.style.display = "block";
+            event.target.style.border = "1px solid red";
+        } else {
+            errorElement.textContent = "";
+            errorElement.style.display = "none";
+            event.target.style.border = "";
+        }
+    }
+});
 
     </script>
     <script src="js/vendors/jquery-3.6.0.min.js"></script>

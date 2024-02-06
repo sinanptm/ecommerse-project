@@ -3,7 +3,7 @@ const { Admin } = require("../models/userModels");
 const is_admin = async (req, res, next) => {
   try {
     if (req.session.adminToken || req.cookies.adminToken) {
-      const token = req.cookies.adminToken
+      const token = req.cookies.adminToken || req.session.adminToken;
       const admin = await Admin.findOne({ token })
       if (!admin) {
         res.redirect("/admin/login");

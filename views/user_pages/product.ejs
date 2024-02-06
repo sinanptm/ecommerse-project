@@ -581,10 +581,10 @@
 
 			<div class="flex-c-m flex-w w-full p-t-38" id="pagination">
 				<% for (let i=1; i <=totalPages; i++) { %>
-					<button onclick="product_listing_PagePagination('<%= i %>')"
+					<a href="/products?page=<%= i %>"
 						class="flex-c-m how-pagination1 trans-04 m-all-7 <% if (currentPage === i) { %>active-pagination1<% } %>">
 						<%= i %>
-					</button>
+					</a>
 					<% } %>
 			</div>
 

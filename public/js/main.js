@@ -80,9 +80,7 @@ async function add_to_cart_whishPage(id) {
             alert("product is outof stock")
         }
         const noti = $(response).find(".jfdsfd").html();
-        const wishlistContent = $(response).find('.wishlist-content').html();
-        const whishpro = $(response).find(".wishlist-item").html()
-        $('.wishlist-content').html(wishlistContent);
+        const whishpro = $(response).find(".wishlist-list").html()
         $('.jfdsfd').html(noti)
         $(".wishlist-item").html(whishpro)
         if (response.stock == false) {
@@ -142,38 +140,6 @@ async function products_whishlist(e, id, name) {
 
     } catch (error) {
 
-    }
-}
-
-
-async function product_listing_PagePagination(pageNumber) {
-    try {
-        const response = await $.ajax({
-            url: "products?page=" + pageNumber,
-            method: "GET"
-        });
-        const newProductOverview = $(response).find('#container').html();
-        const newPagination = $(response).find('#pagination').html();
-        $('#pagination').html(newPagination);
-        $('#container').html(newProductOverview);
-    } catch (error) {
-        console.error('Error occurred while fetching pagination data:', error);
-    }
-}
-
-
-async function homePagePagination(pageNumber) {
-    try {
-        const response = await $.ajax({
-            url: "/home?page=" + pageNumber,
-            method: "GET"
-        });
-        const newProductOverview = $(response).find('#container').html();
-        const newPagination = $(response).find('#pagination').html();
-        $('#pagination').html(newPagination);
-        $('#container').html(newProductOverview);
-    } catch (error) {
-        console.error('Error occurred while fetching pagination data:', error);
     }
 }
 

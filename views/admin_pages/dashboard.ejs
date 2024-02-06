@@ -235,22 +235,16 @@
 
             <dialog class="custom-dialog">
                 <div class="dialog-content">
-                    <form method="post" action="/admin/order-report">
-                        <button class="btn btn-primary">Order report <span style="color: black;">(excel Sheet)</span></button>
-                    </form>
-                    <form method="post" action="/admin/sales-report/monthly">
-                        <button class="btn btn-primary">This Month Sales <span style="color: black;">(excel Sheet)</span></button>
-                    </form>
-                    <form method="post" action="/admin/sales-report/weekly">
-                        <button class="btn btn-primary">This Week Sales <span style="color: black;">(excel Sheet)</span></button>
-                    </form>
                     <form method="post" action="/admin/get-report-pdf/weekly">
-                        <button class="btn btn-primary">This Week Sales <span style="color: black;">(excel Sheet)</span></button>
+                        <button class="btn btn-primary">This Week Sales <span style="color: black;">(PDF)</span></button>
+                    </form>
+                    <form method="post" action="/admin/get-report-pdf/monthly">
+                        <button class="btn btn-primary">This Month Sales <span style="color: black;">(PDF)</span></button>
                     </form>
                     <button id="close" class="btn btn-danger">Close</button>
                 </div>
             </dialog>
-            
+             
             <div class="row">
                 <div class="col-lg-3">
                     <div class="card card-body mb-4">

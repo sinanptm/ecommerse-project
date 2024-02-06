@@ -38,7 +38,7 @@ const checkRegister = async (req, res) => {
       email: email,
       gender: gender,
       username: username,
-      createdate: Date.now(),
+      createdate:new Date()
     });
     const savedUser = await newUser.save();
     req.session.OTPId = savedUser._id.toString();

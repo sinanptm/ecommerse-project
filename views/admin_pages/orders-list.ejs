@@ -191,17 +191,14 @@
             <div class="content-header">
                 <div>
                     <h2 class="content-title card-title">Order List </h2>
-                    <p>Lorem ipsum dolor sit amet.</p>
+                    <p>All orders(<%= count ||0 %>).</p>
                 </div>
-                <div>
-                    <input type="text" placeholder="Search order ID" class="form-control bg-white">
-                </div>
+               
             </div>
             <div class="card mb-4">
                 <header class="card-header">
                     <div class="row gx-3">
                         <div class="col-lg-4 col-md-6 me-auto">
-                            <input type="text" placeholder="Search..." class="form-control">
                         </div>
                         <div class="col-lg-2 col-6 col-md-3">
                             <select class="form-select">
@@ -221,7 +218,7 @@
                     </div>
                 </header> <!-- card-header end// -->
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive"  id="content-mains">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -234,7 +231,7 @@
                                     <th scope="col" class="text-end"> Action </th>
                                 </tr>
                             </thead>
-                            <tbody  id="content-mains">
+                            <tbody>
                                 <% if (orders) { %>
                                     <% orders.forEach((order, i) => { %>
                                         <tr>
@@ -268,7 +265,9 @@
                                             <td><%= order.deliveryDate ? order.deliveryDate.toDateString() : "N/A" %></td>
                                             <td class="text-end">
                                                 <a href="/admin/order-details?id=<%= order._id %>" class="btn btn-md rounded font-sm">Details</a>
-                                                <a href="/admin/delete-order?id=<%= order._id %>" class="btn btn-danger rounded font-sm">Delete</a>
+                                                <% if (order.orderStatus!=="4") { %>
+                                                    <a href="/admin/delete-order?id=<%= order._id %>"  class="btn btn-danger rounded font-sm">Delete</a>
+                                                <% } %>
                                             </td>
                                         </tr>
                                     <% }) %>
@@ -277,29 +276,28 @@
                                         <td colspan="7">No Orders Yet</td>
                                     </tr>
                                 <% } %>
-                                
-                              
-                               
                             </tbody>
                         </table>
                     </div> <!-- table-responsive //end -->
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
+            
             <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-start" id="pagination">
                         <% if (currentPage > 1) { %>
-                            <li class="page-item"><a class="page-link" href="#" onclick="ordersPagePagination('<%= currentPage - 1 %>')"><i class="material-icons md-chevron_left"></i></a></li>
+                            <li class="page-item"><a class="page-link" href="/admin/orders-list?page=<%= currentPage - 1 %>"><i class="material-icons md-chevron_left"></i></a></li>
                         <% } %>
                         <% for (let i = 1; i <= totalPages; i++) { %>
-                            <li class="page-item <%= currentPage === i ? 'active' : '' %>"><a class="page-link" href="#" onclick="ordersPagePagination('<%= i %>')"><%= i %></a></li>
+                            <li class="page-item <%= currentPage === i ? 'active' : '' %>"><a class="page-link" href="/admin/orders-list?page=<%= i %>"><%= i %></a></li>
                         <% } %>
                         <% if (currentPage < totalPages) { %>
-                            <li class="page-item"><a class="page-link" href="#" onclick="ordersPagePagination('<%= currentPage + 1 %>')"><i class="material-icons md-chevron_right"></i></a></li>
+                            <li class="page-item"><a class="page-link" href="/admin/orders-list?page=<%= currentPage + 1 %>"><i class="material-icons md-chevron_right"></i></a></li>
                         <% } %>
                     </ul>
                 </nav>
             </div>
+            
 
         <!-- content-main end// -->
         <footer class="main-footer font-xs">

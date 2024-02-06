@@ -1,37 +1,36 @@
 const sharp = require("sharp")
 const path = require("path");
-const exceljs = require("exceljs")
 const puppeteer = require('puppeteer')
+const moment = require('moment');
 const { Product, Category, Order, CancelationReson } = require("../models/productModel")
 const { User } = require("../models/userModels")
 const { createHexId } = require('../util/validations');
 
 // * to load dashbord
 
+
 const loadDashBoard = async (re, res) => {
   try {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // Start of the current month
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0); // End of the current monthF
+    const now = moment();
+    const startOfMonth = moment().startOf('month'); // Start of the current month
+    const endOfMonth = moment().endOf('month'); // End of the current month
 
     const revenue = await Order.aggregate([{
-
       $group: {
         _id: null,
         total: { $sum: '$orderAmount' }
       }
+    }]);
 
-    }])
-
-    const totalorder = await Order.countDocuments()
+    const totalorder = await Order.countDocuments();
 
     const products = await Order.aggregate([
       { $unwind: '$OrderedItems' },
       { $group: { _id: null, total: { $sum: '$OrderedItems.quantity' } } }
-    ])
+    ]);
 
-    const catagery = await Category.countDocuments()
-    const availableproducts = await Product.countDocuments()
+    const catagery = await Category.countDocuments();
+    const availableproducts = await Product.countDocuments();
 
     const totalproducts = revenue.length > 0 ? products[0].total : 0;
     const totalRevenue = revenue.length > 0 ? revenue[0].total : 0;
@@ -40,8 +39,8 @@ const loadDashBoard = async (re, res) => {
       {
         $match: {
           orderDate: {
-            $gte: startOfMonth,
-            $lt: endOfMonth
+            $gte: startOfMonth.toDate(),
+            $lt: endOfMonth.toDate()
           }
         }
       },
@@ -67,14 +66,14 @@ const loadDashBoard = async (re, res) => {
       }
     ]);
 
-
     const monthlyUserRegistrations = await User.aggregate([
       {
         $match: {
           createdate: {
-            $gte: startOfMonth,
-            $lt: endOfMonth
-          }
+            $gte: startOfMonth.toDate(),
+            $lt: endOfMonth.toDate()
+          },
+          is_verified: true
         }
       },
       {
@@ -96,13 +95,12 @@ const loadDashBoard = async (re, res) => {
     ]);
 
 
-
     const monthlyProductDetails = await Product.aggregate([
       {
         $match: {
           createdate: {
-            $gte: startOfMonth,
-            $lt: endOfMonth
+            $gte: startOfMonth.toDate(),
+            $lt: endOfMonth.toDate()
           }
         }
       },
@@ -130,8 +128,8 @@ const loadDashBoard = async (re, res) => {
       {
         $match: {
           orderDate: {
-            $gte: startOfMonth,
-            $lt: endOfMonth
+            $gte: startOfMonth.toDate(),
+            $lt: endOfMonth.toDate()
           }
         }
       },
@@ -153,8 +151,8 @@ const loadDashBoard = async (re, res) => {
       {
         $match: {
           orderDate: {
-            $gte: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6),
-            $lt: now
+            $gte: moment().subtract(6, 'days').toDate(),
+            $lt: now.toDate()
           }
         }
       },
@@ -172,18 +170,28 @@ const loadDashBoard = async (re, res) => {
       }
     ]);
 
+    const newusers = await User.find({ is_verified: true }).limit(3).sort({ createdate: -1 });
+    const mostSaledProducts = await Product.find().limit(6).sort({ sales: -1 });
 
-    const newusers = await User.find({ is_verified: true }).limit(3).sort({ createdate: -1 })
-    const mostSaledProducts = await Product.find().limit(6).sort({ sales: -1 })
-
-
-
-    res.render('dashboard', { availableproducts, totalproducts, totalRevenue, totalorder, catagery, currentWeekSales, monthlySales, monthlyUserRegistrations, monthlyProductDetails, currentMonthSales, newusers, mostSaledProducts })
+    res.render('dashboard', {
+      availableproducts,
+      totalproducts,
+      totalRevenue,
+      totalorder,
+      catagery,
+      currentWeekSales,
+      monthlySales,
+      monthlyUserRegistrations,
+      monthlyProductDetails,
+      currentMonthSales,
+      newusers,
+      mostSaledProducts
+    });
 
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 
 
@@ -259,7 +267,7 @@ const addProduct = async (req, res) => {
 
     const promises = images.map(async (image) => {
       const originalImagePath = await path.join(__dirname, `../public/product_images/${image}`);
-      const resizedPath = path.join(__dirname, `../public/resized_images/${image}` );
+      const resizedPath = path.join(__dirname, `../public/resized_images/${image}`);
       await sharp(originalImagePath)
         .resize({ height: 1486, width: 1200, fit: 'fill' })
         .toFile(resizedPath);
@@ -371,12 +379,12 @@ const editProduct = async (req, res) => {
 
     const existingProduct = await Product.findById(id);
 
-    
+
 
     const check = async (image) => {
       if (image) {
         const originalImagePath = await path.join(__dirname, `../public/product_images/${image}`);
-        const resizedPath = path.join(__dirname, `../public/resized_images/${image}` );
+        const resizedPath = path.join(__dirname, `../public/resized_images/${image}`);
         await sharp(originalImagePath)
           .resize({ height: 1486, width: 1200, fit: 'fill' })
           .toFile(resizedPath);
@@ -569,8 +577,8 @@ const editCatogory = async (req, res) => {
           name,
           description,
           img,
-          type
-        },
+          type,
+        }
       }
     );
 
@@ -606,14 +614,13 @@ const deleteCatogory = async (req, res) => {
 
 const loadOrders = async (req, res) => {
   try {
-    const perPage = 4;
+    const perPage = 9;
     const page = parseInt(req.query.page) || 1
     const skip = (page - 1) * perPage
     const count = await Order.countDocuments()
     const totalPages = Math.ceil(count / perPage)
     const orders = await Order.find().populate('deliveryAddress').skip(skip).limit(perPage)
-    res.render(`orders-list`, { orders, totalPages, currentPage: page });
-
+    res.render(`orders-list`, { orders, totalPages, currentPage: page, count });
   } catch (error) {
     console.log(error.message);
   }
@@ -630,68 +637,12 @@ const loadOrder = async (req, res) => {
       return res.status(304).redirect('/admin/orders-list');
     }
 
-    const order = await Order.aggregate([
-      { $match: { _id: await createHexId(id) } },
-      {
-        $lookup: {
-          from: 'users', // Assuming 'users' is the name of your user collection
-          localField: 'userid',
-          foreignField: '_id',
-          as: 'user'
-        }
-      },
-      {
-        $lookup: {
-          from: 'addresses', // Assuming 'addresses' is the name of your address collection
-          localField: 'deliveryAddress',
-          foreignField: '_id',
-          as: 'deliveryAddress'
-        }
-      },
-      { $unwind: "$user" },
-      { $unwind: "$deliveryAddress" },
-      {
-        $project: {
-          _id: 1,
-          orderAmount: 1,
-          orderDate: 1,
-          orderStatus: 1,
-          deliveryDate: 1,
-          ShippingDate: 1,
-          payment: 1,
-          online_payment: 1,
-          offlinePayment: 1,
-          paymentStatus: 1,
-          'user.email': 1,
-          'user.username': 1,
-          'user.name': 1,
-          'user.gender': 1,
-          'user.phone': 1,
-          'user.createdate': 1,
-          'user.updated': 1,
-          'user.is_verified': 1,
-          'user.status': 1,
-          'deliveryAddress.Fname': 1,
-          'deliveryAddress.Lname': 1,
-          'deliveryAddress.companyName': 1,
-          'deliveryAddress.country': 1,
-          'deliveryAddress.streetAdress': 1,
-          'deliveryAddress.city': 1,
-          'deliveryAddress.state': 1,
-          'deliveryAddress.pincode': 1,
-          'deliveryAddress.mobile': 1,
-          'deliveryAddress.email': 1,
-        }
-      }
-    ]);
+    const order = await Order.findById(id)
 
-    if (!order || order.length === 0) {
-      return res.status(304).redirect('/admin/orders-list');
-    }
-
-    res.render('order-details', { order: order[0] });
+    res.render('order-details', { order });
 
   } catch (error) {
+    res.redirect("/admin/orders")
     console.log(error.message);
   }
 };
@@ -721,8 +672,6 @@ const editOrder = async (req, res) => {
 }
 
 
-
-
 // * for deleting a order
 
 const deleteOrder = async (req, res) => {
@@ -746,109 +695,36 @@ const deleteOrder = async (req, res) => {
 }
 
 
-const creatOrderReport = async (req, res) => {
-  try {
-    const orders = await Order.find().populate("deliveryAddress");
-    const workbook = new exceljs.Workbook();
-    const worksheet = workbook.addWorksheet("Sales Report");
-
-    worksheet.columns = [
-      { header: "S no", key: "S_no" },
-      { header: "Name", key: "name" },
-      { header: "Email ID", key: "email" },
-      { header: "Mobile", key: "mobile" },
-      { header: "Order Amount", key: "orderAmount" },
-      { header: "Order Date", key: "orderDate" },
-      { header: "Order Status", key: "orderStatus" },
-      { header: "Payment Status", key: "paymentStatus" },
-      { header: "Payment Method", key: "paymentMethod" }, // Fixed typo in key name
-    ];
-
-    orders.forEach((order, index) => {
-      let orderStatus = () => {
-        if (order.orderStatus === '1') {
-          return "Processing";
-        } else if (order.orderStatus === '2') {
-          return 'Quality Check';
-        } else if (order.orderStatus === "3") {
-          return "Shipped";
-        } else if (order.orderStatus === '4') {
-          return 'Delivered';
-        }
-      };
-
-      // Additional error handling for orderDate
-      let orderDateString = "";
-      if (order.orderDate instanceof Date) {
-        orderDateString = order.orderDate.toLocaleString('en-IN');
-      } else {
-        console.error(`Invalid orderDate for order at index ${index}: ${order.orderDate}`);
-      }
-
-      worksheet.addRow({
-        S_no: index + 1,
-        name: order.deliveryAddress?.Lname || "",
-        email: order.deliveryAddress?.email || "",
-        mobile: order.deliveryAddress?.mobile || "",
-        orderAmount: order.orderAmount || "",
-        orderDate: orderDateString || "",
-        orderStatus: orderStatus(),
-        paymentStatus: order.paymentStatus || "",
-        paymentMethod: order.offlinePayment ? "Cash on Delivery" : "Online Payment",
-      });
-    });
 
 
-    worksheet.getRow(1).eachCell((cell) => {
-      cell.font = { bold: true };
-    });
-
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename="Orders_report.xlsx"');
-
-    await workbook.xlsx.write(res);
-
-    res.status(200).end();
-
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).redirect('/admin/dashboard');
-  }
-};
-
-
-
-
-const sales_reportXL = async (req, res) => {
+const loadReport = async (req, res) => {
   try {
     const type = req.params.type;
-    let reportData;
+    if (!type || type !== 'weekly' || type !== "monthly") {
 
-    // Count the number of cancellation reasons and total orders
+    }
+
+    let reportData;
+    let products;
+    let categories;
+
     const orderCancels = await CancelationReson.countDocuments();
     const totalOrders = await Order.countDocuments();
 
-    let products; // Declare products variable outside of the if block
-    let categories; // Declare categories variable outside of the if block
 
-    // ! monthly report
     if (type === 'monthly') {
-      // Get the current month
-      const currentMonth = new Date().getMonth() + 1;
+      const currentMonth = moment().month() + 1;
 
-      // Aggregate total revenue for the current month
       const revenueData = await Order.aggregate([
         { $match: { $expr: { $eq: [{ $month: "$orderDate" }, currentMonth] } } },
         { $group: { _id: null, totalRevenue: { $sum: "$orderAmount" } } }
       ]);
 
-      // Aggregate new products created in the current month
       const newProductsData = await Product.aggregate([
         { $match: { $expr: { $eq: [{ $month: "$createdate" }, currentMonth] } } },
         { $count: "count" }
       ]);
 
-      // Aggregate new users registered in the current month
       const newUsersData = await User.aggregate([
         { $match: { $expr: { $eq: [{ $month: "$createdate" }, currentMonth] } } },
         { $count: "count" }
@@ -869,41 +745,32 @@ const sales_reportXL = async (req, res) => {
         totalOrders: totalOrders,
       };
 
-      // Fetch all new products and their sales for the current month
-      const startOfMonth = new Date(new Date().getFullYear(), currentMonth - 1, 1);
-      const endOfMonth = new Date(new Date().getFullYear(), currentMonth, 0);
+      const startOfMonth = moment().startOf('month');
+      const endOfMonth = moment().endOf('month');
       products = await Product.find({ createdate: { $gte: startOfMonth, $lte: endOfMonth } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
       categories = await Category.find({ createdate: { $gte: startOfMonth, $lte: endOfMonth } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
 
-      // ! Weekly report 
     } else if (type === 'weekly') {
-      // Get the start and end dates of the current week
-      const today = new Date();
-      const startOfWeek = new Date(today);
-      startOfWeek.setDate(today.getDate() - today.getDay());
-      const endOfWeek = new Date(today);
-      endOfWeek.setDate(today.getDate() + (6 - today.getDay()));
+      const startOfWeek = moment().startOf('week');
+      const endOfWeek = moment().endOf('week');
 
-      // Aggregate total revenue for the current week
       const revenueData = await Order.aggregate([
-        { $match: { orderDate: { $gte: startOfWeek, $lte: endOfWeek } } },
+        { $match: { orderDate: { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() } } },
         { $group: { _id: null, totalRevenue: { $sum: "$orderAmount" } } }
       ]);
 
-      // Count new products created in the current week
       const newProductsData = await Product.aggregate([
-        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek] }, { $lte: ["$createdate", endOfWeek] }] } } },
+        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek.toDate()] }, { $lte: ["$createdate", endOfWeek.toDate()] }] } } },
         { $count: "count" }
       ]);
 
       const newCategoriesData = await Category.aggregate([
-        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek] }, { $lte: ["$createdate", endOfWeek] }] } } },
+        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek.toDate()] }, { $lte: ["$createdate", endOfWeek.toDate()] }] } } },
         { $count: "count" }
       ]);
 
-      // Count new users registered in the current week
       const newUsersData = await User.aggregate([
-        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek] }, { $lte: ["$createdate", endOfWeek] }] } } },
+        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek.toDate()] }, { $lte: ["$createdate", endOfWeek.toDate()] }] } } },
         { $count: "count" }
       ]);
 
@@ -917,58 +784,19 @@ const sales_reportXL = async (req, res) => {
         newCategories: newCategoriesData.length > 0 ? newCategoriesData[0].count : 0
       };
 
-      // Fetch all new products and their sales for the current week
-      products = await Product.find({ createdate: { $gte: startOfWeek, $lte: endOfWeek } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
-      categories = await Category.find({ createdate: { $gte: startOfWeek, $lte: endOfWeek } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
+      products = await Product.find({ createdate: { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
+      categories = await Category.find({ createdate: { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
     }
 
-    const workbook = new exceljs.Workbook();
-    const worksheet = workbook.addWorksheet("Sales Report");
+    const paymentPendingOrders = totalOrders -  (await Order.find({ paymentStatus: 'pending' })).length
+    
+    const orders = await Order.find({ orderDate: { $gte: moment().subtract(1, 'day').startOf('day') } });
 
-    worksheet.columns = [
-      { header: "Type", key: "type", width: 15 },
-      { header: "Total Revenue", key: "totalRevenue", width: 15 },
-      { header: "Products added", key: "newProducts", width: 10 },
-      { header: "New Products", key: "products", width: 15 },
-      { header: "Sales", key: "pSales", width: 5 },
-      { header: "Categories added", key: "newCategories", width: 10 },
-      { header: "New Categories", key: "categories", width: 15 }, // Corrected key name
-      { header: "Sales", key: "cSales", width: 5 },
-      { header: "New Users", key: "newUsers", width: 25 },
-      { header: "Cancelled Orders", key: "cancelledOrders", width: 15 },
-      { header: "Total Orders", key: "totalOrders", width: 15 },
-    ];
+    const bestProducts = await Product.find().sort({ sales: -1 }).limit(5)
+    const bestCatogories = await Category.find().sort({ sales: -1 }).limit(5)
 
-    worksheet.addRow(reportData);
-    if (products && products.length > 0) {
-      products.forEach((product) => {
-        worksheet.addRow({ newProducts: product.name, pSales: product.sales }); // Corrected key name
-      });
-    } else {
-      worksheet.addRow({ newProducts: 0, pSales: 0 }); // Corrected key name
-    }
-    if (categories && categories.length > 0) {
-      categories.forEach((category) => {
-        worksheet.addRow({ newCategories: category.name, cSales: category.sales }); // Corrected key name
-      });
-    } else {
-      worksheet.addRow({ newCategories: 0, cSales: 0 }); // Corrected key name
-    }
+    res.render('report', { reportData, products, categories, bestCatogories, bestProducts, paymentPendingOrders,orders });
 
-
-
-    worksheet.getRow(1).eachCell((cell) => {
-      cell.font = { bold: true };
-    });
-
-    worksheet.getRow(1).height = 20;
-
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', `attachment; filename="${reportData.type}_sales_report.xlsx"`);
-
-    await workbook.xlsx.write(res);
-
-    res.status(200).end();
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ error: "Internal Server Error" });
@@ -976,35 +804,36 @@ const sales_reportXL = async (req, res) => {
 };
 
 
-const getReportPDF = async (req, res) => {
+
+const getSalesReport = async (req, res) => {
   try {
-    const browser = await puppeteer.launch({ headless: true }); // Opt-in to the new Headless mode
+    const type = req.params.type
+    const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
-    await page.goto('http://127.0.0.1:3333/home', {
+    await page.goto(`${req.protocol}://${req.get("host")}` + `/admin/sales-report/${type}`, {
       waitUntil: 'networkidle2',
     });
     await page.setViewport({ width: 1680, height: 1050 });
     const pdf = await page.pdf({
       format: "A4",
-      preferCSSPageSize:true,
-
+      preferCSSPageSize: true,
     });
 
     await browser.close();
 
+    // Set response headers
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Length': pdf.length
+    });
 
-
-    res.download(path.join(__dirname,"../public/salesReports"),(err)=>{
-      if (err) {
-        console.log(err);
-      }
-  })
+    // Send the PDF data as the response body
+    res.send(pdf);
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Internal Server Error');
   }
 }
-
 
 
 
@@ -1027,7 +856,6 @@ module.exports = {
   unlistProduct,
   deleteOrder,
   editOrder,
-  creatOrderReport,
-  sales_reportXL,
-  getReportPDF
+  loadReport,
+  getSalesReport
 };
