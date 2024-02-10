@@ -138,18 +138,44 @@ const checkLogin = async (req, res) => {
 
 const loadUser = async (req, res) => {
   try {
-    const perPage = 6;
-    const page = parseInt(req.query.page) || 1
-    const skip = (page - 1) * perPage
-    const users = await User.find().skip(skip).limit(perPage)
-    const msg = req.query.msg
-    const count = await User.countDocuments();
-    const totalPages = Math.ceil(count / perPage)
+    const perPage = 9;
+    const name = req.query.name || ''
+    const sort = req.query.sort || 'all'
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * perPage;
+    const msg = req.query.msg;
 
-    res.render("users-list", { users, msg, totalPages, currentPage: page });
+    let findQuery = {};
+
+    switch (sort) {
+      case 'active':
+        findQuery = { status: 'Active' };
+        break;
+
+      case 'blocked':
+        findQuery = { status: 'Blocked' };
+        break;
+
+      default:
+        break;
+    }
+
+    if (name !== '') {
+      findQuery.name = { $regex: name, $options: 'i' }
+    }
+
+
+    const count = await User.countDocuments({name: { $regex: name, $options: 'i' }});
+    const totalPages = Math.ceil(count / perPage);
+
+    const users = await User.find(findQuery)
+      .skip(skip)
+      .limit(perPage);
+
+    res.render('users-list', { users, msg, totalPages, currentPage: page, count, sort,name });
   } catch (error) {
-    console.error("Error fetching user data:", error);
-    res.status(500).send("Internal Server Error");
+    console.error('Error fetching user data:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
 
@@ -166,8 +192,7 @@ const userBlock = async (req, res) => {
     if (!userToBlock) {
       return res.status(404).send("User not found");
     }
-    res.status(200);
-    res.redirect("/admin/users");
+    res.status(200).redirect("/admin/users");
   } catch (error) {
     console.error("Error blocking user:", error);
     res.redirect("/admin/users?msg=" + error.message);

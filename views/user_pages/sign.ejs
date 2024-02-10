@@ -85,9 +85,7 @@
 						<!-- Icon header -->
 						<div class="wrap-icon-header flex-w flex-r-m h-full">
 							<div class="wrap-icon-header flex-w flex-r-m">
-								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-									<i class="zmdi zmdi-search"></i>
-								</div>
+								
 
 								<a href="/cart"
 									class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
@@ -124,9 +122,7 @@
 				</div>
 
 				<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-					<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-						<i class="zmdi zmdi-search"></i>
-					</div>
+					
 
 					<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
 						data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
@@ -209,32 +205,32 @@
 							<small class="form-text text-left" style="color: red; display: none;"
 								id="errorname"></small>
 							<div class="bor8 m-b-30 how-pos4-parent">
-								<input required class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text"
+								<input  class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text"
 									name="name" placeholder="Name">
 							</div>
 							<small class="form-text text-left" style="color: red; display: none;"
 								id="erroremail"></small>
 							<div class="bor8 m-b-30 how-pos4-parent">
-								<input required class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text"
+								<input  class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text"
 									id="signupEmail" name="email" placeholder="Email Address">
 							</div>
 							<small class="form-text text-left" style="color: red; display: none;"
 								id="errornumber"></small>
 							<div class="bor8 m-b-30 how-pos4-parent">
-								<input required class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="number"
+								<input  class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" minlength="10" type="number"
 									name="number" placeholder="Number">
 							</div>
 
 							<small class="form-text text-left" style="color: red; display: none;"
 								id="errorusername"></small>
 							<div class="bor8 m-b-30 how-pos4-parent">
-								<input required class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text"
+								<input  class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text"
 									name="username" placeholder="Username">
 							</div>
 							<small class="form-text text-left" style="color: red; display: none;"
 								id="errorpass"></small>
 							<div class="bor8 m-b-30 how-pos4-parent">
-								<input required class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="password"
+								<input  class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="password"
 									id="signupPassword" name="password" placeholder="Password">
 							</div>
 							<!-- Add this code below the password field -->
@@ -243,7 +239,7 @@
 								id="errorconfirmPassword"></small>
 
 							<div class="bor8 m-b-30 how-pos4-parent">
-								<input required class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="password"
+								<input  class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="password"
 									id="confirmPassword" name="confirmPassword" placeholder="Confirm Password">
 							</div>
 							<small class="form-text text-left" style="color: red; display: none;"
@@ -435,137 +431,156 @@
 
 		<script>
 			document.addEventListener("DOMContentLoaded", function () {
-				const signupNameInput = document.querySelector('input[name="name"]');
-				const signupNumberInput = document.querySelector('input[name="number"]');
-				const signupUsernameInput = document.querySelector('input[name="username"]');
-				const signupEmailInput = document.querySelector('input[name="email"]');
-				const signupGenderInput = document.querySelector('select[name="gender"]');
-				const signupPasswordInput = document.querySelector('input[id="signupPassword"]');
-				const confirmPasswordInput = document.querySelector('input[name="confirmPassword"]');
-				const signupErrorName = document.getElementById('errorname');
-				const signupErrorNumber = document.getElementById('errornumber');
-				const signupErrorUsername = document.getElementById('errorusername');
-				const signupErrorEmail = document.getElementById('erroremail');
-				const signupErrorGender = document.getElementById('errorgender');
-				const signupErrorPassword = document.getElementById('errorpass');
-				const signupErrorConfirmPassword = document.getElementById('errorconfirmPassword');
+    const signupNameInput = document.querySelector('input[name="name"]');
+    const signupNumberInput = document.querySelector('input[name="number"]');
+    const signupUsernameInput = document.querySelector('input[name="username"]');
+    const signupEmailInput = document.querySelector('input[name="email"]');
+    const signupGenderInput = document.querySelector('select[name="gender"]');
+    const signupPasswordInput = document.querySelector('input[id="signupPassword"]');
+    const confirmPasswordInput = document.querySelector('input[name="confirmPassword"]');
+    const signupErrorName = document.getElementById('errorname');
+    const signupErrorNumber = document.getElementById('errornumber');
+    const signupErrorUsername = document.getElementById('errorusername');
+    const signupErrorEmail = document.getElementById('erroremail');
+    const signupErrorGender = document.getElementById('errorgender');
+    const signupErrorPassword = document.getElementById('errorpass');
+    const signupErrorConfirmPassword = document.getElementById('errorconfirmPassword');
 
-				function validateForm() {
-					// Reset all error messages and styles
-					resetErrors();
+    function validateForm() {
+        // Reset all error messages and styles
+        resetErrors();
 
-					// Validate Confirm Password
-					var password = signupPasswordInput.value;
-					var confirmPassword = confirmPasswordInput.value;
+        let isValid = true;
 
-					if (password !== confirmPassword) {
-						signupErrorConfirmPassword.style.display = "block";
-						signupErrorConfirmPassword.textContent = "Passwords do not match!";
-						return false;
-					}
+        // Validate Confirm Password
+        const password = signupPasswordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
 
-					// Validate Name
-					if (!validateInput(signupNameInput, signupErrorName, "Name")) {
-						return false;
-					}
+        if (password !== confirmPassword) {
+            signupErrorConfirmPassword.style.display = "block";
+            signupErrorConfirmPassword.textContent = "Passwords do not match!";
+            confirmPasswordInput.style.border = "1px solid red";
+            isValid = false;
+        }
 
-					// Validate Number
-					if (!validateInput(signupNumberInput, signupErrorNumber, "Number")) {
-						return false;
-					}
+        // Validate Name
+        if (!validateInput(signupNameInput, signupErrorName, "Name")) {
+            isValid = false;
+        }
 
-					// Validate Username
-					if (!validateInput(signupUsernameInput, signupErrorUsername, "Username")) {
-						return false;
-					}
+        // Validate Number
+        if (!validatePhoneNumber(signupNumberInput, signupErrorNumber)) {
+            isValid = false;
+        }
 
-					// Validate Email
-					const enteredEmail = signupEmailInput.value;
-					if (!validateInput(signupEmailInput, signupErrorEmail, "Email") || !isValidEmail(enteredEmail)) {
-						return false;
-					}
+        // Validate Username
+        if (!validateInput(signupUsernameInput, signupErrorUsername, "Username")) {
+            isValid = false;
+        }
 
-					// Validate Gender
-					if (!validateInput(signupGenderInput, signupErrorGender, "Gender")) {
-						return false;
-					}
+        // Validate Email
+        const enteredEmail = signupEmailInput.value;
+        if (!validateInput(signupEmailInput, signupErrorEmail, "Email") || !isValidEmail(enteredEmail)) {
+            isValid = false;
+        }
 
-					// Validate Password
-					const enteredPassword = signupPasswordInput.value;
-					if (!validateInput(signupPasswordInput, signupErrorPassword, "Password") || !isValidPassword(enteredPassword)) {
-						return false;
-					}
+        // Validate Gender
+        if (!validateInput(signupGenderInput, signupErrorGender, "Gender")) {
+            isValid = false;
+        }
 
-					// All validations passed
-					return true;
-				}
+        // Validate Password
+        const enteredPassword = signupPasswordInput.value;
+        if (!validateInput(signupPasswordInput, signupErrorPassword, "Password") || !isValidPassword(enteredPassword)) {
+            isValid = false;
+        }
 
-				// Function to validate input against spaces
-				function validateInput(inputElement, errorElement, fieldName) {
-					const enteredValue = inputElement.value.trim();
-					if (enteredValue === "") {
-						errorElement.style.display = "block";
-						errorElement.textContent = fieldName + " cannot be empty";
-						inputElement.style.border = "1px solid red";
-						return false;
-					} else {
-						errorElement.style.display = "none";
-						inputElement.style.border = "";
-						return true;
-					}
-				}
+        // Return overall validation result
+        return isValid;
+    }
 
-				// Function to validate email format
-				function isValidEmail(email) {
-					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-					if (!emailRegex.test(email)) {
-						signupErrorEmail.textContent = "Invalid email address format";
-						signupErrorEmail.style.display = "block";
-						signupEmailInput.style.border = "1px solid red";
-						return false;
-					} else {
-						return true;
-					}
-				}
+    // Function to validate input against spaces
+    function validateInput(inputElement, errorElement, fieldName) {
+        const enteredValue = inputElement.value.trim();
+        if (enteredValue === "") {
+            errorElement.style.display = "block";
+            errorElement.textContent = fieldName + " cannot be empty";
+            inputElement.style.border = "1px solid red";
+            return false;
+        } else {
+            errorElement.style.display = "none";
+            inputElement.style.border = "";
+            return true;
+        }
+    }
 
-				// Function to validate password (replace with your logic) and space
-				function isValidPassword(password) {
-					return password.length >= 4; // Add your password validation logic here
-				}
+    // Function to validate email format
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            signupErrorEmail.textContent = "Invalid email address format";
+            signupErrorEmail.style.display = "block";
+            signupEmailInput.style.border = "1px solid red";
+            return false;
+        } else {
+            return true;
+        }
+    }
 
-				// Function to reset all error messages and styles
-				function resetErrors() {
-					const errorElements = [
-						signupErrorName, signupErrorNumber, signupErrorUsername,
-						signupErrorEmail, signupErrorGender, signupErrorPassword,
-						signupErrorConfirmPassword
-					];
+    // Function to validate password (replace with your logic)
+    function isValidPassword(password) {
+        return password.length >= 4; // Add your password validation logic here
+    }
 
-					errorElements.forEach(element => {
-						element.textContent = "";
-						element.style.display = "none";
-					});
+    // Function to validate phone number length
+    function validatePhoneNumber(inputElement, errorElement) {
+        const phoneNumber = inputElement.value.trim();
+        if (phoneNumber.length !== 10) {
+            errorElement.style.display = "block";
+            errorElement.textContent = "Phone number must be 10 digits";
+            inputElement.style.border = "1px solid red";
+            return false;
+        } else {
+            errorElement.style.display = "none";
+            inputElement.style.border = "";
+            return true;
+        }
+    }
 
-					const inputElements = [
-						signupNameInput, signupNumberInput, signupUsernameInput,
-						signupEmailInput, signupGenderInput, signupPasswordInput,
-						confirmPasswordInput
-					];
+    // Function to reset all error messages and styles
+    function resetErrors() {
+        const errorElements = [
+            signupErrorName, signupErrorNumber, signupErrorUsername,
+            signupErrorEmail, signupErrorGender, signupErrorPassword,
+            signupErrorConfirmPassword
+        ];
 
-					inputElements.forEach(element => {
-						element.style.border = "";
-					});
-				}
+        errorElements.forEach(element => {
+            element.textContent = "";
+            element.style.display = "none";
+        });
 
-				// Hook into the form's onsubmit event
-				const signupForm = document.querySelector('.login-form');
-				signupForm.addEventListener("submit", function (event) {
-					if (!validateForm()) {
-						// Prevent form submission if validation fails
-						event.preventDefault();
-					}
-				});
-			});
+        const inputElements = [
+            signupNameInput, signupNumberInput, signupUsernameInput,
+            signupEmailInput, signupGenderInput, signupPasswordInput,
+            confirmPasswordInput
+        ];
+
+        inputElements.forEach(element => {
+            element.style.border = "";
+        });
+    }
+
+    // Hook into the form's onsubmit event
+    const signupForm = document.querySelector('.login-form');
+    signupForm.addEventListener("submit", function (event) {
+        if (!validateForm()) {
+            // Prevent form submission if validation fails
+            event.preventDefault();
+        }
+    });
+});
+
 		</script>
 
 

@@ -23,11 +23,13 @@
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
         }
+
         .toast-warning {
             background-color: #73030d;
             border-color: #76000c;
             color: #ffffff;
         }
+
         .custom-link-style {
             text-decoration: underline;
             /* Remove underline */
@@ -89,7 +91,7 @@
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
-           <a href="/admin/" class="brand-wrap">
+            <a href="/admin/" class="brand-wrap">
                 <h3 class="logo" alt="Evara Dashboard">TRENDS</h1>
             </a>
             <div>
@@ -134,140 +136,43 @@
                     </a>
                     <div class="submenu">
                         <a href="/admin/orders-list">Order list 1</a>
-                       
+
                     </div>
                 </li>
 
 
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-transactions-1.html">
-                        <i class="icon material-icons md-monetization_on"></i>
-                        <span class="text">Transactions</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-transactions-1.html">Transaction 1</a>
-                        <a href="page-transactions-2.html">Transaction 2</a>
-                        <a href="page-transactions-details.html">Transaction Details</a>
-                    </div>
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#">
-                        <i class="icon material-icons md-person"></i>
-                        <span class="text">Account</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-account-login.html">User login</a>
-                        <a href="page-account-register.html">User registration</a>
-                        <a href="page-error-404.html">Error 404</a>
-                    </div>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-reviews.html">
-                        <i class="icon material-icons md-comment"></i>
-                        <span class="text">Reviews</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-brands.html">
-                        <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" disabled href="#">
-                        <i class="icon material-icons md-pie_chart"></i>
-                        <span class="text">Statistics</span>
-                    </a>
-                </li>
-            </ul>
-            <hr />
-            <ul class="menu-aside">
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#">
-                        <i class="icon material-icons md-settings"></i>
-                        <span class="text">Settings</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-settings-1.html">Setting sample 1</a>
-                        <a href="page-settings-2.html">Setting sample 2</a>
-                    </div>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-blank.html">
-                        <i class="icon material-icons md-local_offer"></i>
-                        <span class="text"> Starter page </span>
-                    </a>
-                </li>
-            </ul>
-            <br />
-            <br />
+                <br />
+                <br />
         </nav>
     </aside>
     <main class="main-wrap">
         <header class="main-header navbar">
             <div class="col-search">
-                <form class="searchform">
-                    <div class="input-group">
-                        <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
-                        <button class="btn btn-light bg" type="button">
-                            <i class="material-icons md-search"></i>
-                        </button>
-                    </div>
-                    <datalist id="search_terms">
-                        <option value="Products"></option>
-                        <option value="New orders"></option>
-                        <option value="Apple iphone"></option>
-                        <option value="Ahmed Hassan"></option>
-                    </datalist>
-                </form>
+
             </div>
             <div class="col-nav">
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside">
                     <i class="material-icons md-apps"></i>
                 </button>
                 <ul class="nav">
-                    <!-- <li class="nav-item">
-                        <a class="nav-link btn-icon" href="#">
-                            <i class="material-icons md-notifications animation-shake"></i>
-                            <span class="badge rounded-pill">3</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                    </li> -->
-                    <!-- <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                            <a class="dropdown-item text-brand" href="#"><img src="imgs/theme/flag-us.png" alt="English">English</a>
-                            <a class="dropdown-item" href="#"><img src="imgs/theme/flag-fr.png" alt="Français">Français</a>
-                            <a class="dropdown-item" href="#"><img src="imgs/theme/flag-jp.png" alt="Français">日本語</a>
-                            <a class="dropdown-item" href="#"><img src="imgs/theme/flag-cn.png" alt="Français">中国人</a>
-                        </div>
-                    </li>-->
                     <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="imgs/people/avatar2.jpg" alt="User"></a>
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
+                            aria-expanded="false"> <img class="img-xs rounded-circle" src="imgs/people/avatar2.jpg"
+                                alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <!-- <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a> -->
-                            <!-- <div class="dropdown-divider"></div> -->
-                            <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i
+                                    class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
-                    </li> 
+                    </li>
                 </ul>
             </div>
         </header>
 
-        <section class="content-main" id="content-main"> 
+        <section class="content-main" id="content-main">
             <div class="content-header">
                 <div>
                     <h2 class="content-title card-title">Categories</h2>
-                    <strong>no. Categories: <%= categories.length %></strong>
+                    <strong>Total Categories: <%= count %></strong>
                 </div>
 
                 <div>
@@ -281,123 +186,170 @@
                         <% } %>
                 </div>
             </div>
+            <header class="card-header" style="max-width: 800px; margin-left: auto; margin-right: auto;">
+                <div class="row align-items-center" style="max-width: 800px;">
+                    <div class="col-lg-4 col-md-6 me-auto">
+                        <input onkeydown="if (event.keyCode == 13) { event.preventDefault(); searchCategory(event) }"
+                            type="text" placeholder="Search Category" class="form-control">
+                    </div>
+                  
+                    <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                        <select id="sortSelect" class="form-select"
+                            onchange="categorySort(event,'<%= currentPage %>','<%= name %>')">
+                            <option value="default" <%=sort==='default' ? 'selected' : '' %> >Default Sorting</option>
+                            <option value="most_saled" <%=sort==='most_saled' ? 'selected' : '' %>>Most Popular</option>
+                            <option value="less_saled" <%=sort==='less_saled' ? 'selected' : '' %>>Least Popular
+                            </option>
+                            <option value="most_products" <%=sort==='most_products' ? 'selected' : '' %>>Most Products
+                            </option>
+                            <option value="less_products" <%=sort==='less_products' ? 'selected' : '' %>>Least Products
+                            </option>
+                            <option value="newness" <%=sort==='newness' ? 'selected' : '' %>>Newest Arrivals</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
 
-            <% categories.forEach(function(category) { %>
-                <div class="user-details-container">
-                    <ul>
-                        <li>
-                            <h3>
-                                <%= category.name %>
-                            </h3>
-                        </li>
-                        <li>
-                            <strong>
-                                <%= category.description %>
-                            </strong>
-                        </li>
-                        <li>
-                            <strong> Collections: <%= category.items.length %></strong>
-                        </li>
-                        <li>
-                            <ul>
+
+            <% if (categories.length>0) { %>
+                <% categories.forEach(function(category) { %>
+                    <div class="user-details-container">
+                        <ul>
+                            <li>
+                                <h3>
+                                    <%= category.name %>
+                                </h3>
+                            </li>
+                            <li>
+                                <strong>
+                                    <%= category.description %>
+                                </strong>
+                            </li>
+                            <li>
+                                <strong> Products: <%= category.items.length %></strong>
+                            </li>
+                            <li>
+                                <ul>
                                     <li>
+                                        <strong>Sales: <%= category.sales %></strong>
                                     </li>
-                    </ul>
-                    </li>
-                    <button class="btn btn-primary" data-bs-target="#editCategoryModal<%= category._id %>"
-                        data-bs-toggle="modal">
-                        Edit
-                    </button>
-                    <a href="javascript:void(0);" 
-                            <% if (category.items.length>0) { %> onclick="showToastr();" <% } else { %> onclick="confirmDelete('<%= category._id %>');" <% } %>
-                            class="btn btn-danger">Delete</a>
-                                     </ul>
-                    <img <% if (category.img.length> 23) { %>
-                    src="<%= category.img %>"
-                    <% } else { %>
-                        src="/resized_images/<%= category.img %>"
-                            <% } %>
-                                alt="<%= category.name %> Image" class="small-image"
-                                    />
-
-                                    <div class="user-details-buttons"></div>
-
-                </div><br>
-
-                <div class="modal fade" id="editCategoryModal<%= category._id %>" aria-hidden="true"
-                    aria-labelledby="editUserModalLabel" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="editUserModalLabel">
-                                    Edit Category
-                                </h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="/admin/editCatogories/<%= category._id %>" method="post" enctype="multipart/form-data">
-                                    <div>
-                                        <a href="/admin/addProduct" class="btn btn-primary"><i class="material-icons md-plus"></i>new Product to this catogory</a>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="name" name="name" required value="<%= category.name %>" />
-                                    </div>
-                                
-                                    <div class="mb-3">
-                                        <img 
-                                            <% if (category.img.length > 23) { %>
-                                                src="<%= category.img %>"
-                                            <% } else { %>
-                                                src="/resized_images/<%= category.img %>"
-                                            <% } %>
-                                            alt="<%= category.name %> Image" class="small-image" 
-                                        />
-                                
-                                        <label for="file" class="form-label">Image Path</label>
-                                        <input type="file" class="form-control" id="file" name="file"  />
-                                    </div>
-                                    <section>
-                                        <div class="mb-3">
-                                            <label for="categoryType" class="form-label">Category Type</label>
-                                            <select class="form-control" id="categoryType" name="type">
-                                                <option value="men" <% if (category.type === 'men') { %>selected<% } %>>Men</option>
-                                                <option value="women" <% if (category.type === 'women') { %>selected<% } %>>Women</option>
-                                                <option value="children" <% if (category.type === 'children') { %>selected<% } %>>Children</option>
-                                            </select>
+                                </ul>
+                            </li>
+                            <button class="btn btn-primary" data-bs-target="#editCategoryModal<%= category._id %>"
+                                data-bs-toggle="modal">
+                                Edit
+                            </button>
+                            <a href="javascript:void(0);" <% if (category.items.length>0) { %> onclick="showToastr();"
+                                <% } else { %> onclick="confirmDelete('<%= category._id %>');" <% } %>
+                                            class="btn btn-danger">Delete
+                            </a>
+                        </ul>
+                        <img <% if (category.img.length> 23) { %>
+                        src="<%= category.img %>"
+                            <% } else { %>
+                                src="/resized_images/<%= category.img %>"
+                                    <% } %>
+                                        alt="<%= category.name %> Image" class="small-image"
+                                            />
+    
+                                            <div class="user-details-buttons"></div>
+    
+                    </div><br>
+    
+                    <div class="modal fade" id="editCategoryModal<%= category._id %>" aria-hidden="true"
+                        aria-labelledby="editUserModalLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="editUserModalLabel">
+                                        Edit Category
+                                    </h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/admin/editCatogories/<%= category._id %>" method="post"
+                                        enctype="multipart/form-data">
+                                        <div>
+                                            <a href="/admin/addProduct" class="btn btn-primary"><i
+                                                    class="material-icons md-plus"></i>new Product to this catogory</a>
                                         </div>
-                                
-                                    <div class="mb-3">
-                                        <label for="description" class="form-label">Description</label>
-                                        <input type="text" class="form-control" id="description" name="description" required value="<%= category.description %>" />
-                                    </div>
-                                   
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                </form>
-                                
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Name</label>
+                                            <input type="text" class="form-control" id="name" name="name" required
+                                                value="<%= category.name %>" />
+                                        </div>
+    
+                                        <div class="mb-3">
+                                            <img <% if (category.img.length> 23) { %>
+                                            src="<%= category.img %>"
+                                                <% } else { %>
+                                                    src="/resized_images/<%= category.img %>"
+                                                        <% } %>
+                                                            alt="<%= category.name %> Image" class="small-image"
+                                                                />
+    
+                                                                <label for="file" class="form-label">Image Path</label>
+                                                                <input type="file" class="form-control" id="file"
+                                                                    name="file" />
+                                        </div>
+                                        <section>
+                                            <div class="mb-3">
+                                                <label for="categoryType" class="form-label">Category Type</label>
+                                                <select class="form-control" id="categoryType" name="type">
+                                                    <option value="men" <% if (category.type==='men' ) { %>selected<% } %>
+                                                            >Men</option>
+                                                    <option value="women" <% if (category.type==='women' ) { %>selected
+                                                        <% } %>>Women
+                                                    </option>
+                                                    <option value="children" <% if (category.type==='children' ) { %>
+                                                        selected<% } %>>Children</option>
+                                                </select>
+                                            </div>
+    
+                                            <div class="mb-3">
+                                                <label for="description" class="form-label">Description</label>
+                                                <input type="text" class="form-control" id="description" name="description"
+                                                    required value="<%= category.description %>" />
+                                            </div>
+    
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                    </form>
+    
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <% }); %>
+                    <% }); %>
+            <% }else{ %>
+                <h3>No Catogories At The Moment</h3> for refreshing the page <a href="/admin/catogories" style="color: blue;">Click here</a>
+            <% } %>
 
-                <div class="pagination-area mt-30 mb-50">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-start" id="pagination">
-                            <% if (currentPage > 1) { %>
-                                <li class="page-item"><a class="page-link" href="/admin/catogories?page=<%= currentPage-1 %>" ><i class="material-icons md-chevron_left"></i></a></li>
-                            <% } %>
-                            <% for (let i = 1; i <= totalPages; i++) { %>
-                                <li class="page-item <%= currentPage === i ? 'active' : '' %>"><a class="page-link" href="/admin/catogories?page=<%= i %>" ><%= i %></a></li>
-                            <% } %>
-                            <% if (currentPage < totalPages) { %>
-                                <li class="page-item"><a class="page-link" href="/admin/catogories?page=<%= currentPage+1 %>" ><i class="material-icons md-chevron_right"></i></a></li>
-                            <% } %>
-                        </ul>
-                    </nav>
-                </div>
-                <br><br><br>
+
+                    <div class="pagination-area mt-30 mb-50">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-start" id="pagination">
+                                <% if (currentPage> 1) { %>
+                                    <li class="page-item"><a class="page-link"
+                                            href="/admin/catogories?page=<%= currentPage-1 %>&&sort=<%= sort %>"><i
+                                                class="material-icons md-chevron_left"></i></a></li>
+                                    <% } %>
+                                        <% for (let i=1; i <=totalPages; i++) { %>
+                                            <li class="page-item <%= currentPage === i ? 'active' : '' %>"><a
+                                                    class="page-link"
+                                                    href="/admin/catogories?page=<%= i %>&&sort=<%= sort %>">
+                                                    <%= i %>
+                                                </a></li>
+                                            <% } %>
+                                                <% if (currentPage < totalPages) { %>
+                                                    <li class="page-item"><a class="page-link"
+                                                            href="/admin/catogories?page=<%= currentPage+1 %>&&sort=<%= sort %>"><i
+                                                                class="material-icons md-chevron_right"></i></a></li>
+                                                    <% } %>
+                            </ul>
+                        </nav>
+                    </div>
+                    <br><br><br>
         </section>
 
 
@@ -428,11 +380,13 @@
                         <form action="/admin/catogories" method="post" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" autocomplete="off" required />
+                                <input type="text" class="form-control" id="name" name="name" autocomplete="off"
+                                    required />
                             </div>
                             <div class="mb-3">
                                 <label for="image" class="form-label">Image</label>
-                                <input type="file" class="form-control" id="image" name="image" autocomplete="off" required />
+                                <input type="file" class="form-control" id="image" name="image" autocomplete="off"
+                                    required />
                             </div>
                             <div class="mb-3">
                                 <label for="type" class="form-label">Type</label>
@@ -445,11 +399,12 @@
                             </div>
                             <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>
-                                <input type="text" class="form-control" id="description" name="description" autocomplete="off" required />
+                                <input type="text" class="form-control" id="description" name="description"
+                                    autocomplete="off" required />
                             </div>
                             <button type="submit" class="btn btn-primary">Save</button>
                         </form>
-                        
+
                     </div>
                 </div>
             </div>
@@ -463,15 +418,15 @@
             }
         }
         function showToastr() {
-        toastr.options = {
-            closeButton: true,
-            progressBar: true,
-            showMethod: 'slideDown',
-            timeOut: 4000,
-        };
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                showMethod: 'slideDown',
+                timeOut: 4000,
+            };
 
-        toastr.warning("You Can't Delete The Catogorie Wich Has Products Listed", 'Warning');
-    }
+            toastr.warning("You Can't Delete The Catogorie Wich Has Products Listed", 'Warning');
+        }
     </script>
     <script src="js/vendors/jquery-3.6.0.min.js"></script>
     <script src="js/vendors/bootstrap.bundle.min.js"></script>

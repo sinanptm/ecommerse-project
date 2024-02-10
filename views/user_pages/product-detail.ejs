@@ -81,10 +81,14 @@
 								<% } %>
 
 
-									<div
-										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-										<i class="zmdi zmdi-search"></i>
-									</div>
+								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
+									<i class="zmdi zmdi-search"></i>
+								</div>
+						
+								<div class="search-input-container" style="display: none; border: 2px;">
+									<input type="text" class="search-input" placeholder="Search...">
+								</div>
+								
 
 									<div class="cart-noti">
 										<a href="/cart"
@@ -167,9 +171,14 @@
 				</a>&nbsp;&nbsp;
 				<% } %>
 					<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
 							<i class="zmdi zmdi-search"></i>
 						</div>
+				
+						<div class="search-input-container" style="display: none; border: 2px;">
+							<input type="text" class="search-input" placeholder="Search...">
+						</div>
+						
 
 						<div class="cart-noti">
 							<a href="/cart"
@@ -331,7 +340,7 @@
 													<i class="fs-16 zmdi zmdi-minus"></i>
 												</div>
 												<input class="mtext-104 cl3 txt-center num-product" type="number"
-													name="quantity" value="1">
+													name="quantity" value="1" readonly>
 												<% if (product.quantity>0) { %>
 													<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
 														<i class="fs-16 zmdi zmdi-plus"></i>

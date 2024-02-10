@@ -66,72 +66,10 @@
             <span class="text">Orders</span>
           </a>
           <div class="submenu">
-            <a href="/admin/orders-list">Order list 1</a>
+            <a href="/admin/orders-list">Order list </a>
 
           </div>
         </li>
-
-
-        <li class="menu-item has-submenu">
-          <a class="menu-link" href="page-transactions-1.html">
-            <i class="icon material-icons md-monetization_on"></i>
-            <span class="text">Transactions</span>
-          </a>
-          <div class="submenu">
-            <a href="page-transactions-1.html">Transaction 1</a>
-            <a href="page-transactions-2.html">Transaction 2</a>
-            <a href="page-transactions-details.html">Transaction Details</a>
-          </div>
-        </li>
-        <li class="menu-item has-submenu">
-          <a class="menu-link" href="#">
-            <i class="icon material-icons md-person"></i>
-            <span class="text">Account</span>
-          </a>
-          <div class="submenu">
-            <a href="page-account-login.html">User login</a>
-            <a href="page-account-register.html">User registration</a>
-            <a href="page-error-404.html">Error 404</a>
-          </div>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" href="page-reviews.html">
-            <i class="icon material-icons md-comment"></i>
-            <span class="text">Reviews</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" href="page-brands.html">
-            <i class="icon material-icons md-stars"></i>
-            <span class="text">Brands</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" disabled href="#">
-            <i class="icon material-icons md-pie_chart"></i>
-            <span class="text">Statistics</span>
-          </a>
-        </li>
-      </ul>
-      <hr />
-      <ul class="menu-aside">
-        <li class="menu-item has-submenu">
-          <a class="menu-link" href="#">
-            <i class="icon material-icons md-settings"></i>
-            <span class="text">Settings</span>
-          </a>
-          <div class="submenu">
-            <a href="page-settings-1.html">Setting sample 1</a>
-            <a href="page-settings-2.html">Setting sample 2</a>
-          </div>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" href="page-blank.html">
-            <i class="icon material-icons md-local_offer"></i>
-            <span class="text"> Starter page </span>
-          </a>
-        </li>
-      </ul>
       <br />
       <br />
     </nav>
@@ -140,18 +78,7 @@
     <header class="main-header navbar">
       <div class="col-search">
         <form class="searchform">
-          <div class="input-group">
-            <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
-            <button class="btn btn-light bg" type="button">
-              <i class="material-icons md-search"></i>
-            </button>
-          </div>
-          <datalist id="search_terms">
-            <option value="Products"></option>
-            <option value="New orders"></option>
-            <option value="Apple iphone"></option>
-            <option value="Ahmed Hassan"></option>
-          </datalist>
+          
         </form>
       </div>
       <div class="col-nav">
@@ -159,37 +86,10 @@
           <i class="material-icons md-apps"></i>
         </button>
         <ul class="nav">
-          <!-- <li class="nav-item">
-                        <a class="nav-link btn-icon" href="#">
-                            <i class="material-icons md-notifications animation-shake"></i>
-                            <span class="badge rounded-pill">3</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                    </li> -->
-          <!-- <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                            <a class="dropdown-item text-brand" href="#"><img src="imgs/theme/flag-us.png" alt="English">English</a>
-                            <a class="dropdown-item" href="#"><img src="imgs/theme/flag-fr.png" alt="Français">Français</a>
-                            <a class="dropdown-item" href="#"><img src="imgs/theme/flag-jp.png" alt="Français">日本語</a>
-                            <a class="dropdown-item" href="#"><img src="imgs/theme/flag-cn.png" alt="Français">中国人</a>
-                        </div>
-                    </li>-->
           <li class="dropdown nav-item">
             <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false">
               <img class="img-xs rounded-circle" src="imgs/people/avatar2.jpg" alt="User"></a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-              <!-- <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                          <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                          <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                          <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                          <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a> -->
-              <!-- <div class="dropdown-divider"></div> -->
               <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
             </div>
           </li>
@@ -200,147 +100,110 @@
 
     <section class="content-main" id="content-main">
       <div class="content-header">
-        <h2 class="content-title">Users list</h2>
+        <div class="content-title">
+          <h2>Users list</h2>
+          <p>Total user: <%= count %></p>
+        </div>
         <div>
-
         </div>
       </div>
       <div class="card mb-4">
         <header class="card-header">
-          <div class="row gx-3">
-            <div class="col-lg-4 col-md-6 me-auto">
-              <input type="text" placeholder="Search..." class="form-control" />
+            <div class="row gx-3">
+              <div class="col-lg-4 col-md-6 me-auto">
+                <input onkeydown="if (event.keyCode == 13) { event.preventDefault(); searchUser(event) }"
+                    type="text" placeholder="Search User" class="form-control">
             </div>
-            <div class="col-lg-2 col-md-3 col-6">
-              <select class="form-select">
-                <option>Status</option>
-                <option>Active</option>
-                <option>Blocked</option>
-                <option>Show all</option>
-              </select>
+                <div class="col-lg-2 col-md-3 col-6">
+                    <select class="form-select" onchange="userSort(event,'<% currentPage %>','<%= name %>')">
+                        <option value="active" <%= sort==='active'?'selected':"" %>>Active</option>
+                        <option value="blocked" <%= sort==='blocked'?'selected':'' %>>Blocked</option>
+                        <option value="all" <%= sort==='all'?'selected':"" %>>Show all</option>
+                    </select>
+                </div>
             </div>
-            <div class="col-lg-2 col-md-3 col-6">
-              <select class="form-select">
-                <option>Show 20</option>
-                <option>Show 30</option>
-                <option>Show 40</option>
-              </select>
-            </div>
-          </div>
         </header>
+    </div>
         <!-- card-header end// -->
+      
+
         <div class="card-body">
           <div class="table-responsive">
-            <table class="table table-hover">
-              <tbody>
-                <table class="table table-hover">
+            <% if (users.length>0) { %>
+              <% users.forEach(user => { %>
+              <table class="table table-hover">
                   <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Email</th>
-                      <th>Status</th>
-                      <th></th>
-                      <th class="text-end">Actions</th>
-                    </tr>
+                      <tr>
+                          <th>User</th>
+                          <th>Email</th>
+                          <th>Status</th>
+                          <th></th>
+                          <th class="text-end">Actions</th>
+                      </tr>
                   </thead>
                   <tbody>
-                    <% users.forEach(user=> { %>
-                      <tr class="user<%= user._id %>">
-                        <td width="40%">
-                          <a href="#" class="itemside">
-                            <div class="left">
-                              <i class="fas fa-user-circle fa-3x"></i>
-                              <!-- Placeholder icon -->
-                            </div>
-                            <div class="info pl-3">
-                              <a href="/admin/userdetails?id=<%= user._id %>">
-                                <h6 class="mb-0 title">
-                                  <%= user.name %>
-                                </h6>
-                              </a>
-                              <small class="text-muted">Customer ID: #<%= user._id %></small>
-                            </div>
-                          </a>
-                        </td>
-                        <td>
-                          <%= user.email %>
-                        </td>
-                        <td>
-                          <% if (user.status==='Blocked' ) { %>
-                            <span class="badge rounded-pill alert-danger">
-                              <%= user.status %>
-                            </span>
-                            <% } else { %>
-                              <span class="badge rounded-pill alert-success">
-                                <%= user.status %>
-                              </span>
-                              <% } %>
-                        </td>
-                        <td></td>
-                        <td class="text-end">
-                          <div class="user-details-buttons">
-                            <% if (user.status==="Blocked" ) { %>
-                              <a onclick="unblock('<%= user._id %>')" class="btn btn-success">Unblock</a>
-                              <% } else { %>
-                                <a onclick="block('<%= user._id %>')" class="btn btn-warning">Block</a>
-                                <% } %>
-                          </div>
-                        </td>
-                      </tr>
-                      <% }) %>
-                  </tbody>
-                  <script>
-                    async function block(id) {
-                      try {
-                        const response = await $.ajax({
-                          url: "/admin/userblock/" + id,
-                          method: "GET"
-                        });
-
-                        const newContent = $(response).find(".user" + id).html();
-                        $(".user" + id).html(newContent);
-
-                      } catch (error) {
-                        console.error("Error blocking user:", error);
-                      }
-                    }
-
-                    async function unblock(id) {
-                      try {
-                        const response = await $.ajax({
-                          url: "/admin/userUnblock/" + id,
-                          method: "GET"
-                        });
-
-                        const newContent = $(response).find(".user" + id).html();
-                        $(".user" + id).html(newContent);
-
-                      } catch (error) {
-                        console.error("Error unblocking user:", error);
-                      }
-                    }
-                  </script>
-
-
-
-                </table>
-              </tbody>
-            </table>
+                          <tr class="user<%= user._id %>">
+                              <td width="40%">
+                                  <a href="#" class="itemside">
+                                      <div class="left"><i class="fas fa-user-circle fa-3x"></i></div>
+                                      <div class="info pl-3">
+                                          <a href="/admin/userdetails?id=<%= user._id %>">
+                                              <h6 class="mb-0 title"><%= user.name %></h6>
+                                          </a>
+                                          <small class="text-muted">Customer ID: #<%= user._id %></small>
+                                      </div>
+                                  </a>
+                              </td>
+                              <td>
+                                  <%= user.email %>
+                              </td>
+                              <td>
+                                  <% if (user.status === 'Blocked') { %>
+                                  <span class="badge rounded-pill alert-danger">
+                                      <%= user.status %>
+                                  </span>
+                                  <% } else { %>
+                                  <span class="badge rounded-pill alert-success">
+                                      <%= user.status %>
+                                  </span>
+                                  <% } %>
+                              </td>
+                              <td></td>
+                              <td class="text-end">
+                                  <div class="user-details-buttons">
+                                      <% if (user.status === "Blocked") { %>
+                                      <a onclick="unblock('<%= user._id %>')" class="btn btn-success">Unblock</a>
+                                      <% } else { %>
+                                      <a onclick="block('<%= user._id %>')" class="btn btn-warning">Block</a>
+                                      <% } %>
+                                  </div>
+                              </td>
+                          </tr>
+                          <% }) %>
+                        </tbody>
+                    </table>
+                      <% }else{ %>
+                      <h3>No Users At The Moment</h3> for Refreshing  <a href="/admin/users" style="color: blue;">click here </a>
+                      <% } %>
           </div>
-        </div>
+      </div>
+      
+
+
+
         <!-- card-body end// -->
       </div>
       <div class="pagination-area mt-30 mb-50">
         <nav aria-label="Page navigation">
           <ul class="pagination justify-content-start" id="pagination">
             <% if (currentPage > 1) { %>
-              <li class="page-item"><a class="page-link" href="/admin/users?page=<%= currentPage - 1 %>"><i class="material-icons md-chevron_left"></i></a></li>
+              <li class="page-item"><a class="page-link" href="/admin/users?page=<%= currentPage - 1 %>&&sort=<%= sort %>"><i class="material-icons md-chevron_left"></i></a></li>
             <% } %>
             <% for (let i = 1; i <= totalPages; i++) { %>
-              <li class="page-item <%= currentPage === i ? 'active' : '' %>"><a class="page-link" href="/admin/users?page=<%= i %>"><%= i %></a></li>
+              <li class="page-item <%= currentPage === i ? 'active' : '' %>"><a class="page-link" href="/admin/users?page=<%= i %>&&sort=<%= sort %>"><%= i %></a></li>
             <% } %>
             <% if (currentPage < totalPages) { %>
-              <li class="page-item"><a class="page-link" href="/admin/users?page=<%= currentPage + 1 %>"><i class="material-icons md-chevron_right"></i></a></li>
+              <li class="page-item"><a class="page-link" href="/admin/users?page=<%= currentPage + 1 %>&&sort=<%= sort %>"><i class="material-icons md-chevron_right"></i></a></li>
             <% } %>
           </ul>
         </nav>

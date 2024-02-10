@@ -3,7 +3,6 @@ const app = express();
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const nocache = require("nocache");
-const flash = require('express-flash');
 require("dotenv").config();
 const connectMongoDB = require('./config/mongodb')
 const userRoute = require("./routers/userRouter");
@@ -11,7 +10,6 @@ const adminRouter = require("./routers/adminRouter");
 
 connectMongoDB()
 
-app.use(flash());
 app.use(nocache());
 app.use(cookieParser());
 app.use(express.json());

@@ -163,10 +163,10 @@
 
         <h2>Recent Orders</h2>
         <div class="order-container">
-            <% orders.forEach(order => { %>
+            <% orders.forEach((order,i) => { %>
                 <div class="order-item">
                     <p class="order-info">
-                        <strong>Order ID:</strong> <%= order._id %><br>
+                        <strong>Order ID:</strong> SK0<%= i+1 %><br>
                         <strong>Order Amount:</strong> <%= order.orderAmount %><br>
                         <strong>User ID:</strong> <%= order.userid %><br>
                         <!-- Displaying Delivery Address -->
@@ -204,6 +204,7 @@
                         <strong>Payment Status:</strong> <%= order.paymentStatus %><br>
                     </p>
                 </div>
+                <hr>
             <% }); %>
         </div>
         

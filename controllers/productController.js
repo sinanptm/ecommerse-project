@@ -4,7 +4,8 @@ const puppeteer = require('puppeteer')
 const moment = require('moment');
 const { Product, Category, Order, CancelationReson } = require("../models/productModel")
 const { User } = require("../models/userModels")
-const { createHexId } = require('../util/validations');
+const { createHexId, isValidObjectId } = require('../util/validations');
+const { name } = require("ejs");
 
 // * to load dashbord
 
@@ -201,44 +202,43 @@ const loadDashBoard = async (re, res) => {
 //  * product management
 const loadProducts = async (req, res) => {
   try {
+    const sort = req.query.sort || 'all';
+    const name = req.query.name || '';
+    const sort2 = req.query.sort2 || 'all';
     const perPage = 10;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * perPage;
+    const catogories  = await Category.find();
 
-    const products = await Product.aggregate([
-      {
-        $lookup: {
-          from: 'categories',
-          localField: 'categoryid',
-          foreignField: '_id',
-          as: 'category',
-        },
-      },
-      {
-        $unwind: '$category',
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          price: 1,
-          quantity: 1,
-          status: 1,
-          img: 1,
-          category: '$category.name',
-          discription: "$category.description",
-          createdate: 1,
-          discount: 1,
-        },
-      },
-    ]).skip(skip).limit(perPage);
-    const count = await Product.countDocuments();
+    let findQuery = {};
+
+    if (name !== '') {
+      findQuery.name = { $regex: new RegExp(name, 'i') };
+    }
+    
+    if (sort === 'listed') {
+      findQuery.status = 'Available';
+    } else if (sort === 'unlisted') {
+      findQuery.status = 'Disabled';
+    }
+
+    if (isValidObjectId(sort2)) {
+      findQuery.categoryid = sort2;
+    }
+
+    const products = await Product.find(findQuery)
+      .skip(skip)
+      .limit(perPage);
+
+    const count = await Product.countDocuments(findQuery);
     const totalPages = Math.ceil(count / perPage);
-    res.render("products-list", { products, totalPages, currentPage: page });
+    res.render("products-list", { products, totalPages, currentPage: page, count, sort, catogories , sort2, name }); // Passing data to template
   } catch (err) {
     console.log(err.message);
+    res.status(500).send("Internal Server Error"); // Sending error response
   }
 };
+
 
 
 
@@ -505,21 +505,64 @@ const deleteProduct = async (req, res) => {
 
 
 // * for showiing all the catogories
-
 const laodCatagorie = async (req, res) => {
   try {
+    const sort = req.query.sort || 'default';
+    const name = req.query.name || ''
     const perPage = 4;
-    const page = parseInt(req.query.page) || 1
-    const skip = (page - 1) * perPage
-    const categories = await Category.find().skip(skip).limit(perPage)
-    const count = await Category.countDocuments();
-    const totalPages = Math.ceil(count / perPage)
-    res.render("catogories", { categories, totalPages, currentPage: page });
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * perPage;
+
+    let sortQuery = [];
+
+    switch (sort) {
+      case 'newness':
+        sortQuery = [{ $sort: { createdate: -1 } }];
+        break;
+
+      case 'less_products':
+        sortQuery = [{ $project: { name: 1, description: 1, items: 1, img: 1, sales: 1, numItems: { $size: "$items" } } }, { $sort: { numItems: 1 } }];
+        break;
+
+      case 'most_products':
+        sortQuery = [{ $project: { name: 1, description: 1, items: 1, img: 1, sales: 1, numItems: { $size: "$items" } } }, { $sort: { numItems: -1 } }];
+        break;
+
+
+      case 'less_saled':
+        sortQuery = [{ $sort: { sales: 1 } }];
+        break;
+
+      case 'most_saled':
+        sortQuery = [{ $sort: { sales: -1 } }];
+        break;
+
+      default:
+        break;
+    }
+
+    if (name !== '') {
+      sortQuery.unshift({ $match: { name: { $regex: name, $options: 'i' } } });
+    }
+    
+
+    const categories = await Category.aggregate([
+      ...sortQuery,
+      { $skip: skip },
+      { $limit: perPage }
+    ]);
+
+    const count = await Category.countDocuments({name:{ $regex: name, $options: 'i' }} );
+    const totalPages = Math.ceil(count / perPage);
+
+
+    res.render("catogories", { categories, totalPages, currentPage: page, count, sort, name });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 
 // * for adding new catogorie
@@ -555,7 +598,7 @@ const addCatagorie = async (req, res) => {
     res.redirect("/admin/catogories");
   } catch (error) {
     console.error("Error adding category:", error);
-    req.flash("error", "Internal Server Error. Please try again later.");
+    console.log("error", "Internal Server Error. Please try again later.");
     res.redirect("/admin/catogories");
   }
 };
@@ -582,16 +625,14 @@ const editCatogory = async (req, res) => {
       }
     );
 
-    if (category) {
-      req.flash("success", "catogory details updated successfully.");
-    } else {
-      req.flash("error", "Failed to update catogory details.");
+    if (!category) {
+      console.log("error", "Failed to update catogory details.");
     }
 
     res.redirect("/admin/catogories");
   } catch (error) {
     console.error("Error editing catogory:", error);
-    req.flash("error", "Internal Server Error. Please try again later.");
+    console.log("error", "Internal Server Error. Please try again later.");
     res.redirect("/admin/catogories");
   }
 };
@@ -611,20 +652,40 @@ const deleteCatogory = async (req, res) => {
 
 
 // * for laoding all the orders
-
 const loadOrders = async (req, res) => {
   try {
+    const sort = req.query.sort || 'all';
+    const sort2 = req.query.sort2 || 'all';
     const perPage = 9;
-    const page = parseInt(req.query.page) || 1
-    const skip = (page - 1) * perPage
-    const count = await Order.countDocuments()
-    const totalPages = Math.ceil(count / perPage)
-    const orders = await Order.find().populate('deliveryAddress').skip(skip).limit(perPage)
-    res.render(`orders-list`, { orders, totalPages, currentPage: page, count });
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * perPage;
+
+    let findQuery = {};
+    if (sort !== 'all') {
+      findQuery.orderStatus = sort;
+    }
+
+    if (sort2 === 'online') {
+      findQuery.offlinePayment = false;
+    } else if (sort2 === 'offline') {
+      findQuery.offlinePayment = true;
+    } else if (sort2 === 'pending') {
+      findQuery.paymentStatus = 'pending';
+    }
+
+    const countPromise = sort === 'all' ? Order.countDocuments() : Order.countDocuments(findQuery);
+    const [count, orders] = await Promise.all([countPromise, Order.find(findQuery).skip(skip).limit(perPage)]);
+
+    const totalPages = Math.ceil(count / perPage);
+
+    res.status(200).render('orders-list', { orders, totalPages, currentPage: page, count, sort, sort2 });
   } catch (error) {
-    console.log(error.message);
+    console.error('Error loading orders:', error.message);
+    res.status(500).send('Internal Server Error');
   }
-}
+};
+
+
 
 
 
@@ -788,14 +849,14 @@ const loadReport = async (req, res) => {
       categories = await Category.find({ createdate: { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
     }
 
-    const paymentPendingOrders = totalOrders -  (await Order.find({ paymentStatus: 'pending' })).length
-    
+    const paymentPendingOrders = totalOrders - (await Order.find({ paymentStatus: 'pending' })).length
+
     const orders = await Order.find({ orderDate: { $gte: moment().subtract(1, 'day').startOf('day') } });
 
     const bestProducts = await Product.find().sort({ sales: -1 }).limit(5)
     const bestCatogories = await Category.find().sort({ sales: -1 }).limit(5)
 
-    res.render('report', { reportData, products, categories, bestCatogories, bestProducts, paymentPendingOrders,orders });
+    res.render('report', { reportData, products, categories, bestCatogories, bestProducts, paymentPendingOrders, orders });
 
   } catch (error) {
     console.error(error.message);

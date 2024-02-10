@@ -336,17 +336,15 @@
 									</a>
 									<% } %>
 
+										<div id="aaaa">
+											<a href="/cart"
+												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+												data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+												<i class="zmdi zmdi-shopping-cart"></i>
+											</a>
 
-										<div
-											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-											<i class="zmdi zmdi-search"></i>
 										</div>
 
-										<a href="/cart"
-											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-											data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
-											<i class="zmdi zmdi-shopping-cart"></i>
-										</a>
 
 										<% if (valid) { %>
 											<a href="whishlist"
@@ -421,15 +419,16 @@
 					<% } %>
 
 						<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-							<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-								<i class="zmdi zmdi-search"></i>
-							</div>
 
-							<a href="/cart"
-								class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-								data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
-								<i class="zmdi zmdi-shopping-cart"></i>
-							</a>
+
+
+							<div id="aaaa">
+								<a href="/cart"
+									class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+									data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+									<i class="zmdi zmdi-shopping-cart"></i>
+								</a>
+							</div>
 
 							<% if (valid) { %>
 								<a href="whishlist"
@@ -497,7 +496,7 @@
 				</ul>
 			</div>
 
-			
+
 		</header>
 
 
@@ -795,12 +794,15 @@
 				</div>
 			</div>
 		</div>
-		<div id="paymentFailedMessage" style="display: none; background-color: #f8d7da; color: #721c24; padding: 15px; border: 1px solid #f5c6cb; border-radius: 5px; position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 9999; width: 300px; text-align: center;margin-top: 400px;">
+		<div id="paymentFailedMessage"
+			style="display: none; background-color: #f8d7da; color: #721c24; padding: 15px; border: 1px solid #f5c6cb; border-radius: 5px; position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 9999; width: 300px; text-align: center;margin-top: 400px;">
 			<span style="font-weight: bold;">Payment Failed:</span> Please try again.
-			<button style="border: none; background-color: transparent; color: #721c24; font-weight: bold; position: absolute; top: 5px; right: 5px; cursor: pointer;" onclick="hidePaymentFailedMessage()">X</button>
+			<button
+				style="border: none; background-color: transparent; color: #721c24; font-weight: bold; position: absolute; top: 5px; right: 5px; cursor: pointer;"
+				onclick="hidePaymentFailedMessage()">X</button>
 		</div>
-		
-		
+
+
 
 
 
@@ -968,8 +970,7 @@
 			</span>
 		</div>
 		<style>
-			.aaa
-			{
+			.aaa {
 				color: #169dd2;
 			}
 		</style>

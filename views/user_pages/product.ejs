@@ -82,10 +82,15 @@
 								<% } %>
 
 
-									<div
+									<!-- <div
 										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
 										<i class="zmdi zmdi-search"></i>
 									</div>
+
+									<div class="search-input-container" style="display: none; border: 2px;">
+										<input type="text" class="search-input" placeholder="Search...">
+									</div> -->
+
 									<div id="jhdwkjadwkj">
 										<a href="/cart"
 											class=" icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
@@ -102,17 +107,17 @@
 												data-notify="<%= whishItems %>">
 												<i class="zmdi zmdi-favorite-outline"></i>
 											</a>&nbsp;&nbsp;&nbsp;
-										<% }else{ %>
-										<a href="/login"
-											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-											data-notify="0">
-											<i class="zmdi zmdi-favorite-outline"></i>
-										</a>&nbsp;&nbsp;&nbsp;
-										<% } %>
-			
+											<% }else{ %>
+												<a href="/login"
+													class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+													data-notify="0">
+													<i class="zmdi zmdi-favorite-outline"></i>
+												</a>&nbsp;&nbsp;&nbsp;
+												<% } %>
+
 									</div>
-									
-									
+
+
 
 									<% if (valid) { %>
 										<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
@@ -169,9 +174,16 @@
 				</a>&nbsp;&nbsp;
 				<% } %>
 					<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
+
+
+						<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
 							<i class="zmdi zmdi-search"></i>
 						</div>
+
+						<div class="search-input-container" style="display: none; border: 2px;">
+							<input type="text" class="search-input" placeholder="Search...">
+						</div> -->
+
 						<div id="jhdwkjadwkj">
 							<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
 								data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
@@ -186,16 +198,16 @@
 									data-notify="<%= whishItems %>">
 									<i class="zmdi zmdi-favorite-outline"></i>
 								</a>&nbsp;&nbsp;&nbsp;
-							<% }else{ %>
-							<a href="/login"
-								class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-								data-notify="0">
-								<i class="zmdi zmdi-favorite-outline"></i>
-							</a>&nbsp;&nbsp;&nbsp;
-							<% } %>
+								<% }else{ %>
+									<a href="/login"
+										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+										data-notify="0">
+										<i class="zmdi zmdi-favorite-outline"></i>
+									</a>&nbsp;&nbsp;&nbsp;
+									<% } %>
 
 						</div>
-						
+
 						<% if (valid) { %>
 							<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
 								<i class="zmdi zmdi-account"></i>
@@ -247,7 +259,7 @@
 			</ul>
 		</div>
 
-		
+
 	</header>
 
 
@@ -262,27 +274,10 @@
 
 
 	<!-- Product -->
-	<div class="bg0 m-t-23 p-b-140">
-		<div class="container" id="container">
+	<div class="bg0 m-t-23 p-b-140" id="container">
+		<div class="container" id="containercontainer">
 			<div class="flex-w flex-sb-m p-b-52">
 				<div class="flex-w flex-l-m filter-tope-group m-tb-10">
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-						All Products
-					</button>
-
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-						Women
-					</button>
-
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-						Men
-					</button>
-
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".children">
-						Children
-					</button>
-
-
 				</div>
 
 				<div class="flex-w flex-c-m m-tb-10">
@@ -303,14 +298,13 @@
 				<!-- Search product -->
 				<div class="dis-none panel-search w-full p-t-10 p-b-15">
 					<div class="bor8 dis-flex p-l-15">
-						<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+						<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04" onclick="searchProducts(event, '<%= category %>', '<%= currentPage %>', '<%= price %>', '<%= sort %>')">
 							<i class="zmdi zmdi-search"></i>
 						</button>
-
-						<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product"
-							placeholder="Search">
+						<input onkeydown="if (event.keyCode == 13) { event.preventDefault(); searchProducts(event, '<%= category %>', '<%= currentPage %>', '<%= price %>', '<%= sort %>'); }" class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search for Priducts">
 					</div>
 				</div>
+
 
 				<!-- Filter -->
 				<div class="dis-none panel-filter w-full p-t-10">
@@ -320,246 +314,162 @@
 								Sort By
 							</div>
 
-							<ul>
+							<ul onclick="productsSort(event,'<%= category %>','<%= currentPage %>','<%= price %>','<%= name %>')" ,>
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
+									<a class="filter-link stext-106 trans-04 <%= sort === 'default'? 'filter-link-active' : '' %>"
+										data-sort="default">
 										Default
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										Popularity
+									<a class="filter-link stext-106 trans-04 <%= sort === 'most_sold' ? 'filter-link-active' : '' %>"
+										data-sort="most_sold">
+										Most Sold
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										Average rating
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
+									<a class="filter-link stext-106 trans-04 <%= sort === 'newness' ? 'filter-link-active' : '' %>"
+										data-sort="newness">
 										Newness
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
+									<a class="filter-link stext-106 trans-04 <%= sort === 'price_low_to_high' ? 'filter-link-active' : '' %>"
+										data-sort="price_low_to_high">
 										Price: Low to High
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
+									<a class="filter-link stext-106 trans-04 <%= sort === 'price_high_to_low' ? 'filter-link-active' : '' %>"
+										data-sort="price_high_to_low">
 										Price: High to Low
 									</a>
 								</li>
 							</ul>
 						</div>
 
-						<div class="filter-col2 p-r-15 p-b-27">
+						<div class="filter-col2 p-r-15 p-b-27"
+							onclick="priceSort(event,'<%= currentPage %>','<%= sort %>','<%= category %>','<%= name %>')">
 							<div class="mtext-102 cl2 p-b-15">
 								Price
 							</div>
 
 							<ul>
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
+									<a data-sort="all"
+										class="filter-link stext-106 trans-04 <%= price === 'all' ? 'filter-link-active' : '' %>">
 										All
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										$0.00 - $50.00
+									<a class="filter-link stext-106 trans-04 <%= price === '0-500' ? 'filter-link-active' : '' %>"
+										data-sort="0-500">
+										₹0-₹500
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										$50.00 - $100.00
+									<a class="filter-link stext-106 trans-04 <%= price === '500-1000' ? 'filter-link-active' : '' %>"
+										data-sort="500-1000">
+										₹500-₹1,000
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										$100.00 - $150.00
+									<a class="filter-link stext-106 trans-04 <%= price === '1000-2000' ? 'filter-link-active' : '' %>"
+										data-sort="1000-2000">
+										₹1,000-₹2,000
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										$150.00 - $200.00
+									<a class="filter-link stext-106 trans-04 <%= price === '2000-5000' ? 'filter-link-active' : '' %>"
+										data-sort="2000-5000">
+										₹2,000-₹5,000
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										$200.00+
+									<a class="filter-link stext-106 trans-04 <%= price === '5000+' ? 'filter-link-active' : '' %>"
+										data-sort="5000+">
+										₹5,000+
 									</a>
 								</li>
 							</ul>
 						</div>
 
-						<div class="filter-col3 p-r-15 p-b-27">
-							<div class="mtext-102 cl2 p-b-15">
-								Color
-							</div>
-
-							<ul>
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #222;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Black
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #4272d7;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-										Blue
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #b3b3b3;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Grey
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #00ad5f;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Green
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #fa4251;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Red
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #aaa;">
-										<i class="zmdi zmdi-circle-o"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										White
-									</a>
-								</li>
-							</ul>
-						</div>
 
 						<div class="filter-col4 p-b-27">
 							<div class="mtext-102 cl2 p-b-15">
-								Tags
+								Categories
 							</div>
 
-							<div class="flex-w p-t-4 m-r--5">
-								<a href="#"
-									class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Fashion
-								</a>
-
-								<a href="#"
-									class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Lifestyle
-								</a>
-
-								<a href="#"
-									class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Denim
-								</a>
-
-								<a href="#"
-									class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Streetstyle
-								</a>
-
-								<a href="#"
-									class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Crafts
-								</a>
+							<div class="flex-w p-t-4 m-r--5"
+								onclick="cataogorieSort(event,'<%= sort %>','<%= currentPage %>','<%= price %>','<%=  name %>')">
+								<a class="flex-c-m stext-107 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5 <%= category === 'all' ? 'link-active' : '' %>"
+									data-sort="all">All Caotogries</a>
+								<% categories.forEach(c=> { %>
+									<a class="flex-c-m stext-107 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5 <%= category === c.name ? 'link-active' : '' %>"
+										data-sort="<%= c.name %>">
+										<%= c.name %>
+									</a>
+									<% }) %>
 							</div>
 						</div>
+
+						<style>
+							#link-active {
+								color: #717FE0;
+							}
+						</style>
+
 					</div>
 				</div>
 			</div>
 
-			<div class="row isotope-grid">
-				<% products.forEach(function(product) { %>
-					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%= product.categoryid.type %>">
-						<a href="/product?id=<%= product._id %>">
-							<!-- Block2 -->
-							<div class="block2">
-								<div class="block2-pic hov-img0">
-									<img src="/resized_images/<%= product.img[0] %>" alt="IMG-PRODUCT" class="image">
-									<% if (valid===undefined||valid===null) { %>
-										<a href="/login?toast=to access cart you should login first "
-											class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
-											Add To Cart
-										</a>
-										<% }else if(product.quantity>= 1) {%>
-											<a onclick="addToCartProductPage('<%= product._id %>')" id="cccc"
+			<div class="row isotope-grid" id="mainBody">
+				<% if (products.length >0) { %>
+					<% products.forEach(function(product) { %>
+						<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%= product.categoryid.type %>">
+							<a href="/product?id=<%= product._id %>">
+								<!-- Block2 -->
+								<div class="block2">
+									<div class="block2-pic hov-img0">
+										<img src="/resized_images/<%= product.img[0] %>" alt="IMG-PRODUCT" class="image">
+										<% if (valid===undefined||valid===null) { %>
+											<a href="/login?toast=to access cart you should login first "
 												class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
 												Add To Cart
 											</a>
-											<% } %>
-
-								</div>
-
-								<div class="block2-txt flex-w flex-t p-t-14">
-									<div class="block2-txt-child1 flex-col-l">
-										<a href="/product?id=<%= product._id %>"
-											class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-											<%= product.name %>
-										</a>
-
-										<span class="stext-105 cl3">
-											<%= product.price %>
-										</span>
+											<% }else if(product.quantity>= 1) {%>
+												<a onclick="addToCartProductPage('<%= product._id %>')" id="cccc"
+													class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
+													Add To Cart
+												</a>
+												<% } %>
 									</div>
-
-									<% if (valid==undefined||valid== null) { %>
-										<div class="block2-txt-child2  flex-r p-t-3" id="whish<%= product._id %>">
-											<a href="/login?toast=to access Whishlist you should login first "
-												style="margin-top: 2px;"
-												class="dis-block pos-relative ">
-												<% if (product.whishlist==true) { %>
-													<img id="remove" class=" dis-block trans-04 "
-														src="images/icons/icon-heart-02.png" alt="ICON">
-													<% } else { %>
-														<img id="add" class=" dis-block trans-04 "
-															src="images/icons/icon-heart-01.png" alt="ICON">
-														<% } %>
-													</a>
+	
+									<div class="block2-txt flex-w flex-t p-t-14">
+										<div class="block2-txt-child1 flex-col-l">
+											<a href="/product?id=<%= product._id %>"
+												class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+												<%= product.name %>
+											</a>
+	
+											<span class="stext-105 cl3">
+												<%= product.price %>
+											</span>
 										</div>
-										<% }else{ %>
+	
+										<% if (valid==undefined||valid==null) { %>
 											<div class="block2-txt-child2  flex-r p-t-3" id="whish<%= product._id %>">
-												<div onclick="products_whishlist(event,'<%= product._id %>','<%= product.name %>')"
-													style="margin-top: 2px;"
-													class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+												<a href="/login?toast=to access Whishlist you should login first "
+													style="margin-top: 2px;" class="dis-block pos-relative ">
 													<% if (product.whishlist==true) { %>
 														<img id="remove" class=" dis-block trans-04 "
 															src="images/icons/icon-heart-02.png" alt="ICON">
@@ -567,21 +477,38 @@
 															<img id="add" class=" dis-block trans-04 "
 																src="images/icons/icon-heart-01.png" alt="ICON">
 															<% } %>
-												</div>
+												</a>
 											</div>
-									<% } %>
+											<% }else{ %>
+												<div class="block2-txt-child2  flex-r p-t-3" id="whish<%= product._id %>">
+													<div onclick="products_whishlist(event,'<%= product._id %>','<%= product.name %>')"
+														style="margin-top: 2px;"
+														class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+														<% if (product.whishlist==true) { %>
+															<img id="remove" class=" dis-block trans-04 "
+																src="images/icons/icon-heart-02.png" alt="ICON">
+															<% } else { %>
+																<img id="add" class=" dis-block trans-04 "
+																	src="images/icons/icon-heart-01.png" alt="ICON">
+																<% } %>
+													</div>
+												</div>
+												<% } %>
+									</div>
 								</div>
-							</div>
-						</a>
-					</div>
-					<% }); %>
+							</a>
+						</div>
+						<% }); %>
+				<% }else{ %>
+					No Products Availble At The Moment
+				<% } %>
 			</div>
 
 
 
 			<div class="flex-c-m flex-w w-full p-t-38" id="pagination">
 				<% for (let i=1; i <=totalPages; i++) { %>
-					<a href="/products?page=<%= i %>"
+					<a href="/products?page=<%= i %>&&sort=<%= sort %>&&category=<%= category %>&&price=<%= price %>"
 						class="flex-c-m how-pagination1 trans-04 m-all-7 <% if (currentPage === i) { %>active-pagination1<% } %>">
 						<%= i %>
 					</a>
@@ -591,7 +518,6 @@
 		</div>
 	</div>
 	</div>
-
 
 	<!-- Footer -->
 	<footer id="result" class="bg3 p-t-75 p-b-32">
@@ -916,6 +842,8 @@
 			</div>
 		</div>
 	</div>
+
+
 
 
 	<!--===============================================================================================-->

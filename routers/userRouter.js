@@ -36,7 +36,7 @@ userRoute.get("/product", laodProductDetials);
 userRoute.get("/cart", requireLogin, loadCart);
 userRoute.post("/add-to-cart", requireLogin, addToCart)
 userRoute.post('/quantity-manage/:id', requireLogin, addQuantity)
-userRoute.get('/removeProduct/:id', requireLogin, removeProduct)
+userRoute.delete('/removeProduct/:id', requireLogin, removeProduct)
 userRoute.get("/addtocart", addToCartProductPage)
 
 // * Whishlist routes 
@@ -55,11 +55,11 @@ userRoute.get('/order-success', requireLogin, showSuccess)
 
 // * User Profile Routes
 userRoute.get('/account', requireLogin, laodAccount)
-userRoute.post('/edit-details', requireLogin, editDetails)
+userRoute.put('/edit-details', requireLogin, editDetails);
 userRoute.post("/change-password", requireLogin, changePassword)
 userRoute.post('/add-address', requireLogin, addAddress)
-userRoute.post('/edit-address/:id', requireLogin, edittAddress)
-userRoute.get('/delete-address/:id', requireLogin, deleteAddress)
+userRoute.put('/edit-address/:id', requireLogin, edittAddress)
+userRoute.delete('/delete-address/:id', requireLogin, deleteAddress);
 userRoute.post('/cancel-order', requireLogin, cancelOrder)
 
 userRoute.get("/about", loadAbout);

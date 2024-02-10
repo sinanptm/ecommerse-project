@@ -1,5 +1,127 @@
 
 
+async function searchProducts(event) {
+    try {
+        const name = event.target.value.trim();
+        if (name !== "") { 
+            const response = await $.ajax({
+                url: "/products",
+                method: "GET",
+                data: {
+                    name: name,
+                },
+                success:(res)=>{
+                    window.location.href = `/products?name=${name}`
+                },
+                error:(err)=>{
+                    throw new Error(err);
+                }
+            });
+        }
+    } catch (error) {
+        console.log('Error when searching:', error.message);
+    }
+}
+
+
+async function cataogorieSort(event, sort, page, price,name) {
+    try {
+        const catType = event.target.dataset.sort;
+        if (catType) {
+            window.location.href = `/products?sort=${sort}&&category=${catType}&&page=${page}&&price=${price}&&name=${name}`
+        }
+    } catch (error) {
+        console.log("error While Caotogrie sort " + error.message);
+    }
+}
+
+                    
+async function productsSort(event, category, page, price ,name) {
+    try {
+        const sortType = event.target.dataset.sort;
+        if (sortType) {
+            const res = await $.ajax({
+                url: `/products`,
+                method: "GET",
+                data: {
+                    sort: sortType,
+                    category: category,
+                    page: page,
+                    price: price,
+                    name:name
+                },
+
+            });
+            const newProducts = $(res).find("#mainBody").html()
+            const pagination = $(res).find('#pagination').html()
+            const filter_col1 = $(res).find(".filter-col1").html()
+            $("#pagination").html(pagination)
+            $('.filter-col1').html(filter_col1)
+            $('#mainBody').html(newProducts)
+        }
+    } catch (error) {
+        console.log('error while product sort ' + error.message);
+    }
+}
+
+async function priceSort(event, page, sort, category,name) {
+    try {
+        const price = event.target.dataset.sort
+        if (price) {
+            $.ajax({
+                url: "products",
+                method: "GET",
+                data: {
+                    page: page,
+                    sort: sort,
+                    category: category,
+                    price: price,
+                    name:name
+                },
+                success: (res) => {
+                    // window.location.href = `/products?page=${page}&&category=${category}&&price=${price}&&sort=${sort}`
+                    const newProducts = $(res).find("#mainBody").html()
+                    const pagination = $(res).find('#pagination').html()
+                    const filter_col1 = $(res).find(".filter-col2").html()
+                    $("#pagination").html(pagination)
+                    $('.filter-col2').html(filter_col1)
+                    $('#mainBody').html(newProducts)
+                },
+                error: (err) => {
+                    throw new Error(err.message)
+                }
+            }
+            )
+        }
+    } catch (error) {
+        console.log('error in price sort :', error.message);
+    }
+
+}
+
+
+function removeProductCart(id) {
+    fetch(`/removeProduct/${id}`, {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                throw new Error('Failed to delete product');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to delete product');
+        });
+}
+
+
+
 
 $("#placeOrder").submit((e) => {
     e.preventDefault();
@@ -290,6 +412,26 @@ async function addToCartHome(id) {
     }
 }
 
+function deleteAddress(addressId) {
+    if (confirm('Are you sure you want to delete this address?')) {
+        fetch(`/delete-address/${addressId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error('Failed to delete address');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+}
 
 function submitEditAddress(addressId) {
     clearEditAddressErrors();
@@ -332,7 +474,7 @@ function submitEditAddress(addressId) {
 
     $.ajax({
         url: `/edit-address/${addressId}`,
-        method: "POST",
+        method: "PUT",
         data: formData,
         success: function (response) {
             const newData = $(response).find(`.address${addressId}`).html();
@@ -416,6 +558,7 @@ function clearErrorMessages() {
     $('.error-container').hide().empty();
 }
 
+
 document.addEventListener("DOMContentLoaded", function () {
     // Get all elements with the class 'flipkart-dropdown'
     var dropdowns = document.querySelectorAll('.flipkart-dropdown');
@@ -446,7 +589,7 @@ async function update() {
 
         const res = await $.ajax({
             url: "/edit-details",
-            method: "POST",
+            method: "PUT",
             data: formData
         });
 
@@ -650,8 +793,8 @@ function hideSubmitButton() {
         }
     });
 
-    $(document).ready(function() {
-        $('.js-show-modal-search').on('click', function() {
+    $(document).ready(function () {
+        $('.js-show-modal-search').on('click', function () {
             $('.search-input-container').toggle();
         });
     });

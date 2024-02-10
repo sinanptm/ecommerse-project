@@ -1,6 +1,8 @@
+const { name } = require("ejs");
 const { Product, Order, CancelationReson, Category } = require("../../models/productModel")
 const { User, Addresse, Wishlist } = require("../../models/userModels")
-const { getUserIdFromToken, bcryptCompare, makeHash, createHexId, isValidObjectId } = require('../../util/validations')
+const { getUserIdFromToken, bcryptCompare, makeHash, createHexId, isValidObjectId } = require('../../util/validations');
+const { Error } = require("mongoose");
 
 // * homepage Loading
 
@@ -47,37 +49,96 @@ const loadHome = async (req, res) => {
 // * for showing products 
 const loadProducts = async (req, res) => {
     try {
-        const page = parseInt(req.query.page, 10) || 1;
-        const totalCount = await Product.countDocuments({ status: "Available" });
-        const limit = 12;
-        const totalPages = Math.ceil(totalCount / limit);
-        const skip = (page - 1) * limit;
+        const name = req.query.name ||''
+        const sort = req.query.sort || 'default';
+        const category = req.query.category || 'all';
+        const price = req.query.price || 'all';
+        let page = parseInt(req.query.page, 10) || 1;
+        let limit = 12;
+        let skip = (page - 1) * limit;
 
-        let products = await Product.find({ status: "Available" }).limit(limit).skip(skip).lean();
-        let userid = products[0]._id
-        if (req.cookies.token || req.session.token) {
-            userid = await getUserIdFromToken(req.cookies.token || req.session.token);
+        // Base query for products
+        let findQuery = { status: "Available" };
 
+        // Sorting logic
+        let sortQuery = {};
+        switch (sort) {
+            case 'most_sold':
+                sortQuery = { sales: -1 };
+                break;
+            case 'newness':
+                sortQuery = { createdate: -1 };
+                break;
+            case 'price_low_to_high':
+                sortQuery = { price: 1 };
+                break;
+            case 'price_high_to_low':
+                sortQuery = { price: -1 };
+                break;                    
+            default:
+                break;
         }
-        const wishlist = await Wishlist.findOne({ userid });
+
+        if (name !== '') {
+            findQuery.name = { $regex: new RegExp(name, 'i') }; 
+        }
+
+
+        if (category !== 'all') {
+            const categoryDoc = await Category.findOne({ name: category });
+            if (categoryDoc) {
+                findQuery.categoryid = categoryDoc._id;
+            }
+        }
+
+        const priceRanges = {
+            '0-500': { $gte: 0, $lte: 500 },
+            '500-1000': { $gte: 500, $lte: 1000 },
+            '1000-2000': { $gte: 1000, $lte: 2000 },
+            '2000-5000': { $gte: 2000, $lte: 5000 },
+            '5000+': { $gte: 5000 }
+        };
+
+        if (price !== 'all') {
+            findQuery.price = priceRanges[price];
+        }
+
+
+
+        let products = await Product.find(findQuery)
+            .populate('categoryid')
+            .sort(sortQuery)
+            .limit(limit)
+            .skip(skip)
+            .lean();
+
+        const categories = await Category.find();
+        const totalCount = await Product.countDocuments(findQuery);
+        const totalPages = Math.ceil(totalCount / limit);
+
+        let userId = null;
+        if (req.cookies.token || req.session.token) {
+            userId = await getUserIdFromToken(req.cookies.token || req.session.token);
+        }
+        const wishlist = await Wishlist.findOne({ userid: userId });
 
         products.forEach(product => {
-            product.whishlist = false;
+            product.wishlist = false;
         });
 
         if (wishlist) {
             products.forEach(product => {
-                product.whishlist = wishlist.products.includes(product._id);
+                product.wishlist = wishlist.products.includes(product._id);
             });
         }
-        products[0].wishlist = true
-        res.render("product", { products, totalPages, currentPage: page });
 
+        res.render("product", { products, categories, totalPages, currentPage: page, sort, category, price , name });
     } catch (error) {
         console.error("Error in loadProducts:", error);
         res.status(500).send("Internal Server Error");
     }
 };
+
 
 
 
@@ -92,7 +153,7 @@ const laodProductDetials = async (req, res) => {
         }
 
         let product = await Product.aggregate([
-            { $match: { _id: await createHexId(id) } },
+            { $match: { _id: createHexId(id) } },
             {
                 $lookup: {
                     from: 'categories',
@@ -132,7 +193,7 @@ const laodAccount = async (req, res) => {
         }
 
         const user = await User.aggregate([
-            { $match: { _id: await createHexId(userid) } },
+            { $match: { _id: createHexId(userid) } },
             {
                 $lookup: {
                     from: "addresses",
@@ -145,7 +206,7 @@ const laodAccount = async (req, res) => {
 
 
         const orders = await Order.aggregate([
-            { $match: { userid: await createHexId(userid) } }, // Match against userid field
+            { $match: { userid: createHexId(userid) } }, // Match against userid field
             {
                 $lookup: {
                     from: "products",
@@ -158,6 +219,7 @@ const laodAccount = async (req, res) => {
 
 
         const msg = req.query.msg;
+
 
         if (!user) {
             res.status(404);
@@ -305,15 +367,19 @@ const cancelOrder = async (req, res) => {
             reason: cancelReason
         });
 
-        await newReason.save();
-        const order = await Order.findByIdAndUpdate(orderId, { $set: { orderStatus: "5" } });
-
-        res.status(200).redirect('/account');
+        const cancel = await newReason.save();
+        const order = await Order.findByIdAndUpdate({ _id: cancel.orderid }, { $set: { orderStatus: "5" } });
+        if (order.orderStatus == '5') {
+            res.status(200).redirect('/account');
+        } else {
+            throw new Error("no fdj")
+        }
     } catch (error) {
         console.log(error.message);
         res.status(500).redirect('/account?msg=' + error.message);
     }
 };
+
 
 // * for deleting address
 const deleteAddress = async (req, res) => {
@@ -323,7 +389,7 @@ const deleteAddress = async (req, res) => {
         const addressid = req.params.id
         const address = await Addresse.findByIdAndDelete(addressid)
         const userAddress = await User.findByIdAndUpdate(userId, { $pull: { address: addressid } })
-        res.status(200).redirect('/account')
+        res.status(200).json({ succes: true })
     } catch (error) {
         console.log(error.message);
         res.redirect('/account?msg=' + error.message);

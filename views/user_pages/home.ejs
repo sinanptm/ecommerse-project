@@ -80,19 +80,12 @@
 								</a>
 								<% } %>
 
-
-									<div
-										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-										<i class="zmdi zmdi-search"></i>
-									</div>
-
-									
 									<div id="jhdwkjaladadwkj">
-										<a href="/cart" 
-										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-										data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
-										<i class="zmdi zmdi-shopping-cart"></i>
-									</a>
+										<a href="/cart"
+											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+											data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+											<i class="zmdi zmdi-shopping-cart"></i>
+										</a>
 									</div>
 
 									<div id="whishshs">
@@ -102,16 +95,16 @@
 												data-notify="<%= whishItems %>">
 												<i class="zmdi zmdi-favorite-outline"></i>
 											</a>&nbsp;&nbsp;&nbsp;
-										<% }else{ %>
-										<a href="/login"
-											class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-											data-notify="0">
-											<i class="zmdi zmdi-favorite-outline"></i>
-										</a>&nbsp;&nbsp;&nbsp;
-										<% } %>
-			
+											<% }else{ %>
+												<a href="/login"
+													class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+													data-notify="0">
+													<i class="zmdi zmdi-favorite-outline"></i>
+												</a>&nbsp;&nbsp;&nbsp;
+												<% } %>
+
 									</div>
-									
+
 									<% if (valid) { %>
 										<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
 											<i class="zmdi zmdi-account"></i>
@@ -169,17 +162,13 @@
 				<% } %>
 
 					<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-							<i class="zmdi zmdi-search"></i>
-						</div>
 
-						
 						<div id="jhdwkjaladadwkj">
-							<a href="/cart" 
-							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-							data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
-							<i class="zmdi zmdi-shopping-cart"></i>
-						</a>
+							<a href="/cart"
+								class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+								data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
+								<i class="zmdi zmdi-shopping-cart"></i>
+							</a>
 						</div>
 
 						<div id="whishshs">
@@ -189,16 +178,16 @@
 									data-notify="<%= whishItems %>">
 									<i class="zmdi zmdi-favorite-outline"></i>
 								</a>&nbsp;&nbsp;&nbsp;
-							<% }else{ %>
-							<a href="/login"
-								class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-								data-notify="0">
-								<i class="zmdi zmdi-favorite-outline"></i>
-							</a>&nbsp;&nbsp;&nbsp;
-							<% } %>
+								<% }else{ %>
+									<a href="/login"
+										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+										data-notify="0">
+										<i class="zmdi zmdi-favorite-outline"></i>
+									</a>&nbsp;&nbsp;&nbsp;
+									<% } %>
 
 						</div>
-						
+
 						<% if (valid) { %>
 							<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
 								<i class="zmdi zmdi-account"></i>
@@ -251,7 +240,7 @@
 		</div>
 
 		<!-- Modal Search -->
-		
+
 	</header>
 
 
@@ -429,18 +418,18 @@
 							<div class="block2">
 								<div class="block2-pic hov-img0">
 									<img src="/resized_images/<%= product.img[0] %>" alt="IMG-PRODUCT" class="image">
-									
-										<% if (valid ===undefined||valid===null) { %>
-											<a href="/login?toast=to access cart you should login first "
-												class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
-												Add To Cart
-											</a>
-										<% }else if(product.quantity >= 1) {%>
+
+									<% if (valid===undefined||valid===null) { %>
+										<a href="/login?toast=to access cart you should login first "
+											class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
+											Add To Cart
+										</a>
+										<% }else if(product.quantity>= 1) {%>
 											<a onclick="addToCartHome('<%= product._id %>')" id="cccc"
 												class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
 												Add To Cart
 											</a>
-										<% } %>
+											<% } %>
 
 								</div>
 
@@ -457,11 +446,10 @@
 										</span>
 									</div>
 
-									<% if (valid==undefined||valid== null) { %>
+									<% if (valid==undefined||valid==null) { %>
 										<div class="block2-txt-child2  flex-r p-t-3" id="whish<%= product._id %>">
 											<a href="/login?toast=to access Whishlist you should login first "
-												style="margin-top: 2px;"
-												class="dis-block pos-relative ">
+												style="margin-top: 2px;" class="dis-block pos-relative ">
 												<% if (product.whishlist==true) { %>
 													<img id="remove" class=" dis-block trans-04 "
 														src="images/icons/icon-heart-02.png" alt="ICON">
@@ -469,7 +457,7 @@
 														<img id="add" class=" dis-block trans-04 "
 															src="images/icons/icon-heart-01.png" alt="ICON">
 														<% } %>
-													</a>
+											</a>
 										</div>
 										<% }else{ %>
 											<div class="block2-txt-child2  flex-r p-t-3" id="whish<%= product._id %>">
@@ -485,7 +473,7 @@
 															<% } %>
 												</div>
 											</div>
-									<% } %>
+											<% } %>
 
 								</div>
 							</div>
@@ -496,7 +484,7 @@
 			</div>
 
 			<!-- Pagination -->
-			<div class="flex-c-m flex-w w-full p-t-38" id="pagination"> 
+			<div class="flex-c-m flex-w w-full p-t-38" id="pagination">
 				<% for (let i=1; i <=totalPages; i++) { %>
 					<a href="/home?page=<%= i %>"
 						class="flex-c-m how-pagination1 trans-04 m-all-7 <% if (currentPage === i) { %>active-pagination1<% } %>">
@@ -787,6 +775,3 @@
 </body>
 
 </html>
-
-
-

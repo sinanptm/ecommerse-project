@@ -240,28 +240,27 @@ const addQuantity = async (req, res) => {
 
 const removeProduct = async (req, res) => {
   try {
-    const productId = req.params.id
+    const productId = req.params.id;
     const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
-    const cart = await Cart.findOne({ userId })
+    const cart = await Cart.findOne({ userId });
 
-    const productIndex = cart.products.findIndex(product => product.productid.equals(productId))
+    const productIndex = cart.products.findIndex(product => product.productid.equals(productId));
     if (productIndex === -1) {
       console.error('Product not found in the cart:', productId);
-      res.status(404).redirect('/cart');
-      return;
+      return res.status(404).json({ error: 'Product not found in the cart' });
     }
 
     const removedProduct = cart.products.splice(productIndex, 1)[0];
 
-    const q = cart.items -= 1
-    const price = cart.totalPrice -= removedProduct.price
-    await cart.save()
-    res.redirect('/cart')
-
+    cart.items -= 1;
+    cart.totalPrice -= removedProduct.price;
+    await cart.save();
+    res.status(200).json({ success: true });
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
 
 
 // * for sending datas to checkout page 

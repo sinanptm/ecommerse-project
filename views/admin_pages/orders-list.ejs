@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="utf-8">
-    <title><%= title %></title>
+    <title>
+        <%= title %>
+    </title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,13 +23,16 @@
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
         }
-        .product-image {
-    width: 60px; /* Set the desired width */
-    height: 40px; /* Set the desired height */
-    object-fit: cover; /* Optional: Ensure the image maintains its aspect ratio */
-    /* Add any other styles you want */
-}
 
+        .product-image {
+            width: 60px;
+            /* Set the desired width */
+            height: 40px;
+            /* Set the desired height */
+            object-fit: cover;
+            /* Optional: Ensure the image maintains its aspect ratio */
+            /* Add any other styles you want */
+        }
     </style>
 </head>
 
@@ -39,7 +44,8 @@
                 <h3 class="logo" alt="Evara Dashboard">TRENDS</h1>
             </a>
             <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
             </div>
         </div>
         <nav>
@@ -76,149 +82,71 @@
 
                     </div>
                 </li>
-               
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
-                        <span class="text">Transactions</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-transactions-1.html">Transaction 1</a>
-                        <a href="page-transactions-2.html">Transaction 2</a>
-                        <a href="page-transactions-details.html">Transaction Details</a>
-                    </div>
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
-                        <span class="text">Account</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="/admin/login">User login</a>
-                         <a href="page-error-404.html">Error 404</a>
-                    </div>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
-                        <span class="text">Reviews</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
-                        <span class="text">Statistics</span>
-                    </a>
-                </li>
-            </ul>
-            <hr>
-            <ul class="menu-aside">
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-settings"></i>
-                        <span class="text">Settings</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-settings-1.html">Setting sample 1</a>
-                        <a href="page-settings-2.html">Setting sample 2</a>
-                    </div>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-blank.html"> <i class="icon material-icons md-local_offer"></i>
-                        <span class="text"> Starter page </span>
-                    </a>
-                </li>
-            </ul>
-            <br>
-            <br>
+
+
+                <br>
+                <br>
         </nav>
     </aside>
     <main class="main-wrap">
         <header class="main-header navbar">
             <div class="col-search">
-                <form class="searchform">
-                    <div class="input-group">
-                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
-                    </div>
-                    <datalist id="search_terms">
-                        <option value="Products">
-                        <option value="New orders">
-                        <option value="Apple iphone">
-                        <option value="Ahmed Hassan">
-                    </datalist>
-                </form>
+               
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
+                        class="material-icons md-apps"></i> </button>
                 <ul class="nav">
-                   <!-- <li class="nav-item">
-                        <a class="nav-link btn-icon" href="#">
-                            <i class="material-icons md-notifications animation-shake"></i>
-                            <span class="badge rounded-pill">3</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                    </li> -->
-                    <!-- <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                            <a class="dropdown-item text-brand" href="#"><img src="imgs/theme/flag-us.png" alt="English">English</a>
-                            <a class="dropdown-item" href="#"><img src="imgs/theme/flag-fr.png" alt="Français">Français</a>
-                            <a class="dropdown-item" href="#"><img src="imgs/theme/flag-jp.png" alt="Français">日本語</a>
-                            <a class="dropdown-item" href="#"><img src="imgs/theme/flag-cn.png" alt="Français">中国人</a>
-                        </div>
-                    </li>-->
+
                     <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="imgs/people/avatar2.jpg" alt="User"></a>
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
+                            aria-expanded="false"> <img class="img-xs rounded-circle" src="imgs/people/avatar2.jpg"
+                                alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <!-- <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a> -->
-                            <!-- <div class="dropdown-divider"></div> -->
-                            <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i
+                                    class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
-                    </li> 
+                    </li>
                 </ul>
             </div>
         </header>
-        <section class="content-main">
+        <section class="content-main" id="content-main">
             <div class="content-header">
                 <div>
                     <h2 class="content-title card-title">Order List </h2>
-                    <p>All orders(<%= count ||0 %>).</p>
+                    <p>Total Orders: <%= count ||0 %>.</p>
                 </div>
-               
+
             </div>
             <div class="card mb-4">
                 <header class="card-header">
                     <div class="row gx-3">
+                        <div class="col-lg-2 col-6 col-md-3" onchange="orderSort2(event,'<%= currentPage %>','<%= sort %>')">
+                            <select class="form-select">
+                                <option value="all" <%=sort2=='all' ?'selected':'' %>>Show all</option>
+                                <option value="pending" <%=sort2=='pending' ?'selected':'' %>>Pending Payment</option>
+                                <option value="online" <%=sort2=='online' ?'selected':'' %>>Online Payment</option>
+                                <option value="offline" <%=sort2=='offline' ?'selected':'' %>>Offline Payment</option>
+                            </select>
+                        </div>
                         <div class="col-lg-4 col-md-6 me-auto">
                         </div>
                         <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Show 20</option>
-                                <option>Show 30</option>
-                                <option>Show 40</option>
+                            <select class="form-select" onchange="orderSort('<%= currentPage %>', event,'<%= sort2 %>')">
+                                <option value="all" <%=sort==='all' ? 'selected' : '' %>>Status</option>
+                                <option value="1" <%=sort==='1' ? 'selected' : '' %>>Processing</option>
+                                <option value="2" <%=sort==='2' ? 'selected' : '' %>>Quality Check</option>
+                                <option value="3" <%=sort==='3' ? 'selected' : '' %>>Shipped</option>
+                                <option value="4" <%=sort==='4' ? 'selected' : '' %>>Delivered</option>
+                                <option value="5" <%=sort==='5' ? 'selected' : '' %>>Cancelled</option>
                             </select>
                         </div>
                     </div>
                 </header> <!-- card-header end// -->
+
                 <div class="card-body">
-                    <div class="table-responsive"  id="content-mains">
+                    <div class="table-responsive" id="content-mains">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -233,12 +161,19 @@
                             </thead>
                             <tbody>
                                 <% if (orders) { %>
-                                    <% orders.forEach((order, i) => { %>
+                                    <% orders.forEach((order, i)=> { %>
                                         <tr>
-                                            <td>#SK<%= i + 1 %></td>
-                                            <td><b><%= order.deliveryAddress.Lname || "N/A" %></b></td>
-                                            <td><%= order.deliveryAddress.email || "N/A" %></td>
-                                            <td><%= order.orderAmount || "N/A" %></td>
+                                            <td>#SK<%= i + 1 %>
+                                            </td>
+                                            <td><b>
+                                                    <%= order.deliveryAddress.Lname || "N/A" %>
+                                                </b></td>
+                                            <td>
+                                                <%= order.deliveryAddress.email || "N/A" %>
+                                            </td>
+                                            <td>
+                                                <%= order.orderAmount || "N/A" %>
+                                            </td>
                                             <td>
                                                 <span class="badge rounded-pill 
                                                     <% if (order.orderStatus === '1') { %>
@@ -249,78 +184,93 @@
                                                         alert-primary
                                                     <% } else if (order.orderStatus === '4') { %>
                                                         alert-success
+                                                    <% } else if (order.orderStatus === '5') { %>
+                                                        alert-danger
                                                     <% } %>
                                                 ">
-                                                    <% if (order.orderStatus === '1') { %>
+                                                    <% if (order.orderStatus==='1' ) { %>
                                                         Processing
-                                                    <% } else if (order.orderStatus === '2') { %>
-                                                        Quality Check
-                                                    <% } else if (order.orderStatus === '3') { %>
-                                                        Shipped
-                                                    <% } else if (order.orderStatus === '4') { %>
-                                                        Delivered
-                                                    <% } %>
+                                                        <% } else if (order.orderStatus==='2' ) { %>
+                                                            Quality Check
+                                                            <% } else if (order.orderStatus==='3' ) { %>
+                                                                Shipped
+                                                                <% } else if (order.orderStatus==='4' ) { %>
+                                                                    Delivered
+                                                                    <% } else if (order.orderStatus==='5' ) { %>
+                                                                        Cancelled
+                                                                        <% } %>
                                                 </span>
                                             </td>
-                                            <td><%= order.deliveryDate ? order.deliveryDate.toDateString() : "N/A" %></td>
+                                            <td>
+                                                <%= order.deliveryDate ? order.deliveryDate.toDateString() : "N/A" %>
+                                            </td>
                                             <td class="text-end">
-                                                <a href="/admin/order-details?id=<%= order._id %>" class="btn btn-md rounded font-sm">Details</a>
-                                                <% if (order.orderStatus!=="4") { %>
-                                                    <a href="/admin/delete-order?id=<%= order._id %>"  class="btn btn-danger rounded font-sm">Delete</a>
-                                                <% } %>
+                                                <a href="/admin/order-details?id=<%= order._id %>"
+                                                    class="btn btn-md rounded font-sm">Details</a>
+                                                <% if (order.orderStatus!=="4" ) { %>
+                                                    <a href="/admin/delete-order?id=<%= order._id %>"
+                                                        class="btn btn-danger rounded font-sm">Delete</a>
+                                                    <% } %>
                                             </td>
                                         </tr>
-                                    <% }) %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="7">No Orders Yet</td>
-                                    </tr>
-                                <% } %>
+                                        <% }) %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="7">No Orders Yet</td>
+                                                </tr>
+                                                <% } %>
                             </tbody>
                         </table>
                     </div> <!-- table-responsive //end -->
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
-            
+
             <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-start" id="pagination">
-                        <% if (currentPage > 1) { %>
-                            <li class="page-item"><a class="page-link" href="/admin/orders-list?page=<%= currentPage - 1 %>"><i class="material-icons md-chevron_left"></i></a></li>
-                        <% } %>
-                        <% for (let i = 1; i <= totalPages; i++) { %>
-                            <li class="page-item <%= currentPage === i ? 'active' : '' %>"><a class="page-link" href="/admin/orders-list?page=<%= i %>"><%= i %></a></li>
-                        <% } %>
-                        <% if (currentPage < totalPages) { %>
-                            <li class="page-item"><a class="page-link" href="/admin/orders-list?page=<%= currentPage + 1 %>"><i class="material-icons md-chevron_right"></i></a></li>
-                        <% } %>
+                        <% if (currentPage> 1) { %>
+                            <li class="page-item"><a class="page-link"
+                                    href="/admin/orders-list?page=<%= currentPage - 1 %>&&sort=<%= sort %>&&sort2=<%= sort2 %>"><i
+                                        class="material-icons md-chevron_left"></i></a></li>
+                            <% } %>
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <li class="page-item <%= currentPage === i ? 'active' : '' %>"><a class="page-link"
+                                            href="/admin/orders-list?page=<%= i %>&&sort=<%= sort %>&&sort2=<%= sort2 %>">
+                                            <%= i %>
+                                        </a></li>
+                                    <% } %>
+                                        <% if (currentPage < totalPages) { %>
+                                            <li class="page-item"><a class="page-link"
+                                                    href="/admin/orders-list?page=<%= currentPage + 1 %>&&sort=<%= sort %>&&sort2=<%= sort2 %>"><i
+                                                        class="material-icons md-chevron_right"></i></a></li>
+                                            <% } %>
                     </ul>
                 </nav>
             </div>
-            
 
-        <!-- content-main end// -->
-        <footer class="main-footer font-xs">
-          <div class="row pb-30 pt-15">
-            <div class="col-sm-6">
-              <script>
-                document.write(new Date().getFullYear());
-              </script>
-              ©, Evara - HTML Ecommerce Template .
-            </div>
-            <div class="col-sm-6">
-              <div class="text-sm-end">All rights reserved</div>
-            </div>
-          </div>
-        </footer>
-      </main>
-      <script src="js/vendors/jquery-3.6.0.min.js"></script>
-      <script src="js/vendors/bootstrap.bundle.min.js"></script>
-      <script src="js/vendors/select2.min.js"></script>
-      <script src="js/vendors/perfect-scrollbar.js"></script>
-      <script src="js/vendors/jquery.fullscreen.min.js"></script>
-      <!-- Main Script -->
-      <script src="js/main.js" type="text/javascript"></script>
-    </body>
-  </html>
-  
+
+            <!-- content-main end// -->
+            <footer class="main-footer font-xs">
+                <div class="row pb-30 pt-15">
+                    <div class="col-sm-6">
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>
+                        ©, Evara - HTML Ecommerce Template .
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-sm-end">All rights reserved</div>
+                    </div>
+                </div>
+            </footer>
+    </main>
+    <script src="js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="js/vendors/select2.min.js"></script>
+    <script src="js/vendors/perfect-scrollbar.js"></script>
+    <script src="js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="js/main.js" type="text/javascript"></script>
+</body>
+
+</html>
