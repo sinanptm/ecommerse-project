@@ -1,5 +1,46 @@
 
 
+function showPersonalInfo() {
+    document.getElementById('heading').innerHTML = "Personal Details"
+    document.getElementById('personalInfo').style.display = 'block';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('orders').style.display = 'none';
+}
+
+function showAddresses() {
+    document.getElementById('heading').innerHTML = "My Addresses"
+    document.getElementById('personalInfo').style.display = 'none';
+    document.getElementById('addresssssss').style.display = 'block';
+    document.getElementById('orders').style.display = 'none';
+}
+
+function showOrders() {
+    document.getElementById('heading').innerHTML = "My Orders"
+    document.getElementById('personalInfo').style.display = 'none';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('orders').style.display = 'block';
+}
+
+
+async function orderFilter(event) {
+    try {
+        const filter = event.target.value;
+        const res = await $.ajax({
+            url:'/account',
+            method:"GET",
+            data:{
+                filter:filter
+            }
+        })
+        const newOrder = $(res).find('#orders').html()
+        $('#orders').html(newOrder)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
 async function searchProducts(event) {
     try {
         const name = event.target.value.trim();
@@ -22,6 +63,48 @@ async function searchProducts(event) {
         console.log('Error when searching:', error.message);
     }
 }
+
+
+let currentOrderId;
+
+function showCancelModal(orderId) {
+    currentOrderId = orderId;
+    $('#cancelModal').modal('show');
+}
+
+function submitCancelOrder() {
+    const orderId = currentOrderId;
+    let cancelReason = document.getElementById("cancelReason").value;
+    cancelReason = cancelReason.trim()
+
+    if (!orderId || !cancelReason) {
+        console.error("Order ID and cancel reason are required.");
+        return;
+    }
+
+    cancelOrder(orderId, cancelReason);
+}
+
+async function cancelOrder(orderId, cancelReason) {
+    try {
+        const response = await fetch('/cancel-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ orderId, cancelReason })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to cancel order');
+        }
+
+        window.location.reload();
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
 
 
 async function cataogorieSort(event, sort, page, price,name) {

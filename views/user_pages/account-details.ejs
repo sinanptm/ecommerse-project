@@ -24,16 +24,41 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 	<style>
-		.flipkart-address-section {
-			margin-top: 20px;
+		.order-sort-container {
+			display: flex;
+			justify-content: center;
+			/* Horizontally center the container */
+			align-items: center;
+			/* Vertically center the container */
+			position: relative;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			z-index: 1000;
+			/* Adjust as needed */
+			padding: 20px;
+			/* Add padding for spacing */
+			padding-bottom: 0px;
 		}
 
-		.flipkart-section-heading {
-			font-size: 24px;
-			color: #1e88e5;
-			border-bottom: 2px solid #ddd;
-			padding-bottom: 10px;
-			margin-bottom: 20px;
+		.order-sort-container label {
+			margin-right: 10px;
+		}
+
+		.order-sort-container select {
+			padding: 8px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			font-size: 14px;
+			outline: none;
+			cursor: pointer;
+			/* Add additional styles as needed */
+		}
+
+		/* Common styles for both sections */
+		.flipkart-address-section {
+			margin-left: 50px;
+			width: 100%;
+			position: relative;
 		}
 
 		.flipkart-btn-add-address {
@@ -47,7 +72,7 @@
 		}
 
 		.flipkart-btn-add-address:hover {
-			background-color: #45a049;
+			background-color: #9d9bb7;
 		}
 
 		.flipkart-address-list {
@@ -68,22 +93,6 @@
 
 		.flipkart-address-item:hover {
 			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-		}
-
-		.flipkart-address-box {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-
-		.flipkart-address-details {
-			flex-grow: 1;
-		}
-
-		.flipkart-stext-107 {
-			font-size: 16px;
-			margin-bottom: 8px;
-			color: #333;
 		}
 
 		.flipkart-actions {
@@ -122,17 +131,9 @@
 			transition: background-color 0.3s;
 		}
 
-		.flipkart-dropdown {
-			position: relative;
-			/* Change to relative */
-			display: inline-block;
-			/* Ensure inline block display */
-		}
-
 		.flipkart-dropdown:hover .flipkart-dropdown-content {
 			display: block;
 			animation: fadeIn 0.3s ease-in-out;
-			/* Add fadeIn animation */
 		}
 
 		.modal {
@@ -147,7 +148,6 @@
 			z-index: 1;
 			border-radius: 4px;
 			transition: opacity 0.3s ease-in-out;
-			/* Add opacity transition */
 		}
 
 		/* Animation keyframes */
@@ -164,7 +164,6 @@
 		.btn-add-address {
 			background-color: #333;
 			color: #ccc;
-
 		}
 
 		.btn-add-address:hover {
@@ -193,8 +192,6 @@
 		.modal-footer {
 			border-top: 1px solid #ddd;
 		}
-
-
 
 		.error-message {
 			color: rgb(240, 22, 22);
@@ -239,19 +236,14 @@
 			cursor: pointer;
 			color: #337ab7;
 			text-decoration: none;
-			/* Remove underline */
 			transition: color 0.3s;
 			background-color: transparent;
-			/* Transparent background */
 			border: none;
-			/* Remove border */
 			padding: 0;
-			/* Remove padding */
 		}
 
 		.edittt:hover {
 			color: #23527c;
-			/* Adjust hover color */
 		}
 
 		.input-field {
@@ -285,7 +277,6 @@
 			cursor: not-allowed;
 		}
 
-
 		/* Styles for selected dropdown option */
 		.input-field[disabled] option:checked {
 			background-color: #f0f0f0;
@@ -301,6 +292,196 @@
 			overflow: hidden;
 			clip: rect(0, 0, 0, 0);
 			border: 0;
+		}
+
+		.isotope-item {
+			width: 100%;
+		}
+
+		@media(min-width: 576px) {
+			.isotope-item {
+				width: 50%;
+			}
+		}
+
+		@media(min-width: 768px) {
+			.isotope-item {
+				width: 33.33%;
+			}
+		}
+
+		@media(min-width: 992px) {
+			.isotope-item {
+				width: 25%;
+			}
+		}
+
+		dialog {
+			width: 400px;
+			padding: 20px;
+			background-color: white;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			z-index: 1000;
+			display: none;
+			animation: fadeIn 0.3s ease-in-out;
+		}
+
+		dialog::backdrop {
+			background-color: rgba(0, 0, 0, 0.9);
+		}
+
+		dialog.open {
+			display: block;
+		}
+
+		dialog form {
+			display: grid;
+			gap: 10px;
+		}
+
+		dialog label {
+			margin-bottom: 5px;
+		}
+
+		dialog input[type="password"] {
+			width: calc(100% - 20px);
+			padding: 8px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			box-sizing: border-box;
+		}
+
+		dialog button {
+			background-color: #007bff;
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		dialog button:hover {
+			background-color: #0056b3;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+
+			to {
+				opacity: 1;
+			}
+		}
+
+		.navigation-buttons {
+			text-align: center;
+			padding-left: 30%;
+			display: flex;
+			margin-bottom: 20px;
+		}
+
+		.nav-button {
+			padding: 10px 20px;
+			border-radius: 5px;
+			margin: 0 10px;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+		.nav-button:hover {
+			background-color: #0056b3;
+		}
+
+		#personalInfo {
+			display: block;
+		}
+
+		#addresssssss {
+			display: none;
+		}
+
+		#orders {
+			display: none;
+		}
+
+
+		/* Styles for Order section */
+		.flipkart-address-block-child3 {
+			display: flex;
+			justify-content: center;
+			/* Center horizontally */
+			align-items: center;
+			/* Center vertically */
+			padding: 50px;
+			/* Add padding for better spacing */
+		}
+
+		.order-details {
+			width: 500px;
+			/* Set a fixed width for each order card */
+			border: 1px solid #e0e0e0;
+			border-radius: 8px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			overflow: hidden;
+			margin: 0 10px 20px;
+			/* Add margin for spacing between orders */
+		}
+
+		.order-details:hover {
+			box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+		}
+
+		.order-details .order-header {
+			padding: 15px;
+			background-color: #f8f9fa;
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+		.order-details .order-status {
+			font-size: 14px;
+			font-weight: bold;
+			color: #333;
+		}
+
+		.order-details .order-amount {
+			font-size: 18px;
+			font-weight: bold;
+			color: #333;
+		}
+
+		.order-details .ordered-items {
+			margin-top: 15px;
+		}
+
+		.order-details .ordered-item {
+			margin-bottom: 10px;
+		}
+
+		.order-details .cancel-btn {
+			display: block;
+			width: 100%;
+			padding: 10px 0;
+			text-align: center;
+			background-color: #dc3545;
+			color: #fff;
+			border: none;
+			border-radius: 0;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+		.order-details .cancel-btn:hover {
+			background-color: #c82333;
 		}
 	</style>
 
@@ -560,20 +741,29 @@
 					<section class="bg0 p-t-23 p-b-130">
 						<div class="container">
 							<div class="p-b-10">
-								<h3 class="ltext-103 cl5">
+								<h3 class="ltext-103 cl5" id="heading">
 									Personal Informations
 								</h3>
 							</div>
+							<div class="navigation-buttons">
+								<button class="nav-button" id="personal-details-nav" onclick="showPersonalInfo()">Personal Details</button>
+								<button class="nav-button" id="address-nav" onclick="showAddresses()">Addresses</button>
+								<button class="nav-button" id="orders-nav" onclick="showOrders()">Orders</button>
+								<form action="/create-invoice" method="post">
+								<button class="nav-button" id="address-nav" style="background-color: #ec4040;" >Download Invoice</button>
+							</form>
+							</div>
 
+					
 							<!-- User Account Content -->
 							<div class="row">
 								<div class="col-md-6">
 									<!-- User Account Details -->
 
-									<div class="block2-txt  flex-w flex-t p-t-14"
-										style="border: 1px solid #ddd; padding: 10px;">
+									<div class="block2-txt  flex-w flex-t p-t-14" id="personalInfo">
 										<div class="block2-txt-child1 flex-col-l">
-											<!-- Display User Information -->
+
+
 											<div class="block2-txt-child1 flex-col-l">
 												<!-- Display User Information -->
 												<form class="personal-info-form" id="userDetailsForm">
@@ -730,52 +920,24 @@
 
 
 
-								<div class="modal fade" id="emailSendingModal" tabindex="-1" role="dialog"
-									aria-labelledby="emailSendingModalLabel" aria-hidden="true">
-									<div class="modal-dialog" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="emailSendingModalLabel">Email Sending Status
-												</h5>
-												<button type="button" class="close" data-dismiss="modal"
-													aria-label="Close">
-													<span aria-hidden="true">&times;</span>
-												</button>
-											</div>
-											<div class="modal-body">
-												<p id="emailSendingMessage"></p>
-											</div>
-										</div>
-									</div>
-								</div>
 
 
-								<div class="flipkart-address-section col-md-6">
+								<div class="flipkart-address-section col-md-6" id="addresssssss">
 									<!-- Addresses -->
-									<div class="flipkart-address-block flipkart-block2-txt flex-w flex-t p-t-14 "
-										style="border: 1px solid #ddd; padding: 15px;">
+									<div class="flipkart-address-block flipkart-block2-txt flex-w flex-t p-t-14 ">
 										<div class="flipkart-address-block-child1 flex-col-l">
-											<!-- Button for Adding New Address -->
-											<h3 class="flipkart-section-heading flipkart-heading"
-												style="font-size: 38px; padding-bottom: 25px;color: #333;">
-												Addresses
-											</h3>
-
-											<!-- Add New Address Button -->
 											<button
 												class="flipkart-add-address bg1 bor1 flipkart-btn-add-address stext-101 cl0 size-103  p-lr-15"
-												style="font-size: 18px; background-color: #4e4e4e; color: white;"
 												type="button" data-toggle="modal" data-target="#addAddressModal">
 												Add New Address
 											</button>
 											<br><br>
 											<!-- Addresses List -->
 											<% if (user.address && user.address.length> 0) { %>
-												<ul class="flipkart-address-list flipkart-list"
-													style="list-style: none; padding: 0;">
-													<% user.address.forEach(function (address) { %>
-														<li class="flipkart-address-item flipkart-item address<%= address._id %>"
-															style="border: 1px solid #ddd; margin-bottom: 10px; padding: 10px; position: relative;">
+												<ul class="flipkart-address-list flipkart-list">
+													<% user.address.forEach(function (address,i) { %>
+														<li
+															class="flipkart-address-item flipkart-item address<%= address._id %>">
 															<div class="flipkart-address-box flipkart-box">
 																<div class="flipkart-address-details flipkart-details">
 																	<p class="flipkart-stext-107 cl7 "
@@ -964,9 +1126,12 @@
 																</div>
 															</div>
 														</div>
+														<% if (i==address.length ) { %>
+															<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+															<% } %>
 
 
-														<% }); %>
+																<% }); %>
 												</ul>
 												<% } else { %>
 													<div class="flipkart-flex-center flex-center">
@@ -990,7 +1155,114 @@
 
 						</div>
 						</div>
+
+						<div class="row mt-4" id="orders">
+							<div class="col-md-12">
+								<div class="order-sort-container">
+									<label for="sort-select">Filter:</label>
+									<select id="sort-select" name="sort-select" onchange="orderFilter(event)">
+										<option value="5" <%=filter==='5' ?'selected':'' %>>Cancelled Orders</option>
+										<option value="all" <%=filter==='all' ?'selected':'' %>>Proccessing Orders</option>
+										<option value="4" <%=filter==='4' ?'selected':'' %>>Delivered Orders</option>
+									</select>
+								</div>
+
+								<div class="flipkart-address-block-child3 flex-col-l">
+									<% if (orders && orders.length> 0) { %>
+										<% orders.forEach((order,i)=> { %>
+											<div class="order-details border rounded p-4 mb-4">
+												<div class="d-flex justify-content-between align-items-center mb-3">
+													<h4 class="mb-0">Order ID: SKe5<%=i%>
+													</h4>
+													<span class="badge rounded-pill 
+                                <% if (order.orderStatus === '1') { %> bg-warning
+                                <% } else if (order.orderStatus === '2') { %> bg-info
+                                <% } else if (order.orderStatus === '3') { %> bg-primary
+                                <% } else if (order.orderStatus === '4') { %> bg-success
+                                <% } else if (order.orderStatus === '5') { %> bg-danger
+                                <% } %> text-white">
+														<% if (order.orderStatus==='1' ) { %> Processing
+															<% } else if (order.orderStatus==='2' ) { %> Quality Check
+																<% } else if (order.orderStatus==='3' ) { %> Shipped
+																	<% } else if (order.orderStatus==='4' ) { %>
+																		Delivered
+																		<% } else if (order.orderStatus==='5' ) { %>
+																			Canceled
+																			<% } %>
+													</span>
+												</div>
+												<p>Order Amount: $<%= order.orderAmount %>
+												</p>
+												<% if (order.orderStatus !=='4' ) { %>
+													<p>Expected Delivery on: <%= order.deliveryDate.toDateString() %>
+													</p>
+													<% } else { %>
+														<p> Delivered on: <%= order.deliveryDate.toDateString() %>
+														</p>
+														<% } %>
+															<p> Ordered Items:</p>
+															<ul class="list-unstyled">
+																<% order.OrderedItems.forEach(item=> { %>
+																	<li>
+																		<strong>
+																			<%= item.name %>
+																		</strong>
+																		- Quantity: <%= item.quantity %>
+																			- Price: $<%= item.price %>
+																	</li>
+																	<% }); %>
+															</ul>
+															<% if (order.orderStatus=='4' ||order.orderStatus=='5' ) {
+																%>
+
+																<% } else { %>
+																	<button class="btn btn-danger"
+																		onclick="showCancelModal('<%= order._id %>')">Cancel</button>
+																	<% } %>
+											</div>
+											<% }); %>
+												<% } else { %>
+													<h5>No orders found.</h5>
+													<br><br><br><br><br>
+													<% } %>
+								</div>
+							</div>
+						</div>
+
+
+
 					</section>
+
+
+					<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog"
+						aria-labelledby="cancelModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="cancelModalLabel">Cancel Order</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<form id="cancelOrderForm">
+										<input type="hidden" id="cancelOrderId">
+										<div class="form-group">
+											<label for="cancelReason">Reason for cancellation:</label>
+											<small>At least 10 Charectres</small>
+											<textarea class="form-control" minlength="10" id="cancelReason"
+												name="cancelReason" rows="3" required></textarea>
+										</div>
+										<button type="button" onclick="submitCancelOrder()"
+											class="btn btn-danger">Confirm Cancellation</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
 
 
 					<!-- Add Address Modal -->
@@ -1099,127 +1371,25 @@
 					</div>
 
 
-					<div class="row mt-4" id="orders">
-						<div class="col-md-12">
-							<div class="flipkart-address-block-child1 flex-col-l">
-								<h3 class="ltext-103 cl5">Orders</h3>
-								<% if (orders && orders.length> 0) { %>
-									<% orders.forEach(order=> { %>
-										<div class="order-details border rounded p-4 mb-4">
-											<div class="d-flex justify-content-between align-items-center mb-3">
-												<h4 class="mb-0">Order ID: <%= order._id %>
-												</h4>
-												<span class="badge rounded-pill 
-						                                <% if (order.orderStatus === '1') { %> bg-warning
-						                                <% } else if (order.orderStatus === '2') { %> bg-info
-						                                <% } else if (order.orderStatus === '3') { %> bg-primary
-						                                <% } else if (order.orderStatus === '4') { %> bg-success
-						                                <% } else if (order.orderStatus === '5') { %> bg-danger
-						                                <% } %> text-white">
-													<% if (order.orderStatus==='1' ) { %> Processing
-														<% } else if (order.orderStatus==='2' ) { %> Quality
-															Check
-															<% } else if (order.orderStatus==='3' ) { %>
-																Shipped
-																<% } else if (order.orderStatus==='4' ) { %>
-																	Delivered
-																	<% } else if (order.orderStatus==='5' ) { %>
-																		Canceled
-																		<% } %>
 
-												</span>
-											</div>
-											<p>Order Amount: $<%= order.orderAmount %>
-											</p>
 
-											<% if (order.orderStatus !=='4' ) { %>
-												<p>Expected Delivery on: <%= order.deliveryDate.toDateString() %>
-												</p>
-												<% }else{ %>
-													<p> Delivered on: <%= order.deliveryDate.toDateString() %>
-													</p>
-													<% }%>
-														<p> Ordered Items:</p>
-														<ul class="list-unstyled">
-															<% order.OrderedItems.forEach(item=> { %>
-																<li>
-																	<strong>
-																		<%= item.name %>
-																	</strong> <!-- Display product name -->
-																	- Quantity: <%= item.quantity %>
-																		<!-- Display quantity -->
-																		- Price: $<%= item.price %>
-																			<!-- Display price -->
-																</li>
-																<% }); %>
-														</ul>
-														<% if (order.orderStatus =='4' ||order.orderStatus =='5' ) { %>
-															
-															<% }else{ %>
-																<button class="btn btn-danger" data-toggle="modal"
-																data-target="#cancelModal<%= order._id %>">Cancel</button>
-															<%  } %>
-										</div>
-
-										<!-- Cancel Modal -->
-										<div class="modal fade" id="cancelModal<%= order._id %>" tabindex="-1"
-											role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
-											<div class="modal-dialog" role="document">
-												<div class="modal-content">
-													<div class="modal-header">
-														<h5 class="modal-title" id="cancelModalLabel">Cancel
-															Order
-														</h5>
-														<button type="button" class="close" data-dismiss="modal"
-															aria-label="Close">
-															<span aria-hidden="true">&times;</span>
-														</button>
-													</div>
-													<div class="modal-body">
-														<form id="cancelOrder">
-															<input type="hidden" name="orderId"
-																value="<%= order._id %>">
-															<div class="form-group">
-																<label for="cancelReason">Reason for
-																	cancellation:</label>
-																<textarea class="form-control" id="cancelReason"
-																	name="cancelReason" rows="3" required></textarea>
-															</div>
-															<button type="button"
-																onclick="cancelOrder('<%= order._id %>')"
-																class="btn btn-danger">Confirm
-																Cancellation</button>
-														</form>
-													</div>
-												</div>
-											</div>
-										</div>
-										<% }); %>
-											<script>
-												async function cancelOrder(id) {
-													try {
-														const formdata = $("#cancelOrder").serialize();
-														const response = await $.ajax({
-															url: '/cancel-order',
-															method: "POST",
-															data: formdata
-														});
-
-														window.location.reload();
-													} catch (error) {
-														console.log(error.message);
-													}
-												}
-											</script>
-											<% } else { %>
-												<h5>No orders found.</h5>
-												<br><br><br><br><br>
-												<% } %>
+					<div class="modal fade" id="emailSendingModal" tabindex="-1" role="dialog"
+						aria-labelledby="emailSendingModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="emailSendingModalLabel">Email Sending Status
+									</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<p id="emailSendingMessage"></p>
+								</div>
 							</div>
 						</div>
 					</div>
-
-
 
 
 
@@ -1386,96 +1556,6 @@
 						</span>
 					</div>
 
-					<!-- Modal1 -->
-
-
-					<style>
-						.isotope-item {
-							width: 100%;
-						}
-
-						@media(min-width: 576px) {
-							.isotope-item {
-								width: 50%;
-							}
-						}
-
-						@media(min-width: 768px) {
-							.isotope-item {
-								width: 33.33%;
-							}
-						}
-
-						@media(min-width: 992px) {
-							.isotope-item {
-								width: 25%;
-							}
-						}
-
-						dialog {
-							width: 400px;
-							padding: 20px;
-							background-color: white;
-							border: 1px solid #ccc;
-							border-radius: 5px;
-							box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-							position: fixed;
-							top: 50%;
-							left: 50%;
-							transform: translate(-50%, -50%);
-							z-index: 1000;
-							display: none;
-							animation: fadeIn 0.3s ease-in-out;
-						}
-
-						dialog::backdrop {
-							background-color: rgba(0, 0, 0, 0.9);
-						}
-
-						dialog.open {
-							display: block;
-						}
-
-						dialog form {
-							display: grid;
-							gap: 10px;
-						}
-
-						dialog label {
-							margin-bottom: 5px;
-						}
-
-						dialog input[type="password"] {
-							width: calc(100% - 20px);
-							padding: 8px;
-							border: 1px solid #ccc;
-							border-radius: 5px;
-							box-sizing: border-box;
-						}
-
-						dialog button {
-							background-color: #007bff;
-							color: white;
-							border: none;
-							padding: 10px 20px;
-							border-radius: 5px;
-							cursor: pointer;
-						}
-
-						dialog button:hover {
-							background-color: #0056b3;
-						}
-
-						@keyframes fadeIn {
-							from {
-								opacity: 0;
-							}
-
-							to {
-								opacity: 1;
-							}
-						}
-					</style>
 
 					<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
 					<script src="vendor/animsition/js/animsition.min.js"></script>

@@ -425,115 +425,135 @@
 				<div class="m-l-25 m-r--38 m-lr-0-xl">
 					<div class="wrap-table-shopping-cart">
 						<table class="table-shopping-cart">
-							<tr class="table_head">
-								<th class="column-1">Product</th>
-								<th class="column-2"></th>
-								<th class="column-3">Price</th>
-								<th class="column-4">Quantity</th>
-								<th class="column-5">Total</th>
-							</tr>
-							<% products.forEach(product=> { %>
+							<thead>
+								<tr class="table_head">
+									<th class="column-1">Product</th>
+									<th class="column-2"></th>
+									<th class="column-3">Price</th>
+									<th class="column-4">Quantity</th>
+									<th class="column-5">Total</th>
+								</tr>
+							</thead>
+							<tbody>
+								<% products.forEach(product => { %>
 								<tr class="table_row">
 									<td class="column-1">
 										<div class="how-itemcart1">
-											<img src="/resized_images/<%= product.productid.img[0] %>" alt="IMG">
+											<img src="/resized_images/<%= product.productid.img[0] %>" alt="Product Image">
 										</div>
 									</td>
 									<td class="column-2">
-										<a style="color: #333;" href="/product?id=<%= product.productid._id %>">
-											<%= product.productid.name %>
-										</a>
+										<a style="color: #333;" href="/product?id=<%= product.productid._id %>"><%= product.productid.name %></a>
 									</td>
-									<td class="column-3">
-										<%= product.productid.price %>
-									</td>
-
-									<td id="<%= product.productid._id %>"
-										onclick="quantity(event, '<%= product.productid._id %>')" class="column-4">
-
-										<% if (product.productid.quantity<=0 ||product.productid.status=="Disabled" ) {
-											%>
-											<p class="column-2" style="color: #d32f2f;">This iten is Currently
-												Unavailable
-												<a onclick="removeProductCart('<%= product.productid._id %>')"
-													class=" cl8  trans-04 ">
-													<i class="fs-16 zmdi zmdi-delete"></i></a>
-											</p>
-											<% }else{%>
-												<div class="wrap-num-product flex-w m-l-auto m-r-0" <%
-													if(product.productid.quantity <=0) { %>style="display:none;"<% } %>>
-														<% if (product.quantity>1) { %>
-															<div onclick="updateQuantity('<%= product.productid._id %>', -1)"
-																class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-																<i class="fs-16 zmdi zmdi-minus"></i>
-															</div>
-															<% } else{ %>
-																<div class="custom-modal"
-																	id="aaaconfirmationModal<%= product.productid._id %>">
-																	<div class="custom-modal-container">
-																		<span class="modal-close"
-																			onclick="closeConfirmationModal('<%= product.productid._id %>')">&times;</span>
-																		<h2 class="modal-header">Remove from Cart</h2>
-																		<p class="modal-description">Are you sure you
-																			want to remove this product from your cart?
-																			This action cannot be undone.</p>
-																		<div class="modal-actions">
-																			<a onclick="removeProductCart('<%= product.productid._id %>')"class="modal-btn btn-delete">Yes, I do</a>
-																			<button class="modal-btn btn-cancel"
-																				onclick="closeConfirmationModal('<%= product.productid._id %>')">Cancel</button>
-																		</div>
-																	</div>
-																</div>
-															
-																<a href="#"
-																	onclick="openConfirmationModal('<%= product.productid._id %>')"
-																	class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-																	<i class="fs-16 zmdi zmdi-delete"
-																		style="margin-left: 5px;"></i>
-																</a>
-
-																<% } %>
-
-																	<input id="quantity<%= product.productid._id %>"
-																		class="mtext-104 cl3 txt-center num-product "
-																		style="cursor: pointer;" type="number" readonly
-																		name="quantity" value="<%= product.quantity %>"
-																		min="0">
-																	<% if ( product.quantity<product.productid.quantity
-																		) { %>
-																		<div onclick="updateQuantity('<%= product.productid._id %>', 1)"
-																			class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-																			<i class="fs-16 zmdi zmdi-plus"></i>
-																		</div>
-																		<% } %>
+									<td class="column-3"><%= product.productid.price %></td>
+									<td id="<%= product.productid._id %>" class="column-4">
+										<% if (product.productid.quantity <= 0 || product.productid.status === "Disabled") { %>
+										<p class="column-2" style="color: #d32f2f;">This item is Currently Unavailable
+											<a onclick="removeProductCart('<%= product.productid._id %>')" class="cl8 trans-04">
+												<i class="fs-16 zmdi zmdi-delete"></i>
+											</a>
+										</p>
+										<% } else { %>
+										<div class="wrap-num-product flex-w m-l-auto m-r-0" <% if(product.productid.quantity <= 0) { %> style="display:none;" <% } %> >
+											<% if (product.quantity > 1) { %>
+											<div onclick="updateQuantity('<%= product.productid._id %>', -1)"
+												class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+												<i class="fs-16 zmdi zmdi-minus"></i>
+											</div>
+											<% } else { %>
+											<div class="custom-modal" id="aaaconfirmationModal<%= product.productid._id %>">
+												<div class="custom-modal-container">
+													<span class="modal-close"
+														onclick="closeConfirmationModal('<%= product.productid._id %>')">&times;</span>
+													<h2 class="modal-header">Remove from Cart</h2>
+													<p class="modal-description">Are you sure you want to remove this product from your
+														cart? This action cannot be undone.</p>
+													<div class="modal-actions">
+														<a onclick="removeProductCart('<%= product.productid._id %>')"
+															class="modal-btn btn-delete">Yes, I do</a>
+														<button class="modal-btn btn-cancel"
+															onclick="closeConfirmationModal('<%= product.productid._id %>')">Cancel</button>
+													</div>
 												</div>
-												<% } %>
-
+											</div>
+											<a href="#" onclick="openConfirmationModal('<%= product.productid._id %>')"
+												class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+												<i class="fs-16 zmdi zmdi-delete" style="margin-left: 5px;"></i>
+											</a>
+											<% } %>
+											<input id="quantity<%= product.productid._id %>"
+												class="mtext-104 cl3 txt-center num-product" style="cursor: pointer;" type="number"
+												readonly name="quantity" value="<%= product.quantity %>" min="0">
+											<% if (product.quantity < product.productid.quantity) { %>
+											<div onclick="updateQuantity('<%= product.productid._id %>', 1)"
+												class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+												<i class="fs-16 zmdi zmdi-plus"></i>
+											</div>
+											<% } %>
+										</div>
+										<% } %>
 									</td>
-
 									<td id="prPrice<%= product.productid._id %>" class="column-5">
 										<%= product.productid.price * product.quantity %>
 									</td>
 								</tr>
 								<% }) %>
+							</tbody>
 						</table>
 					</div>
+					
 
-					<div class="hidden" style="display: none;">
+					<div class="hidden">
 						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
 							<div class="flex-w flex-m m-r-20 m-tb-5">
-								<input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5" type="text"
-									name="coupon" placeholder="Coupon Code">
-
-
+								<input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5"
+									   onclick="event.stopPropagation();" oninput="addCoupon()" type="text"  name="coupon" placeholder="Coupon Code" 
+									   onkeydown="if(event.key === 'Enter') event.preventDefault();"> 
 							</div>
-
-							<div
-								class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
+							<div class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5" onclick="addCoupon()">
 								Apply coupon
 							</div>
 						</div>
 					</div>
+					
+					<script>
+						async function addCoupon() {
+							try {
+								const couponInput = document.querySelector('.stext-104[name="coupon"]');
+								const proceddtocheckout = document.querySelector('#proceddtocheckout')
+								const couponCode = couponInput.value.trim();
+								if (couponCode) {
+									$.ajax({
+									url:`/to-checkout?coupon=${couponCode}`,
+									method:"POST",
+									success:(res)=>{
+									    if (res.msg) {
+									        couponInput.style.color ='red';
+									        proceddtocheckout.style.display ='none';
+									        couponInput.style.borderColor ='red';
+									    } else {
+									        couponInput.style.color ='black';
+									        proceddtocheckout.style.display ='block';
+									        couponInput.style.borderColor ='#E6E6E6'; 
+									        document.getElementById('coupondiscound').innerHTML = res.couponDiscount+"%";
+									    }
+									},
+									error:(err)=>{
+										console.log(err);
+									}
+								})
+								}else{
+									couponInput.style.color ='black';
+									proceddtocheckout.style.display ='block';
+									couponInput.style.borderColor ='#E6E6E6'; 
+								}
+							} catch (error) {
+								console.log(error.message);
+							}
+						}
+					</script>
+					
+
 				</div>
 			</div>
 
@@ -553,6 +573,20 @@
 						<div class="size-209">
 							<span class="mtext-110 cl2">
 								<%= totalPrice || 0 %>
+							</span>
+						</div>
+					</div>
+
+					<div class="flex-w flex-t p-b-13">
+						<div class="size-208">
+							<strong class="stext-110 cl2">
+								Coupon discound 
+							</strong>
+						</div>
+
+						<div class="size-209">
+							<span class="mtext-110 cl2" style="color: #06651a;" id="coupondiscound">
+								0
 							</span>
 						</div>
 					</div>
@@ -605,7 +639,7 @@
 									</div>
 
 									<% if (productsToCheckout.length>0) { %>
-										<button
+										<button id="proceddtocheckout"
 											class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
 											Proceed to Checkout
 										</button>

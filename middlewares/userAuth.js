@@ -24,7 +24,6 @@ const is_loginRequired = async (req, res, next) => {
             const token = await getUserIdFromToken(req.cookies.token || req.session.token);
             const user = await User.findOne({ _id: token });
             if (!user) {
-                console.log(user);
                 next();
             } else {
                 const redirectUrl = req.session.originalUrl || "/";
@@ -45,7 +44,7 @@ const requireLogin = async (req, res, next) => {
             const token = await getUserIdFromToken(req.session.token || req.cookies.token)
             const user = await User.findOne({ _id: token });
             if (!user) {
-                return res.redirect('/error-page?msg=Unotherized&&toast=there is no user with ', token, 'token')
+                return res.redirect('/login')
             }
             if (user.status === "Blocked") {
                 req.session.destroy((err) => {

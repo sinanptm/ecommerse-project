@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const { mongoose } = require("../util/modules")
 
 // User Schema
 const userSchema = new mongoose.Schema({
@@ -44,17 +44,7 @@ const wishlistSchema = new mongoose.Schema({
 const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 
 
-// Coupons Schema
-const couponsSchema = new mongoose.Schema({
-  couponName: { type: String },
-  couponCode: { type: String },
-  discAmt: { type: Number },
-  ParchaseAmount: { type: Number },
-  createdate: { type: Date },
-  expDate: { type: Date },
-});
 
-const Coupon = mongoose.model("Coupon", couponsSchema);
 // wallet schema
 const walletSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -102,7 +92,6 @@ module.exports = {
   User,
   Addresse,
   Wishlist,
-  Coupon,
   Cart,
   Banner,
   Wallet,

@@ -25,14 +25,14 @@ const bcryptCompare = async (str, bfr) => {
 
 const generateToken = async (userId) => {
   const secretKey = process.env.SECRET;
-  const token = await jwt.sign({ userId }, secretKey, { expiresIn: '30d' });
+  const token = jwt.sign({ userId }, secretKey, { expiresIn: '30d' });
   return token;
 };
 
 const getUserIdFromToken = async (token) => {
   try {
     const secretKey = process.env.SECRET;
-    const decoded = await jwt.verify(token, secretKey);
+    const decoded = jwt.verify(token, secretKey);
     return decoded.userId;
   } catch (error) {
     throw new Error('Invalid token');

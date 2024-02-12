@@ -298,10 +298,14 @@
 				<!-- Search product -->
 				<div class="dis-none panel-search w-full p-t-10 p-b-15">
 					<div class="bor8 dis-flex p-l-15">
-						<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04" onclick="searchProducts(event, '<%= category %>', '<%= currentPage %>', '<%= price %>', '<%= sort %>')">
+						<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04"
+							onclick="searchProducts(event, '<%= category %>', '<%= currentPage %>', '<%= price %>', '<%= sort %>')">
 							<i class="zmdi zmdi-search"></i>
 						</button>
-						<input onkeydown="if (event.keyCode == 13) { event.preventDefault(); searchProducts(event, '<%= category %>', '<%= currentPage %>', '<%= price %>', '<%= sort %>'); }" class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search for Priducts">
+						<input
+							onkeydown="if (event.keyCode == 13) { event.preventDefault(); searchProducts(event, '<%= category %>', '<%= currentPage %>', '<%= price %>', '<%= sort %>'); }"
+							class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product"
+							placeholder="Search for Priducts">
 					</div>
 				</div>
 
@@ -314,7 +318,8 @@
 								Sort By
 							</div>
 
-							<ul onclick="productsSort(event,'<%= category %>','<%= currentPage %>','<%= price %>','<%= name %>')" ,>
+							<ul onclick="productsSort(event,'<%= category %>','<%= currentPage %>','<%= price %>','<%= name %>')"
+								,>
 								<li class="p-b-6">
 									<a class="filter-link stext-106 trans-04 <%= sort === 'default'? 'filter-link-active' : '' %>"
 										data-sort="default">
@@ -433,14 +438,15 @@
 			</div>
 
 			<div class="row isotope-grid" id="mainBody">
-				<% if (products.length >0) { %>
+				<% if (products.length>0) { %>
 					<% products.forEach(function(product) { %>
 						<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%= product.categoryid.type %>">
 							<a href="/product?id=<%= product._id %>">
 								<!-- Block2 -->
 								<div class="block2">
 									<div class="block2-pic hov-img0">
-										<img src="/resized_images/<%= product.img[0] %>" alt="IMG-PRODUCT" class="image">
+										<img src="/resized_images/<%= product.img[0] %>" alt="IMG-PRODUCT"
+											class="image">
 										<% if (valid===undefined||valid===null) { %>
 											<a href="/login?toast=to access cart you should login first "
 												class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
@@ -453,19 +459,19 @@
 												</a>
 												<% } %>
 									</div>
-	
+
 									<div class="block2-txt flex-w flex-t p-t-14">
 										<div class="block2-txt-child1 flex-col-l">
 											<a href="/product?id=<%= product._id %>"
 												class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
 												<%= product.name %>
 											</a>
-	
+
 											<span class="stext-105 cl3">
 												<%= product.price %>
 											</span>
 										</div>
-	
+
 										<% if (valid==undefined||valid==null) { %>
 											<div class="block2-txt-child2  flex-r p-t-3" id="whish<%= product._id %>">
 												<a href="/login?toast=to access Whishlist you should login first "
@@ -480,7 +486,8 @@
 												</a>
 											</div>
 											<% }else{ %>
-												<div class="block2-txt-child2  flex-r p-t-3" id="whish<%= product._id %>">
+												<div class="block2-txt-child2  flex-r p-t-3"
+													id="whish<%= product._id %>">
 													<div onclick="products_whishlist(event,'<%= product._id %>','<%= product.name %>')"
 														style="margin-top: 2px;"
 														class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
@@ -499,9 +506,12 @@
 							</a>
 						</div>
 						<% }); %>
-				<% }else{ %>
-					No Products Availble At The Moment
-				<% } %>
+							<% }else{ %>
+								<div style="text-align: center; margin-top: 10px; margin-bottom: 50px;margin-left: 10px;">
+									<h3>No Products found, For Refreshing The Page <a href="/products" style="color: blue;">Click Here</a>
+									</h3>
+								</div>
+								<% } %>
 			</div>
 
 
@@ -518,6 +528,10 @@
 		</div>
 	</div>
 	</div>
+
+	<% if (products.length<=0) { %>
+	 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+	<% } %>
 
 	<!-- Footer -->
 	<footer id="result" class="bg3 p-t-75 p-b-32">

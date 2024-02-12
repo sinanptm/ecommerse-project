@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const { mongoose } = require("../util/modules")
 
 // Products Schema
 const productsSchema = new mongoose.Schema({
@@ -81,9 +81,23 @@ const cancelReasonschema = new mongoose.Schema({
 const CancelationReson = mongoose.model("CancelationReson", cancelReasonschema)
 
 
+// Coupons Schema
+const couponsSchema = new mongoose.Schema({
+    name: { type: String },
+    code: { type: String },
+    discAmt: { type: Number },
+    createdate: { type: Date },
+    expDate: { type: Date },
+  });
+  
+  const Coupon = mongoose.model("Coupon", couponsSchema);
+
+
+
 module.exports = {
     Order,
     Product,
     Category,
-    CancelationReson
+    CancelationReson,
+    Coupon
 }

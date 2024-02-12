@@ -1,8 +1,8 @@
-const { name } = require("ejs");
 const { Product, Order, CancelationReson, Category } = require("../../models/productModel")
 const { User, Addresse, Wishlist } = require("../../models/userModels")
 const { getUserIdFromToken, bcryptCompare, makeHash, createHexId, isValidObjectId } = require('../../util/validations');
-const { Error } = require("mongoose");
+const { puppeteer } = require("../../util/modules")
+
 
 // * homepage Loading
 
@@ -49,7 +49,7 @@ const loadHome = async (req, res) => {
 // * for showing products 
 const loadProducts = async (req, res) => {
     try {
-        const name = req.query.name ||''
+        const name = req.query.name || ''
         const sort = req.query.sort || 'default';
         const category = req.query.category || 'all';
         const price = req.query.price || 'all';
@@ -74,13 +74,13 @@ const loadProducts = async (req, res) => {
                 break;
             case 'price_high_to_low':
                 sortQuery = { price: -1 };
-                break;                    
+                break;
             default:
                 break;
         }
 
         if (name !== '') {
-            findQuery.name = { $regex: new RegExp(name, 'i') }; 
+            findQuery.name = { $regex: new RegExp(name, 'i') };
         }
 
 
@@ -132,7 +132,7 @@ const loadProducts = async (req, res) => {
             });
         }
 
-        res.render("product", { products, categories, totalPages, currentPage: page, sort, category, price , name });
+        res.render("product", { products, categories, totalPages, currentPage: page, sort, category, price, name });
     } catch (error) {
         console.error("Error in loadProducts:", error);
         res.status(500).send("Internal Server Error");
@@ -181,15 +181,17 @@ const laodProductDetials = async (req, res) => {
 
 
 // * for showing the user details 
-
-const laodAccount = async (req, res) => {
+const loadAccount = async (req, res) => {
     try {
         const token = req.cookies.token || req.session.token;
-        let userid
+        const filter = req.query.filter || 'all';
+        let userid;
+
         if (token) {
             userid = await getUserIdFromToken(token);
         } else {
-            return res.status(304).redirect('/')
+            console.log(';dsa');
+            return res.status(304).redirect('/login');
         }
 
         const user = await User.aggregate([
@@ -201,12 +203,27 @@ const laodAccount = async (req, res) => {
                     localField: "address",
                     as: "address"
                 }
-            },
-        ])
+            }
+        ]);
 
+        let filterQuery = { userid: createHexId(userid) };
+
+        switch (filter) {
+            case '5':
+                filterQuery.orderStatus = '5';
+                break;
+            case '4':
+                filterQuery.orderStatus = '4';
+                break;
+            case 'all':
+                filterQuery.orderStatus = { $in: ['1', '2', '3'] }; // Adjusted to include all relevant statuses
+                break;
+            default:
+                break;
+        }
 
         const orders = await Order.aggregate([
-            { $match: { userid: createHexId(userid) } }, // Match against userid field
+            { $match: filterQuery },
             {
                 $lookup: {
                     from: "products",
@@ -214,19 +231,24 @@ const laodAccount = async (req, res) => {
                     foreignField: "_id",
                     as: 'OrderedItems'
                 }
-            },
+            }
         ]);
 
-
-        const msg = req.query.msg;
-
-
-        if (!user) {
-            res.status(404);
-            return res.redirect('/home');
+        if (!user || user.length === 0) {
+            return res.status(404).redirect('/home');
         }
 
-        res.render('account-details', { user: user[0], editing: true, msg, toast: req.query.toast, orders, err: req.query.err });
+        const pendings = await Order.find({ 
+            userid, 
+            paymentStatus: 'pending',
+            $or: [
+                { offlinePayment: { $exists: false } },
+                { offlinePayment: false }
+            ],
+            orderStatus: { $nin: ['4', '5'] }
+        })
+
+        res.render('account-details', { user: user[0], editing: true, msg: req.query.msg, toast: req.query.toast, orders, filter, err: req.query.err ,pendings});
     } catch (error) {
         console.error(error);
         res.redirect('/home');
@@ -234,7 +256,6 @@ const laodAccount = async (req, res) => {
 };
 
 
-// * Editt details 
 
 const editDetails = async (req, res) => {
     try {
@@ -257,17 +278,13 @@ const editDetails = async (req, res) => {
     }
 };
 
-// * for adding new address
-
-
 const addAddress = async (req, res) => {
     try {
         const { Fname, Lname, companyName, country, streetAdress, city, state, pincode, mobile, email } = req.body;
 
+        const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
 
-        const userId = await getUserIdFromToken(req.cookies.token || req.session.token)
-
-        const newAddress = new Addresse({
+        const newAddress = new Address({
             Fname,
             Lname,
             userId,
@@ -283,10 +300,10 @@ const addAddress = async (req, res) => {
 
         const address = await newAddress.save();
 
-        const user = await User.findByIdAndUpdate(userId, { $push: { address: address._id } })
+        const user = await User.findByIdAndUpdate(userId, { $push: { address: address._id } });
 
         if (req.query.ad) {
-            res.redirect(req.query.ad)
+            res.redirect(req.query.ad);
         } else {
             res.status(200).redirect('/account');
         }
@@ -295,6 +312,8 @@ const addAddress = async (req, res) => {
         res.redirect('/account?msg=' + error.message);
     }
 };
+
+
 
 // * for Changing password
 
@@ -343,7 +362,6 @@ const edittAddress = async (req, res) => {
             return res.status(404).redirect('/account?msg=Address not found');
         }
 
-        // Redirect to the user's account page or handle the response as needed
         res.status(200).redirect('/account');
     } catch (error) {
         console.log(error.message);
@@ -355,28 +373,31 @@ const edittAddress = async (req, res) => {
 const cancelOrder = async (req, res) => {
     try {
         const { orderId, cancelReason } = req.body;
+
+        if (!orderId) {
+            throw new Error("Order ID is required");
+        }
+
         const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
 
-        if (!userid || !orderId) {
+        const order = await Order.findByIdAndUpdate(orderId, { orderStatus: "5" });
+
+        if (!userid || !order) {
             return res.status(302).redirect("/account");
         }
+
         const newReason = new CancelationReson({
             userid,
             orderid: orderId,
             cancelationTime: Date.now(),
             reason: cancelReason
         });
+        await newReason.save();
 
-        const cancel = await newReason.save();
-        const order = await Order.findByIdAndUpdate({ _id: cancel.orderid }, { $set: { orderStatus: "5" } });
-        if (order.orderStatus == '5') {
-            res.status(200).redirect('/account');
-        } else {
-            throw new Error("no fdj")
-        }
+        res.status(200).redirect('/account');
     } catch (error) {
-        console.log(error.message);
-        res.status(500).redirect('/account?msg=' + error.message);
+        console.error(error.message);
+        res.status(500).redirect('/account?msg=' + encodeURIComponent(error.message));
     }
 };
 
@@ -397,11 +418,107 @@ const deleteAddress = async (req, res) => {
 }
 
 
+// * To create invoice of user
+const createInvoice = async (req, res) => {
+    try {
+        const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
+
+        const pendings = await Order.find({ 
+            userid, 
+            paymentStatus: 'pending',
+            $or: [
+                { offlinePayment: { $exists: false } },
+                { offlinePayment: false }
+            ],
+            orderStatus: { $nin: ['4', '5'] }
+        }).populate('OrderedItems.productid');  
+
+        const browser = await puppeteer.launch({ headless: "new" });
+        const page = await browser.newPage();
+
+        await page.setContent(`  
+            ${generateOrderTable(pendings)}
+        `);
+
+        const pdfBuffer = await page.pdf({ format: 'A4' });
+        await browser.close();
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
+
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error('Error creating invoice:', error);
+        res.status(500).json({ error: 'Error creating invoice' });
+    }
+};
+
+
+// * For Genreating html table for invoice
+function generateOrderTable(orders) {
+    let html = `
+        <div style="font-family: Arial, sans-serif; margin: 0 auto; max-width: 600px;">
+            <h1 style="text-align: center; color: #333;">Invoice</h1>
+            <p style="text-align: center; color: #666;">Kindly complete your pending payments to receive your orders</p>
+            <p style="text-align: center; color: #666;">User ID: SK203</p>
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                <thead>
+                    <tr style="background-color: #f2f2f2;">
+                        <th style="padding: 10px; text-align: left;">Order ID</th>
+                        <th style="padding: 10px; text-align: left;">Product Name</th>
+                        <th style="padding: 10px; text-align: left;">Quantity</th>
+                        <th style="padding: 10px; text-align: left;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    let totalAmount = 0;
+
+    orders.forEach(order => {
+        const orderId = 'SK' + Math.floor(100000 + Math.random() * 900000);
+        let orderAmount = 0;
+
+        order.OrderedItems.forEach((item, index) => {
+            orderAmount += item.price * item.quantity;
+            if (index === 0) {
+                html += `
+                    <tr>
+                        <td style="padding: 10px;">${orderId}</td>
+                        <td style="padding: 10px;">${item.name}</td>
+                        <td style="padding: 10px;">${item.quantity}</td>
+                        <td style="padding: 10px;">$${(item.price * item.quantity).toFixed(2)}</td>
+                    </tr>
+                `;
+            } else {
+                html += `
+                    <tr>
+                        <td></td>
+                        <td style="padding: 10px;">${item.name}</td>
+                        <td style="padding: 10px;">${item.quantity}</td>
+                        <td style="padding: 10px;">${(item.price * item.quantity).toFixed(2)}</td>
+                    </tr>
+                `;
+            }
+        });
+
+        totalAmount += orderAmount;
+    });
+
+    html += `
+                </tbody>
+            </table>
+            <p style="text-align: right; color: #333; margin-top: 20px;">Total Invoice Amount: ${totalAmount.toFixed(2)}</p>
+            <p style="text-align: right; color: #666;">Thank you for shopping with TRENDS</p>
+        </div>
+    `;
+
+    return html;
+}
 
 
 
 
-// * for showing deltials of us
 
 const loadAbout = async (req, res) => {
     try {
@@ -457,12 +574,13 @@ module.exports = {
     loadAbout,
     loadBlog,
     loadContact,
-    laodAccount,
+    loadAccount,
     editDetails,
     addAddress,
     deleteAddress,
     edittAddress,
     loadEror,
     cancelOrder,
-    changePassword
+    changePassword,
+    createInvoice
 }

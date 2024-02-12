@@ -1,5 +1,5 @@
 const { OTP } = require("../models/otpModel");
-const nodemailer = require("nodemailer");
+const { nodemailer } = require("../util/modules")
 const { makeHash } = require("../util/validations")
 require("dotenv").config()
 

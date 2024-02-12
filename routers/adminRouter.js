@@ -1,10 +1,12 @@
-const express = require("express");
+const { path, express } = require("../util/modules");
 const adminRoute = express();
-const path = require("path");
 const upload = require("../util/multer");
-const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout } = require("../controllers/adminController");
-const { loadDashBoard, loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, loadOrders, deleteOrder, editOrder, loadOrder, loadReport, getSalesReport } = require("../controllers/productController");
+const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout } = require("../controllers/admin/adminController");
+const { loadDashBoard, loadOrders, deleteOrder, editOrder, loadOrder, loadReport, getSalesReport, loadCoupons, addCoupon, deleteCoupon, editCoupon } = require("../controllers/admin/orderController");
+const { loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, } = require("../controllers/admin/products&catogoire")
 const { is_loginRequired, is_admin, handleUndefinedRoutes } = require("../middlewares/auth");
+
+
 
 adminRoute.set("views", path.join(__dirname, "../views/admin_pages"));
 adminRoute.use(express.static(path.join(__dirname, "../public/assets")));
@@ -13,29 +15,30 @@ adminRoute.locals.title = "TRENDS DASHBOARD";
 
 adminRoute.get('/sales-report/:type', loadReport)
 
-// Admin login
+// * Admin login
 adminRoute.get("/", is_loginRequired, loadLogin);
 adminRoute.get("/login", is_loginRequired, loadLogin);
 adminRoute.post("/login", checkLogin);
 
 //! Admin OTP
-// adminRoute.get("/verifyOTP", is_registered, newOTP);
-// adminRoute.get("/verifyAdmin", is_registered, is_loginRequired, loadOTP);
-// adminRoute.post("/verifyAdmin", verifyOTP);
+// * adminRoute.get("/verifyOTP", is_registered, newOTP);
+// * adminRoute.get("/verifyAdmin", is_registered, is_loginRequired, loadOTP);
+// * adminRoute.post("/verifyAdmin", verifyOTP);
 
-
+// * For Validating Admin Token
 adminRoute.use(is_admin)
 
 adminRoute.get("/dashboard", loadDashBoard);
 adminRoute.post("/get-report-pdf/:type", getSalesReport)
 
-// User Management
+// * User Management
 adminRoute.get("/users", loadUser);
 adminRoute.get("/userblock/:id", userBlock);
 adminRoute.get("/userUnblock/:id", userUnblock);
 adminRoute.get("/logout", logout);
 
-// Product Management
+
+// * Product Management
 adminRoute.get("/productDetials", loadProducts);
 adminRoute.get("/products", loadProducts);
 adminRoute.get("/addProduct", loadAddProduct);
@@ -44,15 +47,21 @@ adminRoute.post('/editProduct/:id', upload.array('image', 3), editProduct);
 adminRoute.get("/editProduct", loadEditProduct);
 adminRoute.get("/deleteProduct/:id", deleteProduct);
 
-// Listing/Unlisting product
+// * Listing/Unlisting product
 adminRoute.get("/list", listProduct);
 adminRoute.get("/unlist", unlistProduct);
 
-// Category Management
+// * Category Management
 adminRoute.get("/catogories", laodCatagorie);
 adminRoute.post("/catogories", upload.single("file"), addCatagorie);
 adminRoute.post("/editCatogories/:id", upload.single("file"), editCatogory);
 adminRoute.get("/deleteCatogory/:id", deleteCatogory);
+
+// * Orders and coupn managment 
+adminRoute.get('/coupon-managment', loadCoupons)
+adminRoute.post('/add-coupon', addCoupon)
+adminRoute.delete("/delete-coupon", deleteCoupon)
+adminRoute.post("/edit-coupon", editCoupon)
 
 adminRoute.get("/orders-list", loadOrders)
 adminRoute.get('/order-details', loadOrder)

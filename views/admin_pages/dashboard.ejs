@@ -98,7 +98,8 @@
                         <span class="text">Orders</span>
                     </a>
                     <div class="submenu">
-                        <a href="/admin/orders-list">Order list 1</a>
+                        <a href="/admin/orders-list">Order list</a>
+                        <a href="/admin/coupon-managment">Coupons list</a>
 
                     </div>
                 </li>
@@ -234,35 +235,11 @@
                         </article>
                     </div>
                     <div class="row">
-                        <div class="col-lg-5">
+                       
+                        <div class="col-lg-7" >
                             <div class="card mb-4">
                                 <article class="card-body">
-                                    <h5 class="card-title">New Members</h5>
-                                    <div class="new-member-list">
-                                        <% newusers.forEach(user=> { %>
-                                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                                <div class="d-flex align-items-center">
-                                                    <img src="imgs/people/avatar3.jpg" alt="" class="avatar">
-                                                    <div>
-                                                        <h6>
-                                                            <%= user.name||"N/A" %>
-                                                        </h6>
-                                                        <p class="text-muted font-xs">
-                                                            <%= user.email||'N/A' %>
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <% }) %>
-                                    </div>
-                                </article>
-                            </div>
-                        </div>
-                        <div class="col-lg-7">
-                            <div class="card mb-4">
-                                <article class="card-body">
-                                    <h5 class="card-title">Trending Products</h5>
+                                    <h5 class="card-title">Top 10 Products</h5>
                                     <ul class="verti-timeline list-unstyled font-sm">
                                         <% mostSaledProducts.forEach(product=> { %>
                                             <li class="event-list">
@@ -291,6 +268,95 @@
                                 </article>
                             </div>
                         </div>
+
+                        <div class="col-lg-5">
+                            <div class="card mb-4">
+                                <article class="card-body">
+                                    <h5 class="card-title">Complaints</h5>
+                                    <div class="new-member-list">
+                                        <% cancelationReson.forEach(reson=> { %>
+                                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="imgs/people/avatar3.jpg" alt="" class="avatar">
+                                                    <div>
+                                                        <h6>
+                                                            <%= reson.reason||"N/A" %>
+                                                        </h6>
+                                                        <p class="text-muted font-xs">
+                                                            <%= reson.cancelationTime.toDateString()||'N/A' %>
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <% }) %>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+
+                       
+
+                        <div class="col-lg-7">
+                            <div class="card mb-4">
+                                <article class="card-body">
+                                    <h5 class="card-title">Top 10 Catogeries</h5>
+                                    <ul class="verti-timeline list-unstyled font-sm">
+                                        <% mostSaledCatogories.forEach(catagery=> { %>
+                                            <li class="event-list">
+                                                <div class="event-timeline-dot">
+                                                    <a href="/admin/editProduct?id=<%= catagery._id %>"><i
+                                                            class="material-icons md-play_circle_outline font-xxl"></i></a>
+                                                </div>
+                                                <div class="media">
+                                                    <div class="me-3">
+                                                        <h6><span>
+                                                                <%= catagery.sales||0 %> sales
+                                                            </span> <i
+                                                                class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
+                                                        </h6>
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <div>
+                                                            <%= catagery.name||"N/A" %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <% }) %>
+
+                                    </ul>
+                                </article>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-5">
+                            <div class="card mb-4">
+                                <article class="card-body">
+                                    <h5 class="card-title">New Members</h5>
+                                    <div class="new-member-list">
+                                        <% newusers.forEach(user=> { %>
+                                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="imgs/people/avatar3.jpg" alt="" class="avatar">
+                                                    <div>
+                                                        <h6>
+                                                            <%= user.name||"N/A" %>
+                                                        </h6>
+                                                        <p class="text-muted font-xs">
+                                                            <%= user.email||'N/A' %>
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <% }) %>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <div class="col-xl-4 col-lg-12">
@@ -311,7 +377,6 @@
                 </div>
   <input type="hidden" id="monthlySales" value="<%= JSON.stringify(monthlySales||[]) %>">
         <input type="hidden" id="currentWeekSales" value="<%= JSON.stringify(currentWeekSales||[]) %>">
-        <input type="hidden" id="monthlyusers" value="<%= JSON.stringify(monthlyUserRegistrations||[]) %>">
         <input type="hidden" id="monthlyproducts" value="<%= JSON.stringify(monthlyProductDetails||{}) %>">
                 <!-- <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">

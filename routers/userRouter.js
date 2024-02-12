@@ -1,8 +1,7 @@
-const express = require("express");
+const { path, express } = require("../util/modules")
 const userRoute = express();
-const path = require("path");
 const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/user/userController");
-const { loadHome, loadProducts, laodProductDetials, laodAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadBlog, loadContact, loadEror, cancelOrder, changePassword } = require("../controllers/user/userPageController");
+const { loadHome, loadProducts, laodProductDetials, loadAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadBlog, loadContact, loadEror, cancelOrder, changePassword, createInvoice } = require("../controllers/user/userPageController");
 const { loadCart, addToCart, addQuantity, removeProduct, loadCheckout, addToCheckout, online_payment, placeOrder, showSuccess, addToCartProductPage, loadWhishList, addToWhishlist, removeFromWhishlist } = require("../controllers/user/cartController")
 const { is_registered, requireLogin, is_loginRequired, cartItems, handleUndefinedRoutes } = require("../middlewares/userAuth");
 
@@ -26,7 +25,16 @@ userRoute.post("/checkOTP", verifyOTP);
 userRoute.get("/register", is_loginRequired, loadRegister);
 userRoute.post("/register", is_loginRequired, checkRegister);
 
-// ! product Routes
+
+// * User Profile Routes
+userRoute.get('/account', requireLogin, loadAccount)
+userRoute.post('/create-invoice', createInvoice)
+userRoute.put('/edit-details', requireLogin, editDetails);
+userRoute.post("/change-password", requireLogin, changePassword)
+userRoute.post('/add-address', requireLogin, addAddress)
+userRoute.put('/edit-address/:id', requireLogin, edittAddress)
+userRoute.delete('/delete-address/:id', requireLogin, deleteAddress);
+userRoute.post('/cancel-order', requireLogin, cancelOrder)
 
 userRoute.get("/home", loadHome);
 userRoute.get("/products", loadProducts);
@@ -53,14 +61,7 @@ userRoute.post("/place-order", requireLogin, placeOrder)
 userRoute.post("/online-payment", requireLogin, online_payment)
 userRoute.get('/order-success', requireLogin, showSuccess)
 
-// * User Profile Routes
-userRoute.get('/account', requireLogin, laodAccount)
-userRoute.put('/edit-details', requireLogin, editDetails);
-userRoute.post("/change-password", requireLogin, changePassword)
-userRoute.post('/add-address', requireLogin, addAddress)
-userRoute.put('/edit-address/:id', requireLogin, edittAddress)
-userRoute.delete('/delete-address/:id', requireLogin, deleteAddress);
-userRoute.post('/cancel-order', requireLogin, cancelOrder)
+
 
 userRoute.get("/about", loadAbout);
 userRoute.get("/blog", loadBlog);

@@ -1,4 +1,5 @@
-const mongoose = require("mongoose")
+const { mongoose } = require("../util/modules")
+ 
 
 const OTPSchena =  new mongoose.Schema({
     email:{type:String, unique:false},

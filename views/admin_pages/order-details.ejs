@@ -61,7 +61,8 @@
                         <span class="text">Orders</span>
                     </a>
                     <div class="submenu">
-                        <a href="/admin/orders-list">Order list 1</a>
+                        <a href="/admin/orders-list">Order list </a>
+                        <a href="/admin/coupon-managment">Coupons list</a>
 
                     </div>
                 </li>
@@ -140,25 +141,25 @@
                                     <%= order.orderDate.toDateString() %>
                                 </small>
                             </div>
-                            <div class="step <%= order.orderStatus >= 1 ? 'completed' : '' %>">
+                            <div class="step <%= order.orderStatus >= 1 && order.orderStatus !== '5' ? 'completed' : '' %>">
                                 <div class="step-icon-wrap">
                                     <div class="step-icon"><i class="material-icons md-settings"></i></div>
                                 </div>
                                 <h4 class="step-title">Processing Order</h4>
                             </div>
-                            <div class="step <%= order.orderStatus >= 2 ? 'completed' : '' %>">
+                            <div class="step <%= order.orderStatus >= 2 && order.orderStatus !== '5' ? 'completed' : '' %>">
                                 <div class="step-icon-wrap">
                                     <div class="step-icon"><i class="material-icons md-shopping_bag"></i></div>
                                 </div>
                                 <h4 class="step-title">Quality Check</h4>
                             </div>
-                            <div class="step <%= order.orderStatus >= 3 ? 'completed' : '' %>">
+                            <div class="step <%= order.orderStatus >= 3 && order.orderStatus !== '5' ? 'completed' : '' %>">
                                 <div class="step-icon-wrap">
                                     <div class="step-icon"><i class="material-icons md-local_shipping"></i></div>
                                 </div>
                                 <h4 class="step-title">Product Dispatched</h4>
                             </div>
-                            <div class="step <%= order.orderStatus >= 4 ? 'completed' : '' %>">
+                            <div class="step <%= order.orderStatus >= 4 && order.orderStatus !== '5' ? 'completed' : '' %>">
                                 <div class="step-icon-wrap">
                                     <div class="step-icon"><i class="material-icons md-check_circle"></i></div>
                                 </div>
@@ -168,6 +169,7 @@
                                 </small>
                             </div>
                         </div>
+                        
                     </div>
                     <div class="row mb-50 mt-20 order-info-wrap text-center">
                         <div class="col-md-4">

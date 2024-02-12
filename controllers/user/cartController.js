@@ -1,15 +1,12 @@
 const { Cart, User, Wishlist, Addresse } = require("../../models/userModels");
-const { Product, Order, Category } = require("../../models/productModel");
+const { Product, Order, Category, Coupon } = require("../../models/productModel");
 const { getUserIdFromToken, createHexId, isValidObjectId } = require("../../util/validations");
-const crypto = require("crypto")
-const Razorpay = require('razorpay');
-const { error } = require("console");
+const { crypto, Razorpay } = require("../../util/modules")
+
 const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY,
   key_secret: process.env.RAZORPAY_SECRET,
 });
-
-
 
 
 // * for adding new items to the cart
@@ -255,6 +252,7 @@ const removeProduct = async (req, res) => {
     cart.items -= 1;
     cart.totalPrice -= removedProduct.price;
     await cart.save();
+
     res.status(200).json({ success: true });
   } catch (error) {
     console.error(error.message);
@@ -268,9 +266,30 @@ const removeProduct = async (req, res) => {
 const addToCheckout = async (req, res) => {
   try {
     let { totalprice, products } = req.body;
+    const coupon = req.query.coupon;
+
+    if (typeof coupon !== 'undefined' && coupon !== null) {
+      const findCoupon = await Coupon.findOne({ code: coupon });
+
+      if (findCoupon) {
+        
+        if (findCoupon.expDate && new Date(findCoupon.expDate) < new Date()) {
+          res.json({ msg: true });
+        } else {
+          req.session.coupon = findCoupon.discAmt;
+          res.json({ msg: false, couponDiscount: findCoupon.discAmt });
+        }
+        return;
+      } else {
+        res.json({ msg: true });
+        return;
+      }
+    }
+
+    // Process checkout without coupon
     const parsedProducts = Array.isArray(products) ? products : [products];
-    req.session.parsedProducts = parsedProducts
-    req.session.totalAmount = totalprice
+    req.session.parsedProducts = parsedProducts;
+    req.session.totalAmount = totalprice;
     res.locals.products = parsedProducts;
     res.redirect(`/checkout?t=${totalprice}`);
   } catch (error) {
@@ -281,36 +300,45 @@ const addToCheckout = async (req, res) => {
 
 
 
+
 // * for loading checkout 
 const loadCheckout = async (req, res) => {
   try {
-    const parsedProducts = req.session.parsedProducts
-    const total = req.session.totalAmount
+    const couponDiscount = req.session.coupon || 0; // in percentage, default to 0 if not set
+    const parsedProducts = req.session.parsedProducts;
+    const total = req.session.totalAmount;
     const token = req.cookies.token || req.session.token;
+    
+    // Check if user is logged in
     if (!token) {
-
+      return res.status(304).redirect('/login');
     }
+
     const userId = await getUserIdFromToken(token);
 
+    // Verify total amount
     if (total !== req.query.t) {
-      return res.status(304).redirect('/cart')
+      return res.status(304).redirect('/cart');
     }
 
+    // Check if total or token is missing
     if (!total || !token) {
       return res.status(302).redirect('/cart');
     }
 
-    let products = parsedProducts
+    let products = parsedProducts;
     try {
       products = JSON.parse(products);
     } catch (error) {
       console.error('Error parsing products:', error.message);
       return res.status(500).redirect('/cart');
     }
+
+    // Get user information and address
     let user = await User.aggregate([
       {
         $match: {
-          _id: await createHexId(userId)
+          _id: createHexId(userId)
         }
       },
       {
@@ -322,36 +350,48 @@ const loadCheckout = async (req, res) => {
         }
       }
     ]);
-    user = user[0]
+    user = user[0];
 
     if (!user) {
-      console.log('no userid');
+      console.log('No user id');
       return res.status(302).redirect('/cart');
     }
 
+    // Check if there are products in the cart
     if (!Array.isArray(products) || products.length === 0) {
-      console.log('nop product')
+      console.log('No products in the cart');
       return res.status(302).redirect('/cart');
     }
 
+    // Get product IDs
     const productIds = products.map(product => product.productid);
     const populatedProducts = await Product.find({ _id: { $in: productIds } });
 
     let totalDiscount = 0;
-    let subtotal = 0
+    let subtotal = 0;
     const totalPrices = populatedProducts.map((product, i) => {
-      subtotal = product.price * products[i].quantity
+      subtotal = product.price * products[i].quantity;
       const discount = product.discount || 0;
       const discountedPrice = (product.price - (product.price * discount / 100)) * products[i].quantity;
       totalDiscount += (product.price * products[i].quantity) - discountedPrice;
       return discountedPrice;
     });
 
+    // Calculate total price and apply coupon discount
     const totalPrice = totalPrices.reduce((acc, curr) => acc + curr, 0);
+    const couponDiscountAmount = (totalPrice * couponDiscount) / 100;
+    const discountedTotalPrice = totalPrice - couponDiscountAmount;
 
-    // Render the checkout page
+    // Render the checkout page with data
     res.render("checkout", {
-      user, subtotal, products, totalPrice, totalDiscount, parsedProducts
+      user,
+      subtotal,
+      products,
+      totalPrice: discountedTotalPrice, // Total price after applying coupon discount
+      totalDiscount,
+      couponDiscount,
+      parsedProducts,
+      couponDiscountAmount, // Pass coupon discount amount to the view
     });
 
   } catch (error) {
@@ -359,6 +399,7 @@ const loadCheckout = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
 
 const loadWhishList = async (req, res) => {
   try {
@@ -492,18 +533,18 @@ const placeOrder = async (req, res) => {
       orderAmount: totalprice,
       paymentStatus: 'pending',
       deliveryAddress: {
-        id:address._id,
-        Fname:address.Fname,
-        Lname:address.Lname,
-        userId:address.userId,
-        companyName:address.companyName,
-        country:address.country,
-        streetAdress:address.streetAdress,
-        city:address.city,
-        state:address.state,
-        pincode:address.pincode,
-        mobile:address.mobile,
-        email:address.email,
+        id: address._id,
+        Fname: address.Fname,
+        Lname: address.Lname,
+        userId: address.userId,
+        companyName: address.companyName,
+        country: address.country,
+        streetAdress: address.streetAdress,
+        city: address.city,
+        state: address.state,
+        pincode: address.pincode,
+        mobile: address.mobile,
+        email: address.email,
       },
       orderDate,
       orderStatus: "1",
@@ -620,7 +661,7 @@ const online_payment = async (req, res) => {
     let hmac = crypto.createHmac('sha256', process.env.RAZORPAY_SECRET)
     hmac.update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id)
     hmac = hmac.digest('hex')
-    if (await hmac == payment.razorpay_signature) {
+    if (hmac == payment.razorpay_signature) {
       paymentOrder = await Order.findOneAndUpdate(
         { _id: id },
         {
@@ -656,14 +697,14 @@ const showSuccess = async (req, res) => {
   try {
     const id = req.query.id
 
-    if (!id || ! await isValidObjectId(id)) {
+    if (!id || ! isValidObjectId(id)) {
       console.log('no orderid');
       return res.status(304).redirect("/cart")
     }
 
 
     let order = await Order.aggregate([
-      { $match: { _id: await createHexId(id) } },
+      { $match: { _id: createHexId(id) } },
       {
         $lookup: {
           from: "users",
@@ -711,11 +752,11 @@ module.exports = {
   loadCheckout,
   addToCheckout,
   placeOrder,
+  online_payment,
   showSuccess,
   addToCartProductPage,
   loadWhishList,
   addToWhishlist,
   removeFromWhishlist,
-  online_payment
 };
 
