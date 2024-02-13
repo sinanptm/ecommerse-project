@@ -587,6 +587,17 @@
 									<span class="stext-111 cl2 size-116 sss">Online Payment</span>
 								</label>
 							</div>
+
+							<% if (!wallet.msg) { %>
+								<div class="bor8 m-b-20 how-pos4-parent payment-method">
+									<input type="radio" id="wallet" name="payment_method" value="wallet"
+										class="payment-input" <%= wallet.balance>=totalPrice?"":'disabled' %>>
+									<label for="online_payment" class="payment-label">
+										<span class="stext-111 cl2 size-116 sss">Wallet</span>
+									</label>
+								</div>
+							<% } %>
+
 						</div>
 					</div>
 

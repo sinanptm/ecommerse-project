@@ -1,12 +1,7 @@
-const { Cart, User, Wishlist, Addresse } = require("../../models/userModels");
+const { Cart, User, Wishlist, Addresse, Wallet } = require("../../models/userModels");
 const { Product, Order, Category, Coupon } = require("../../models/productModel");
 const { getUserIdFromToken, createHexId, isValidObjectId } = require("../../util/validations");
 const { crypto, Razorpay } = require("../../util/modules")
-
-const razorpayInstance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY,
-  key_secret: process.env.RAZORPAY_SECRET,
-});
 
 
 // * for adding new items to the cart
@@ -260,19 +255,18 @@ const removeProduct = async (req, res) => {
   }
 };
 
-
 // * for sending datas to checkout page 
 
 const addToCheckout = async (req, res) => {
   try {
-    let { totalprice, products } = req.body;
+    let { totalprice, products,coupons } = req.body;
     const coupon = req.query.coupon;
 
     if (typeof coupon !== 'undefined' && coupon !== null) {
-      const findCoupon = await Coupon.findOne({ code: coupon });
+      var findCoupon = await Coupon.findOne({ code: coupon });
 
       if (findCoupon) {
-        
+
         if (findCoupon.expDate && new Date(findCoupon.expDate) < new Date()) {
           res.json({ msg: true });
         } else {
@@ -285,6 +279,10 @@ const addToCheckout = async (req, res) => {
         return;
       }
     }
+    if (typeof coupons !=='undefined'&&coupons!== null) {
+      let s=await Coupon.updateOne({code:parseInt(coupons)},{$inc:{used:1}})
+    }
+
 
     // Process checkout without coupon
     const parsedProducts = Array.isArray(products) ? products : [products];
@@ -308,7 +306,7 @@ const loadCheckout = async (req, res) => {
     const parsedProducts = req.session.parsedProducts;
     const total = req.session.totalAmount;
     const token = req.cookies.token || req.session.token;
-    
+
     // Check if user is logged in
     if (!token) {
       return res.status(304).redirect('/login');
@@ -382,8 +380,18 @@ const loadCheckout = async (req, res) => {
     const couponDiscountAmount = (totalPrice * couponDiscount) / 100;
     const discountedTotalPrice = totalPrice - couponDiscountAmount;
 
+    let wallet = await Wallet.findOne({ userid: userId }).lean()
+
+
+    if (wallet==null) {
+      wallet = { msg : "No Balance"}
+    }else if (wallet.balance < totalPrice) {
+      wallet.msg = "No Balance"
+    }
+
     // Render the checkout page with data
     res.render("checkout", {
+      wallet,
       user,
       subtotal,
       products,
@@ -401,93 +409,14 @@ const loadCheckout = async (req, res) => {
 };
 
 
-const loadWhishList = async (req, res) => {
-  try {
-    const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
-
-    const existingWishlist = await Wishlist.findOne({ userid });
-
-    if (existingWishlist) {
-      const products = await Product.find({ _id: { $in: existingWishlist.products } });
-      res.render("wishlist", { products });
-    } else {
-      res.render("wishlist", { products: [] });
-    }
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).send("Internal Server Error");
-  }
-};
-
-
-
-const addToWhishlist = async (req, res) => {
-  try {
-    const id = req.query.id;
-    if (!id) {
-      res.status(400).redirect('/products')
-    } else {
-      const p = await Product.findById(id);
-      if (!p) {
-        res.status(404).redirect('/products')
-      }
-    }
-    const userid = await getUserIdFromToken(req.cookies.token || req.session.token)
-    const userWhish = await Wishlist.findOne({ userid });
-    if (userWhish) {
-      userWhish.products.push(id)
-      await userWhish.save()
-    } else {
-      const newWhish = new Wishlist({
-        products: [id],
-        userid
-      });
-      await newWhish.save()
-    }
-    res.status(200).redirect('/products')
-
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-
-const removeFromWhishlist = async (req, res) => {
-  try {
-    const id = req.query.id;
-    if (!id) {
-      res.status(400).redirect('/products')
-    } else {
-      const p = await Product.findById(id);
-      if (!p) {
-        res.status(404).redirect('/products')
-      }
-    }
-    const userid = await getUserIdFromToken(req.cookies.token || req.session.token)
-
-    const updateResult = await Wishlist.updateOne(
-      { userid },
-      { $pull: { products: id } }
-    );
-
-    if (req.query.ss) {
-      res.status(200).redirect("/whishlist")
-    } else {
-      res.status(200).redirect('/products');
-
-    }
-
-
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-
-
-
 
 // * for placing new order 
 const placeOrder = async (req, res) => {
   try {
+    const razorpayInstance = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY,
+      key_secret: process.env.RAZORPAY_SECRET,
+    });
     const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
     let { totalprice, products, payment_method, address } = req.body;
     const orderDate = Date.now();
@@ -590,6 +519,8 @@ const placeOrder = async (req, res) => {
       }
       const id = order._id
 
+
+
       razorpayInstance.orders.create(options, (err, order) => {
         if (!err) {
 
@@ -613,9 +544,51 @@ const placeOrder = async (req, res) => {
         }
       }
       );
-    } else {
-      res.status(200).json({ status: 500, success: false, });
+    } else if (payment_method == 'wallet') {
+      const wallet = await Wallet.findOneAndUpdate(
+        { userid: userId },
+        {
+          $inc: { balance: -order.orderAmount },
+          $push: {
+            transactions: {
+              type: 'debit',
+              amount: order.orderAmount,
+              date: new Date(),
+              orderid: order._id
+            }
+          }
+        },
+        { new: true }
+      );
+
+      order.walletPayment = {
+        transactionid: wallet.transactions[wallet.transactions.length - 1]._id,
+        date: new Date()
+      };
+
+      await order.save();
+
+      for (const product of populatedProducts) {
+        product.quantity -= 1;
+        await product.save();
+      }
+
+      for (const product of products) {
+        const index = cart.products.findIndex(p => p.productid.toString() === product.productid.toString());
+        if (index !== -1) {
+          cart.products.splice(index, 1);
+        } else {
+          throw new Error(`Product ${product.productid} not found in the cart`);
+        }
+      }
+
+      cart.items -= totalItemsToRemove;
+      await cart.save();
+
+      res.status(200).json({ status: 200, id: order._id });
     }
+
+
 
   } catch (error) {
     console.log(error.message);
@@ -697,7 +670,7 @@ const showSuccess = async (req, res) => {
   try {
     const id = req.query.id
 
-    if (!id || ! isValidObjectId(id)) {
+    if (!id || !isValidObjectId(id)) {
       console.log('no orderid');
       return res.status(304).redirect("/cart")
     }
@@ -741,6 +714,92 @@ const showSuccess = async (req, res) => {
     console.log(error.message);
   }
 }
+
+
+// * whishlist 
+
+const loadWhishList = async (req, res) => {
+  try {
+    const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
+
+    const existingWishlist = await Wishlist.findOne({ userid });
+
+    if (existingWishlist) {
+      const products = await Product.find({ _id: { $in: existingWishlist.products } });
+      res.render("wishlist", { products });
+    } else {
+      res.render("wishlist", { products: [] });
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
+const addToWhishlist = async (req, res) => {
+  try {
+    const id = req.query.id;
+    if (!id) {
+      res.status(400).redirect('/products')
+    } else {
+      const p = await Product.findById(id);
+      if (!p) {
+        res.status(404).redirect('/products')
+      }
+    }
+    const userid = await getUserIdFromToken(req.cookies.token || req.session.token)
+    const userWhish = await Wishlist.findOne({ userid });
+    if (userWhish) {
+      userWhish.products.push(id)
+      await userWhish.save()
+    } else {
+      const newWhish = new Wishlist({
+        products: [id],
+        userid
+      });
+      await newWhish.save()
+    }
+    res.status(200).redirect('/products')
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const removeFromWhishlist = async (req, res) => {
+  try {
+    const id = req.query.id;
+    if (!id) {
+      res.status(400).redirect('/products')
+    } else {
+      const p = await Product.findById(id);
+      if (!p) {
+        res.status(404).redirect('/products')
+      }
+    }
+    const userid = await getUserIdFromToken(req.cookies.token || req.session.token)
+
+    const updateResult = await Wishlist.updateOne(
+      { userid },
+      { $pull: { products: id } }
+    );
+
+    if (req.query.ss) {
+      res.status(200).redirect("/whishlist")
+    } else {
+      res.status(200).redirect('/products');
+
+    }
+
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 
 
 

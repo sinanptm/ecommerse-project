@@ -183,11 +183,12 @@
                                             </small><br>
                                             DISC: <small>
                                                 <%= coupon.discAmt %>%
-                                            </small>
+                                            </small><br>
+                                            used: <small>
+                                                <%= coupon.used||0 %> times
+                                            </small><br>
                                         </div>
                                         <figcaption class="card-body text-center">
-                                            <a class="edit-coupon-link"
-                                                onclick="showEditCouponForm('<%= coupon._id %>')">Edit</a><br><br>
                                             <a style="color: red;"
                                                 onclick="deleteCoupon('<%= coupon._id %>')">Delete</a>
                                         </figcaption>
@@ -199,144 +200,7 @@
                                         No Coupons Available
                                         <% } %>
 
-                                            <dialog id="editCouponDialog" style="margin-top: 90px;" class="dialog">
-                                                <form id="editCouponForm">
-                                                    <div class="form-group">
-                                                        <label for="editCouponCode">Coupon Code:</label>
-                                                        <input type="text" class="form-control" id="editCouponCode"
-                                                            name="code" placeholder="Enter coupon code">
-                                                        <div id="editCodeError" class="error"></div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="editCouponName">Coupon Name:</label>
-                                                        <input type="text" class="form-control" id="editCouponName"
-                                                            name="name" placeholder="Enter coupon name">
-                                                        <div id="editNameError" class="error"></div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="editCouponExp">Expiration Date:</label>
-                                                        <input type="date" class="form-control" id="editCouponExp"
-                                                            name="expiry">
-                                                        <div id="editExpError" class="error"></div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="editCouponDisc">Discount Amount (%):</label>
-                                                        <input type="number" class="form-control" id="editCouponDisc"
-                                                            name="discount" placeholder="Enter discount amount">
-                                                        <div id="editDiscError" class="error"></div>
-                                                    </div>
-                                                    <button type="button" class="btn btn-secondary"
-                                                        onclick="closeEditCouponDialog()">Close</button>
-                                                    <button type="button" class="btn btn-primary"
-                                                        onclick="saveEditCoupon(event)">Save Changes</button>
-
-                                                </form>
-
-                                            </dialog>
-
-                                            <script>
-                                                var editCouponId; // Variable to store the ID of the coupon being edited
-
-                                                function showEditCouponForm(couponId) {
-                                                    const couponsJson = document.getElementById('dataC').value;
-                                                    const coupons = JSON.parse(couponsJson);
-                                                    editCouponId = couponId;
-                                                    const coupon = coupons.find(coupon => coupon._id === couponId);
-                                                    if (coupon) {
-                                                        $('#editCouponCode').val(coupon.code);
-                                                        $('#editCouponName').val(coupon.name);
-                                                        // Parse and set the expiry date correctly
-                                                        const expDate = new Date(coupon.expDate);
-                                                        $('#editCouponExp').val(expDate.toISOString().split('T')[0]);
-                                                        $('#editCouponDisc').val(coupon.discAmt);
-                                                        const dialog = document.getElementById('editCouponDialog');
-                                                        dialog.showModal();
-                                                    } else {
-                                                        console.log("Coupon not found");
-                                                    }
-                                                }
-
-                                                function closeEditCouponDialog() {
-                                                    const dialog = document.getElementById('editCouponDialog');
-                                                    dialog.close();
-                                                }
-
-                                                async function saveEditCoupon(event) {
-                                                    event.preventDefault(); 
-                                                    let id = editCouponId
-
-                                                    const errors = validateEditCouponForm();
-                                                    if (!errors) {
-                                                        try {
-                                                            const res = await $.ajax({
-                                                                url: `/admin/edit-coupon?id=${id}`,
-                                                                method: "POST",
-                                                                data: $("#editCouponForm").serialize(),
-                                                            });
-                                                            $("#card").html($(res).find("#card").html());
-                                                        } catch (error) {
-                                                            console.log('Error occurred:', error);
-                                                        }
-                                                    } else {
-                                                        console.log('Validation errors occurred');
-                                                    }
-                                                }
-
-
-
-
-                                                function validateEditCouponForm() {
-                                                    let errors = false;
-
-                                                    const editCouponCode = document.getElementById("editCouponCode").value.trim();
-                                                    const editCouponName = document.getElementById("editCouponName").value.trim();
-                                                    const editCouponExp = document.getElementById("editCouponExp").value;
-                                                    const editCouponDisc = parseFloat(document.getElementById("editCouponDisc").value);
-
-                                                    const editCodeError = document.getElementById("editCodeError");
-                                                    const editNameError = document.getElementById("editNameError");
-                                                    const editExpError = document.getElementById("editExpError");
-                                                    const editDiscError = document.getElementById("editDiscError");
-
-                                                    // Clear previous error messages
-                                                    editCodeError.textContent = "";
-                                                    editNameError.textContent = "";
-                                                    editExpError.textContent = "";
-                                                    editDiscError.textContent = "";
-
-                                                    // Validate coupon code
-                                                    if (editCouponCode.length < 6) {
-                                                        editCodeError.textContent = "Coupon code must be at least 6 characters long";
-                                                        errors = true;
-                                                    }
-
-                                                    // Validate coupon name
-                                                    if (editCouponName === "") {
-                                                        editNameError.textContent = "Coupon name is required";
-                                                        errors = true;
-                                                    }
-
-                                                    // Validate expiry date
-                                                    const today = new Date();
-                                                    const expiryDate = new Date(editCouponExp);
-                                                    if (isNaN(expiryDate) || expiryDate <= today) {
-                                                        editExpError.textContent = "Expiry date must be a valid date after today";
-                                                        errors = true;
-                                                    }
-
-                                                    // Validate discount
-                                                    if (isNaN(editCouponDisc) || editCouponDisc < 0 || editCouponDisc > 100) {
-                                                        editDiscError.textContent = "Discount must be a percentage between 0 and 100";
-                                                        errors = true;
-                                                    }
-
-                                                    return errors;
-                                                }
-                                            </script>
-
-
-
-
+                                          
                     </div> <!-- row.// -->
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
@@ -354,7 +218,7 @@
                 <div id="codeError" class="error"></div>
 
                 <label for="couponDiscount">Discount (%):</label>
-                <input type="number" id="couponDiscount" name="discount" placeholder="Enter discount" min="0" max="99">
+                <input type="number" id="couponDiscount" name="discount" placeholder="Enter discount" min="1" max="99">
                 <div id="discountError" class="error"></div>
 
                 <label for="couponExpiry">Expiry Date:</label>
@@ -385,14 +249,14 @@
 
     <script>
 
-        async function deleteCoupun(id) {
+        async function deleteCoupon(id) {
             try {
-                if (confirm("are you sure to dekete this coupon ")) {
+                if (confirm("are you sure to delete this coupon ")) {
                     $.ajax({
                         url: "/admin/delete-coupon?id=" + id,
                         method: "DELETE",
                         success: (res) => {
-                            window.location.reload()
+                            window.location.reload();
                         },
                         error: (res) => {
                             alert(res.message)

@@ -37,8 +37,8 @@ const Addresse = mongoose.model("Address", addressSchema);
 
 // Wishlist Schema
 const wishlistSchema = new mongoose.Schema({
-  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product",unique:true }],
-  userid: { type: mongoose.Schema.Types.ObjectId, ref: "User"},
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product", unique: true }],
+  userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 const Wishlist = mongoose.model("Wishlist", wishlistSchema);
@@ -47,17 +47,27 @@ const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 
 // wallet schema
 const walletSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  amount: { type: Number, default: 0 },
-  productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+  userid: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  balance: { type: Number, default: 0 },
+  transactions: [
+    {
+      type: { type: String },
+      amount: { type: Number },
+      date: { type: Date, default: Date.now },
+      orderid:{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }
+    }
+  ],
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
 const Wallet = mongoose.model("Wallet", walletSchema);
 
+
 // Cart Schema
 const cartSchema = new mongoose.Schema({
   products: [{
-    productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product", unique: true },
+    productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product", unique: false },
     quantity: Number,
   }],
   items: { type: Number, default: 0 },
@@ -67,17 +77,6 @@ const cartSchema = new mongoose.Schema({
 
 const Cart = mongoose.model("Cart", cartSchema);
 
-
-
-// Banner Schema
-const bannerSchema = new mongoose.Schema({
-  mainHeader: { type: String },
-  subHeader: { type: String },
-  URL: { type: String },
-  img: { type: Buffer },
-});
-
-const Banner = mongoose.model("Banner", bannerSchema);
 
 const adminSchema = new mongoose.Schema({
   email: { type: String, required: true },
@@ -93,7 +92,6 @@ module.exports = {
   Addresse,
   Wishlist,
   Cart,
-  Banner,
   Wallet,
   Admin,
 };

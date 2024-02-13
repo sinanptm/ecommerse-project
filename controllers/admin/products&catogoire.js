@@ -45,8 +45,6 @@ const loadProducts = async (req, res) => {
 
 
 
-
-
 //  * add products
 const loadAddProduct = async (req, res) => {
     try {

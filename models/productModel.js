@@ -59,6 +59,10 @@ const ordersSchema = new mongoose.Schema({
         quantity: Number,
         name: String
     }],
+    walletPayment:{
+        transactionid:String,
+        date:Date
+    },
     online_payment: {
         currency: { type: String },
         status: { type: String },
@@ -88,16 +92,26 @@ const couponsSchema = new mongoose.Schema({
     discAmt: { type: Number },
     createdate: { type: Date },
     expDate: { type: Date },
-  });
-  
-  const Coupon = mongoose.model("Coupon", couponsSchema);
+    used:Number
+});
 
+const Coupon = mongoose.model("Coupon", couponsSchema);
 
+// Banner Schema
+const bannerSchema = new mongoose.Schema({
+    mainHeader: { type: String },
+    subHeader: { type: String },
+    URL: { type: String },
+    img: { type: Buffer },
+});
+
+const Banner = mongoose.model("Banner", bannerSchema);
 
 module.exports = {
     Order,
     Product,
     Category,
     CancelationReson,
-    Coupon
+    Coupon,
+    Banner
 }

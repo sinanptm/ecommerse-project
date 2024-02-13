@@ -10,8 +10,8 @@ const { puppeteer,moment } = require("../../util/modules")
 const loadDashBoard = async (re, res) => {
   try {
     const now = moment();
-    const startOfMonth = moment().startOf('month'); // Start of the current month
-    const endOfMonth = moment().endOf('month'); // End of the current month
+    const startOfMonth = moment().startOf('month'); 
+    const endOfMonth = moment().endOf('month');
 
     const revenue = await Order.aggregate([{
       $group: {
@@ -191,7 +191,7 @@ const loadOrders = async (req, res) => {
     }
 
     const countPromise = sort === 'all' ? Order.countDocuments() : Order.countDocuments(findQuery);
-    const [count, orders] = await Promise.all([countPromise, Order.find(findQuery).skip(skip).limit(perPage)]);
+    const [count, orders] = await Promise.all([countPromise, Order.find(findQuery).sort({orderDate:-1}).skip(skip).limit(perPage)]);
 
     const totalPages = Math.ceil(count / perPage);
 
@@ -412,6 +412,8 @@ const getSalesReport = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 }
+
+
 
 const loadCoupons = async (req, res) => {
   try {

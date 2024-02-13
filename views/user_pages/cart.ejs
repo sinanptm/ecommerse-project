@@ -22,6 +22,7 @@
 	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <style>
 	/* Styles for Modal */
@@ -407,7 +408,6 @@
 </header>
 
 
-
 <!-- Title page -->
 <section class="bg-img1 txt-center p-lr-15 p-tb-92"
 	style="background-image: url('https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvcHBpbmclMjBjYXJ0fGVufDB8fDB8fHww');">
@@ -507,7 +507,7 @@
 						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
 							<div class="flex-w flex-m m-r-20 m-tb-5">
 								<input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5"
-									   onclick="event.stopPropagation();" oninput="addCoupon()" type="text"  name="coupon" placeholder="Coupon Code" 
+									   onclick="event.stopPropagation();" oninput="addCoupon()" type="text"  name="coupons" placeholder="Coupon Code" 
 									   onkeydown="if(event.key === 'Enter') event.preventDefault();"> 
 							</div>
 							<div class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5" onclick="addCoupon()">
@@ -516,44 +516,6 @@
 						</div>
 					</div>
 					
-					<script>
-						async function addCoupon() {
-							try {
-								const couponInput = document.querySelector('.stext-104[name="coupon"]');
-								const proceddtocheckout = document.querySelector('#proceddtocheckout')
-								const couponCode = couponInput.value.trim();
-								if (couponCode) {
-									$.ajax({
-									url:`/to-checkout?coupon=${couponCode}`,
-									method:"POST",
-									success:(res)=>{
-									    if (res.msg) {
-									        couponInput.style.color ='red';
-									        proceddtocheckout.style.display ='none';
-									        couponInput.style.borderColor ='red';
-									    } else {
-									        couponInput.style.color ='black';
-									        proceddtocheckout.style.display ='block';
-									        couponInput.style.borderColor ='#E6E6E6'; 
-									        document.getElementById('coupondiscound').innerHTML = res.couponDiscount+"%";
-									    }
-									},
-									error:(err)=>{
-										console.log(err);
-									}
-								})
-								}else{
-									couponInput.style.color ='black';
-									proceddtocheckout.style.display ='block';
-									couponInput.style.borderColor ='#E6E6E6'; 
-								}
-							} catch (error) {
-								console.log(error.message);
-							}
-						}
-					</script>
-					
-
 				</div>
 			</div>
 
@@ -821,31 +783,44 @@
 </div>
 
 
+
 <script>
-
-	async function updateQuantity(id, change) {
-		try {
-			const quantityElement = document.getElementById(`quantity${id}`);
-			let quantity = parseInt(quantityElement.value) + change;
-			quantity = Math.max(quantity, 1);
-
-			const res = await $.ajax({
-				url: "/quantity-manage/" + id,
-				method: "POST",
-				data: { quantity: quantity },
-			});
-
-			const newContent = $(res).find(`#${id}`).html();
-			const price = $(res).find(`#prPrice${id}`).html();
-			const totals = $(res).find(`#totals`).html();
-
-			$(`#${id}`).html(newContent);
-			$(`#prPrice${id}`).html(price);
-			$(`#totals`).html(totals);
-		} catch (error) {
-			console.error("Error updating quantity:", error.message);
-		}
-	}
+	async function addCoupon() {
+    try {
+        const couponInput = document.querySelector('.stext-104[name="coupons"]');
+        
+        const proceddtocheckout = document.querySelector('#proceddtocheckout')
+        const couponCode = couponInput.value.trim();
+        if (couponCode) {
+            $.ajax({
+            url:`/to-checkout?coupon=${couponCode}`,
+            method:"POST",
+            success:(res)=>{
+                if (res.msg) {
+                    couponInput.style.color ='red';
+                    proceddtocheckout.style.display ='none';
+                    couponInput.style.borderColor ='red';
+                } else {
+                    couponInput.style.color ='black';
+                    proceddtocheckout.style.display ='block';
+                    couponInput.style.borderColor ='#E6E6E6'; 
+                    document.getElementById('coupondiscound').innerHTML = res.couponDiscount+"%";
+                    swal("Success!", "Coupon Added", "success");
+                }
+            },
+            error:(err)=>{
+                console.log(err);
+            }
+        })
+        }else{
+            couponInput.style.color ='black';
+            proceddtocheckout.style.display ='block';
+            couponInput.style.borderColor ='#E6E6E6'; 
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 </script>
 
 <!--===============================================================================================-->

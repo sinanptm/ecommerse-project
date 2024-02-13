@@ -1,5 +1,5 @@
-const { Product, Order, CancelationReson, Category } = require("../../models/productModel")
-const { User, Addresse, Wishlist } = require("../../models/userModels")
+const { Product, Order, CancelationReson, Category, Coupon } = require("../../models/productModel")
+const { User, Addresse, Wishlist, Wallet } = require("../../models/userModels")
 const { getUserIdFromToken, bcryptCompare, makeHash, createHexId, isValidObjectId } = require('../../util/validations');
 const { puppeteer } = require("../../util/modules")
 
@@ -123,14 +123,15 @@ const loadProducts = async (req, res) => {
         const wishlist = await Wishlist.findOne({ userid: userId });
 
         products.forEach(product => {
-            product.wishlist = false;
+            product.whishlist = false;
         });
 
         if (wishlist) {
             products.forEach(product => {
-                product.wishlist = wishlist.products.includes(product._id);
+                product.whishlist = wishlist.products.includes(product._id);
             });
         }
+        products[0].wishlist = true
 
         res.render("product", { products, categories, totalPages, currentPage: page, sort, category, price, name });
     } catch (error) {
@@ -183,16 +184,12 @@ const laodProductDetials = async (req, res) => {
 // * for showing the user details 
 const loadAccount = async (req, res) => {
     try {
-        const token = req.cookies.token || req.session.token;
+        const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
         const filter = req.query.filter || 'all';
-        let userid;
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = 4;
+        const skip = (page - 1) * limit;
 
-        if (token) {
-            userid = await getUserIdFromToken(token);
-        } else {
-            console.log(';dsa');
-            return res.status(304).redirect('/login');
-        }
 
         const user = await User.aggregate([
             { $match: { _id: createHexId(userid) } },
@@ -222,6 +219,9 @@ const loadAccount = async (req, res) => {
                 break;
         }
 
+        const totalCount = await Order.countDocuments(filterQuery);
+        const totalPages = Math.ceil(totalCount / limit);
+
         const orders = await Order.aggregate([
             { $match: filterQuery },
             {
@@ -232,14 +232,15 @@ const loadAccount = async (req, res) => {
                     as: 'OrderedItems'
                 }
             }
-        ]);
+        ]).sort({orderDate:-1}).skip(skip).limit(limit)
+
 
         if (!user || user.length === 0) {
             return res.status(404).redirect('/home');
         }
 
-        const pendings = await Order.find({ 
-            userid, 
+        const pendings = await Order.find({
+            userid,
             paymentStatus: 'pending',
             $or: [
                 { offlinePayment: { $exists: false } },
@@ -248,7 +249,27 @@ const loadAccount = async (req, res) => {
             orderStatus: { $nin: ['4', '5'] }
         })
 
-        res.render('account-details', { user: user[0], editing: true, msg: req.query.msg, toast: req.query.toast, orders, filter, err: req.query.err ,pendings});
+        const wallet = await Wallet.findOne({ userid });
+
+
+        const coupons = await Coupon.find();
+
+        res.render('account-details', {
+            user: user[0],
+            editing: true,
+            msg: req.query.msg,
+            toast: req.query.toast,
+            orders,
+            filter,
+            err: req.query.err,
+            pendings,
+            wallet,
+            totalPages,
+            currentPage: page,
+            filter,
+            coupons
+        });
+
     } catch (error) {
         console.error(error);
         res.redirect('/home');
@@ -284,7 +305,7 @@ const addAddress = async (req, res) => {
 
         const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
 
-        const newAddress = new Address({
+        const newAddress = new Addresse({
             Fname,
             Lname,
             userId,
@@ -359,7 +380,7 @@ const edittAddress = async (req, res) => {
         });
 
         if (!updatedAddress) {
-            return res.status(404).redirect('/account?msg=Address not found');
+            // return res.status(404).redirect('/account?msg=Address not found');
         }
 
         res.status(200).redirect('/account');
@@ -393,11 +414,40 @@ const cancelOrder = async (req, res) => {
             reason: cancelReason
         });
         await newReason.save();
+        if (order.paymentStatus !== 'completed' && (typeof order.offlinePayment === 'undefined' || order.offlinePayment === null || order.offlinePayment === false)) {
+            if (await Wallet.findOne({ userid })) {
+                await Wallet.updateOne({ userid }, {
+                    $set: { updatedAt: new Date() },
+                    $push: {
+                        transactions: {
+                            type: 'credit',
+                            amount: order.orderAmount,
+                            orderid: order._id
+                        }
+                    },
+                    $inc: { balance: order.orderAmount }
+                });
+
+            } else {
+                const newWallet = new Wallet({
+                    userid,
+                    createdAt: new Date(),
+                    balance: order.orderAmount,
+                    transactions: [{
+                        type: 'credit',
+                        amount: order.orderAmount,
+                        orderid: order._id,
+                    }],
+                    updatedAt: new Date(),
+                });
+                await newWallet.save();
+            }
+        }
 
         res.status(200).redirect('/account');
     } catch (error) {
         console.error(error.message);
-        res.status(500).redirect('/account?msg=' + encodeURIComponent(error.message));
+        res.status(500).redirect('/account?msg=' + error.message);
     }
 };
 
@@ -423,15 +473,15 @@ const createInvoice = async (req, res) => {
     try {
         const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
 
-        const pendings = await Order.find({ 
-            userid, 
+        const pendings = await Order.find({
+            userid,
             paymentStatus: 'pending',
             $or: [
                 { offlinePayment: { $exists: false } },
                 { offlinePayment: false }
             ],
             orderStatus: { $nin: ['4', '5'] }
-        }).populate('OrderedItems.productid');  
+        }).populate('OrderedItems.productid');
 
         const browser = await puppeteer.launch({ headless: "new" });
         const page = await browser.newPage();

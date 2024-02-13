@@ -1,26 +1,37 @@
 
 
-function showPersonalInfo() {
-    document.getElementById('heading').innerHTML = "Personal Details"
-    document.getElementById('personalInfo').style.display = 'block';
-    document.getElementById('addresssssss').style.display = 'none';
-    document.getElementById('orders').style.display = 'none';
+async function accountPagination(i, filter) {
+    try {
+        const res = await $.ajax({
+            url: `/account?page=${i}&&filter=${filter}`,
+            method: "GET"
+        })
+        console.log(23);
+        $('#orders').html($(res).find("#orders").html())
+    } catch (error) {
+        console.log('error in pagination '+error.message);
+    }
 }
 
-function showAddresses() {
-    document.getElementById('heading').innerHTML = "My Addresses"
-    document.getElementById('personalInfo').style.display = 'none';
-    document.getElementById('addresssssss').style.display = 'block';
-    document.getElementById('orders').style.display = 'none';
+async function downloadInvoice() {
+    try {
+        $.ajax({
+            url:'/create-invoice',
+            method:"POST",
+            success:()=>{
+                swal("Processing", "Please wait while we are loading", "info");
+                document.getElementById('invoiceForm').submit();
+            },
+            error: (error) => {
+                console.error('Error downloading invoice:', error);
+                swal("Error", "Failed to download invoice", "error");
+            }
+        });
+    } catch (error) {
+        console.error('Error downloading invoice:', error);
+        swal("Error", "Failed to download invoice", "error");
+    }
 }
-
-function showOrders() {
-    document.getElementById('heading').innerHTML = "My Orders"
-    document.getElementById('personalInfo').style.display = 'none';
-    document.getElementById('addresssssss').style.display = 'none';
-    document.getElementById('orders').style.display = 'block';
-}
-
 
 async function orderFilter(event) {
     try {
@@ -39,7 +50,89 @@ async function orderFilter(event) {
     }
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const copyButtons = document.querySelectorAll('.coupon-btn');
 
+    copyButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const codeElement = this.parentElement.querySelector('.code');
+            const codeToCopy = codeElement.innerText;
+
+            // Copy the code to clipboard
+            navigator.clipboard.writeText(codeToCopy)
+                .then(() => {
+                    swal("Success!", "Coupon code copied: " + codeToCopy, "success");
+                })
+                .catch(() => {
+                    swal("Error!", "Failed to copy coupon code.", "error");
+                });
+        });
+    });
+});
+
+function resetButtonColors() {
+    // Reset all button colors to default
+    document.getElementById('personal-details-nav').style.color = '';
+    document.getElementById('address-nav').style.color = '';
+    document.getElementById('orders-nav').style.color = '';
+    document.getElementById('wallet-nav').style.color = '';
+    document.getElementById('coupon-nav').style.color = '';
+}
+
+function showPersonalInfo() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('heading').innerHTML = "Personal Details";
+    document.getElementById('personal-details-nav').style.color = 'black'
+    document.getElementById('personalInfo').style.display = 'block';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('orders').style.display = 'none';
+    document.getElementById('walletSection').style.display = 'none';
+    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
+}
+
+function showAddresses() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('address-nav').style.color = 'black'
+    document.getElementById('heading').innerHTML = "My Addresses";
+    document.getElementById('personalInfo').style.display = 'none';
+    document.getElementById('addresssssss').style.display = 'block';
+    document.getElementById('orders').style.display = 'none';
+    document.getElementById('walletSection').style.display = 'none';
+    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
+}
+
+function showOrders() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('orders-nav').style.color = 'black'
+    document.getElementById('heading').innerHTML = "My Orders";
+    document.getElementById('personalInfo').style.display = 'none';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('orders').style.display = 'block';
+    document.getElementById('walletSection').style.display = 'none';
+    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
+}
+
+function showWallet() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('wallet-nav').style.color = 'black'
+    document.getElementById('heading').innerHTML = "Wallet";
+    document.getElementById('personalInfo').style.display = 'none';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('orders').style.display = 'none';
+    document.getElementById('walletSection').style.display = 'block';
+    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
+}
+
+function showCoupon() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('coupon-nav').style.color = 'black'
+    document.getElementById('heading').innerHTML = "Coupons";
+    document.getElementById('personalInfo').style.display = 'none';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('orders').style.display = 'none';
+    document.getElementById('walletSection').style.display = 'none';
+    document.getElementById('couponsection').style.display = 'block'; // Display the coupons section
+}
 
 async function searchProducts(event) {
     try {
@@ -102,6 +195,32 @@ async function cancelOrder(orderId, cancelReason) {
         window.location.reload();
     } catch (error) {
         console.error(error.message);
+    }
+}
+
+
+
+async function updateQuantity(id, change) {
+    try {
+        const quantityElement = document.getElementById(`quantity${id}`);
+        let quantity = parseInt(quantityElement.value) + change;
+        quantity = Math.max(quantity, 1);
+
+        const res = await $.ajax({
+            url: "/quantity-manage/" + id,
+            method: "POST",
+            data: { quantity: quantity },
+        });
+
+        const newContent = $(res).find(`#${id}`).html();
+        const price = $(res).find(`#prPrice${id}`).html();
+        const totals = $(res).find(`#totals`).html();
+
+        $(`#${id}`).html(newContent);
+        $(`#prPrice${id}`).html(price);
+        $(`#totals`).html(totals);
+    } catch (error) {
+        console.error("Error updating quantity:", error.message);
     }
 }
 
@@ -516,7 +635,7 @@ function deleteAddress(addressId) {
     }
 }
 
-function submitEditAddress(addressId) {
+function submitEditAddress(event,addressId) {
     clearEditAddressErrors();
 
     const fields = [
@@ -551,7 +670,7 @@ function submitEditAddress(addressId) {
         displayEditAddressErrors(errors[0]);
         return;
     }
-    console.log();
+    event.preventDefault();
 
     const formData = $(`#editAddressForm${addressId}`).serialize();
 
@@ -562,14 +681,13 @@ function submitEditAddress(addressId) {
         success: function (response) {
             const newData = $(response).find(`.address${addressId}`).html();
             $(`.address${addressId}`).html(newData);
-
             $(`#editAddressModal${addressId}`).modal('hide');
         },
         error: function (error) {
+            swal("Success!", "Address updated successfully", "success");
             console.error('Error editing address:', error.message);
         }
     });
-    event.preventDefault();
 }
 
 function displayEditAddressErrors(error) {
@@ -668,20 +786,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function update() {
     try {
-        const formData = $('#userDetailsForm').serialize();
-
+        const formData = $('#userDetailsForm').serialize(); // Serialize the form data
         const res = await $.ajax({
             url: "/edit-details",
             method: "PUT",
             data: formData
         });
 
-        const newData = $(res).find('#userDetailsForm').html();
-        $('#userDetailsForm').html(newData);
+        $('#userDetailsForm').html(res);
+
     } catch (error) {
         console.error('Error updating form:', error.message);
+        swal("Success!", "Details updated successfully", "success");
     }
 }
+
 
 
 

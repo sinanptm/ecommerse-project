@@ -156,7 +156,7 @@ const loadLogin = async (req, res) => {
 
 const checkLogin = async (req, res) => {
   try {
-    const { email, password, duration, message, subject } = req.body;
+    const { email, password } = req.body;
 
     const user = await User.findOne(
       { email: email.trim() }
@@ -222,12 +222,13 @@ const sendresetmail = async (req, res) => {
       email  = req.body.email
     }
     email = email.trim()
+
     const user = await User.findOne({ email })
     if (!user) {
       res.render("resetmail", { msg: "your Not a registered user",send:false})
       return
     }
-    const OTP = await sendNewPass({
+    await sendNewPass({
       email,
       message: `This mail is for resetting password for TRENDS`,
       subject: "Password Restting",
@@ -236,7 +237,7 @@ const sendresetmail = async (req, res) => {
     return res.status(200).render('resetmail',{send:true})
 
   } catch (error) {
-    res.render("resetmail", { msg: error.message ,send:false})
+    res.render("resetmail error", { msg: error.message ,send:false})
   }
 }
 
