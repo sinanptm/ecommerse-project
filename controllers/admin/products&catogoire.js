@@ -30,6 +30,7 @@ const loadProducts = async (req, res) => {
         }
 
         const products = await Product.find(findQuery)
+            .sort({createdate:-1})
             .skip(skip)
             .limit(perPage);
 

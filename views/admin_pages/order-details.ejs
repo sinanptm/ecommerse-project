@@ -48,25 +48,27 @@
                         <a href="/admin/addProduct">Add product </a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu">
+                <li class="menu-item ">
                     <a class="menu-link" href="/admin/users"> <i class="icon material-icons md-store"></i>
                         <span class="text">Users</span>
                     </a>
-                    <div class="submenu">
-                        <a href="/admin/users">User Managment</a>
-                    </div>
                 </li>
-                <li class="menu-item has-submenu active">
+
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/orders-list"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
-                    <div class="submenu">
-                        <a href="/admin/orders-list">Order list </a>
-                        <a href="/admin/coupon-managment">Coupons list</a>
-
-                    </div>
                 </li>
-
+                <!-- <li class="menu-item">
+                    <a class="menu-link" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
+                        <span class="text">Reviews</span>
+                    </a>
+                </li> -->
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/coupon-managment"> <i class="icon material-icons md-stars"></i>
+                        <span class="text">Coupons</span> </a>
+                </li>
+                </ul>
             
             <br>
             <br>
@@ -75,20 +77,20 @@
     <main class="main-wrap">
         <header class="main-header navbar">
             <div class="col-search">
-              
+                
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
-                        class="material-icons md-apps"></i> </button>
-                <ul class="nav">
-                   
-                            <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
-
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav"> 
+                    <li class="dropdown nav-item">                        
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i
+                                    class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
                 </ul>
             </div>
         </header>
+        
 
         <section class="content-main">
             <div class="content-header">
@@ -187,26 +189,31 @@
                         <div class="col-md-4">
                             <article class="icontext align-items-start">
                                 <div class="text">
-                                    <h6 class="mb-1">Payment Details<%= order.offlinePayment?'(offline)':'(online)' %></h6>
+                                    <h6 class="mb-1">Payment Details<%= order.offlinePayment ? '(Cash On Delivery)' : '(online)' %></h6>
                                     <p class="mb-1">
-                                        <% if (order.offlinePayment) { %>
+                                        <% if (paymentType =='offline') { %>
                                             Cash on Delivery <br>
                                             Amount: <%= order.orderAmount %> <br>
-                                            <!-- Display online payment details -->
-                                            <% } else if (order.offlinePayment) { %>
-                                                Currency: <%= order.online_payment.currency %> <br>
-                                                Amount: <%= order.orderAmount %> <br>
-                                                Status: <%= order.online_payment.status %> <br>
-                                                Date: <%= order.online_payment.createdate.toDateString() %>
-                                            <!-- Display offline payment details -->
-                                        <% } else { %>
-                                            <!-- No payment details available -->
-                                            Payment details not available
-                                        <% } %>
+                                            Date: <%= order.orderDate.toDateString() %> <br>
+                                        <% } else if (paymentType=='online_pending') { %>
+                                            Amount: <%= order.orderAmount %> <br>
+                                            Date: <%= order.orderDate.toDateString() %> <br>
+                                            Date: <%= order.orderDate.toDateString() %> <br>
+                                            Payment Pending
+                                        <% } else if (paymentType=='online') { %>
+                                            Date: <%= order.orderDate.toDateString() %> <br>
+                                            Amount: <%= order.orderAmount %> <br>
+                                            Transaction ID: <small> <%= order.online_payment.transactionid %></small>
+                                        <% } else if(paymentType=="wallet") { %>
+                                            Date: <%= order.orderDate.toDateString() %> <br>
+                                            Amount: <%= order.orderAmount %> <br>
+                                            Transaction ID: <small><%= order.walletPayment.transactionid %></small>
+                                        <% }else  %>
                                     </p>
                                 </div>
                             </article>
                         </div> <!-- col// -->
+                        
                         <div class="col-md-4">
                             <article class="icontext align-items-start">
                                 <div class="text">
@@ -221,6 +228,20 @@
                         </div> <!-- col// -->
                     </div> <!-- row // -->
                     
+                  <% if (order.orderStatus==='5') { %>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="mb-3">Canellation Reason</h6>
+                            <ul class="list-group">
+                              <h6 style="color: rgb(254, 3, 3);"><%= reason.reason %></h6>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr>
+                    <br>
+                  <% } %>
+
+
                     <div class="row">
                         <div class="col-md-12">
                             <h6 class="mb-3">Ordered Products</h6>

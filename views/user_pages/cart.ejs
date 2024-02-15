@@ -24,6 +24,20 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<% if (toast !== undefined && toast !== null) { %>
+	<script>
+		try {
+			new Swal("Alert!", '<%= toast %>', 'warning'); // Display as a warning
+		} catch (error) {
+			console.log(error);
+		}
+	</script>
+<% } %>
+
+
 <style>
 	/* Styles for Modal */
 	.custom-modal {
@@ -224,10 +238,6 @@
 						</li>
 
 						<li>
-							<a href="/blog">Blog</a>
-						</li>
-
-						<li>
 							<a href="/about">About</a>
 						</li>
 
@@ -388,10 +398,6 @@
 			</li>
 
 			<li>
-				<a href="/blog">Blog</a>
-			</li>
-
-			<li>
 				<a href="/about">About</a>
 			</li>
 
@@ -418,7 +424,7 @@
 
 
 <!-- Shoping Cart -->
-<form class="bg0 p-t-75 p-b-85" method="post" action="/to-checkout">
+<form class="bg0 p-t-75 p-b-85" method="post" action="/to-checkout" id="CartForm">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
@@ -471,8 +477,7 @@
 													<div class="modal-actions">
 														<a onclick="removeProductCart('<%= product.productid._id %>')"
 															class="modal-btn btn-delete">Yes, I do</a>
-														<button class="modal-btn btn-cancel"
-															onclick="closeConfirmationModal('<%= product.productid._id %>')">Cancel</button>
+														<button type="button" class="modal-btn btn-cancel" onclick="closeConfirmationModal('<%= product.productid._id %>')">Cancel</button>
 													</div>
 												</div>
 											</div>
@@ -568,7 +573,7 @@
 								</div>
 							</div>
 							<% } %>
-								<% }) %>
+						<% }) %>
 
 
 
@@ -589,7 +594,7 @@
 
 									<div class="flex-w flex-t p-t-27 p-b-33">
 										<div class="size-208">
-											<span class="mtext-101 cl2">
+											<span class="mtext-101 cl2" >
 												Total Amount
 											</span>
 										</div>
@@ -600,15 +605,16 @@
 										</div>
 									</div>
 
-									<% if (productsToCheckout.length>0) { %>
-										<button id="proceddtocheckout"
-											class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+									<% if (productsToCheckout.length > 0) { %>
+										<button id="proceddtocheckout" type="button" onclick="event.preventDefault(); checkQuantity()" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
 											Proceed to Checkout
 										</button>
-										<% } %>
-											<input type="hidden" name="totalprice" value="<%= totalPrice || 0 %>">
-											<input type="hidden" name="products"
-												value="<%= JSON.stringify(productsToCheckout) %>">
+									<% } %>
+									
+									
+					<input type="hidden" name="products" value="<%= JSON.stringify(productsToCheckout) %>">
+					<input type="hidden" id="outofstock" value="<%= JSON.stringify(outOfStock) %>">
+					<input type="hidden" name="totalprice" value="<%= totalPrice || 0 %>">
 				</div>
 			</div>
 

@@ -1,6 +1,4 @@
 
-
-
 async function searchUser(event) {
 	const name = event.target.value.trim()
 	if (name !== '') {
@@ -156,7 +154,7 @@ async function orderSort2(event, page, sort) {
 				sort: sort,
 				sort2: sort2
 			},
-			success: () => {
+			success: (res) => {
 				window.location.href = `/admin/orders-list?page=${page}&&sort=${sort}&&sort2=${sort2}`
 				// $('#content-main').html($(res).find('#content-main').html())
 			},
@@ -182,8 +180,9 @@ async function orderSort(page, event, sort2) {
 					sort: sort,
 					sort2: sort2
 				},
-				success: () => {
+				success: (res) => {
 					window.location.href = `/admin/orders-list?page=${page}&&sort=${sort}&&sort2=${sort2}`
+					// $('#content-main').html($(res).find('#content-main').html())
 				},
 				error: (error) => {
 					throw new Error("error", error.message)

@@ -122,16 +122,18 @@ const loadProducts = async (req, res) => {
         }
         const wishlist = await Wishlist.findOne({ userid: userId });
 
-        products.forEach(product => {
-            product.whishlist = false;
-        });
-
-        if (wishlist) {
+        if (products.length>0) {
             products.forEach(product => {
-                product.whishlist = wishlist.products.includes(product._id);
+                product.whishlist = false;
             });
+    
+            if (wishlist) {
+                products.forEach(product => {
+                    product.whishlist = wishlist.products.includes(product._id);
+                });
+            }
+            products[0].wishlist = true
         }
-        products[0].wishlist = true
 
         res.render("product", { products, categories, totalPages, currentPage: page, sort, category, price, name });
     } catch (error) {
@@ -591,17 +593,6 @@ const loadContact = async (req, res) => {
     }
 }
 
-// * to show the the blogs about us
-
-const loadBlog = async (req, res) => {
-    try {
-        res.render("blog", {})
-
-    } catch (error) {
-
-    }
-}
-
 
 // * for showing erros
 const loadEror = async (req, res) => {
@@ -619,10 +610,9 @@ const loadEror = async (req, res) => {
 
 module.exports = {
     loadHome,
-    laodProductDetials,
     loadProducts,
+    laodProductDetials,
     loadAbout,
-    loadBlog,
     loadContact,
     loadAccount,
     editDetails,

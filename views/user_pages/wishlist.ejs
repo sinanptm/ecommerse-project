@@ -191,9 +191,7 @@
 							<a href="/cart">Cart</a>
 						</li>
 
-						<li>
-							<a href="/blog">Blog</a>
-						</li>
+					
 
 						<li>
 							<a href="/about">About</a>
@@ -317,8 +315,7 @@
 					<div class="whishshs">
 						<% if (valid) { %>
 							<a href="whishlist"
-								class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-								data-notify="<%= whishItems %>">
+								class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= whishItems %>">
 								<i class="zmdi zmdi-favorite-outline"></i>
 							</a>&nbsp;&nbsp;&nbsp;
 							<% }else{ %>
@@ -365,10 +362,7 @@
 				<a href="/cart">Cart</a>
 			</li>
 
-			<li>
-				<a href="/blog">Blog</a>
-			</li>
-
+		
 			<li>
 				<a href="/about">About</a>
 			</li>
@@ -445,6 +439,31 @@
 </section><br><br><br><br><br><br><br><br><br><br><br>
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>	
+async function add_to_cart_whishPage(id) {
+    try {
+        const response = await $.ajax({
+            url: '/add-to-cart',
+            method: 'POST',
+            data: { quantity: 1, productid: id, wish: 'ss' },
+        });
+        if (response.stock == false) {
+            new Swal('Sorry!',"The product is out of stock",'warning')
+        }
+        const noti = $(response).find(".jfdsfd").html();
+        const whishpro = $(response).find(".wishlist-list").html()
+		$('.whishshs').html($(response).find('.whishshs').html())
+        $('.jfdsfd').html(noti)
+        $(".wishlist-item").html(whishpro)
+        new Swal("Success!","item added to cart",'success')
+       
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+    }
+}
+</script>
 
 
 <footer class="bg3 p-t-75 p-b-32">

@@ -101,7 +101,7 @@ const cartItems = async (req, res, next) => {
 
 
 const handleUndefinedRoutes = (req, res, next) => {
-    res.status(404).render('error', { msg: 'Page not found', toast: "the page is maded yet" ,title:`404` });
+    res.status(404).render('error', { msg: 'Page not found', toast: "This page not found" ,title:`404` });
 }
 
 

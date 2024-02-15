@@ -96,28 +96,30 @@
                         <span class="text">Products</span>
                     </a>
                     <div class="submenu">
-                        <a href="/admin/products" class="active">Product List</a>
+                        <a href="/admin/products">Product List</a>
                         <a href="/admin/catogories">Categories</a>
                         <a href="/admin/addProduct">Add product </a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu">
+                <li class="menu-item ">
                     <a class="menu-link" href="/admin/users"> <i class="icon material-icons md-store"></i>
                         <span class="text">Users</span>
                     </a>
-                    <div class="submenu">
-                        <a href="/admin/users">User Managment</a>
-                    </div>
                 </li>
-                <li class="menu-item has-submenu active">
+
+                <li class="menu-item">
                     <a class="menu-link" href="/admin/orders-list"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
-                    <div class="submenu">
-                        <a href="/admin/orders-list">Order list </a>
-                        <a href="/admin/coupon-managment">Coupons list</a>
-
-                    </div>
+                </li>
+                <!-- <li class="menu-item">
+                    <a class="menu-link" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
+                        <span class="text">Reviews</span>
+                    </a>
+                </li> -->
+                <li class="menu-item active">
+                    <a class="menu-link" href="/admin/coupon-managment"> <i class="icon material-icons md-stars"></i>
+                        <span class="text">Coupons</span> </a>
                 </li>
                 <br>
                 <br>
@@ -126,19 +128,12 @@
     <main class="main-wrap">
         <header class="main-header navbar">
             <div class="col-search">
-
+                
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
-                        class="material-icons md-apps"></i> </button>
-                <ul class="nav">
-
-                    <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
-                            aria-expanded="false"> <img class="img-xs rounded-circle" src="imgs/people/avatar2.jpg"
-                                alt="User"></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav"> 
+                    <li class="dropdown nav-item">                        
                             <a class="dropdown-item text-danger" href="/admin/logout"><i
                                     class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
@@ -146,6 +141,8 @@
                 </ul>
             </div>
         </header>
+
+        
         <section class="content-main">
             <div class="content-header">
                 <div>

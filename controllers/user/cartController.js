@@ -153,7 +153,7 @@ const loadCart = async (req, res) => {
   try {
     const token = req.cookies.token || req.session.token;
     if (!token) {
-      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, totalPrice: 0, });
+      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast:req.query.toast, totalPrice: 0, outOfStock:[] });
     }
 
     const userId = await getUserIdFromToken(token);
@@ -165,7 +165,7 @@ const loadCart = async (req, res) => {
 
 
     if (!cart) {
-      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, totalPrice: 0 });
+      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast:req.query.toast, totalPrice: 0 ,outOfStock:[]});
     }
 
     const products = cart.products;
@@ -180,7 +180,16 @@ const loadCart = async (req, res) => {
     const filteredProducts = products.filter(product => product.productid.quantity > 0 && product.productid.status === "Available");
     const productsToCheckout = filteredProducts.map(product => ({ productid: product.productid._id, quantity: product.quantity }));
 
-    return res.render("cart", { products, cart, totalPrice, productsToCheckout, toast: req.query.toast });
+    let outOfStock = [];
+    
+    for (const product of productsToCheckout) {
+      const p= await Product.findById(product.productid);
+      if (p.quantity<=0 || p.quantity-product.quantity<=0 ) {
+        outOfStock.push({name:p.name,remainingQuantity:p.quantity});
+      }
+    }
+
+    return res.render("cart", { products, cart, totalPrice, productsToCheckout, toast: req.query.toast, outOfStock });
   } catch (error) {
     console.error(error);
     return res.status(500).send("Internal Server Error");
@@ -279,12 +288,12 @@ const addToCheckout = async (req, res) => {
         return;
       }
     }
+
     if (typeof coupons !=='undefined'&&coupons!== null) {
-      let s=await Coupon.updateOne({code:parseInt(coupons)},{$inc:{used:1}})
+      await Coupon.updateOne({code:parseInt(coupons)},{$inc:{used:1}})
     }
 
 
-    // Process checkout without coupon
     const parsedProducts = Array.isArray(products) ? products : [products];
     req.session.parsedProducts = parsedProducts;
     req.session.totalAmount = totalprice;

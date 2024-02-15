@@ -1,7 +1,7 @@
 const { path, express } = require("../util/modules")
 const userRoute = express();
 const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/user/userController");
-const { loadHome, loadProducts, laodProductDetials, loadAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadBlog, loadContact, loadEror, cancelOrder, changePassword, createInvoice } = require("../controllers/user/userPageController");
+const { loadHome, loadProducts, laodProductDetials, loadAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadContact, loadEror, cancelOrder, changePassword, createInvoice } = require("../controllers/user/userPageController");
 const { loadCart, addToCart, addQuantity, removeProduct, loadCheckout, addToCheckout, online_payment, placeOrder, showSuccess, addToCartProductPage, loadWhishList, addToWhishlist, removeFromWhishlist } = require("../controllers/user/cartController")
 const { is_registered, requireLogin, is_loginRequired, cartItems, handleUndefinedRoutes } = require("../middlewares/userAuth");
 
@@ -64,7 +64,6 @@ userRoute.get('/order-success', requireLogin, showSuccess)
 
 
 userRoute.get("/about", loadAbout);
-userRoute.get("/blog", loadBlog);
 userRoute.get("/contact", loadContact);
 
 userRoute.get('/error-page', loadEror)
@@ -77,24 +76,3 @@ userRoute.use(handleUndefinedRoutes);
 
 
 module.exports = userRoute;
-
-
-// userRoute.get('/clear-session', (req, res) => {
-//     // Clear all cookies
-//     const cookies = Object.keys(req.cookies);
-//     cookies.forEach(cookie ,i=> {
-//         console.log("Cleared Cokiee: ",i ,cookie);
-//         res.clearCookie(cookie);
-//     });
-
-//     // Clear session data
-//     req.session.destroy((err) => {
-//         if (err) {
-//             console.error('Error clearing session:', err);
-//             res.status(500).send('Error clearing session');
-//         } else {
-//             console.log('Session cleared successfully');
-//             res.redirect('/'); // Redirect to home page or any other page
-//         }
-//     });
-// });

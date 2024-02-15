@@ -65,54 +65,52 @@
                         <a href="/admin/addProduct">Add product </a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu">
+                <li class="menu-item ">
                     <a class="menu-link" href="/admin/users"> <i class="icon material-icons md-store"></i>
                         <span class="text">Users</span>
                     </a>
-                    <div class="submenu">
-                        <a href="/admin/users">User Managment</a>
-                    </div>
                 </li>
-                <li class="menu-item has-submenu active">
+
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/orders-list"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
-                    <div class="submenu">
-                        <a href="/admin/orders-list">Order list </a>
-                        <a href="/admin/coupon-managment">Coupons list</a>
-
-
-                    </div>
                 </li>
+                <!-- <li class="menu-item">
+                    <a class="menu-link" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
+                        <span class="text">Reviews</span>
+                    </a>
+                </li> -->
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/coupon-managment"> <i class="icon material-icons md-stars"></i>
+                        <span class="text">Coupons</span> </a>
+                </li>
+            </ul>
 
-
-                <br>
-                <br>
+            <br>
+            <br>
         </nav>
     </aside>
     <main class="main-wrap">
         <header class="main-header navbar">
             <div class="col-search">
-               
+
             </div>
             <div class="col-nav">
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
                         class="material-icons md-apps"></i> </button>
                 <ul class="nav">
-
                     <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
-                            aria-expanded="false"> <img class="img-xs rounded-circle" src="imgs/people/avatar2.jpg"
-                                alt="User"></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-
-                            <a class="dropdown-item text-danger" href="/admin/logout"><i
-                                    class="material-icons md-exit_to_app"></i>Logout</a>
-                        </div>
-                    </li>
-                </ul>
+                        <a class="dropdown-item text-danger" href="/admin/logout"><i
+                                class="material-icons md-exit_to_app"></i>Logout</a>
+            </div>
+            </li>
+            </ul>
             </div>
         </header>
+
+
+
         <section class="content-main" id="content-main">
             <div class="content-header">
                 <div>
@@ -127,15 +125,17 @@
                         <div class="col-lg-2 col-6 col-md-3" onchange="orderSort2(event,'<%= currentPage %>','<%= sort %>')">
                             <select class="form-select">
                                 <option value="all" <%=sort2=='all' ?'selected':'' %>>Show all</option>
-                                <option value="pending" <%=sort2=='pending' ?'selected':'' %>>Pending Payment</option>
                                 <option value="online" <%=sort2=='online' ?'selected':'' %>>Online Payment</option>
                                 <option value="offline" <%=sort2=='offline' ?'selected':'' %>>Offline Payment</option>
+                                <option value="wallet" <%=sort2=='wallet' ?'selected':'' %>>Wallet Payment</option>
                             </select>
                         </div>
+                        
                         <div class="col-lg-4 col-md-6 me-auto">
                         </div>
                         <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select" onchange="orderSort('<%= currentPage %>', event,'<%= sort2 %>')">
+                            <select class="form-select"
+                                onchange="orderSort('<%= currentPage %>', event,'<%= sort2 %>')">
                                 <option value="all" <%=sort==='all' ? 'selected' : '' %>>Status</option>
                                 <option value="1" <%=sort==='1' ? 'selected' : '' %>>Processing</option>
                                 <option value="2" <%=sort==='2' ? 'selected' : '' %>>Quality Check</option>
@@ -162,7 +162,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% if (orders) { %>
+                                <% if (orders.length>0) { %>
                                     <% orders.forEach((order, i)=> { %>
                                         <tr>
                                             <td>#SK<%= i + 1 %>
@@ -209,7 +209,7 @@
                                             <td class="text-end">
                                                 <a href="/admin/order-details?id=<%= order._id %>"
                                                     class="btn btn-md rounded font-sm">Details</a>
-                                                <% if (order.orderStatus!=="4"&&order.orderStatus!=="5" ) { %>
+                                                <% if (order.orderStatus!=="4" &&order.orderStatus!=="5" ) { %>
                                                     <a href="/admin/delete-order?id=<%= order._id %>"
                                                         class="btn btn-danger rounded font-sm">Delete</a>
                                                     <% } %>
@@ -218,7 +218,8 @@
                                         <% }) %>
                                             <% } else { %>
                                                 <tr>
-                                                    <td colspan="7">No Orders Yet</td>
+                                                    <td colspan="7">No Orders Yet  <a style="color: blue;" href="/admin/orders-list">Refresh Page</a></td>br
+                                                   
                                                 </tr>
                                                 <% } %>
                             </tbody>

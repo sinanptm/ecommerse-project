@@ -103,7 +103,7 @@ const sendNewPass = async ({ email, subject = "TRENDS Forget Password", message 
       subject,
       html: `
         <p>${message}</p>
-        <p>To To-resert Your Passeord : <span style="color: tomato; font-size: 25px; letter-spacing: 2px;"><a href="http://127.0.0.1:3333/resetpassword?otp=${otp}&&email=${email}">Click me<a></span></p>
+        <p>To To-resert Your Passeord : <span style="color: tomato; font-size: 25px; letter-spacing: 2px;"><a href="http://127.0.0.1:${process.env.PORT||3333}/resetpassword?otp=${otp}&&email=${email}">Click me<a></span></p>
         <p>This link expires in <b>${duration} minute(s)</b>.</p>
       `,
     };

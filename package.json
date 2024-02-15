@@ -2,9 +2,9 @@
   "name": "project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
@@ -24,7 +24,8 @@
     "nodemailer": "^6.9.8",
     "puppeteer": "^21.11.0",
     "razorpay": "^2.9.2",
-    "sharp": "^0.33.2"
+    "sharp": "^0.33.2",
+    "sweetalert2": "^11.10.5"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

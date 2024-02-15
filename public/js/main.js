@@ -1,4 +1,42 @@
 
+async function checkQuantity() {
+    try {
+        const stockOut = JSON.parse(document.getElementById('outofstock').value);
+    
+        if (stockOut.length > 0) {
+            let alertMessage = "The following products have low stock:\n";
+        
+            for (const problem of stockOut) {
+                alertMessage += `${problem.name} is only ${problem.remainingQuantity} left.\n`;
+            }
+        
+            await swal("Warning!", alertMessage, "warning");
+        } else {
+            document.getElementById('CartForm').submit();
+        }
+    } catch (error) {
+        console.log('error in quantity checking: ', error.message);
+    }
+}
+
+const logos = document.getElementsByClassName('logo');
+const logoss = document.getElementsByClassName('logo-mobile');
+
+try {
+    for (const logo of logos) {
+        logo.addEventListener("click", () => {
+            window.location.href = '/home';
+        });
+    }
+    for (const logo of logoss) {
+        logo.addEventListener("click", () => {
+            window.location.href = '/home';
+        });
+    }
+} catch (error) {
+    console.log('error in logoButton', error.message);
+}
+
 
 async function accountPagination(i, filter) {
     try {
@@ -144,14 +182,19 @@ async function searchProducts(event) {
                 data: {
                     name: name,
                 },
-                success:(res)=>{
-                    window.location.href = `/products?name=${name}`
-                },
-                error:(err)=>{
-                    throw new Error(err);
-                }
+                // success:(res)=>{
+                //     window.location.href = `/products?name=${name}`
+                // },
+                // error:(err)=>{
+                //     throw new Error(err);
+                // }
             });
+            $("#mainBody").html($(response).find("#mainBody").html())
+            $(".filter-col1").html($(response).find(".filter-col1").html())
+            $("filter-col2").html($(response).find(".filter-col2").html())
+            
         }
+
     } catch (error) {
         console.log('Error when searching:', error.message);
     }
@@ -393,28 +436,7 @@ function hidePaymentFailedMessage() {
 }
 
 
-async function add_to_cart_whishPage(id) {
-    try {
-        const response = await $.ajax({
-            url: '/add-to-cart',
-            method: 'POST',
-            data: { quantity: 1, productid: id, wish: 'ss' },
-        });
-        if (response.stock == false) {
-            alert("product is outof stock")
-        }
-        const noti = $(response).find(".jfdsfd").html();
-        const whishpro = $(response).find(".wishlist-list").html()
-        $('.jfdsfd').html(noti)
-        $(".wishlist-item").html(whishpro)
-        if (response.stock == false) {
-            alert("product out of stock")
-        }
-    } catch (error) {
-        console.error('Error adding to cart:', error);
-        $('.notification').text('An error occurred while adding to cart. Please try again later.');
-    }
-}
+
 
 async function remoWhishProduct(id) {
     try {

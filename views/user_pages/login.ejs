@@ -40,9 +40,7 @@
 									<a href="/cart">Cart</a>
 								</li>
 
-								<li>
-									<a href="/blog">Blog</a>
-								</li>
+								
 
 								<li>
 									<a href="/about">About</a>
@@ -147,9 +145,7 @@
 						<a href="/cart">Cart</a>
 					</li>
 
-					<li>
-						<a href="/blog">Blog</a>
-					</li>
+					
 
 					<li>
 						<a href="/about">About</a>
@@ -166,12 +162,18 @@
 
 			
 		</header>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-		<% if (toast!==undefined&&toast!==null) { %>
+		<% if (toast !== undefined && toast !== null) { %>
 			<script>
-				toastr.error('<%= toast %> ');
+				try {
+					new Swal("Alert!", '<%= toast %>', 'warning'); // Display as a warning
+				} catch (error) {
+					console.log(error);
+				}
 			</script>
-			<% } %>
+		<% } %>
+		
 
 
 				<br><br><br><br><br><br><br><br>

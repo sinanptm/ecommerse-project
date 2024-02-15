@@ -142,7 +142,7 @@ const loadDashBoard = async (re, res) => {
     const newusers = await User.find({ is_verified: true }).limit(3).sort({ createdate: -1 });
     const mostSaledProducts = await Product.find().limit(10).sort({ sales: -1 });
     const mostSaledCatogories = await Category.find().limit(10).sort({ sales: -1 });
-    const cancelationReson = await CancelationReson.find().limit(5).sort();
+    const cancelationReson = await CancelationReson.find().limit(4).sort();
 
 
     res.render('dashboard', {
@@ -183,11 +183,11 @@ const loadOrders = async (req, res) => {
     }
 
     if (sort2 === 'online') {
-      findQuery.offlinePayment = false;
+      findQuery.online_payment = { $exists: true };
     } else if (sort2 === 'offline') {
-      findQuery.offlinePayment = true;
-    } else if (sort2 === 'pending') {
-      findQuery.paymentStatus = 'pending';
+      findQuery.offlinePayment = { $exists: true };
+    } else if (sort2 === 'wallet') {
+      findQuery.walletPayment = { $exists: true };
     }
 
     const countPromise = sort === 'all' ? Order.countDocuments() : Order.countDocuments(findQuery);
@@ -203,9 +203,6 @@ const loadOrders = async (req, res) => {
 };
 
 
-
-
-
 // * for deleting a order
 
 const loadOrder = async (req, res) => {
@@ -214,10 +211,21 @@ const loadOrder = async (req, res) => {
     if (!id) {
       return res.status(304).redirect('/admin/orders-list');
     }
-
-    const order = await Order.findById(id)
-
-    res.render('order-details', { order });
+    const order = await Order.findById(id).lean()
+    let paymentType = '';
+    if (order.offlinePayment) {
+      paymentType = 'offline'
+    }else if ( order.walletPayment) {
+      paymentType = 'wallet'
+    } else if (!order.online_payment && order.paymentStatus ==='pending' ) {
+      paymentType = 'online_pending'
+    }else if (order.online_payment) {
+      paymentType = 'online'
+    }else{
+      paymentType = 'Not Available'
+    }
+    const reason = await CancelationReson.findOne({orderid:order._id},{_id:0,reason:1})
+    res.render('order-details', { order , reason,paymentType });
 
   } catch (error) {
     res.redirect("/admin/orders")
