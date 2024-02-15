@@ -1,6 +1,4 @@
-const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken')
-const mongoose =require('mongoose')
+const { mongoose, jwt, bcrypt } = require('../util/modules')
 
 
 //  * Bcrypt hashing function
@@ -40,19 +38,19 @@ const getUserIdFromToken = async (token) => {
 };
 
 
-const createHexId = (id)=>{
+const createHexId = (id) => {
   try {
-    return  mongoose.Types.ObjectId.createFromHexString(id)
+    return mongoose.Types.ObjectId.createFromHexString(id)
   } catch (error) {
-    console.log('error in making hex:',error.message);
+    console.log('error in making hex:', error.message);
   }
 }
 
-const isValidObjectId = (id)=>{
+const isValidObjectId = (id) => {
   try {
     return mongoose.isValidObjectId(id)
   } catch (error) {
-    console.log('error in mongoose id validation :',error.message);
+    console.log('error in mongoose id validation :', error.message);
   }
 }
 

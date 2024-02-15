@@ -1,8 +1,5 @@
-const express = require("express");
+const { express, nocache, session, cookieParser } = require('./util/modules')
 const app = express();
-const session = require("express-session");
-const cookieParser = require("cookie-parser");
-const nocache = require("nocache");
 require("dotenv").config();
 const connectMongoDB = require('./config/mongodb')
 const userRoute = require("./routers/userRouter");
