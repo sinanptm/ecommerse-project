@@ -21,12 +21,8 @@ app.use(
 );
 
 
-
-
-// Admin routes
 app.use("/admin", adminRouter);
 
-// User routes
 app.use("/", userRoute);
 
 const port = process.env.PORT || 3333;

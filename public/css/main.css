@@ -69,6 +69,23 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 
 /* Address section */
 
+.icon-msg-noti {
+  position: relative;
+}
+
+.icon-msg-noti::after {
+  content: attr(data-notify);
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: rgb(45, 240, 110);
+  color: rgb(9, 9, 9)white;
+  border-radius: 50%;
+  padding: 3px 7px;
+  font-size: 10px;
+}
+
+
 .coupons-section {
   display: none;
   margin-top: 20px;

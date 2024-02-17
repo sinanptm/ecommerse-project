@@ -1,4 +1,4 @@
-const { Product, Order, CancelationReson, Category, Coupon } = require("../../models/productModel")
+const { Product, Order, CancelationReson, Category, Coupon, Message } = require("../../models/productModel")
 const { User, Addresse, Wishlist, Wallet } = require("../../models/userModels")
 const { getUserIdFromToken, bcryptCompare, makeHash, createHexId, isValidObjectId } = require('../../util/validations');
 const { puppeteer } = require("../../util/modules")
@@ -122,11 +122,11 @@ const loadProducts = async (req, res) => {
         }
         const wishlist = await Wishlist.findOne({ userid: userId });
 
-        if (products.length>0) {
+        if (products.length > 0) {
             products.forEach(product => {
                 product.whishlist = false;
             });
-    
+
             if (wishlist) {
                 products.forEach(product => {
                     product.whishlist = wishlist.products.includes(product._id);
@@ -234,7 +234,7 @@ const loadAccount = async (req, res) => {
                     as: 'OrderedItems'
                 }
             }
-        ]).sort({orderDate:-1}).skip(skip).limit(limit)
+        ]).sort({ orderDate: -1 }).skip(skip).limit(limit)
 
 
         if (!user || user.length === 0) {
@@ -256,6 +256,8 @@ const loadAccount = async (req, res) => {
 
         const coupons = await Coupon.find();
 
+        const message = await Message.find({userId:userid,status:'resolved'})
+
         res.render('account-details', {
             user: user[0],
             editing: true,
@@ -269,7 +271,8 @@ const loadAccount = async (req, res) => {
             totalPages,
             currentPage: page,
             filter,
-            coupons
+            coupons,
+            message
         });
 
     } catch (error) {
@@ -300,6 +303,8 @@ const editDetails = async (req, res) => {
         res.redirect('/account');
     }
 };
+
+
 
 const addAddress = async (req, res) => {
     try {
@@ -572,22 +577,69 @@ function generateOrderTable(orders) {
 
 
 
-const loadAbout = async (req, res) => {
+// * for Contactinng
+
+const loadContact = async (req, res) => {
     try {
-        res.render("about", {})
+        const credential = req.query.credential
+        res.render("contact", { credential })
+
     } catch (error) {
 
     }
 }
 
 
-
-// * for contacing us
-
-const loadContact = async (req, res) => {
+// * For Contacting admim
+const contactAdmin = async (req, res) => {
     try {
-        res.render("contact", {})
+        const token = req.cookies.token || req.session.token
+        let user
+        const { msg, email } = req.body
+        if (token == null || typeof token == 'undefined') {
+            res.status(401).json({ credential: false })
+            return
+        } else {
 
+            user = await User.findById(await getUserIdFromToken(token))
+            if (!user) {
+                res.status(401).json({ credential: false })
+                return
+            }
+        }
+
+        const newMessage = new Message({
+            sendTime: new Date,
+            email:email ||user.email,
+            userId:user._id,
+            status: "pending",
+            message: msg,
+        });
+
+        await newMessage.save();
+        res.status(200).json({ credential: true, succes: true })
+
+    } catch (error) {
+        console.error('error while sendunbg message ', error);
+    }
+}
+
+
+
+const markAsRead = async(req,res)=>{
+    try {
+        const id = req.params.id
+        await Message.findByIdAndUpdate(id,{$set:{status:'closed'}})
+        res.status(200).redirect("/account")
+    } catch (error) {
+        console.log('error in seen message : ', error.message);
+    }
+}
+
+
+const loadAbout = async (req, res) => {
+    try {
+        res.render("about", {})
     } catch (error) {
 
     }
@@ -622,5 +674,7 @@ module.exports = {
     loadEror,
     cancelOrder,
     changePassword,
-    createInvoice
+    createInvoice,
+    contactAdmin,
+    markAsRead
 }

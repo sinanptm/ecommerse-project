@@ -1,0 +1,394 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>
+        <%= title %>
+    </title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link href="css/main.css" rel="stylesheet" type="text/css" />
+    <style>
+        .edit-form {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .product-image {
+            width: 60px;
+            /* Set the desired width */
+            height: 40px;
+            /* Set the desired height */
+            object-fit: cover;
+            /* Optional: Ensure the image maintains its aspect ratio */
+            /* Add any other styles you want */
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="/admin/" class="brand-wrap">
+                <h3 class="logo" alt="Evara Dashboard">TRENDS</h1>
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item has-submenu ">
+                    <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Products</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="/admin/products" >Product List</a>
+                        <a href="/admin/catogories">Categories</a>
+                        <a href="/admin/addProduct">Add product </a>
+                    </div>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/users"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Users</span>
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/orders-list"> <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link active" href="/admin/messages"> <i class="icon material-icons md-comment"></i>
+                        <span class="text">Messages</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/coupon-managment"> <i class="icon material-icons md-stars"></i>
+                        <span class="text">Coupons</span> </a>
+                </li>
+            </ul>
+
+                <br>
+                <br>
+        </nav>
+    </aside>
+    
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav"> 
+                    <li class="dropdown nav-item">                        
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i
+                                    class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </header>
+        
+        
+            
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+        <style>
+        /* Style for the dialog overlay */
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent black background */
+        }
+        
+        /* Style for the dialog itself */
+        dialog {
+            border: none;
+            /* Remove default dialog border */
+            background-color: #fff;
+            /* White background */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            /* Drop shadow */
+            width: 300px;
+            /* Set width */
+            border-radius: 10px;
+            /* Rounded corners */
+            padding: 20px;
+            /* Padding inside the dialog */
+        }
+    
+        /* Style for the close button */
+        #close-dialog {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #888;
+        }
+    
+        /* Style for the form inside the dialog */
+        #reply-dialog form {
+            display: flex;
+            flex-direction: column;
+        }
+    
+        /* Style for the input fields and textarea */
+        #reply-dialog input,
+        #reply-dialog textarea {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    
+        /* Style for the submit button */
+        #reply-dialog button[type="button"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            /* Blue color */
+            color: #fff;
+            /* White text */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    
+        /* Style for the submit button on hover */
+        #reply-dialog button[type="button"]:hover {
+            background-color: #0056b3;
+            /* Darker blue color */
+        }
+    </style>
+        <section class="content-main" id="messagessection">
+            <header>
+                <h2 class="section-title">Messages</h2>
+            </header>
+
+            <div class="card">
+                <header class="card-header">
+                    <div class="row gx-3">
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select" onchange="messageSort(event)">
+                                <option value="pending" <%=sort=='pending' ?'selected':'' %>>Pending</option>
+                                <option value="resolved" <%=sort=='resolved' ?'selected':'' %>>Resolved</option>
+                                <option value="closed" <%=sort=='closed' ?'selected':'' %>>Closed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </header>
+
+
+                <div class="card-body">
+                    <div class="message-list">
+
+                        <div class="accordion" id="accordionExample">
+                            <% messages.forEach((msg, i)=> { %>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse<%= i %>" aria-expanded="false"
+                                            aria-controls="collapse<%= i %>">
+                                            <%= msg.userId.name %>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse<%= i %>" class="accordion-collapse collapse"
+                                        data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                           <h6> user:</h6>
+                                            <p><strong>Email:</strong><%= msg.email %> <br>
+                                            <strong>Message:</strong><%= msg.message %> <br>
+                                            <code><%= formatTime(msg.sendTime) %></code>
+                                            </p>
+                                            <% if (msg.status ==='closed') { %>
+                                             <p>
+                                                <hr>
+                                                <h6>admin:</h6>
+                                                <strong>Message:</strong><%= msg.message %> <br>
+                                                <code><%= formatTime(msg.replayTime) %></code>
+                                                <hr>
+                                                seened at
+                                                <code><%= formatTime(msg.replayTime) %></code>
+                                             </p>
+                                            <% } %>
+                                            <!-- Reply button -->
+                                           <% if (msg.status==='pending') { %>
+                                            <button class="btn btn-primary reply-btn" data-email="<%= msg.email %>"
+                                                data-id="<%= msg._id %>">Reply</button>
+                                           <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }) %>
+                                    <% function formatTime(time) { %>
+                                        <%= new Date(time).toLocaleTimeString([], { hour: '2-digit' , minute: '2-digit' }) %>
+                                    <% } %>
+                        </div>
+
+
+                        <dialog id="reply-dialog">
+                            <div>
+                                <form id="messageForm">
+                                    <input type="email" name="email" id="reply-email" readonly>
+                                    <input type="hidden" name="id" id="reply-id">
+                                    <small id="msg" style="color: red;display: none;">Please enter the message</small>
+                                    <textarea name="message" id="reply-message"></textarea>
+                                    <button id="sendmsg" type="button">Send</button>
+                                </form>
+                            </div>
+                        </dialog>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var replyButtons = document.querySelectorAll('.reply-btn');
+                                var dialog = document.getElementById('reply-dialog');
+                                var emailInput = document.getElementById('reply-email');
+                                var idInput = document.getElementById('reply-id');
+
+                                replyButtons.forEach(function (button) {
+                                    button.addEventListener('click', function () {
+                                        var email = this.dataset.email;
+                                        var id = this.dataset.id;
+                                        emailInput.value = email;
+                                        idInput.value = id
+                                        dialog.showModal();
+                                    });
+                                });
+
+                                dialog.addEventListener('close', function () {
+                                    this.querySelector('form').reset();
+                                });
+
+                                // Close dialog when clicking outside of it
+                                window.addEventListener('click', function (event) {
+                                    if (event.target == dialog) {
+                                        dialog.close();
+                                    }
+                                });
+                            });
+
+                            $(document).ready(function () {
+                                $('#sendmsg').click(function () {
+                                    var reply = $('#reply-message').val().trim();
+                                    if (!reply) {
+                                        $('#msg').show();
+                                        return;
+                                    }
+                                    $.ajax({
+                                        url: "/admin/send-reply",
+                                        method: "POST",
+                                        data: $("#messageForm").serialize(),
+                                        success: (res) => {
+                                            document.getElementById("reply-dialog").close()
+                                            Swal.fire({
+                                                icon: "success",
+                                                title: "Message Sent",
+                                                text: "Your message has been successfully sent.",
+                                            });
+                                            $("#accordionExample").html($(res).find("#accordionExample").html())
+                                        },
+                                        error: (err) => {
+                                            document.getElementById("reply-dialog").close()
+                                            Swal.fire({
+                                                icon: "error",
+                                                title: "Oops...",
+                                                text: "There was an error sending your message. Please try again later.",
+                                            });
+                                            console.log('Error in replying:', err.message);
+                                        }
+                                    });
+                                });
+                            });
+
+
+
+
+
+                            async function messageSort(event) {
+                                try {
+                                    const res = await $.ajax({
+                                        url: "/admin/messages",
+                                        method: "GET",
+                                        data: {
+                                            sort: event.target.value
+                                        }
+                                    })
+                                    $("#messagessection").html($(res).find("#messagessection").html())
+                                } catch (error) {
+                                    console.log('errror in sort ', error.message);
+                                }
+                            }
+                        </script>
+
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </section>
+
+
+
+
+
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js" type="text/javascript"></script>
+</body>
+
+</html>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>

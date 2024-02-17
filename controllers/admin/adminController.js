@@ -1,4 +1,5 @@
-const { User, Admin } = require("../../models/userModels");
+const { User, Admin, } = require("../../models/userModels");
+const { Message } = require('../../models/productModel')
 const { sendOTPs } = require("../../config/sendMail");
 const { OTP } = require("../../models/otpModel");
 const { makeHash, bcryptCompare } = require("../../util/validations")
@@ -165,14 +166,14 @@ const loadUser = async (req, res) => {
     }
 
 
-    const count = await User.countDocuments({name: { $regex: name, $options: 'i' }});
+    const count = await User.countDocuments({ name: { $regex: name, $options: 'i' } });
     const totalPages = Math.ceil(count / perPage);
 
     const users = await User.find(findQuery)
       .skip(skip)
       .limit(perPage);
 
-    res.render('users-list', { users, msg, totalPages, currentPage: page, count, sort,name });
+    res.render('users-list', { users, msg, totalPages, currentPage: page, count, sort, name });
   } catch (error) {
     console.error('Error fetching user data:', error);
     res.status(500).send('Internal Server Error');
@@ -236,6 +237,43 @@ const logout = async (req, res) => {
   }
 };
 
+
+const loadMessages = async (req, res) => {
+  try {
+    let sort = req.query.sort || 'pending'
+
+    const messages = await Message.find({status:sort}).populate('userId')
+    res.render("messages", { messages, sort })
+  } catch (error) {
+    console.log('error inloading messages :', error.message);
+  }
+}
+
+const sendReply = async (req, res) => {
+  try {
+    const { message, email, id } = req.body;
+
+    const msg = await Message.findByIdAndUpdate(
+      id,
+      {
+        status: 'resolved',
+        replayTime: new Date(),
+        replay: message
+      },
+      {
+        new: true,
+        upsert: true
+      }
+    );
+
+    res.status(200).redirect('/admin/messages')
+  } catch (error) {
+    console.error('Error in sending message:', error.message);
+    res.status(500).json({ error: 'An error occurred while sending the message' });
+  }
+};
+
+
 module.exports = {
   loadLogin,
   // loadOTP,
@@ -245,5 +283,7 @@ module.exports = {
   loadUser,
   userBlock,
   userUnblock,
+  loadMessages,
   logout,
+  sendReply
 };

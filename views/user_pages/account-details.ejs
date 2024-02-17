@@ -125,12 +125,13 @@
 															<% } %>
 
 
-																<% if (valid) { %>
-																	<a href="/account"
-																		class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
-																		<i class="zmdi zmdi-account"></i>
-																	</a>
-																	<% } %>
+															<% if (valid) { %>
+																<a href="/account" id="msgnoti" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= messages %>">
+																	<i class="zmdi zmdi-account"></i>
+																</a>
+																<% } %>
+															
+													
 										</div>
 									</div>
 									<% if (valid) { %>
@@ -207,12 +208,11 @@
 												</a>&nbsp;&nbsp;&nbsp;
 												<% } %>
 
-													<% if (valid) { %>
-														<a href="/account"
-															class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
-															<i class="zmdi zmdi-account"></i>
-														</a>
-														<% } %>
+												<% if (valid) { %>
+													<a href="/account" id="msgnoti" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= messages %>">
+														<i class="zmdi zmdi-account"></i>
+													</a>
+													<% } %>
 									</div>
 
 									<!-- Button show menu -->
@@ -242,7 +242,7 @@
 									<a href="/cart">Cart</a>
 								</li>
 
-								
+
 								<li>
 									<a href="/about">About</a>
 								</li>
@@ -268,24 +268,24 @@
 						</h2>
 					</section>
 
-
 					<!-- User Account Details Section -->
 					<section class="bg0 p-t-23 p-b-130">
 						<div class="container">
 							<div class="navigation-buttons">
-								<button class="nav-button" id="personal-details-nav" style="color: black;"
-									onclick="showPersonalInfo()">Personal Details</button>
+								<button class="nav-button" id="personal-details-nav" style="color: black;" onclick="showPersonalInfo()">Personal Details</button>
 								<button class="nav-button" id="address-nav" onclick="showAddresses()">Addresses</button>
 								<button class="nav-button" id="orders-nav" onclick="showOrders()">Orders</button>
 								<button class="nav-button" id="wallet-nav" onclick="showWallet()">Wallet</button>
 								<button class="nav-button" id="coupon-nav" onclick="showCoupon()">Coupons</button>
+								<button class="nav-button icon-msg-noti"  data-notify="<%= messages %>" id="inbox-nav" onclick="showInbox()" >Inbox</button>
 
 								<% if (pendings.length>0) { %>
-									<form action="/create-invoice" method="post" id="invoiceForm"> 
-										<button class="nav-button" id="invoice-nav" style="background-color: #ffd50078;" type="button" onclick="downloadInvoice()">Download Invoice</button>
+									<form action="/create-invoice" method="post" id="invoiceForm">
+										<button class="nav-button" id="invoice-nav" style="background-color: #ffd50078;"
+											type="button" onclick="downloadInvoice()">Download Invoice</button>
 									</form>
-								<% } %>
-								
+									<% } %>
+
 							</div>
 							<div class="p-b-10">
 								<h3 class="ltext-103 cl5" id="heading">
@@ -297,236 +297,302 @@
 							<div class="row">
 								<div class="col-md-6">
 
-
-									<div class="coupons-section" id="couponsection" style="display: none;">
+									<div class="coupons-section" id="messagesection" style="display: none;">
 										<div class="coupons-container">
-											<h6>Available Coupons:</h6>
+											<h4>Unread Messages:</h4>
 											<ul>
-												<% coupons.forEach(coupon=> { %>
-													<li class="coupon">
-														<div class="coupon-details">
-															<h3 class="coupon-title">
-																<%= coupon.discAmt %>% Off on Clothes
-															</h3>
-															<p class="coupon-description">Use code: <span class="code">
-																	<%= coupon.code %>
-																</span></p>
-																<p>Expires on: <%= coupon.expDate.toDateString() %></p>
-														</div>
-														<button class="coupon-btn">Copy Code</button>
-													</li>
-													<% }) %>
+												<% if (message.length>0) { %>
+													<% message.forEach(msg=> { %>
+														<li class="coupon">
+															<div class="coupon-details">you:
+																<p class="coupon-description">
+																	<%= msg.message %> <span
+																			class="code"><code><% formatTime(msg.sendTime) %></code></span>
+																</p><br>
+																Customer Care:
+																<h6 class="coupon-title">
+																	<%= msg.replay %>
+																</h6>
+																<code><% formatTime(msg.replayTime) %></code>
+																</p>
+															</div>
+															<button class="btn btn-outline-info read-btn" data-id="<%= msg.id %>">
+																mark as read
+																<span class="whatsapp-tick">&#10003;</span>
+															</button>
+															
+														</li>
+														<% }) %>
+															<% }else{ %>
+																<p style="color: #ec5a5a78;">no messages</p>
+																<% } %>
 											</ul>
 										</div>
 									</div>
 
-									
+								
 
-
-									<div class="container_wallet" id="walletSection" style="display: none;">
-										<div class="wallet-container">
-											<div class="balance">
-												<% if (wallet!==null) { %>
-													<h2>Your Current Balance: ₹<%= wallet.balance || '0 Balance' %></h2>
-													<% } else{ %>
-														<h5>You Wallet Is Not Activated Yet</h5>
-													<% } %>
-														
-											</div>
-											<% if (wallet!==null) { %>
-												<div class="transactions">
-													<h2>Recent Transactions:</h2>
-													<ul>
-														<% if (wallet.transactions.length>0) { %>
-															<% wallet.transactions.forEach(transaction=> { %>
-																<li
-																	class="transaction-<%= transaction.type.toLowerCase() %>">
-																	<div>
-																		<p class="transaction-type">
-																			<%= transaction.type==='credit'
-																				?'Creditted':'Debitted' %>
-																		</p>
-																		<p>Amount: <span
-																				class="transaction-amount-<%= transaction.type %>">
-																				₹<%= transaction.amount %>
+									<% function formatTime(time) { %>
+										<%= new Date(time).toLocaleTimeString([], { hour: '2-digit' , minute: '2-digit'
+											}) %>
+											<% } %>
+												<div class="coupons-section" id="couponsection" style="display: none;">
+													<div class="coupons-container">
+														<h6>Available Coupons:</h6>
+														<ul>
+															<% coupons.forEach(coupon=> { %>
+																<li class="coupon">
+																	<div class="coupon-details">
+																		<h3 class="coupon-title">
+																			<%= coupon.discAmt %>% Off on Clothes
+																		</h3>
+																		<p class="coupon-description">Use code: <span
+																				class="code">
+																				<%= coupon.code %>
 																			</span></p>
+																		<p>Expires on: <%= coupon.expDate.toDateString()
+																				%>
+																		</p>
 																	</div>
-																	<p class="transaction-date">Date: <%=
-																			transaction.date.toDateString() %>
-																	</p>
+																	<button class="coupon-btn">Copy Code</button>
 																</li>
 																<% }) %>
-																	<% }else{ %>
-																		<h6>No Transactions Done Yet</h6>
-																		<% } %>
-													</ul>
+														</ul>
+													</div>
 												</div>
-												<% } %>
-
-										</div>
-
-									</div>
 
 
 
 
-									<!-- User Account Details -->
-
-									<div class="block2-txt  flex-w flex-t p-t-14" id="personalInfo">
-										<div class="block2-txt-child1 flex-col-l">
 
 
-											<div class="block2-txt-child1 flex-col-l">
-												<!-- Display User Information -->
-												<form class="personal-info-form" id="userDetailsForm">
-													<!-- Name -->
-													<% if (msg !==null && typeof(msg) !=='undefined' ) { %>
-														<p class="error" id="emailError"
-															style="color: rgb(240, 22, 22); font-size: larger;">
-															<%= msg %>
-														</p>
-														<% } %>
-															<div class="form-group">
-																<div class="input-group">
-																	<div>
-																		<input type="text" id="name" name="name"
-																			class="bigger-text input-field"
-																			value="<%= user.name %>" readonly>
-																		<small class="error-message"
-																			id="nameError"></small>
-																	</div>
-																	<button class="edittt" type="button"
-																		onclick="toggleEdit('name')">Edit</button>
-																</div>
-															</div>
+												<div class="container_wallet" id="walletSection" style="display: none;">
+													<div class="wallet-container">
+														<div class="balance">
+															<% if (wallet!==null) { %>
+																<h2>Your Current Balance: ₹<%= wallet.balance
+																		|| '0 Balance' %>
+																</h2>
+																<% } else{ %>
+																	<h5>You Wallet Is Not Activated Yet</h5>
+																	<% } %>
 
-															<!-- Username -->
-															<div class="form-group">
-																<div class="input-group">
-																	<div>
-																		<input type="text" id="username" name="username"
-																			class="bigger-text input-field"
-																			value="<%= user.username %>" readonly>
-																		<small class="error-message"
-																			id="usernameError"></small>
-																	</div>
-																	<button class="edittt" type="button"
-																		onclick="toggleEdit('username')">Edit</button>
-																</div>
-															</div>
-
-															<!-- Email -->
-															<div class="form-group">
-																<div class="input-group">
-																	<div>
-																		<input type="email" id="email" name="email"
-																			class="bigger-text input-field"
-																			value="<%= user.email %>" readonly>
-																		<small class="error-message"
-																			id="emailError"></small>
-																	</div>
-																</div>
-															</div>
-
-															<!-- Gender -->
-															<div class="form-group">
-																<div class="input-group">
-																	<div>
-																		<label for="gender"
-																			class="sr-only">Gender:</label>
-																		<select id="gender" name="gender"
-																			class="bigger-text input-field" <% if
-																			(!editing) { %> disabled <% } %>>
-																				<option value="male" <% if
-																					(user.gender==='male' ) { %>
-																					selected <% } %>>Male</option>
-																				<option value="female" <% if
-																					(user.gender==='female' ) { %>
-																					selected <% } %>>Female</option>
-																		</select>
-																		<small class="error-message"
-																			id="genderError"></small>
-																	</div>
-																	<button class="edittt" type="button"
-																		onclick="toggleEdit('gender')">Edit</button>
-																</div>
-															</div>
-
-															<!-- Phone -->
-															<div class="form-group">
-																<div class="input-group">
-																	<div>
-																		<label for="phone"
-																			class="sr-only">Phone:</label>
-																		<input type="tel" minlength="10" id="phone"
-																			name="phone" class="bigger-text input-field"
-																			value="<%= user.phone || 'N/A' %>" readonly>
-																		<small class="error-message"
-																			id="phoneError"></small>
-																	</div>
-																	<button class="edittt" type="button"
-																		onclick="toggleEdit('phone')">Edit</button>
-																</div>
-															</div>
-
-															<!-- Your existing HTML code -->
-															<div class="form-group">
-																<div class="input-group">
-																	To Change Your Password
-																	<button class="ssbutton" style="color: #0056b3;"
-																		type="button" id="open">Click me </button>
-																</div>
-															</div>
-
-															<br><br>
-
-															<div id="submitContainer" style="display: none;">
-																<button type="button" class="submit-btn"
-																	onclick="update()">Submit</button>
-															</div>
-												</form>
-
-												<dialog>
-													<form id="change-password">
-														<span>
-															<label for="oldpass">Old Password:</label>
-															<input type="password" id="oldpass" name="oldpass" required>
-															<% if (err !==null && typeof (err) !=='undefined' ) { %>
-																<p class="error" id="passError"
-																	style="color: rgb(240, 22, 22); font-size: larger;">
-																	<%= err %>
-																</p>
-																<% } %>
-																	<br><br>
-														</span>
-														<label for="newpass">New Password:</label>
-														<input minlength="4" type="password" id="newpass"
-															name="password" required>
-														<br><br>
-														<label for="confirmpass">Confirm Password:</label>
-														<input type="password" id="confirmpass" name="confirmpass"
-															required>
-														<p class="error" id="confirmPassError"
-															style="color: rgb(240, 22, 22); font-size: larger;"></p>
-														<br><br>
-														<button class="ssbutton" id="submitt"
-															type="button">Submit</button>
-														<div>
-															Forgot Your Password
-															<a onclick="resetmail('<%= user.email %>')"
-																style="color: #1e88e5;">Click Here</a>
 														</div>
-													</form>
-													<br>
+														<% if (wallet!==null) { %>
+															<div class="transactions">
+																<h2>Recent Transactions:</h2>
+																<ul>
+																	<% if (wallet.transactions.length>0) { %>
+																		<% wallet.transactions.forEach(transaction=> {
+																			%>
+																			<li
+																				class="transaction-<%= transaction.type.toLowerCase() %>">
+																				<div>
+																					<p class="transaction-type">
+																						<%= transaction.type==='credit'
+																							?'Creditted':'Debitted' %>
+																					</p>
+																					<p>Amount: <span
+																							class="transaction-amount-<%= transaction.type %>">
+																							₹<%= transaction.amount %>
+																						</span></p>
+																				</div>
+																				<p class="transaction-date">Date: <%=
+																						transaction.date.toDateString()
+																						%>
+																				</p>
+																			</li>
+																			<% }) %>
+																				<% }else{ %>
+																					<h6>No Transactions Done Yet</h6>
+																					<% } %>
+																</ul>
+															</div>
+															<% } %>
 
-													<div id="sssss">
-														<button id="close">Close</button>
 													</div>
 
-												</dialog>
-											</div>
-										</div>
-									</div>
+												</div>
+
+
+
+
+												<!-- User Account Details -->
+
+												<div class="block2-txt  flex-w flex-t p-t-14" id="personalInfo">
+													<div class="block2-txt-child1 flex-col-l">
+
+
+														<div class="block2-txt-child1 flex-col-l">
+															<!-- Display User Information -->
+															<form class="personal-info-form" id="userDetailsForm">
+																<!-- Name -->
+																<% if (msg !==null && typeof(msg) !=='undefined' ) { %>
+																	<p class="error" id="emailError"
+																		style="color: rgb(240, 22, 22); font-size: larger;">
+																		<%= msg %>
+																	</p>
+																	<% } %>
+																		<div class="form-group">
+																			<div class="input-group">
+																				<div>
+																					<input type="text" id="name"
+																						name="name"
+																						class="bigger-text input-field"
+																						value="<%= user.name %>"
+																						readonly>
+																					<small class="error-message"
+																						id="nameError"></small>
+																				</div>
+																				<button class="edittt" type="button"
+																					onclick="toggleEdit('name')">Edit</button>
+																			</div>
+																		</div>
+
+																		<!-- Username -->
+																		<div class="form-group">
+																			<div class="input-group">
+																				<div>
+																					<input type="text" id="username"
+																						name="username"
+																						class="bigger-text input-field"
+																						value="<%= user.username %>"
+																						readonly>
+																					<small class="error-message"
+																						id="usernameError"></small>
+																				</div>
+																				<button class="edittt" type="button"
+																					onclick="toggleEdit('username')">Edit</button>
+																			</div>
+																		</div>
+
+																		<!-- Email -->
+																		<div class="form-group">
+																			<div class="input-group">
+																				<div>
+																					<input type="email" id="email"
+																						name="email"
+																						class="bigger-text input-field"
+																						value="<%= user.email %>"
+																						readonly>
+																					<small class="error-message"
+																						id="emailError"></small>
+																				</div>
+																			</div>
+																		</div>
+
+																		<!-- Gender -->
+																		<div class="form-group">
+																			<div class="input-group">
+																				<div>
+																					<label for="gender"
+																						class="sr-only">Gender:</label>
+																					<select id="gender" name="gender"
+																						class="bigger-text input-field"
+																						<% if (!editing) { %> disabled
+																						<% } %>>
+																							<option value="male" <% if
+																								(user.gender==='male' )
+																								{ %>
+																								selected <% } %>>Male
+																							</option>
+																							<option value="female" <% if
+																								(user.gender==='female'
+																								) { %>
+																								selected <% } %>>Female
+																							</option>
+																					</select>
+																					<small class="error-message"
+																						id="genderError"></small>
+																				</div>
+																				<button class="edittt" type="button"
+																					onclick="toggleEdit('gender')">Edit</button>
+																			</div>
+																		</div>
+
+																		<!-- Phone -->
+																		<div class="form-group">
+																			<div class="input-group">
+																				<div>
+																					<label for="phone"
+																						class="sr-only">Phone:</label>
+																					<input type="tel" minlength="10"
+																						id="phone" name="phone"
+																						class="bigger-text input-field"
+																						value="<%= user.phone || 'N/A' %>"
+																						readonly>
+																					<small class="error-message"
+																						id="phoneError"></small>
+																				</div>
+																				<button class="edittt" type="button"
+																					onclick="toggleEdit('phone')">Edit</button>
+																			</div>
+																		</div>
+
+																		<!-- Your existing HTML code -->
+																		<div class="form-group">
+																			<div class="input-group">
+																				To Change Your Password
+																				<button class="ssbutton"
+																					style="color: #0056b3;"
+																					type="button" id="open">Click me
+																				</button>
+																			</div>
+																		</div>
+
+																		<br><br>
+
+																		<div id="submitContainer"
+																			style="display: none;">
+																			<button type="button" class="submit-btn"
+																				onclick="update()">Submit</button>
+																		</div>
+															</form>
+
+															<dialog>
+																<form id="change-password">
+																	<span>
+																		<label for="oldpass">Old Password:</label>
+																		<input type="password" id="oldpass"
+																			name="oldpass" required>
+																		<% if (err !==null && typeof (err)
+																			!=='undefined' ) { %>
+																			<p class="error" id="passError"
+																				style="color: rgb(240, 22, 22); font-size: larger;">
+																				<%= err %>
+																			</p>
+																			<% } %>
+																				<br><br>
+																	</span>
+																	<label for="newpass">New Password:</label>
+																	<input minlength="4" type="password" id="newpass"
+																		name="password" required>
+																	<br><br>
+																	<label for="confirmpass">Confirm Password:</label>
+																	<input type="password" id="confirmpass"
+																		name="confirmpass" required>
+																	<p class="error" id="confirmPassError"
+																		style="color: rgb(240, 22, 22); font-size: larger;">
+																	</p>
+																	<br><br>
+																	<button class="ssbutton" id="submitt"
+																		type="button">Submit</button>
+																	<div>
+																		Forgot Your Password
+																		<a onclick="resetmail('<%= user.email %>')"
+																			style="color: #1e88e5;">Click Here</a>
+																	</div>
+																</form>
+																<br>
+
+																<div id="sssss">
+																	<button id="close">Close</button>
+																</div>
+
+															</dialog>
+														</div>
+													</div>
+												</div>
 								</div>
 
 
@@ -728,7 +794,8 @@
 																				<button type="button"
 																					class="btn btn-secondary"
 																					data-dismiss="modal">Close</button>
-																				<button type="button" class="btn btn-primary"
+																				<button type="button"
+																					class="btn btn-primary"
 																					onclick="submitEditAddress(event,'<%= address._id %>')">Save
 																					Changes</button>
 																			</div>

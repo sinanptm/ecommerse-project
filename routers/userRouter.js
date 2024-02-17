@@ -1,13 +1,13 @@
 const { path, express } = require("../util/modules")
 const userRoute = express();
 const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/user/userController");
-const { loadHome, loadProducts, laodProductDetials, loadAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadContact, loadEror, cancelOrder, changePassword, createInvoice } = require("../controllers/user/userPageController");
+const { loadHome, loadProducts, laodProductDetials, loadAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadContact, loadEror, cancelOrder, changePassword, createInvoice, contactAdmin, markAsRead } = require("../controllers/user/userPageController");
 const { loadCart, addToCart, addQuantity, removeProduct, loadCheckout, addToCheckout, online_payment, placeOrder, showSuccess, addToCartProductPage, loadWhishList, addToWhishlist, removeFromWhishlist } = require("../controllers/user/cartController")
-const { is_registered, requireLogin, is_loginRequired, cartItems, handleUndefinedRoutes } = require("../middlewares/userAuth");
+const { is_registered, requireLogin, is_loginRequired, notifications, handleUndefinedRoutes } = require("../middlewares/userAuth");
 
 userRoute.set("views", path.join(__dirname, "../views/user_pages"));
 userRoute.use(express.static(path.join(__dirname, "../public")));
-userRoute.use(cartItems);
+userRoute.use(notifications);
 
 userRoute.get("/", loadHome);
 userRoute.get("/login", is_loginRequired, loadLogin);
@@ -62,17 +62,15 @@ userRoute.post("/online-payment", requireLogin, online_payment)
 userRoute.get('/order-success', requireLogin, showSuccess)
 
 
+userRoute.get("/contact", loadContact);
+userRoute.post('/contact-admin', contactAdmin)
+userRoute.get("/mark-as-read/:id", markAsRead)
 
 userRoute.get("/about", loadAbout);
-userRoute.get("/contact", loadContact);
 
 userRoute.get('/error-page', loadEror)
 userRoute.get("/logout", userLogout);
 
 userRoute.use(handleUndefinedRoutes);
-
-
-
-
 
 module.exports = userRoute;

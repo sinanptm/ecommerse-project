@@ -1,4 +1,109 @@
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    const readbtns = document.querySelectorAll(".read-btn"); // Corrected selector
+
+    readbtns.forEach(btn => {
+        btn.addEventListener("click", async (event) => {
+            try {
+                let id = btn.dataset.id; // Corrected reference to the dataset
+                const res = await $.ajax({
+                    url: "/mark-as-read/" + id,
+                    method: "GET"
+                });
+                $('#messagesection').html($(res).find("#messagesection").html());
+                $("#msgnoti").html($(res).find("#msgnoti").html())
+                $("#inbox-nav").html($(res).find("#inbox-nav").html())
+            } catch (error) {
+                console.error('Error in marking as read: ', error.message); // Corrected console.log syntax
+            }
+        });
+    });
+});
+
+function resetButtonColors() {
+    document.getElementById('personal-details-nav').style.color = '';
+    document.getElementById('address-nav').style.color = '';
+    document.getElementById('orders-nav').style.color = '';
+    document.getElementById('wallet-nav').style.color = '';
+    document.getElementById('inbox-nav').style.color = '';
+    document.getElementById('coupon-nav').style.color = '';
+}
+
+function showInbox() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('heading').innerHTML = "unreaded messages"
+    document.getElementById('inbox-nav').style.color = 'black'
+    document.getElementById('personalInfo').style.display = 'none'
+    document.getElementById('messagesection').style.display = 'block';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('orders').style.display = 'none';
+    document.getElementById('walletSection').style.display = 'none';
+    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
+}
+
+function showPersonalInfo() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('messagesection').style.display = 'none';
+    document.getElementById('heading').innerHTML = "Personal Details";
+    document.getElementById('personal-details-nav').style.color = 'black'
+    document.getElementById('personalInfo').style.display = 'block';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('orders').style.display = 'none';
+    document.getElementById('walletSection').style.display = 'none';
+    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
+}
+
+function showAddresses() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('heading').innerHTML = "My Addresses";
+    document.getElementById('address-nav').style.color = 'black' 
+    document.getElementById('messagesection').style.display = 'none';
+    document.getElementById('personalInfo').style.display = 'none';
+    document.getElementById('addresssssss').style.display = 'block';
+    document.getElementById('orders').style.display = 'none';
+    document.getElementById('walletSection').style.display = 'none';
+    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
+}
+
+function showOrders() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('orders-nav').style.color = 'black'
+    document.getElementById('heading').innerHTML = "My Orders";
+    document.getElementById('messagesection').style.display = 'none';
+    document.getElementById('personalInfo').style.display = 'none';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('orders').style.display = 'block';
+    document.getElementById('walletSection').style.display = 'none';
+    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
+}
+
+function showWallet() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('wallet-nav').style.color = 'black'
+    document.getElementById('heading').innerHTML = "Wallet";
+    document.getElementById('personalInfo').style.display = 'none';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('messagesection').style.display = 'none';
+    document.getElementById('orders').style.display = 'none';
+    document.getElementById('walletSection').style.display = 'block';
+    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
+}
+
+function showCoupon() {
+    resetButtonColors(); // Reset button colors
+    document.getElementById('coupon-nav').style.color = 'black'
+    document.getElementById('heading').innerHTML = "Coupons";
+    document.getElementById('personalInfo').style.display = 'none';
+    document.getElementById('addresssssss').style.display = 'none';
+    document.getElementById('messagesection').style.display = 'none';
+    document.getElementById('orders').style.display = 'none';
+    document.getElementById('walletSection').style.display = 'none';
+    document.getElementById('couponsection').style.display = 'block'; // Display the coupons section
+}
+
+
+
 async function checkQuantity() {
     try {
         const stockOut = JSON.parse(document.getElementById('outofstock').value);
@@ -44,7 +149,6 @@ async function accountPagination(i, filter) {
             url: `/account?page=${i}&&filter=${filter}`,
             method: "GET"
         })
-        console.log(23);
         $('#orders').html($(res).find("#orders").html())
     } catch (error) {
         console.log('error in pagination '+error.message);
@@ -107,70 +211,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-function resetButtonColors() {
-    // Reset all button colors to default
-    document.getElementById('personal-details-nav').style.color = '';
-    document.getElementById('address-nav').style.color = '';
-    document.getElementById('orders-nav').style.color = '';
-    document.getElementById('wallet-nav').style.color = '';
-    document.getElementById('coupon-nav').style.color = '';
-}
-
-function showPersonalInfo() {
-    resetButtonColors(); // Reset button colors
-    document.getElementById('heading').innerHTML = "Personal Details";
-    document.getElementById('personal-details-nav').style.color = 'black'
-    document.getElementById('personalInfo').style.display = 'block';
-    document.getElementById('addresssssss').style.display = 'none';
-    document.getElementById('orders').style.display = 'none';
-    document.getElementById('walletSection').style.display = 'none';
-    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
-}
-
-function showAddresses() {
-    resetButtonColors(); // Reset button colors
-    document.getElementById('address-nav').style.color = 'black'
-    document.getElementById('heading').innerHTML = "My Addresses";
-    document.getElementById('personalInfo').style.display = 'none';
-    document.getElementById('addresssssss').style.display = 'block';
-    document.getElementById('orders').style.display = 'none';
-    document.getElementById('walletSection').style.display = 'none';
-    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
-}
-
-function showOrders() {
-    resetButtonColors(); // Reset button colors
-    document.getElementById('orders-nav').style.color = 'black'
-    document.getElementById('heading').innerHTML = "My Orders";
-    document.getElementById('personalInfo').style.display = 'none';
-    document.getElementById('addresssssss').style.display = 'none';
-    document.getElementById('orders').style.display = 'block';
-    document.getElementById('walletSection').style.display = 'none';
-    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
-}
-
-function showWallet() {
-    resetButtonColors(); // Reset button colors
-    document.getElementById('wallet-nav').style.color = 'black'
-    document.getElementById('heading').innerHTML = "Wallet";
-    document.getElementById('personalInfo').style.display = 'none';
-    document.getElementById('addresssssss').style.display = 'none';
-    document.getElementById('orders').style.display = 'none';
-    document.getElementById('walletSection').style.display = 'block';
-    document.getElementById('couponsection').style.display = 'none'; // Hide the coupons section
-}
-
-function showCoupon() {
-    resetButtonColors(); // Reset button colors
-    document.getElementById('coupon-nav').style.color = 'black'
-    document.getElementById('heading').innerHTML = "Coupons";
-    document.getElementById('personalInfo').style.display = 'none';
-    document.getElementById('addresssssss').style.display = 'none';
-    document.getElementById('orders').style.display = 'none';
-    document.getElementById('walletSection').style.display = 'none';
-    document.getElementById('couponsection').style.display = 'block'; // Display the coupons section
-}
 
 async function searchProducts(event) {
     try {

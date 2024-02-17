@@ -105,7 +105,7 @@
 
 
 									<% if (valid) { %>
-										<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+										<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= messages %>">
 											<i class="zmdi zmdi-account"></i>
 										</a>
 										<% } %>
@@ -185,11 +185,10 @@
 						</div>
 
 						<% if (valid) { %>
-							<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+							<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= messages %>">
 								<i class="zmdi zmdi-account"></i>
 							</a>
-					</div>
-					<% } %>
+							<% } %>
 
 						<!-- Button show menu -->
 						<div class="btn-show-menu-mobile hamburger hamburger--squeeze">

@@ -1,7 +1,7 @@
 const { path, express } = require("../util/modules");
 const adminRoute = express();
 const upload = require("../util/multer");
-const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout } = require("../controllers/admin/adminController");
+const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout, loadMessages, sendReply } = require("../controllers/admin/adminController");
 const { loadDashBoard, loadOrders, deleteOrder, editOrder, loadOrder, loadReport, getSalesReport, loadCoupons, addCoupon, deleteCoupon, editCoupon } = require("../controllers/admin/orderController");
 const { loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, } = require("../controllers/admin/products&catogoire")
 const { is_loginRequired, is_admin, handleUndefinedRoutes } = require("../middlewares/auth");
@@ -67,6 +67,9 @@ adminRoute.get("/orders-list", loadOrders)
 adminRoute.get('/order-details', loadOrder)
 adminRoute.get("/delete-order", deleteOrder)
 adminRoute.post('/edit-order/:id', editOrder)
+
+adminRoute.get("/messages", loadMessages)
+adminRoute.post("/send-reply", sendReply)
 
 adminRoute.use(handleUndefinedRoutes)
 

@@ -59,9 +59,9 @@ const ordersSchema = new mongoose.Schema({
         quantity: Number,
         name: String
     }],
-    walletPayment:{
-        transactionid:String,
-        date:Date
+    walletPayment: {
+        transactionid: String,
+        date: Date
     },
     online_payment: {
         currency: { type: String },
@@ -92,20 +92,26 @@ const couponsSchema = new mongoose.Schema({
     discAmt: { type: Number },
     createdate: { type: Date },
     expDate: { type: Date },
-    used:Number
+    used: Number
 });
 
 const Coupon = mongoose.model("Coupon", couponsSchema);
 
-// Banner Schema
-const bannerSchema = new mongoose.Schema({
-    mainHeader: { type: String },
-    subHeader: { type: String },
-    URL: { type: String },
-    img: { type: Buffer },
+//  for customer service 
+
+const messageSchema = new mongoose.Schema({
+    email: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    message: { type: String, },
+    sendTime: { type: Date, default: Date.now },
+    status: { type: String, enum: ['pending', 'resolved', 'closed'], default: 'pending' },
+    replay:String,
+    replayTime:Date,
+    seen:Date
 });
 
-const Banner = mongoose.model("Banner", bannerSchema);
+const Message = mongoose.model('Message', messageSchema);
+
 
 module.exports = {
     Order,
@@ -113,5 +119,5 @@ module.exports = {
     Category,
     CancelationReson,
     Coupon,
-    Banner
+    Message
 }

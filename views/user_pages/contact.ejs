@@ -2,7 +2,9 @@
 <html lang="en">
 
 <head>
-	<title><%= title %></title>
+	<title>
+		<%= title %>
+	</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/png" href="images/icons/favicon.png" />
@@ -75,7 +77,7 @@
 								<% } %>
 
 
-								
+
 
 									<a href="/cart"
 										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
@@ -89,19 +91,19 @@
 											data-notify="<%= whishItems %>">
 											<i class="zmdi zmdi-favorite-outline"></i>
 										</a>&nbsp;&nbsp;&nbsp;
-									<% }else{ %>
-									<a href="/login"
-										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-										data-notify="0">
-										<i class="zmdi zmdi-favorite-outline"></i>
-									</a>&nbsp;&nbsp;&nbsp;
-									<% } %>
-									
-									<% if (valid) { %>
-										<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
-											<i class="zmdi zmdi-account"></i>
-										</a>
-									<% } %>
+										<% }else{ %>
+											<a href="/login"
+												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+												data-notify="0">
+												<i class="zmdi zmdi-favorite-outline"></i>
+											</a>&nbsp;&nbsp;&nbsp;
+											<% } %>
+
+												<% if (valid) { %>
+													<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= messages %>">
+														<i class="zmdi zmdi-account"></i>
+													</a>
+													<% } %>
 						</div>
 						<% if (valid) { %>
 							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-logout"
@@ -152,7 +154,7 @@
 				</a>&nbsp;&nbsp;
 				<% } %>
 					<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-						
+
 
 						<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
 							data-notify="<%= (cartItems !== null && typeof cartItems !== 'undefined') ? cartItems : 0 %>">
@@ -165,19 +167,19 @@
 								data-notify="<%= whishItems %>">
 								<i class="zmdi zmdi-favorite-outline"></i>
 							</a>&nbsp;&nbsp;&nbsp;
-						<% }else{ %>
-						<a href="/login"
-							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-							data-notify="0">
-							<i class="zmdi zmdi-favorite-outline"></i>
-						</a>&nbsp;&nbsp;&nbsp;
-						<% } %>
-						
-						<% if (valid) { %>
-							<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
-								<i class="zmdi zmdi-account"></i>
-							</a>
-						<% } %>
+							<% }else{ %>
+								<a href="/login"
+									class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+									data-notify="0">
+									<i class="zmdi zmdi-favorite-outline"></i>
+								</a>&nbsp;&nbsp;&nbsp;
+								<% } %>
+
+									<% if (valid) { %>
+										<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= messages %>">
+											<i class="zmdi zmdi-account"></i>
+										</a>
+										<% } %>
 					</div>
 
 					<!-- Button show menu -->
@@ -220,7 +222,7 @@
 			</ul>
 		</div>
 
-		
+
 	</header>
 
 
@@ -232,32 +234,103 @@
 	</section>
 
 
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 	<!-- Content page -->
 	<section class="bg0 p-t-104 p-b-116">
 		<div class="container">
 			<div class="flex-w flex-tr">
 				<div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
-					<form>
+					<form id="contact">
 						<h4 class="mtext-105 cl2 txt-center p-b-30">
-							Send Us A Message
+							Contact Admin
 						</h4>
 
+						<small id="mailer" style="color: red; display: none;">We will send the replay to your registered
+							mail address</small>
 						<div class="bor8 m-b-20 how-pos4-parent">
-							<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" name="email"
-								placeholder="Your Email Address">
-							<img class="how-pos4 pointer-none" src="images/icons/icon-email.png" alt="ICON">
+							<i class="fas fa-envelope how-pos4 pointer-none"></i>
+							<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" id="email" type="email"
+								name="email" placeholder="Your valid mail address"
+								title="If your email is not valid, we will defaultly use your registered email.">
 						</div>
 
+
+						<small id="msger" style="color: red; display: none;">Please enter the message </small>
 						<div class="bor8 m-b-30">
-							<textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25" name="msg"
-								placeholder="How Can We Help?"></textarea>
+							<textarea id="message" minlength="5" class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25"
+								name="msg" placeholder="How Can We Help?"></textarea>
 						</div>
 
-						<button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
+
+						<button type="submit"
+							class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
 							Submit
 						</button>
 					</form>
+
 				</div>
+
+				<script>
+					document.getElementById('contact').addEventListener('submit', function (event) {
+						event.preventDefault();
+						sendMessage();
+					});
+
+					async function sendMessage(event) {
+						try {
+							var email = document.getElementById('email').value.trim();
+							var message = document.getElementById('message').value.trim();
+
+							if (!message) {
+								document.getElementById('msger').style.display = 'block';
+								return;
+							} else {
+								document.getElementById('msger').style.display = 'none';
+							}
+
+
+
+							$.ajax({
+								url: "/contact-admin",
+								method: "POST",
+								data: $('#contact').serialize(),
+								success: res => {
+									if (res.credential == false) {
+										Swal.fire({
+											icon: "error",
+											title: "Oops...",
+											text: "Invalid Credentials!",
+											footer: '<a href="/login">Why lets login ?</a>'
+										});
+									} else if (res.succes == true) {
+										Swal.fire({
+											title: "Thanks!",
+											text: "The message has been send, we will replay you to your mail!",
+											icon: "success"
+										});
+										// Reset input values
+										document.getElementById('email').value = '';
+										document.getElementById('message').value = '';
+									}
+								},
+								error: error => {
+									Swal.fire({
+										icon: "error",
+										title: "Oops...",
+										text: "Invalid Credentials!",
+										footer: '<a href="/login"> lets register ?</a>'
+									});
+								}
+							});
+
+						} catch (error) {
+							console.log('error while sending message: ', error.message);
+						}
+					}
+				</script>
+
 
 				<div class="size-210 bor10 flex-w flex-col-m p-lr-93 p-tb-30 p-lr-15-lg w-full-md">
 					<div class="flex-w w-full p-b-42">
@@ -271,7 +344,7 @@
 							</span>
 
 							<p class="stext-115 cl6 size-213 p-t-18">
-								Trends E-Commerce , Calicut, Kearala Near Lulu Hypermaeket 
+								Trends E-Commerce , Calicut, Kearala Near Lulu Hypermaeket
 							</p>
 						</div>
 					</div>
@@ -299,11 +372,11 @@
 
 						<div class="size-212 p-t-2">
 							<span class="mtext-110 cl2">
-								Sale Support
+								Contact Creater
 							</span>
 
 							<p class="stext-115 cl1 size-213 p-t-18">
-								admin@gmail.com
+								muhammedsinan0549@gmail.com
 							</p>
 						</div>
 					</div>

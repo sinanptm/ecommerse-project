@@ -1,4 +1,5 @@
 const { User, Cart, Wishlist } = require("../models/userModels");
+const { Message } = require("../models/productModel")
 const { getUserIdFromToken } = require("../util/validations")
 
 
@@ -73,25 +74,30 @@ const requireLogin = async (req, res, next) => {
     }
 };
 
-const cartItems = async (req, res, next) => {
+const notifications = async (req, res, next) => {
     try {
         res.locals.title = "TRENDS"
         if (req.cookies.token || req.session.token) {
             const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
             const cart = await Cart.findOne({ userId })
             const whish = await Wishlist.findOne({ userid: userId })
+            const msg = await Message.find({ userId, status: "resolved" })
+
             res.locals.whishItems = whish ? whish.products.length : 0
+            res.locals.messages = msg ? msg.length : 0
             res.locals.cartItems = cart ? cart.items || 0 : 0;
             res.locals.valid = req.cookies.token || req.session.token;
             next();
         } else {
             res.locals.cartItems = 0;
+            res.locals.messages = 0
             res.locals.whishItems = 0;
             res.locals.valid = req.cookies.token || req.session.token;
             next();
         }
     } catch (error) {
         res.locals.cartItems = 0;
+        res.locals.messages = 0
         res.locals.whishItems = 0;
         res.locals.valid = req.cookies.token || req.session.token;
         next();
@@ -101,7 +107,7 @@ const cartItems = async (req, res, next) => {
 
 
 const handleUndefinedRoutes = (req, res, next) => {
-    res.status(404).render('error', { msg: 'Page not found', toast: "This page not found" ,title:`404` });
+    res.status(404).render('error', { msg: 'Page not found', toast: "This page not found", title: `404` });
 }
 
 
@@ -111,7 +117,7 @@ module.exports = {
     is_registered,
     is_loginRequired,
     requireLogin,
-    cartItems,
+    notifications,
     handleUndefinedRoutes
 
 };
