@@ -41,7 +41,7 @@
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
-            <a href="/admin/" class="brand-wrap">
+            <a href="/admin/" class="brand-wrap" style="color: black;text-decoration: none;">
                 <h3 class="logo" alt="Evara Dashboard">TRENDS</h1>
             </a>
             <div>
@@ -77,7 +77,7 @@
                         <span class="text">Orders</span>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item active">
                     <a class="menu-link active" href="/admin/messages"> <i class="icon material-icons md-comment"></i>
                         <span class="text">Messages</span>
                     </a>
@@ -99,7 +99,6 @@
                 
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
                 <ul class="nav"> 
                     <li class="dropdown nav-item">                        
                             <a class="dropdown-item text-danger" href="/admin/logout"><i
@@ -224,15 +223,15 @@
                                         data-bs-parent="#accordionExample">
                                         <div class="accordion-body">
                                            <h6> user:</h6>
-                                            <p><strong>Email:</strong><%= msg.email %> <br>
-                                            <strong>Message:</strong><%= msg.message %> <br>
+                                            <p><strong>Email: &nbsp;&nbsp;</strong><%= msg.email %> <br>
+                                            <strong>Message: &nbsp;&nbsp;</strong><%= msg.message %> <br>
                                             <code><%= formatTime(msg.sendTime) %></code>
                                             </p>
                                             <% if (msg.status ==='closed') { %>
                                              <p>
                                                 <hr>
                                                 <h6>admin:</h6>
-                                                <strong>Message:</strong><%= msg.message %> <br>
+                                                <strong>Message: &nbsp;&nbsp;</strong><%= msg.message %> <br>
                                                 <code><%= formatTime(msg.replayTime) %></code>
                                                 <hr>
                                                 seened at
