@@ -13,7 +13,6 @@ adminRoute.use(express.static(path.join(__dirname, "../public/assets")));
 adminRoute.locals.title = "TRENDS DASHBOARD";
 
 
-adminRoute.get('/sales-report/:type', loadReport)
 
 // * Admin login
 adminRoute.get("/", is_loginRequired, loadLogin);
@@ -30,6 +29,7 @@ adminRoute.use(is_admin)
 
 adminRoute.get("/dashboard", loadDashBoard);
 adminRoute.post("/get-report-pdf/:type", getSalesReport)
+adminRoute.get('/sales-report/:type', loadReport)
 
 // * User Management
 adminRoute.get("/users", loadUser);

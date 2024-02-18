@@ -59,7 +59,7 @@ const loadDashBoard = async (re, res) => {
       },
       {
         $sort: {
-          month: 1 // Sort the result by month if needed
+          month: 1 
         }
       }
     ]);
@@ -281,7 +281,7 @@ const deleteOrder = async (req, res) => {
 }
 
 
-
+// * for loading the report page 
 
 const loadReport = async (req, res) => {
   try {
@@ -390,6 +390,7 @@ const loadReport = async (req, res) => {
 };
 
 
+// * for downlaoding the the report 
 
 const getSalesReport = async (req, res) => {
   try {
@@ -407,13 +408,11 @@ const getSalesReport = async (req, res) => {
 
     await browser.close();
 
-    // Set response headers
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Length': pdf.length
     });
 
-    // Send the PDF data as the response body
     res.send(pdf);
   } catch (error) {
     console.error(error.message);
@@ -421,7 +420,7 @@ const getSalesReport = async (req, res) => {
   }
 }
 
-
+// * for liading the coupons page 
 
 const loadCoupons = async (req, res) => {
   try {
@@ -434,6 +433,7 @@ const loadCoupons = async (req, res) => {
   }
 }
 
+// * for adding a new coupon 
 
 const addCoupon = async (req, res) => {
   try {
@@ -457,6 +457,8 @@ const addCoupon = async (req, res) => {
   }
 };
 
+// * for deleting coupons 
+
 const deleteCoupon = async (req, res) => {
   try {
     const id = req.query.id
@@ -479,6 +481,7 @@ const deleteCoupon = async (req, res) => {
 
 }
 
+// * for editting coupon
 
 const editCoupon = async (req, res) => {
   try {

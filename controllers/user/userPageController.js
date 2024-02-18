@@ -646,19 +646,6 @@ const loadAbout = async (req, res) => {
 }
 
 
-// * for showing erros
-const loadEror = async (req, res) => {
-    try {
-        if (!req.query.msg) {
-            res.redirect('/')
-        }
-        res.render('error', { toast: req.query.toast, msg: req.query.msg })
-    } catch (error) {
-        console.log('error on error page ' + error.message)
-    }
-}
-
-
 
 module.exports = {
     loadHome,
@@ -671,7 +658,6 @@ module.exports = {
     addAddress,
     deleteAddress,
     edittAddress,
-    loadEror,
     cancelOrder,
     changePassword,
     createInvoice,

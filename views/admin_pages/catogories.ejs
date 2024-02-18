@@ -7,10 +7,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:title" content="" />
-    <meta property="og:type" content="" />
-    <meta property="og:url" content="" />
-    <meta property="og:image" content="" />
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:image" content=""/>
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="imgs/theme/favicon.svg" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
@@ -151,7 +151,7 @@
                 
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+
                 <ul class="nav"> 
                     <li class="dropdown nav-item">                        
                             <a class="dropdown-item text-danger" href="/admin/logout"><i
@@ -205,7 +205,7 @@
             </header>
 
 
-            <% if (categories.length>0) { %>
+            <% if (categories.length > 0) { %>
                 <% categories.forEach(function(category) { %>
                     <div class="user-details-container">
                         <ul>
@@ -229,96 +229,67 @@
                                     </li>
                                 </ul>
                             </li>
-                            <button class="btn btn-primary" data-bs-target="#editCategoryModal<%= category._id %>"
-                                data-bs-toggle="modal">
+                            <button class="btn btn-primary" data-bs-target="#editCategoryModal<%= category._id %>" data-bs-toggle="modal">
                                 Edit
                             </button>
-                            <a href="javascript:void(0);" <% if (category.items.length>0) { %> onclick="showToastr();"
-                                <% } else { %> onclick="confirmDelete('<%= category._id %>');" <% } %>
-                                            class="btn btn-danger">Delete
-                            </a>
+                            <a href="javascript:void(0);" <% if (category.items.length > 0) { %> onclick="showToastr();" <% } else { %> onclick="confirmDelete('<%= category._id %>');" <% } %> class="btn btn-danger">Delete</a>
                         </ul>
-                        <img <% if (category.img.length> 23) { %>
-                        src="<%= category.img %>"
-                            <% } else { %>
-                                src="/resized_images/<%= category.img %>"
-                                    <% } %>
-                                        alt="<%= category.name %> Image" class="small-image"
-                                            />
-    
-                                            <div class="user-details-buttons"></div>
-    
+                        <img <% if (category.img.length > 23) { %> src="<%= category.img %>" <% } else { %> src="/resized_images/<%= category.img %>" <% } %> alt="<%= category.name %> Image" class="small-image"/>
+                        <div class="user-details-buttons"></div>
                     </div><br>
-    
-                    <div class="modal fade" id="editCategoryModal<%= category._id %>" aria-hidden="true"
-                        aria-labelledby="editUserModalLabel" tabindex="-1">
+            
+                    <div class="modal fade" id="editCategoryModal<%= category._id %>" aria-hidden="true" aria-labelledby="editUserModalLabel" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h1 class="modal-title fs-5" id="editUserModalLabel">
                                         Edit Category
                                     </h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="/admin/editCatogories/<%= category._id %>" method="post"
-                                        enctype="multipart/form-data">
+                                    <form action="/admin/editCategories/<%= category._id %>" method="post" enctype="multipart/form-data">
                                         <div>
-                                            <a href="/admin/addProduct" class="btn btn-primary"><i
-                                                    class="material-icons md-plus"></i>new Product to this catogory</a>
+                                            <a href="/admin/addProduct" class="btn btn-primary"><i class="material-icons md-plus"></i>new Product to this category</a>
                                         </div>
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" required
-                                                value="<%= category.name %>" />
+                                            <input type="text" class="form-control" id="name" name="name" required value="<%= category.name %>" />
                                         </div>
-    
+            
                                         <div class="mb-3">
-                                            <img <% if (category.img.length> 23) { %>
-                                            src="<%= category.img %>"
-                                                <% } else { %>
-                                                    src="/resized_images/<%= category.img %>"
-                                                        <% } %>
-                                                            alt="<%= category.name %> Image" class="small-image"
-                                                                />
-    
-                                                                <label for="file" class="form-label">Image Path</label>
-                                                                <input type="file" class="form-control" id="file"
-                                                                    name="file" />
+                                            <img <% if (category.img.length > 23) { %> src="<%= category.img %>" <% } else { %> src="/resized_images/<%= category.img %>" <% } %> alt="<%= category.name %> Image" class="small-image" />
+            
+                                            <label for="file" class="form-label">Image Path</label>
+                                            <input type="file" class="form-control" id="file" name="file" />
                                         </div>
                                         <section>
                                             <div class="mb-3">
                                                 <label for="categoryType" class="form-label">Category Type</label>
                                                 <select class="form-control" id="categoryType" name="type">
-                                                    <option value="men" <% if (category.type==='men' ) { %>selected<% } %>
-                                                            >Men</option>
-                                                    <option value="women" <% if (category.type==='women' ) { %>selected
-                                                        <% } %>>Women
-                                                    </option>
-                                                    <option value="children" <% if (category.type==='children' ) { %>
-                                                        selected<% } %>>Children</option>
+                                                    <option value="men" <% if (category.type === 'men') { %> selected <% } %>>Men</option>
+                                                    <option value="women" <% if (category.type === 'women') { %> selected <% } %>>Women</option>
+                                                    <option value="children" <% if (category.type === 'children') { %> selected <% } %>>Children</option>
                                                 </select>
                                             </div>
-    
+            
                                             <div class="mb-3">
                                                 <label for="description" class="form-label">Description</label>
-                                                <input type="text" class="form-control" id="description" name="description"
-                                                    required value="<%= category.description %>" />
+                                                <input type="text" class="form-control" id="description" name="description" required value="<%= category.description %>" />
                                             </div>
-    
+            
                                             <button type="submit" class="btn btn-primary">Save</button>
                                     </form>
-    
+            
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <% }); %>
-            <% }else{ %>
-                <h3>No Catogories At The Moment</h3> for refreshing the page <a href="/admin/catogories" style="color: blue;">Click here</a>
+                <% }); %>
+            <% } else { %>
+                <h3>No Categories At The Moment</h3> for refreshing the page <a href="/admin/categories" style="color: blue;">Click here</a>
             <% } %>
-
+            
 
                     <div class="pagination-area mt-30 mb-50">
                         <nav aria-label="Page navigation">

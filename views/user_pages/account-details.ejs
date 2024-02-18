@@ -125,13 +125,15 @@
 															<% } %>
 
 
-															<% if (valid) { %>
-																<a href="/account" id="msgnoti" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= messages %>">
-																	<i class="zmdi zmdi-account"></i>
-																</a>
-																<% } %>
-															
-													
+																<% if (valid) { %>
+																	<a href="/account" id="msgnoti"
+																		class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+																		data-notify="<%= messages %>">
+																		<i class="zmdi zmdi-account"></i>
+																	</a>
+																	<% } %>
+
+
 										</div>
 									</div>
 									<% if (valid) { %>
@@ -208,11 +210,13 @@
 												</a>&nbsp;&nbsp;&nbsp;
 												<% } %>
 
-												<% if (valid) { %>
-													<a href="/account" id="msgnoti" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= messages %>">
-														<i class="zmdi zmdi-account"></i>
-													</a>
-													<% } %>
+													<% if (valid) { %>
+														<a href="/account" id="msgnoti"
+															class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+															data-notify="<%= messages %>">
+															<i class="zmdi zmdi-account"></i>
+														</a>
+														<% } %>
 									</div>
 
 									<!-- Button show menu -->
@@ -272,12 +276,14 @@
 					<section class="bg0 p-t-23 p-b-130">
 						<div class="container">
 							<div class="navigation-buttons">
-								<button class="nav-button" id="personal-details-nav" style="color: black;" onclick="showPersonalInfo()">Personal Details</button>
+								<button class="nav-button" id="personal-details-nav" style="color: black;"
+									onclick="showPersonalInfo()">Personal Details</button>
 								<button class="nav-button" id="address-nav" onclick="showAddresses()">Addresses</button>
 								<button class="nav-button" id="orders-nav" onclick="showOrders()">Orders</button>
 								<button class="nav-button" id="wallet-nav" onclick="showWallet()">Wallet</button>
 								<button class="nav-button" id="coupon-nav" onclick="showCoupon()">Coupons</button>
-								<button class="nav-button icon-msg-noti"  data-notify="<%= messages %>" id="inbox-nav" onclick="showInbox()" >Inbox</button>
+								<button class="nav-button icon-msg-noti" data-notify="<%= messages %>" id="inbox-nav"
+									onclick="showInbox()">Inbox</button>
 
 								<% if (pendings.length>0) { %>
 									<form action="/create-invoice" method="post" id="invoiceForm">
@@ -316,11 +322,12 @@
 																<code><% formatTime(msg.replayTime) %></code>
 																</p>
 															</div>
-															<button class="btn btn-outline-info read-btn" data-id="<%= msg.id %>">
+															<button class="btn btn-outline-info read-btn"
+																data-id="<%= msg.id %>">
 																mark as read
 																<span class="whatsapp-tick">&#10003;</span>
 															</button>
-															
+
 														</li>
 														<% }) %>
 															<% }else{ %>
@@ -330,7 +337,7 @@
 										</div>
 									</div>
 
-								
+
 
 									<% function formatTime(time) { %>
 										<%= new Date(time).toLocaleTimeString([], { hour: '2-digit' , minute: '2-digit'

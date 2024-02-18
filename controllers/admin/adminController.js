@@ -237,6 +237,7 @@ const logout = async (req, res) => {
   }
 };
 
+// * for contacting the user 
 
 const loadMessages = async (req, res) => {
   try {
@@ -248,6 +249,8 @@ const loadMessages = async (req, res) => {
     console.log('error inloading messages :', error.message);
   }
 }
+
+// *for sending the replay to the user
 
 const sendReply = async (req, res) => {
   try {
