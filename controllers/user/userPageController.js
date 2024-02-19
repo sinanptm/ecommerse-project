@@ -20,7 +20,7 @@ const loadHome = async (req, res) => {
             .limit(limit)
             .lean();
 
-        let userid = products[0]._id || '65a522f9b45bce5d065811c3'
+        let userid ='65a522f9b45bce5d065811c3'
         if (req.cookies.token || req.session.token) {
             userid = await getUserIdFromToken(req.cookies.token || req.session.token);
         }
