@@ -35,7 +35,11 @@ const loadHome = async (req, res) => {
                 product.whishlist = wishlist.products.includes(product._id);
             });
         }
-        products[0].wishlist = true
+        if (products) {
+            products[0].wishlist = true
+        }else{
+            products=[]
+        }
         res.render("home", { products, totalPages, currentPage: page });
 
     } catch (error) {
