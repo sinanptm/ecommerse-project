@@ -408,72 +408,7 @@ function removeProductCart(id) {
 
 
 
-$("#placeOrder").submit((e) => {
-    e.preventDefault();
-    $.ajax({
-        url: "/place-order",
-        method: "POST",
-        data: $('#placeOrder').serialize(),
-        success: function (res) {
 
-            if (res.status == 200) {
-                window.location.href = '/order-success?id=' + res.id
-            }
-            else if (res.success) {
-                var options = {
-                    "key": "" + res.key_id + "",
-                    "amount": res.amount,
-                    "currency": "INR",
-                    "name": "Trends Payment",
-                    "description": "Payment for online Purchase",
-                    "image": "https://wallpapercave.com/wp/wp5390765.jpg",
-                    "order_id": "" + res.order_id + "",
-                    "handler": function (response) {
-                        $.ajax({
-                            url: '/online-payment',
-                            method: "POST",
-                            data: {
-                                order: res,
-                                payment: response,
-                            },
-                            success: (ress) => {
-                                if (ress.fail) {
-                                    alert("payment failed")
-                                } else {
-                                    window.location.href = '/order-success?id=' + ress.orderid
-                                }
-
-                            }
-                        })
-                    },
-                    "prefill": {
-                        "contact": "" + res.contact + "",
-                        "name": "" + res.name + "",
-                        "email": "" + res.email + ""
-                    },
-                    "notes": {
-                        "description": "" + res.description + ""
-                    },
-                    "theme": {
-                        "color": "#169dd2"
-                    }
-                };
-                var razorpayObject = new Razorpay(options);
-                razorpayObject.on('payment.failed', function (response) {
-                    $("#paymentFailedMessage").show();
-                });
-                razorpayObject.open();
-            }
-            else {
-                alert(res.msg);
-            }
-        }
-    })
-})
-
-function hidePaymentFailedMessage() {
-    $("#paymentFailedMessage").hide();
-}
 
 
 

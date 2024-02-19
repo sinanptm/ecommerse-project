@@ -357,7 +357,9 @@
 												<% } %>
 
 													<% if (valid) { %>
-														<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= messages %>">
+														<a href="/account"
+															class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+															data-notify="<%= messages %>">
 															<i class="zmdi zmdi-account"></i>
 														</a>
 														<% } %>
@@ -440,7 +442,9 @@
 									<% } %>
 
 										<% if (valid) { %>
-											<a href="/account" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= messages %>">
+											<a href="/account"
+												class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+												data-notify="<%= messages %>">
 												<i class="zmdi zmdi-account"></i>
 											</a>
 											<% } %>
@@ -560,33 +564,35 @@
 										<span class="stext-111 cl2 size-116 sss">Cash on Delivery</span>
 									</label>
 								</div>
-							 
-							<% }else{ %>
-								<div class="bor8 m-b-20 how-pos4-parent payment-method">
-									<label for="cod" class="payment-label">
-										<span class="stext-111 cl2 size-116 sss">Cash on Delivery</span>
-									</label>
-									<span style="color: #d32f2f;">&nbsp;&nbsp;&nbsp;&nbsp; is not available for order Above 1000</span>
-								</div>
-							<% } %>
 
-							<div class="bor8 m-b-20 how-pos4-parent payment-method">
-								<input type="radio" id="online_payment" name="payment_method" value="online_payment"
-									class="payment-input">
-								<label for="online_payment" class="payment-label">
-									<span class="stext-111 cl2 size-116 sss">Online Payment</span>
-								</label>
-							</div>
+								<% }else{ %>
+									<div class="bor8 m-b-20 how-pos4-parent payment-method">
+										<label for="cod" class="payment-label">
+											<span class="stext-111 cl2 size-116 sss">Cash on Delivery</span>
+										</label>
+										<span style="color: #d32f2f;">&nbsp;&nbsp;&nbsp;&nbsp; is not available for
+											order Above 1000</span>
+									</div>
+									<% } %>
 
-							<% if (!wallet.msg) { %>
-								<div class="bor8 m-b-20 how-pos4-parent payment-method">
-									<input type="radio" id="wallet" name="payment_method" value="wallet"
-										class="payment-input" <%= wallet.balance>=totalPrice?"":'disabled' %>>
-									<label for="online_payment" class="payment-label">
-										<span class="stext-111 cl2 size-116 sss">Wallet</span>
-									</label>
-								</div>
-							<% } %>
+										<div class="bor8 m-b-20 how-pos4-parent payment-method">
+											<input type="radio" id="online_payment" name="payment_method"
+												value="online_payment" class="payment-input">
+											<label for="online_payment" class="payment-label">
+												<span class="stext-111 cl2 size-116 sss">Online Payment</span>
+											</label>
+										</div>
+
+										<% if (!wallet.msg) { %>
+											<div class="bor8 m-b-20 how-pos4-parent payment-method">
+												<input type="radio" id="wallet" name="payment_method" value="wallet"
+													class="payment-input" <%=wallet.balance>=totalPrice?"":'disabled'
+												%>>
+												<label for="online_payment" class="payment-label">
+													<span class="stext-111 cl2 size-116 sss">Wallet</span>
+												</label>
+											</div>
+											<% } %>
 
 						</div>
 					</div>
@@ -621,7 +627,8 @@
 
 								<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
 									<span class="mtext-110 cl2" style="color: #0aa02b;">
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= Math.round(totalDiscount - subtotal || 0) %>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= Math.round(totalDiscount - subtotal ||
+											0) %>
 									</span>
 								</div>
 							</div>
@@ -817,13 +824,84 @@
 				</div>
 			</div>
 		</div>
-		<div id="paymentFailedMessage"
-			style="display: none; background-color: #f8d7da; color: #721c24; padding: 15px; border: 1px solid #f5c6cb; border-radius: 5px; position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 9999; width: 300px; text-align: center;margin-top: 400px;">
-			<span style="font-weight: bold;">Payment Failed:</span> Please try again.
-			<button
-				style="border: none; background-color: transparent; color: #721c24; font-weight: bold; position: absolute; top: 5px; right: 5px; cursor: pointer;"
-				onclick="hidePaymentFailedMessage()">X</button>
-		</div>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	
+
+		<script>
+			$("#placeOrder").submit((e) => {
+				e.preventDefault();
+				$.ajax({
+					url: "/place-order",
+					method: "POST",
+					data: $('#placeOrder').serialize(),
+					success: function (res) {
+
+						if (res.status == 200) {
+							window.location.href = '/order-success?id=' + res.id
+						}
+						else if (res.success) {
+							var options = {
+								"key": "" + res.key_id + "",
+								"amount": res.amount,
+								"currency": "INR",
+								"name": "Trends Payment",
+								"description": "Payment for online Purchase",
+								"image": "https://wallpapercave.com/wp/wp5390765.jpg",
+								"order_id": "" + res.order_id + "",
+								"handler": function (response) {
+									$.ajax({
+										url: '/online-payment',
+										method: "POST",
+										data: {
+											order: res,
+											payment: response,
+										},
+										success: (ress) => {
+											if (ress.fail) {
+												Swal.fire({
+											icon: "error",
+											title: "Oops...",
+											text: "Payment failed!",
+											footer: '<button>try again</button>'
+										});
+											} else {
+												window.location.href = '/order-success?id=' + ress.orderid
+											}
+
+										}
+									})
+								},
+								"prefill": {
+									"contact": "" + res.contact + "",
+									"name": "" + res.name + "",
+									"email": "" + res.email + ""
+								},
+								"notes": {
+									"description": "" + res.description + ""
+								},
+								"theme": {
+									"color": "#169dd2"
+								}
+							};
+							var razorpayObject = new Razorpay(options);
+							razorpayObject.on('payment.failed', function (response) {
+								Swal.fire({
+											icon: "error",
+											title: "Oops...",
+											text: "Payment failed!",
+											footer: '<button>try again</button>'
+										});
+							});
+							razorpayObject.open();
+						}
+						else {
+							alert(res.msg);
+						}
+					}
+				})
+			})
+		</script>
 
 
 
