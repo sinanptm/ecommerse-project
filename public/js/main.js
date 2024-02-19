@@ -407,12 +407,6 @@ function removeProductCart(id) {
 
 
 
-
-
-
-
-
-
 async function remoWhishProduct(id) {
     try {
         const res = await $.ajax({
