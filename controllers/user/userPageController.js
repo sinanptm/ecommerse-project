@@ -20,7 +20,9 @@ const loadHome = async (req, res) => {
             .limit(limit)
             .lean();
 
-        let userid = products[0]._id || await Product.findOne({},{_id:1})
+        let {_id } = await Product.findOne({},{_id:1})
+
+        let userid = products[0]._id || _id
         if (req.cookies.token || req.session.token) {
             userid = await getUserIdFromToken(req.cookies.token || req.session.token);
         }
