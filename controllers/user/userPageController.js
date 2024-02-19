@@ -15,7 +15,7 @@ const loadHome = async (req, res) => {
 
         const skip = (page - 1) * limit;
 
-        const products = await Product.find({ status: "Available" })
+        let products = await Product.find({ status: "Available" })
             .skip(skip)
             .limit(limit)
             .lean();
@@ -26,21 +26,24 @@ const loadHome = async (req, res) => {
         }
         const wishlist = await Wishlist.findOne({ userid });
 
+       if (products.length>0) {
         products.forEach(product => {
             product.whishlist = false;
         });
 
+       }
+       
         if (wishlist) {
             products.forEach(product => {
                 product.whishlist = wishlist.products.includes(product._id);
             });
         }
-        console.log(products);
-        if (products) {
-            products[0].wishlist = true
-        }else{
-            products=[]
+        
+        // Check if products array is empty
+        if (products.length === 0) {
+            products = []; // Set products to an empty array
         }
+
         res.render("home", { products, totalPages, currentPage: page });
 
     } catch (error) {
@@ -48,6 +51,7 @@ const loadHome = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
 
 
 // * for showing products 
