@@ -436,7 +436,7 @@ const placeOrder = async (req, res) => {
     var populatedProducts = await Product.find({ _id: { $in: productIds } });
 
     const outOfStockProducts = populatedProducts.filter(product => product.quantity <= 0);
-    if (outOfStockProducts.length > 0) {
+    if (outOfStockProducts.length <= 0) {
       return res.redirect(`/checkout?t=${req.session.totalAmount}&&msg=some products where out of stock plese chect you cart again`);
     }
 
@@ -674,6 +674,7 @@ const online_payment = async (req, res) => {
 }
 
 
+// * to show the order success page
 
 const showSuccess = async (req, res) => {
   try {
