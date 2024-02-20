@@ -877,7 +877,7 @@
 									proceddtocheckout.style.display = 'block';
 									couponInput.style.borderColor = '#E6E6E6';
 									document.getElementById('coupondiscound').innerHTML = res.couponDiscount + "%";
-									swal("Success!", "Coupon Added", "success");
+									new Swal("Success!", "Coupon Added", "success");
 								}
 							},
 							error: (err) => {
