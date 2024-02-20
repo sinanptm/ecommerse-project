@@ -9,6 +9,7 @@ const { puppeteer,moment } = require("../../util/modules")
 
 const loadDashBoard = async (re, res) => {
   try {
+    const reportErr = req.query.report
     const now = moment();
     const startOfMonth = moment().startOf('month'); 
     const endOfMonth = moment().endOf('month');
@@ -158,7 +159,8 @@ const loadDashBoard = async (re, res) => {
       newusers,
       mostSaledProducts,
       mostSaledCatogories,
-      cancelationReson
+      cancelationReson,
+      reportErr
     });
 
   } catch (error) {
@@ -416,7 +418,7 @@ const getSalesReport = async (req, res) => {
     res.send(pdf);
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Internal Server Error');
+    res.status(304).redirect("/admin/dashboard?report=false")
   }
 }
 
