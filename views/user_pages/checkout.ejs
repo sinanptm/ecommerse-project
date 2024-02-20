@@ -826,7 +826,7 @@
 		</div>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	
+
 
 		<script>
 			$("#placeOrder").submit((e) => {
@@ -860,11 +860,11 @@
 										success: (ress) => {
 											if (ress.fail) {
 												Swal.fire({
-											icon: "error",
-											title: "Oops...",
-											text: "Payment failed!",
-											footer: '<button>try again</button>'
-										});
+													icon: "error",
+													title: "Oops...",
+													text: "Payment failed!",
+													footer: '<button>try again</button>'
+												});
 											} else {
 												window.location.href = '/order-success?id=' + ress.orderid
 											}
@@ -887,16 +887,25 @@
 							var razorpayObject = new Razorpay(options);
 							razorpayObject.on('payment.failed', function (response) {
 								Swal.fire({
-											icon: "error",
-											title: "Oops...",
-											text: "Payment failed!",
-											footer: '<button>try again</button>'
-										});
+									icon: "error",
+									title: "Oops...",
+									text: "Payment failed!",
+									footer: '<button>try again</button>'
+								});
 							});
 							razorpayObject.open();
 						}
-						else {
-							alert(res.msg);
+						else if (res.outOfStock) {
+							
+							if (res.outOfStock.length > 0) {
+								let alertMessage = "The following products have low stock:\n";
+
+								for (const problem of res.outOfStock) {
+									alertMessage += `${problem.name} is only ${problem.remainingQuantity} left.\n`;
+								}
+
+								new Swal("Warning!", alertMessage, "warning");
+							}
 						}
 					}
 				})

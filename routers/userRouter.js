@@ -49,6 +49,14 @@ userRoute.post('/quantity-manage/:id', addQuantity)
 userRoute.delete('/removeProduct/:id', removeProduct)
 userRoute.get("/addtocart", addToCartProductPage)
 
+// * checkout routes 
+userRoute.post('/to-checkout', addToCheckout)
+userRoute.get('/checkout', loadCheckout)
+userRoute.post("/place-order", placeOrder)
+userRoute.post("/online-payment", online_payment)
+userRoute.get('/order-success', showSuccess)
+userRoute.get("/logout", userLogout);
+
 // * User Profile Routes
 userRoute.get('/account', loadAccount)
 userRoute.post('/create-invoice', createInvoice)
@@ -63,15 +71,6 @@ userRoute.post('/cancel-order', cancelOrder)
 userRoute.get("/whishlist", loadWhishList);
 userRoute.get('/add-to-whishlist', addToWhishlist);
 userRoute.get('/remove-from-whishlist', removeFromWhishlist);
-
-
-// * checkout routes 
-userRoute.post('/to-checkout', addToCheckout)
-userRoute.get('/checkout', loadCheckout)
-userRoute.post("/place-order", placeOrder)
-userRoute.post("/online-payment", online_payment)
-userRoute.get('/order-success', showSuccess)
-userRoute.get("/logout", userLogout);
 
 // * for undifined request managment 
 userRoute.use(handleUndefinedRoutes);

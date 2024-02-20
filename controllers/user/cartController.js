@@ -153,7 +153,7 @@ const loadCart = async (req, res) => {
   try {
     const token = req.cookies.token || req.session.token;
     if (!token) {
-      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast:req.query.toast, totalPrice: 0, outOfStock:[] });
+      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast: req.query.toast, totalPrice: 0, outOfStock: [] });
     }
 
     const userId = await getUserIdFromToken(token);
@@ -165,7 +165,7 @@ const loadCart = async (req, res) => {
 
 
     if (!cart) {
-      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast:req.query.toast, totalPrice: 0 ,outOfStock:[]});
+      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast: req.query.toast, totalPrice: 0, outOfStock: [] });
     }
 
     const products = cart.products;
@@ -181,11 +181,11 @@ const loadCart = async (req, res) => {
     const productsToCheckout = filteredProducts.map(product => ({ productid: product.productid._id, quantity: product.quantity }));
 
     let outOfStock = [];
-    
+
     for (const product of productsToCheckout) {
-      const p= await Product.findById(product.productid);
-      if (p.quantity<=0 || p.quantity-product.quantity<=0 ) {
-        outOfStock.push({name:p.name,remainingQuantity:p.quantity});
+      const p = await Product.findById(product.productid);
+      if (p.quantity <= 0 || p.quantity - product.quantity <= 0) {
+        outOfStock.push({ name: p.name, remainingQuantity: p.quantity });
       }
     }
 
@@ -264,11 +264,12 @@ const removeProduct = async (req, res) => {
   }
 };
 
+
 // * for sending datas to checkout page 
 
 const addToCheckout = async (req, res) => {
   try {
-    let { totalprice, products,coupons } = req.body;
+    let { totalprice, products, coupons } = req.body;
     const coupon = req.query.coupon;
 
     if (typeof coupon !== 'undefined' && coupon !== null) {
@@ -289,12 +290,12 @@ const addToCheckout = async (req, res) => {
       }
     }
 
-    if (typeof coupons !=='undefined'&&coupons!== null) {
-      await Coupon.updateOne({code:parseInt(coupons)},{$inc:{used:1}})
+    if (typeof coupons !== 'undefined' && coupons !== null) {
+      await Coupon.updateOne({ code: parseInt(coupons) }, { $inc: { used: 1 } })
     }
 
-
     const parsedProducts = Array.isArray(products) ? products : [products];
+
     req.session.parsedProducts = parsedProducts;
     req.session.totalAmount = totalprice;
     res.locals.products = parsedProducts;
@@ -392,9 +393,9 @@ const loadCheckout = async (req, res) => {
     let wallet = await Wallet.findOne({ userid: userId }).lean()
 
 
-    if (wallet==null) {
-      wallet = { msg : "No Balance"}
-    }else if (wallet.balance < totalPrice) {
+    if (wallet == null) {
+      wallet = { msg: "No Balance" }
+    } else if (wallet.balance < totalPrice) {
       wallet.msg = "No Balance"
     }
 
@@ -434,10 +435,19 @@ const placeOrder = async (req, res) => {
     products = JSON.parse(products);
     const productIds = products.map(product => product.productid);
     var populatedProducts = await Product.find({ _id: { $in: productIds } });
+    
+    let outOfStock = [];
 
-    const outOfStockProducts = populatedProducts.filter(product => product.quantity <= 0);
-    if (outOfStockProducts.length <= 0) {
-      return res.redirect(`/checkout?t=${req.session.totalAmount}&&msg=some products where out of stock plese chect you cart again`);
+    for (const product of products) {
+      const p = await Product.findById(product.productid);
+      if (p.quantity <= 0 || p.quantity - product.quantity <= 0) {
+        outOfStock.push({ name: p.name, remainingQuantity: p.quantity });
+      }
+    }
+
+
+    if (outOfStock.length > 0) {
+      return res.json({msg:`products are out of stock please try again`,outOfStock:outOfStock})
     }
 
     // Update the cart
