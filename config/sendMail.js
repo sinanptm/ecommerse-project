@@ -114,7 +114,7 @@ const sendNewPass = async ({ email, subject = "TRENDS Forget Password", message 
     const expirationTime = new Date(new Date().getTime() + durationInMinutes * 60 * 1000);
 
     
-    const newOTP = await new OTP({
+    const newOTP = new OTP({
       email,
       otp: otp.trim(),
       createdAt: Date.now(),
