@@ -1,0 +1,291 @@
+[33mcommit db774a148af9e8cc956905eefd1bc6a79283bed4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Merge: fd65f16 7e59a57
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Tue Feb 20 10:14:30 2024 +0530
+
+    Merge branch 'main' of https://github.com/sinanptm/TRENDS-E-commerse
+
+[33mcommit fd65f16a12f9165fc40a06da6e3d47915873891b[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Tue Feb 20 10:13:35 2024 +0530
+
+    the loogin page isuue solved
+
+[33mcommit 7e59a571bcbf4d17ce149440bcc4f52372288fe5[m
+Author: sinanptm <148682358+sinanptm@users.noreply.github.com>
+Date:   Mon Feb 19 22:06:12 2024 +0530
+
+    Delete node_modules directory
+
+[33mcommit af7849ab027b9b7da351e659afca1ec75f838fd2[m[33m ([m[1;32mnew_branch_name[m[33m)[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 19 21:58:55 2024 +0530
+
+    sdfdsf
+
+[33mcommit ae7c85969351886b534af84396251eadac6b34fa[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 19 21:49:50 2024 +0530
+
+    the alert seetted
+
+[33mcommit 605f192b23a212fad3e273f432caf4a5c26d4d9b[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 19 12:25:10 2024 +0530
+
+    hone
+
+[33mcommit 3bd288527573a30ad639c97d81c94aff0218ef2b[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 19 11:42:48 2024 +0530
+
+    home
+
+[33mcommit 804d532fc880bd077a8390a3d77bd40dd25be0ef[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 19 11:30:45 2024 +0530
+
+    home
+
+[33mcommit 9793c39141b15822f0d4bd8b1ad6823ca8f7fc55[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 19 11:26:21 2024 +0530
+
+    home pag eissue
+
+[33mcommit cb1ea76822420a58a1ed599a5d179222b298f49f[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 19 11:24:01 2024 +0530
+
+    home page issue
+
+[33mcommit 4a5e20dc18248362aeb4e446e455b48d36ff3e22[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 19 11:18:37 2024 +0530
+
+    homw page isuue managing
+
+[33mcommit 74a8536336a8b7ae06dd9e66d5bb4b8951c91e07[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 19 11:07:55 2024 +0530
+
+    home page issue solved
+
+[33mcommit 0237ce81bf43852ddf33d0c1b169f9573e0a1f62[m
+Merge: fc54529 7333d15
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sun Feb 18 22:23:58 2024 +0530
+
+    Merge branch 'main' of https://github.com/sinanptm/TRENDS-E-commerse
+
+[33mcommit fc54529bdf4183a40163c04b816145b343f3f19c[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sun Feb 18 22:22:12 2024 +0530
+
+    all the minor issues solved
+
+[33mcommit 7333d152cde28b3fec2bf9fcc24175e27506d575[m
+Author: sinanptm <148682358+sinanptm@users.noreply.github.com>
+Date:   Sun Feb 18 16:00:07 2024 +0530
+
+    Update node.js.yml
+
+[33mcommit 8d2c2bce3707dcd1c26f6f8f41bfbd45c34c92f8[m
+Author: sinanptm <148682358+sinanptm@users.noreply.github.com>
+Date:   Sun Feb 18 15:41:17 2024 +0530
+
+    Create node.js.yml
+
+[33mcommit 1105465e240770b3ea6df6d2eb4af3f14fab1f73[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sat Feb 17 11:38:36 2024 +0530
+
+    the messages page issue solved
+
+[33mcommit a0f925febca58fe816e3c3335a844c5519f04837[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sat Feb 17 11:32:04 2024 +0530
+
+    before hosting
+
+[33mcommit b0c68710895613a34119d9b38c3a8f70ad129def[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Thu Feb 15 20:46:15 2024 +0530
+
+    error resolved
+
+[33mcommit af7775f586b9823308be76790951e83962cad609[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Thu Feb 15 17:59:30 2024 +0530
+
+    Last commit
+
+[33mcommit 5e8912fc3f7e1b96bb36344cb558c93affd90194[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Tue Feb 13 23:57:46 2024 +0530
+
+    Resolve large file issue
+
+[33mcommit e399c574ca728edb5a2a81d60ab9187e89536f55[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Tue Feb 13 23:22:27 2024 +0530
+
+    Week 11 approximatly complete
+
+[33mcommit a0baa81393fe0fa8578cb3f9c81d5161b25d3322[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 12 18:35:57 2024 +0530
+
+    Week 11 before rewie some tasks left
+
+[33mcommit 4836fc3b36ff7c3b5f085881adb2210533275ba3[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sat Feb 10 12:55:55 2024 +0530
+
+    Week 10 full complete
+
+[33mcommit 660ef5e9b624c4bc119b816c44de6a266d6a9da6[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Tue Feb 6 16:19:40 2024 +0530
+
+    Wekk 10 pendings complete without filter,search,http methods
+
+[33mcommit f58fdae8884e91900596bb982a9968a55e450eca[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Feb 5 21:13:53 2024 +0530
+
+     week 10 after rewie
+
+[33mcommit 0c708b9a8814b363b94ec568686c50939a67f25a[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Thu Feb 1 22:39:40 2024 +0530
+
+    whisg kust cinplete
+    :
+
+[33mcommit 39162374d654b84ea940d267048990b135549113[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Wed Jan 31 16:55:19 2024 +0530
+
+    week 9 to start
+
+[33mcommit 4214fb3a9529038cf20162d2d47d342514ee7ae0[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Jan 29 23:10:40 2024 +0530
+
+    week 9 complete
+
+[33mcommit 479e5f2ba35ddf245a2b92816ede97fa2b976b72[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sun Jan 28 20:27:59 2024 +0530
+
+    week 9 still remaining
+
+[33mcommit 857e501964c7984d1ef095c8d992fa344396a467[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Fri Jan 26 23:08:04 2024 +0530
+
+    order placing and profile managment comblete
+
+[33mcommit 009f4df4ab2333bddee76f28e5ab108d4d97b64c[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Wed Jan 24 21:52:01 2024 +0530
+
+    address and user details complete
+
+[33mcommit 802a57ec5b14830278a220336dfc32232c7fcc49[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sun Jan 21 17:49:18 2024 +0530
+
+    Product Adding To Cart Successfull
+
+[33mcommit 168e61c3a4f5dced7091fa535d9e61bbed86c30f[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sat Jan 20 08:50:51 2024 +0530
+
+    Week 8 Fully Conmplete
+
+[33mcommit 1b96c54c425354d4cff2944122a6d8c2e2d35067[m[33m ([m[1;35mrefs/stash[m[33m)[m
+Merge: 4ba145f 846d8ce
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Fri Jan 19 11:59:46 2024 +0530
+
+    WIP on (no branch): 386ae51 WIP on (no branch): 92d78fb Your commit message
+
+[33mcommit 846d8ce8d5e3c6c5ba43dc60faed4323f28374c6[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Fri Jan 19 11:59:46 2024 +0530
+
+    index on (no branch): 386ae51 WIP on (no branch): 92d78fb Your commit message
+
+[33mcommit 4ba145ff46fc4271ac05bd739940bb9fd3660223[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Fri Jan 19 10:15:40 2024 +0530
+
+    WIP on (no branch): 92d78fb Your commit message
+
+[33mcommit 92d78fb58c94e8ca882b763d0d0598d31beb0aac[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Fri Jan 19 10:13:08 2024 +0530
+
+    Your commit message
+
+[33mcommit dc534899ead84888ab32e4fdf7fdd9555306a8b2[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Tue Jan 16 13:11:11 2024 +0530
+
+    week 8 dome
+
+[33mcommit 0b1b82c51b5f74839631c056df295d73c87f07b7[m[33m ([m[1;31morigin/adminSide[m[33m, [m[1;32madminSide[m[33m)[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Mon Jan 15 21:53:20 2024 +0530
+
+    Catogoire has some errors
+
+[33mcommit 6c97c45544614022f56e88d110f78d3aafb8d78a[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sun Jan 14 14:10:01 2024 +0530
+
+    Week 8 Approximatly done
+
+[33mcommit d78085ff4dd67b6e88f4d8d2b1af83c9ecc1147f[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Thu Jan 11 17:53:14 2024 +0530
+
+    product adding seccusfull
+
+[33mcommit b64fe7eb044e0e0dcd0ac20ab57336f5e824a11c[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Wed Jan 10 17:01:36 2024 +0530
+
+    Only products left . catogorie done
+
+[33mcommit 022c549cb5f7d057a35a2f164f03c37ffc32ae08[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sun Jan 7 15:52:56 2024 +0530
+
+    user side login and home half
+
+[33mcommit 551d66d983a29b6bfb238bc07609ddb470b0e88d[m[33m ([m[1;31morigin/admin[m[33m, [m[1;32madmin[m[33m)[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sun Jan 7 13:03:26 2024 +0530
+
+    login and sign up with otp success
+
+[33mcommit d3b53bb6a0b804a4995e782148f96c3418251348[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sat Jan 6 16:02:46 2024 +0530
+
+    Otp generation code done but practical is not done
+
+[33mcommit b754e8259361853260b9d202b4693f53aaf8c5bd[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Sat Jan 6 10:08:51 2024 +0530
+
+    you have added products
+
+[33mcommit 66994a21a7c41d0c377907cdf8cf0e522e08d757[m
+Author: Sinan <muhammedsinan7749@gmail.com>
+Date:   Fri Jan 5 20:13:23 2024 +0530
+
+    this is the first commit
