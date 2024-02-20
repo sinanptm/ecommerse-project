@@ -104,25 +104,7 @@ function showCoupon() {
 
 
 
-async function checkQuantity() {
-    try {
-        const stockOut = JSON.parse(document.getElementById('outofstock').value);
-    
-        if (stockOut.length > 0) {
-            let alertMessage = "The following products have low stock:\n";
-        
-            for (const problem of stockOut) {
-                alertMessage += `${problem.name} is only ${problem.remainingQuantity} left.\n`;
-            }
-        
-            await swal("Warning!", alertMessage, "warning");
-        } else {
-            document.getElementById('CartForm').submit();
-        }
-    } catch (error) {
-        console.log('error in quantity checking: ', error.message);
-    }
-}
+
 
 const logos = document.getElementsByClassName('logo');
 const logoss = document.getElementsByClassName('logo-mobile');
