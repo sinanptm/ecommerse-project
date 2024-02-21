@@ -469,6 +469,7 @@ const placeOrder = async (req, res) => {
       return {
         productid: product._id,
         price: product.price,
+        discount:product.discount,
         quantity: products[i].quantity,
         name: product.name
       };
@@ -495,6 +496,7 @@ const placeOrder = async (req, res) => {
         mobile: address.mobile,
         email: address.email,
       },
+      coupon:req.session.coupon,
       orderDate,
       orderStatus: "1",
       deliveryDate,

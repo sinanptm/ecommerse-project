@@ -130,14 +130,14 @@
                                     </div>
                                     <div class="col-md-9">
                                         <div class="mb-4">
-                                            <label class="form-label">New Product title</label>
+                                            <label class="form-label"> Product title</label>
                                             <input required type="text" placeholder="Type here" class="form-control"
                                             value="<%= product.name %>" name="name" id="name">
                                             <small class="form-text text-left" style="color: red; display: none;"
                                                 id="errorName"></small>
                                         </div>
                                         <div class="mb-4">
-                                            <label class="form-label">New Quantity</label>
+                                            <label class="form-label"> Quantity</label>
                                             <input type="number" required placeholder="Type here" class="form-control"
                                             name="quantity" id="quantity" value="<%= product.quantity %>" min="0"
                                             rows="4"></input>
@@ -160,12 +160,12 @@
                                 <hr class="mb-4 mt-0">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <h6>New Price</h6>
+                                        <h6> Price</h6>
                                     </div>
 
                                     <div class="col-md-9">
                                         <div class="mb-4">
-                                            <label class="form-label">New Cost in INR</label>
+                                            <label class="form-label"> Cost in INR</label>
                                             <input type="number" required name="price" value="<%= product.price %>"
                                             placeholder="0000.0" class="form-control" id="price" min="0">
                                             <small class="form-text text-left" style="color: red; display: none;"
@@ -176,11 +176,11 @@
                                 <hr class="mb-4 mt-0">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <h6>New Discount</h6>
+                                        <h6> Discount</h6>
                                     </div>
                                     <div class="col-md-9">
                                         <div class="mb-4">
-                                            <label class="form-label">New Discount in %</label>
+                                            <label class="form-label"> Discount in %</label>
                                             <input value="<%= product.discount %>" type="number" required
                                             name="discount" placeholder="Enter new discount" class="form-control" id="discount"
                                             min="0" max="99">
@@ -211,7 +211,7 @@
                                 <hr class="mb-4 mt-0">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <h6>New Category</h6>
+                                        <h6> Category</h6>
                                     </div>
                                     <div class="col-md-9">
                                         <div class="mb-4">                                          
@@ -240,7 +240,7 @@
                                     <div class="col-md-9">
                                         <div class="mb-4">
                                             <label class="form-label">
-                                                <h6>New Images</h6>
+                                                <h6> Images</h6>
                                             </label><br>
                                             <img src="/resized_images/<%= product.img0 %>" alt="<%= product.img0 %>"
                                                 srcset="">

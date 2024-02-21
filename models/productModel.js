@@ -49,6 +49,7 @@ const ordersSchema = new mongoose.Schema({
         mobile: { type: Number },
         email: { type: String },
     },
+    coupon:Number,
     orderDate: { type: Date },
     orderStatus: { type: String },
     deliveryDate: { type: Date },
@@ -57,6 +58,7 @@ const ordersSchema = new mongoose.Schema({
         productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
         price: Number,
         quantity: Number,
+        discount:Number,
         name: String
     }],
     walletPayment: {

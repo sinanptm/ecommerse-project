@@ -1,7 +1,7 @@
 const { Product, Category, Order, CancelationReson, Coupon } = require("../../models/productModel")
 const { User } = require("../../models/userModels")
 const { isValidObjectId } = require('../../util/validations');
-const { puppeteer,moment } = require("../../util/modules")
+const { puppeteer, moment } = require("../../util/modules")
 
 
 // * to load dashbord
@@ -11,7 +11,7 @@ const loadDashBoard = async (req, res) => {
   try {
     const reportErr = req.query.report
     const now = moment();
-    const startOfMonth = moment().startOf('month'); 
+    const startOfMonth = moment().startOf('month');
     const endOfMonth = moment().endOf('month');
 
     const revenue = await Order.aggregate([{
@@ -60,7 +60,7 @@ const loadDashBoard = async (req, res) => {
       },
       {
         $sort: {
-          month: 1 
+          month: 1
         }
       }
     ]);
@@ -193,7 +193,7 @@ const loadOrders = async (req, res) => {
     }
 
     const countPromise = sort === 'all' ? Order.countDocuments() : Order.countDocuments(findQuery);
-    const [count, orders] = await Promise.all([countPromise, Order.find(findQuery).sort({orderDate:-1}).skip(skip).limit(perPage)]);
+    const [count, orders] = await Promise.all([countPromise, Order.find(findQuery).sort({ orderDate: -1 }).skip(skip).limit(perPage)]);
 
     const totalPages = Math.ceil(count / perPage);
 
@@ -214,24 +214,51 @@ const loadOrder = async (req, res) => {
       return res.status(304).redirect('/admin/orders-list');
     }
     const order = await Order.findById(id).lean()
+
     let paymentType = '';
     if (order.offlinePayment) {
       paymentType = 'offline'
-    }else if ( order.walletPayment) {
+    } else if (order.walletPayment) {
       paymentType = 'wallet'
-    } else if (!order.online_payment && order.paymentStatus ==='pending' ) {
+    } else if (!order.online_payment && order.paymentStatus === 'pending') {
       paymentType = 'online_pending'
-    }else if (order.online_payment) {
+    } else if (order.online_payment) {
       paymentType = 'online'
-    }else{
+    } else {
       paymentType = 'Not Available'
     }
-    
-    const reason = await CancelationReson.findOne({orderid:order._id},{_id:0,reason:1})
-    res.render('order-details', { order, reason, paymentType });
 
+    const reason = await CancelationReson.findOne({ orderid: order._id }, { _id: 0, reason: 1 })
+
+    let actualPrice = 0;
+    let discountPrice = 0;
+    
+    for (const product of order.OrderedItems) {
+        actualPrice += product.price * product.quantity;
+        discountPrice += product.price * product.quantity * (1 - product.discount / 100);
+    }
+    
+    let couponDiscountBefore = discountPrice;
+
+    let couponDiscount = order.coupon ? (discountPrice * (order.coupon / 100)) : 0; 
+    
+    let minusedAmount = couponDiscountBefore - (discountPrice - couponDiscount);
+        
+
+
+    res.render('order-details', { 
+      order: order, 
+      reason: reason, 
+      paymentType: paymentType, 
+      actualPrice: actualPrice,
+      coupon: order.coupon, 
+      couponDiscount: couponDiscount, 
+      discountPrice: discountPrice,
+      minusedAmount
+  });
+  
   } catch (error) {
-    res.redirect("/admin/orders")
+    res.redirect("/admin/orders-list")
     console.log(error.message);
   }
 };
@@ -427,7 +454,7 @@ const getSalesReport = async (req, res) => {
 
 const loadCoupons = async (req, res) => {
   try {
-    
+
     const coupons = await Coupon.find()
 
     res.render('coupon', { coupons })
@@ -499,7 +526,7 @@ const editCoupon = async (req, res) => {
         code
       })
     }
-    else{
+    else {
       throw new Error('id is not okay ')
     }
 

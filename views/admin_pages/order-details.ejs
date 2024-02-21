@@ -225,6 +225,31 @@
                                 </div>
                             </article>
                         </div> <!-- col// -->
+
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <div class="text">
+                                    <h6 class="mb-1"></h6>
+                                    <p class="mb-1">
+                                       
+                                    </p>
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                        
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <div class="text"><br><br><br><br><br>
+                                    <h6 class="mb-1">Price and Details</h6>
+                                    <p class="mb-1">
+                                       Total Price : <%= actualPrice %> <br>
+                                       Offered Amount: <%= Math.round(discountPrice) %> <br>
+                                       Coupon Discount : <%= Math.round(minusedAmount) %> (<%= coupon %>%) <br>
+                                       Final Amount: <%= order.orderAmount %>
+                                    </p>
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
                     </div> <!-- row // -->
                     
                   <% if (order.orderStatus==='5') { %>
