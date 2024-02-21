@@ -256,7 +256,7 @@ const loadCart = async (req, res) => {
     
     for (const product of productsToCheckout) {
       const p = await Product.findById(product.productid);
-      if (p.quantity <= 0 || p.quantity - product.quantity <= 0) {
+      if (p.quantity <= 0 || p.quantity - product.quantity <0) {
         outOfStock.push({ name: p.name, remainingQuantity: p.quantity });
       }
     }
