@@ -621,7 +621,7 @@
 							<div class="flex-w flex-t p-t-15 p-b-30">
 								<div class="size-208 w-full-ssm">
 									<strong class="stext-110 cl2">
-										Season offers
+										Special offer
 									</strong>
 								</div>
 								<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
@@ -686,12 +686,12 @@
 
 								<div class="size-209 p-t-1">
 									<strong class="mtext-110 cl2">
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=Math.round(totalPrice) %>₹
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= totalPrice.toFixed(2) %>₹
 									</strong>
 								</div>
 							</div>
 							<input type="hidden" name="products" value="<%= JSON.stringify(products) %>">
-							<input type="hidden" name="totalprice" value="<%= Math.round(totalPrice) %>">
+							<input type="hidden" name="totalprice" value="<%= totalPrice.toFixed(2) %>">
 
 
 							<button id="place-order-success"

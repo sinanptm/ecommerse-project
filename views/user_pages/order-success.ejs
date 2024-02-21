@@ -619,7 +619,7 @@
 								<h4 class="order-heading">
 									Ordered Items
 								</h4>
-								<!-- Display Ordered Items as a Table -->
+
 								<table class="order-table">
 									<thead>
 										<tr>
@@ -630,19 +630,20 @@
 									</thead>
 									<tbody>
 										<% order.OrderedItems.forEach(function(item) { %>
-											<tr class="ordered-item">
-												<td>
-													<%= item.name %>
-												</td>
-												<td>
-													<%= item.price %>
-												</td>
-												<td>
-													<%= item.quantity %>
-												</td>
-											</tr>
-											<% }) %>
+										<tr class="ordered-item">
+											<td>
+												<%= item.name %>
+											</td>
+											<td>
+												<%= item.price - (item.price * item.discount / 100) %>
+											</td>
+											<td>
+												<%= item.quantity %>
+											</td>
+										</tr>
+										<% }) %>
 									</tbody>
+									
 								</table>
 
 							</div>

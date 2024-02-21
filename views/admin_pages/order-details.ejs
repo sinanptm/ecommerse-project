@@ -242,10 +242,10 @@
                                 <div class="text"><br><br><br><br><br>
                                     <h6 class="mb-1">Price and Details</h6>
                                     <p class="mb-1">
-                                       Total Price : <%= actualPrice %> <br>
-                                       Offered Amount: <%= Math.round(discountPrice) %> <br>
-                                       Coupon Discount : <%= Math.round(minusedAmount) %> (<%= coupon %>%) <br>
-                                       Final Amount: <%= order.orderAmount %>
+                                       Total Price : <%= actualPrice.toFixed(2)  %> <br>
+                                       Offered Amount: <%=discountPrice.toFixed(2)  %> <br>
+                                       Coupon Discount : <%= minusedAmount.toFixed(2)  %> (<%= coupon %>%) <br>
+                                       Final Amount: <%= order.orderAmount.toFixed(2)  %>
                                     </p>
                                 </div>
                             </article>

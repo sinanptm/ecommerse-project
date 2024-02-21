@@ -248,11 +248,21 @@ const loadCart = async (req, res) => {
       }
       return total;
     }, 0);
+
+
+    let specialOffer = 0;
+
+    for (const product of products) {
+      specialOffer += (product.productid.price * product.quantity * product.productid.discount / 100);
+    }
     
     const filteredProducts = products.filter(product => product.productid.quantity > 0 && product.productid.status === "Available");
     const productsToCheckout = filteredProducts.map(product => ({ productid: product.productid._id, quantity: product.quantity }));
     
+
     let outOfStock = [];
+
+
     
     for (const product of productsToCheckout) {
       const p = await Product.findById(product.productid);
@@ -261,7 +271,7 @@ const loadCart = async (req, res) => {
       }
     }
     
-    return res.render("cart", { products, cart, totalPrice, productsToCheckout, toast: req.query.toast, outOfStock });
+    return res.render("cart", { products, cart, totalPrice, productsToCheckout, toast: req.query.toast, outOfStock ,specialOffer});
   } catch (error) {
     console.error(error);
     return res.status(500).send(error,message);
@@ -441,7 +451,7 @@ const placeOrder = async (req, res) => {
 
     for (const product of products) {
       const p = await Product.findById(product.productid);
-      if (p.quantity <= 0 || p.quantity - product.quantity <= 0) {
+      if (p.quantity <= 0 || p.quantity - product.quantity < 0) {
         outOfStock.push({ name: p.name, remainingQuantity: p.quantity });
       }
     }
@@ -709,14 +719,7 @@ const showSuccess = async (req, res) => {
           as: "userid"
         }
       },
-      {
-        $lookup: {
-          from: "products",
-          localField: "OrderedItems.productid",
-          foreignField: "_id",
-          as: "OrderedItems"
-        }
-      }
+      
     ])
     order = order[0]
 
