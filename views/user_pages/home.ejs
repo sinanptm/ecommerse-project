@@ -438,8 +438,9 @@
 										</a>
 
 										<span class="stext-105 cl3">
-											<%= product.price %>
+											<strike><%= product.price.toFixed(2) %></strike> <%= (product.price * (1 - product.discount / 100)).toFixed(2) %>
 										</span>
+										
 									</div>
 
 									<% if (valid==undefined||valid==null) { %>

@@ -147,54 +147,6 @@ const addToCartProductPage = async (req, res) => {
   }
 };
 
-// * for loading the cart page 
-
-const loadCart = async (req, res) => {
-  try {
-    const token = req.cookies.token || req.session.token;
-    if (!token) {
-      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast: req.query.toast, totalPrice: 0, outOfStock: [] });
-    }
-
-    const userId = await getUserIdFromToken(token);
-
-    let cart = await Cart.findOne({ userId }).populate({
-      path: 'products.productid',
-      model: 'Product',
-    });
-
-
-    if (!cart) {
-      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast: req.query.toast, totalPrice: 0, outOfStock: [] });
-    }
-
-    const products = cart.products;
-
-    const totalPrice = products.reduce((total, product) => {
-      if (product.quantity > 0 && product.productid.status === "Available") {
-        return total + product.productid.price * product.quantity;
-      }
-      return total;
-    }, 0);
-
-    const filteredProducts = products.filter(product => product.productid.quantity > 0 && product.productid.status === "Available");
-    const productsToCheckout = filteredProducts.map(product => ({ productid: product.productid._id, quantity: product.quantity }));
-
-    let outOfStock = [];
-
-    for (const product of productsToCheckout) {
-      const p = await Product.findById(product.productid);
-      if (p.quantity <= 0 || p.quantity - product.quantity <= 0) {
-        outOfStock.push({ name: p.name, remainingQuantity: p.quantity });
-      }
-    }
-
-    return res.render("cart", { products, cart, totalPrice, productsToCheckout, toast: req.query.toast, outOfStock });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send("Internal Server Error");
-  }
-};
 
 
 // * ror adding quantity of a product
@@ -250,9 +202,9 @@ const removeProduct = async (req, res) => {
       console.error('Product not found in the cart:', productId);
       return res.status(404).json({ error: 'Product not found in the cart' });
     }
-
+    
     const removedProduct = cart.products.splice(productIndex, 1)[0];
-
+    
     cart.items -= 1;
     cart.totalPrice -= removedProduct.price;
     await cart.save();
@@ -265,6 +217,57 @@ const removeProduct = async (req, res) => {
 };
 
 
+
+// * for loading the cart page 
+
+const loadCart = async (req, res) => {
+  try {
+    req.session.coupon = 0
+    const token = req.cookies.token || req.session.token;
+    if (!token) {
+      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast: req.query.toast, totalPrice: 0, outOfStock: [] });
+    }
+
+    const userId = await getUserIdFromToken(token);
+
+    let cart = await Cart.findOne({ userId }).populate({
+      path: 'products.productid',
+      model: 'Product',
+    });
+
+
+    if (!cart) {
+      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast: req.query.toast, totalPrice: 0, outOfStock: [] });
+    }
+
+    const products = cart.products;
+
+    const totalPrice = products.reduce((total, product) => {
+      if (product.quantity > 0 && product.productid.status === "Available") {
+        return total + product.productid.price * product.quantity;
+      }
+      return total;
+    }, 0);
+    
+    const filteredProducts = products.filter(product => product.productid.quantity > 0 && product.productid.status === "Available");
+    const productsToCheckout = filteredProducts.map(product => ({ productid: product.productid._id, quantity: product.quantity }));
+    
+    let outOfStock = [];
+    
+    for (const product of productsToCheckout) {
+      const p = await Product.findById(product.productid);
+      if (p.quantity <= 0 || p.quantity - product.quantity <= 0) {
+        outOfStock.push({ name: p.name, remainingQuantity: p.quantity });
+      }
+    }
+    
+    return res.render("cart", { products, cart, totalPrice, productsToCheckout, toast: req.query.toast, outOfStock });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(error,message);
+  }
+};
+
 // * for sending datas to checkout page 
 
 const addToCheckout = async (req, res) => {
@@ -276,7 +279,7 @@ const addToCheckout = async (req, res) => {
       var findCoupon = await Coupon.findOne({ code: coupon });
 
       if (findCoupon) {
-
+        
         if (findCoupon.expDate && new Date(findCoupon.expDate) < new Date()) {
           res.json({ msg: true });
         } else {
@@ -376,9 +379,7 @@ const loadCheckout = async (req, res) => {
     const populatedProducts = await Product.find({ _id: { $in: productIds } });
 
     let totalDiscount = 0;
-    let subtotal = 0;
     const totalPrices = populatedProducts.map((product, i) => {
-      subtotal = product.price * products[i].quantity;
       const discount = product.discount || 0;
       const discountedPrice = (product.price - (product.price * discount / 100)) * products[i].quantity;
       totalDiscount += (product.price * products[i].quantity) - discountedPrice;
@@ -403,12 +404,12 @@ const loadCheckout = async (req, res) => {
     res.render("checkout", {
       wallet,
       user,
-      subtotal,
       products,
       totalPrice: discountedTotalPrice, // Total price after applying coupon discount
       totalDiscount,
       couponDiscount,
       parsedProducts,
+      sss : req.session.totalAmount,
       couponDiscountAmount, // Pass coupon discount amount to the view
     });
 

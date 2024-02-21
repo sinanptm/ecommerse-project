@@ -78,15 +78,6 @@
 								<% } %>
 
 
-									<div
-										class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-										<i class="zmdi zmdi-search"></i>
-									</div>
-
-									<div class="search-input-container" style="display: none; border: 2px;">
-										<input type="text" class="search-input" placeholder="Search...">
-									</div>
-
 
 									<div class="cart-noti">
 										<a href="/cart"
@@ -168,13 +159,7 @@
 				</a>&nbsp;&nbsp;
 				<% } %>
 					<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-							<i class="zmdi zmdi-search"></i>
-						</div>
-
-						<div class="search-input-container" style="display: none; border: 2px;">
-							<input type="text" class="search-input" placeholder="Search...">
-						</div>
+						
 
 
 						<div class="cart-noti">
@@ -310,8 +295,8 @@
 						<h4 class="mtext-105 cl2 js-name-detail p-b-14">
 							<%= product.name %>
 						</h4>
-						<span class="mtext-106 cl2">
-							<%= product.price %>
+						<span class="stext-105 cl3">
+							<strike><%= product.price.toFixed(2) %></strike> <%= (product.price * (1 - product.discount / 100)).toFixed(2) %>
 						</span>
 						<p class="random-text mtext-104 cl3 p-t-23">
 							<%= product.description %>

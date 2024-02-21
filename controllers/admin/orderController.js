@@ -226,8 +226,9 @@ const loadOrder = async (req, res) => {
     }else{
       paymentType = 'Not Available'
     }
+    
     const reason = await CancelationReson.findOne({orderid:order._id},{_id:0,reason:1})
-    res.render('order-details', { order , reason,paymentType });
+    res.render('order-details', { order, reason, paymentType });
 
   } catch (error) {
     res.redirect("/admin/orders")

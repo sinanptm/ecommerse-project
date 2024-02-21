@@ -613,7 +613,7 @@
 
 								<div class="size-209">
 									<span class="mtext-110 cl2">
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= subtotal %>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= sss %>₹
 									</span>
 								</div>
 							</div>
@@ -621,32 +621,48 @@
 							<div class="flex-w flex-t p-t-15 p-b-30">
 								<div class="size-208 w-full-ssm">
 									<strong class="stext-110 cl2">
-										Offer Amount
+										Season offers
 									</strong>
 								</div>
-
 								<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
 									<span class="mtext-110 cl2" style="color: #0aa02b;">
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= Math.round(totalDiscount - subtotal ||
-											0) %>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= Math.round(totalDiscount  || 0) %>₹
 									</span>
 								</div>
 							</div>
-
+							<% let discountedTotal = 0 %>
+							<% if (couponDiscount !== 0) { %>
+								<div class="flex-w flex-t p-t-15 p-b-30">
+									<div class="size-208 w-full-ssm">
+										<strong class="stext-110 cl2">
+											Coupon Discount
+										</strong>
+									</div>
+									
+									<% discountedTotal = (sss -totalDiscount ) - couponDiscountAmount; %>
+									
+									<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
+										<span class="mtext-110 cl2" style="color: #0aa02b;">
+											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= Math.round(discountedTotal ) %>₹ (<%= Math.round(couponDiscount || 0) %>%)
+										</span>
+									</div>
+								</div>
+							<% } %>
+							
 							<div class="flex-w flex-t p-t-15 p-b-30">
 								<div class="size-208 w-full-ssm">
 									<strong class="stext-110 cl2">
-										Coupon Discount
+										You saved
 									</strong>
 								</div>
-
 								<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
 									<span class="mtext-110 cl2" style="color: #0aa02b;">
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= Math.round(couponDiscount || 0) %>%
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= Math.round(discountedTotal+totalDiscount) %>₹
 									</span>
 								</div>
 							</div>
 
+							
 							<div class="flex-w flex-t bor12 p-b-13">
 								<div class="size-208">
 									<strong class="stext-110 cl2">
@@ -670,7 +686,7 @@
 
 								<div class="size-209 p-t-1">
 									<strong class="mtext-110 cl2">
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=Math.round(totalPrice) %>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=Math.round(totalPrice) %>₹
 									</strong>
 								</div>
 							</div>
