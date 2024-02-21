@@ -7,7 +7,7 @@ const { puppeteer,moment } = require("../../util/modules")
 // * to load dashbord
 
 
-const loadDashBoard = async (re, res) => {
+const loadDashBoard = async (req, res) => {
   try {
     const reportErr = req.query.report
     const now = moment();

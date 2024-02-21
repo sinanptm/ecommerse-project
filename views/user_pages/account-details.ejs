@@ -860,13 +860,16 @@
 													<h4 class="mb-0">Order ID: SKe5<%=i%>
 													</h4>
 													<span class="badge rounded-pill 
-                                <% if (order.orderStatus === '1') { %> bg-warning
+								<% if (order.isPending) { %>bg-danger
+                                <% } else if (order.orderStatus === '1') { %> bg-warning
                                 <% } else if (order.orderStatus === '2') { %> bg-info
                                 <% } else if (order.orderStatus === '3') { %> bg-primary
                                 <% } else if (order.orderStatus === '4') { %> bg-success
                                 <% } else if (order.orderStatus === '5') { %> bg-danger
                                 <% } %> text-white">
-														<% if (order.orderStatus==='1' ) { %> Processing
+
+												<%if (order.isPending ) { %> Payment Pendng
+														<% } else if (order.orderStatus==='1' ) { %> Processing
 															<% } else if (order.orderStatus==='2' ) { %> Quality Check
 																<% } else if (order.orderStatus==='3' ) { %> Shipped
 																	<% } else if (order.orderStatus==='4' ) { %>
@@ -877,7 +880,7 @@
 													</span>
 												</div>
 												<p>Order Amount: <%= order.orderAmount %>
-														<p>Payment Status: ₹<%= order.paymentStatus %>
+														<p>Payment Status: <%= order.paymentStatus %>
 														</p>
 														<% if (order.orderStatus !=='4' ) { %>
 															<p>Expected Delivery on: <%=

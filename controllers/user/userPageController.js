@@ -20,25 +20,25 @@ const loadHome = async (req, res) => {
             .limit(limit)
             .lean();
 
-        let userid ='65a522f9b45bce5d065811c3'
+        let userid = '65a522f9b45bce5d065811c3'
         if (req.cookies.token || req.session.token) {
             userid = await getUserIdFromToken(req.cookies.token || req.session.token);
         }
         const wishlist = await Wishlist.findOne({ userid });
 
-       if (products.length>0) {
-        products.forEach(product => {
-            product.whishlist = false;
-        });
+        if (products.length > 0) {
+            products.forEach(product => {
+                product.whishlist = false;
+            });
 
-       }
-       
+        }
+
         if (wishlist) {
             products.forEach(product => {
                 product.whishlist = wishlist.products.includes(product._id);
             });
         }
-        
+
         // Check if products array is empty
         if (products.length === 0) {
             products = []; // Set products to an empty array
@@ -232,18 +232,13 @@ const loadAccount = async (req, res) => {
         const totalCount = await Order.countDocuments(filterQuery);
         const totalPages = Math.ceil(totalCount / limit);
 
-        const orders = await Order.aggregate([
-            { $match: filterQuery },
-            {
-                $lookup: {
-                    from: "products",
-                    localField: "OrderedItems.productid",
-                    foreignField: "_id",
-                    as: 'OrderedItems'
-                }
-            }
-        ]).sort({ orderDate: -1 }).skip(skip).limit(limit)
 
+        const orders = await Order.find(filterQuery)
+            .populate('OrderedItems.productid')
+            .sort({ orderDate: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean()
 
         if (!user || user.length === 0) {
             return res.status(404).redirect('/home');
@@ -254,17 +249,29 @@ const loadAccount = async (req, res) => {
             paymentStatus: 'pending',
             $or: [
                 { offlinePayment: { $exists: false } },
-                { offlinePayment: false }
+                { offlinePayment: false },
+                { walletPayment: { $exists: false } }
             ],
             orderStatus: { $nin: ['4', '5'] }
         })
+
+        for (const order of orders) {
+            let isPending = false;
+            for (let i = 0; i < pendings.length; i++) {
+                if (`${order._id}` == `${pendings[i]._id}`) {
+                    isPending = true;
+                    break;
+                }
+            }
+            order.isPending = isPending;
+        }
 
         const wallet = await Wallet.findOne({ userid });
 
 
         const coupons = await Coupon.find();
 
-        const message = await Message.find({userId:userid,status:'resolved'})
+        const message = await Message.find({ userId: userid, status: 'resolved' })
 
         res.render('account-details', {
             user: user[0],
@@ -618,8 +625,8 @@ const contactAdmin = async (req, res) => {
 
         const newMessage = new Message({
             sendTime: new Date,
-            email:email ||user.email,
-            userId:user._id,
+            email: email || user.email,
+            userId: user._id,
             status: "pending",
             message: msg,
         });
@@ -634,10 +641,10 @@ const contactAdmin = async (req, res) => {
 
 
 
-const markAsRead = async(req,res)=>{
+const markAsRead = async (req, res) => {
     try {
         const id = req.params.id
-        await Message.findByIdAndUpdate(id,{$set:{status:'closed'}})
+        await Message.findByIdAndUpdate(id, { $set: { status: 'closed' } })
         res.status(200).redirect("/account")
     } catch (error) {
         console.log('error in seen message : ', error.message);

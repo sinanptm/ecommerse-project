@@ -24,13 +24,12 @@ adminRoute.post("/login", checkLogin);
 // * adminRoute.get("/verifyAdmin", is_registered, is_loginRequired, loadOTP);
 // * adminRoute.post("/verifyAdmin", verifyOTP);
 
-adminRoute.post("/get-report-pdf/:type", getSalesReport)
-adminRoute.get('/sales-report/:type', loadReport)
-
 // * For Validating Admin Token
 adminRoute.use(is_admin)
 
 adminRoute.get("/dashboard", loadDashBoard);
+adminRoute.post("/get-report-pdf/:type", getSalesReport)
+adminRoute.get('/sales-report/:type', loadReport)
 
 // * User Management
 adminRoute.get("/users", loadUser);
