@@ -408,9 +408,28 @@ const editCatogory = async (req, res) => {
         const { name, description, type } = req.body;
         const id = req.params.id;
 
-        const existingProduct = await Category.findById(id);
+        const existingCatogory = await Category.findById(id);
         const file = req.file && req.file.filename;
-        img = file || existingProduct.img;
+
+            var processImage = async (file) => {
+                if (file) {
+                    const originalImagePath = path.join(__dirname, '../../public/product_images', file);
+                    const resizedPath = path.join(__dirname, '../../public/resized_images', file);
+                    await sharp(originalImagePath)
+                        .resize({ height: 1486, width: 1200, fit: 'fill' })
+                        .toFile(resizedPath);
+                    return file;
+                } else {
+                    return null;
+                }
+            };
+
+        if (file) {
+             img =  await processImage(req.file.filename)
+        }else{
+            img =  existingCatogory.img;
+        }
+        
 
         const category = await Category.updateOne(
             { _id: id },

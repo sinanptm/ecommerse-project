@@ -55,7 +55,7 @@ adminRoute.get("/unlist", unlistProduct);
 // * Category Management
 adminRoute.get("/catogories", laodCatagorie);
 adminRoute.post("/catogories", upload.single("file"), addCatagorie);
-adminRoute.post("/editCatogories/:id", upload.single("file"), editCatogory);
+adminRoute.post("/editCategories/:id", upload.single("file"), editCatogory);
 adminRoute.get("/deleteCatogory/:id", deleteCatogory);
 
 // * Orders and coupn managment 

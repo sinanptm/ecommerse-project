@@ -451,30 +451,31 @@
 
 
 									<% function formatTime(time) { %>
-										<%= new Date(time).toLocaleTimeString([], { hour: '2-digit' , minute: '2-digit'
-											}) %>
-											<% } %>
+										<%= new Date(time).toLocaleTimeString([], { hour: '2-digit' , minute: '2-digit' }) %>
+									<% } %>
 												<div class="coupons-section" id="couponsection" style="display: none;">
 													<div class="coupons-container">
 														<h6>Available Coupons:</h6>
 														<ul>
 															<% coupons.forEach(coupon=> { %>
-																<li class="coupon">
-																	<div class="coupon-details">
-																		<h3 class="coupon-title">
-																			<%= coupon.discAmt %>% Off on Clothes
-																		</h3>
-																		<p class="coupon-description">Use code: <span
-																				class="code">
-																				<%= coupon.code %>
-																			</span></p>
-																		<p>Expires on: <%= coupon.expDate.toDateString()
-																				%>
-																		</p>
-																	</div>
-																	<button class="coupon-btn">Copy Code</button>
-																</li>
-																<% }) %>
+																<% if (coupon.expDate>=Date.now()) { %>
+																	<li class="coupon">
+																		<div class="coupon-details">
+																			<h3 class="coupon-title">
+																				<%= coupon.discAmt %>% Off on Clothes
+																			</h3>
+																			<p class="coupon-description">Use code: <span
+																					class="code">
+																					<%= coupon.code %>
+																				</span></p>
+																			<p>Expires on: <%= coupon.expDate.toDateString()
+																					%>
+																			</p>
+																		</div>
+																		<button class="coupon-btn">Copy Code</button>
+																	</li>
+																<% } %>
+															<% }) %>
 														</ul>
 													</div>
 												</div>
