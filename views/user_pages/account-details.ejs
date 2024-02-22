@@ -1004,7 +1004,7 @@
 									                                                <%= item.name %>
 									                                            </strong>
 									                                            - Quantity: <%= item.quantity %>
-									                                                - Price: ₹<%= item.price %>
+									                                                - Price: ₹<%= item.price * item.discount/100 %> %>
 									                                        </li>
 									                                        <% }); %>
 									                                </ul>
@@ -1020,7 +1020,7 @@
 									                                            <div class="modal-wrapper">
 									                                                <div class="modal-header">
 									                                                    <h2>Order Details</h2>
-									                                                    <button class="close-details">&times;</button>
+									                                                    <button class="close-details" id="close-details">&times;</button>
 									                                                </div>
 									                                                <div class="modal-body">
 									                                                    <div class="order-info">
@@ -1062,7 +1062,16 @@
     																							    No payment information available.
     																							<% } %>
 																							</p><hr>
-									                                                        <p><strong>Order Amount:</strong> ₹<%= order.orderAmount %></p><hr>
+																							<% if (order.coupon) { %>
+																							    <% 
+																							        const discountAmount = order.orderAmount * (order.coupon / 100);
+																							        const discountedPrice = order.orderAmount - discountAmount;
+																							    %>
+																							    <p><strong>Coupon discount :</strong> ₹<%= discountedPrice %></p>
+																							<% } %>
+																							<p><strong>Order Amount:</strong> ₹<%= order.orderAmount.toFixed(2) %></p>
+																							<hr>
+
 									                                                        <p><strong>Delivery Address:</strong> <%= order.deliveryAddress.streetAddress %>, <%= order.deliveryAddress.city %>, <%= order.deliveryAddress.state %>, <%= order.deliveryAddress.country %>, <%= order.deliveryAddress.pincode %></p><hr>
 									                                                    </div>
 									                                                    <div class="ordered-items">
@@ -1072,13 +1081,12 @@
 									                                                                <li>
 									                                                                    <div class="item-details">
 																											<a href="/product?id=<%= item.productid %>">
-																												<% console.log(item.productid); %>
 																												<img src="/resized_images/<%= item.img %>" alt="<%= item.name %>">
 																											</a>
 									                                                                        <div class="item-info">
 									                                                                            <p><strong><%= item.name %></strong></p>
 									                                                                            <p>Quantity: <%= item.quantity %></p>
-									                                                                            <p>Price: ₹<%= item.price %></p>
+																												<p>Price: ₹<%= item.price - (item.price * item.discount / 100) %></p>
 									                                                                        </div>
 									                                                                    </div>
 									                                                                </li>
