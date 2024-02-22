@@ -139,11 +139,11 @@ async function accountPagination(i, filter) {
 
 async function downloadInvoice() {
     try {
+        swal("Processing", "Please wait while we are loading", "info");
         $.ajax({
             url:'/create-invoice',
             method:"POST",
             success:()=>{
-                swal("Processing", "Please wait while we are loading", "info");
                 document.getElementById('invoiceForm').submit();
             },
             error: (error) => {
@@ -415,8 +415,10 @@ async function products_whishlist(e, id, name) {
             const newNoti = $(res).find("#whishshs").html()
             $('#whish' + id).html(newicon);
             $("#whishshs").html(newNoti)
-
-            swal(name, " is added to wishlist !", "success");
+            if (res) {
+                swal(name, " is added to wishlist !", "success");
+                
+            }
 
         } else if (imgElement.id === "remove") {
             const res = await $.ajax({

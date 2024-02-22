@@ -37,7 +37,7 @@ const Addresse = mongoose.model("Address", addressSchema);
 
 // Wishlist Schema
 const wishlistSchema = new mongoose.Schema({
-  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product", unique: true }],
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product", unique: false }],
   userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 

@@ -112,7 +112,7 @@
                             <small class="text-muted">Order ID: <%= order._id %></small> <br>
                         </div>
                         <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                            <% if (order.orderStatus !== '5') { %>
+                            <% if (order.orderStatus !== '5' && paymentType!=='online_pending' ) { %>
                              
                                 <form id="statuschange">
                                     <select onchange="changeStatus('<%= order._id %>')" name="status"
@@ -124,7 +124,13 @@
                                     </select>
                                 </form>
                             <% }else{ %>
-                               <span class="alert-warning"> order Cancelled</span>
+                                <% if (paymentType =='online_pending' ) { %>
+                                    <span class="alert-danger"> Payment Pending</span>
+
+                                <% } else { %>
+                                    <span class="alert-warning"> order Cancelled</span>
+                                 
+                                <% } %>
                             <% } %>
                         </div>
                        

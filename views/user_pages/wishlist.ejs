@@ -455,7 +455,7 @@ async function add_to_cart_whishPage(id) {
         const whishpro = $(response).find(".wishlist-list").html()
 		$('.whishshs').html($(response).find('.whishshs').html())
         $('.jfdsfd').html(noti)
-        $(".wishlist-item").html(whishpro)
+        $(".wishlist-list").html(whishpro)
         new Swal("Success!","item added to cart",'success')
        
     } catch (error) {

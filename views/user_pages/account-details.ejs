@@ -396,12 +396,12 @@
 								<button class="nav-button icon-msg-noti" data-notify="<%= messages %>" id="inbox-nav"
 									onclick="showInbox()">Inbox</button>
 
-								<% if (pendings.length>0) { %>
+								<% if (invoice) { %>
 									<form action="/create-invoice" method="post" id="invoiceForm">
 										<button class="nav-button" id="invoice-nav" style="background-color: #ffd50078;"
 											type="button" onclick="downloadInvoice()">Download Invoice</button>
 									</form>
-									<% } %>
+								<% } %>
 
 							</div>
 							<div class="p-b-10">
@@ -1021,12 +1021,13 @@
 									                                            <div class="modal-wrapper">
 									                                                <div class="modal-header">
 									                                                    <h2>Order Details</h2>
-									                                                    <button class="close-details" id="close-details">&times;</button>
+									                                                    <button class="close-details" >&times;</button>
 									                                                </div>
 									                                                <div class="modal-body">
 									                                                    <div class="order-info">
 									                                                        <p><strong>Order ID:</strong> <%= order._id %></p><hr>
 																							<p><strong>Order Status:</strong> 
+																								
 																							    <% if (order.isPending) { %>
 																							        <span class="badge bg-danger text-white">Payment Pending</span>
 																							    <% } else if (order.orderStatus === '1') { %>

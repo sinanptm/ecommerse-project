@@ -243,24 +243,14 @@ const loadAccount = async (req, res) => {
             return res.status(404).redirect('/home');
         }
 
-        const pendings = await Order.find({
-            userid,
-            paymentStatus: 'pending',
-            $and: [
-                { offlinePayment: { $exists: false } },
-                { offlinePayment: false },
-                { walletPayment: { $exists: false } }
-            ],
-            orderStatus: { $nin: ['4', '5'] }
-        })
-
-
+       
+        let invoice = false;
         for (const order of orders) {
             if (order.offlinePayment) {
               order.paymentType = 'offline'
             } else if (order.walletPayment) {
               order.paymentType = 'wallet'
-            } else if (!order.online_payment && order.paymentStatus === 'pending') {
+            } else if (!order.online_payment ) {
               order.paymentType = 'online_pending'
             } else if (order.online_payment) {
               order.paymentType = 'online'
@@ -269,12 +259,10 @@ const loadAccount = async (req, res) => {
             }
 
             let isPending = false;
-            for (let i = 0; i < pendings.length; i++) {
-                if (`${order._id}` == `${pendings[i]._id}`) {
-                    isPending = true;
-                    break;
-                }
-            
+           
+            if (order.paymentType == 'online_pending') {
+                isPending = true
+                invoice = true
             }
             order.isPending = isPending;
         }
@@ -294,7 +282,7 @@ const loadAccount = async (req, res) => {
             orders,
             filter,
             err: req.query.err,
-            pendings,
+            invoice,
             wallet,
             totalPages,
             currentPage: page,
@@ -562,17 +550,15 @@ function generateOrderTable(orders) {
 
     orders.forEach(order => {
         const orderId = 'SK' + Math.floor(100000 + Math.random() * 900000);
-        let orderAmount = 0;
 
         order.OrderedItems.forEach((item, index) => {
-            orderAmount += item.price * item.quantity;
             if (index === 0) {
                 html += `
                     <tr>
                         <td style="padding: 10px;">${orderId}</td>
                         <td style="padding: 10px;">${item.name}</td>
                         <td style="padding: 10px;">${item.quantity}</td>
-                        <td style="padding: 10px;">$${(item.price * item.quantity).toFixed(2)}</td>
+                        <td style="padding: 10px;">${((item.price - (item.price * item.discount / 100)) * item.quantity).toFixed(2)}                        </td>
                     </tr>
                 `;
             } else {
@@ -587,8 +573,10 @@ function generateOrderTable(orders) {
             }
         });
 
-        totalAmount += orderAmount;
+        totalAmount += order.orderAmount;
     });
+
+
 
     html += `
                 </tbody>

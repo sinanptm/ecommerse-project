@@ -710,6 +710,9 @@ const showSuccess = async (req, res) => {
       return res.status(304).redirect("/cart")
     }
 
+    req.session.coupon =null
+    req.session.parsedProducts = null
+    req.session.totalAmount = null
 
     let order = await Order.aggregate([
       { $match: { _id: createHexId(id) } },

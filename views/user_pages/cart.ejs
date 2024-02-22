@@ -476,9 +476,7 @@
 															</a>
 														</p>
 														<% } else { %>
-															<div class="wrap-num-product flex-w m-l-auto m-r-0" <%
-																if(product.productid.quantity <=0) { %>
-																style="display:none;" <% } %> >
+															<div class="wrap-num-product flex-w m-l-auto m-r-0" <% if(product.productid.quantity <=0) { %> style="display:none;" <% } %> >
 																	<% if (product.quantity> 1) { %>
 																		<div onclick="updateQuantity('<%= product.productid._id %>', -1)"
 																			class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
@@ -522,8 +520,7 @@
 																					name="quantity"
 																					value="<%= product.quantity %>"
 																					min="0">
-																				<% if (product.quantity <
-																					product.productid.quantity) { %>
+																				<% if (product.quantity < product.productid.quantity) { %>
 																					<div onclick="updateQuantity('<%= product.productid._id %>', 1)"
 																						class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
 																						<i
@@ -547,12 +544,12 @@
 								<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
 									<div class="flex-w flex-m m-r-20 m-tb-5">
 										<input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5"
-											onclick="event.stopPropagation();" oninput="addCoupon()" type="text"
+											onclick="event.stopPropagation();" oninput="addCoupon('<%= totalPrice-specialOffer %>')" type="text"
 											name="coupons" placeholder="Coupon Code"
 											onkeydown="if(event.key === 'Enter') event.preventDefault();">
 									</div>
 									<div class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5"
-										onclick="addCoupon()">
+										onclick="addCoupon('<%= totalPrice - specialOffer %>')">
 										Apply coupon
 									</div>
 								</div>
@@ -581,8 +578,7 @@
 												<small><strike>
 														<%= product.productid.price.toFixed(2) %>
 													</strike></small>
-												<%= (product.productid.price * (1 - product.productid.discount /
-													100)).toFixed(2) %> &times; <%= product.quantity %>
+												<%= (product.productid.price * (1 - product.productid.discount / 100)).toFixed(2) %> &times; <%= product.quantity %>
 											</span>
 										</div>
 									</div>
@@ -627,8 +623,7 @@
 
 												<div class="size-209">
 													<span class="mtext-110 cl2" style="color: #06651a;"
-														id="coupondiscound">
-														0
+														id="coupondiscound"> 0
 													</span>
 												</div>
 											</div>
@@ -680,6 +675,58 @@
 													<input type="hidden" name="totalprice"
 														value="<%= totalPrice || 0 %>">
 						</div>
+						
+					</div>
+
+				</div>
+			</div>
+		</form>
+
+
+							<script>
+								async function addCoupon(total) {
+									try {
+										const couponInput = document.querySelector('.stext-104[name="coupons"]');
+					
+										const proceddtocheckout = document.querySelector('#proceddtocheckout')
+										const couponCode = couponInput.value.trim();
+										if (couponCode) {
+											$.ajax({
+												url: `/to-checkout?coupon=${couponCode}`,	
+												method: "POST",
+												success: (res) => {
+													if (res.msg) {
+														couponInput.style.color = 'red';
+														proceddtocheckout.style.display = 'none';
+														couponInput.style.borderColor = 'red';
+														document.getElementById("lastam").innerHTML = total+"₹"
+
+													} else {
+														couponInput.style.color = 'black';
+														proceddtocheckout.style.display = 'block';
+														total = JSON.parse(total)
+														couponInput.style.borderColor = '#E6E6E6';
+														document.getElementById('coupondiscound').innerHTML = res.couponDiscount + "%";
+														document.getElementById("lastam").innerHTML = (total - (total * res.couponDiscount / 100)).toFixed(2) + "₹";
+
+														new Swal("Success!", "Coupon Added", "success");
+													}
+												},
+												error: (err) => {
+													console.log(err);
+												}
+											})
+										} else {
+											couponInput.style.color = 'black';
+											proceddtocheckout.style.display = 'block';
+											couponInput.style.borderColor = '#E6E6E6';
+										}
+									} catch (error) {
+										console.log(error.message);
+									}
+								}
+							</script>
+
 						<script>
 							async function checkQuantity() {
 								try {
@@ -701,12 +748,6 @@
 								}
 							}
 						</script>
-					</div>
-
-				</div>
-			</div>
-		</form>
-
 
 
 		</div>
@@ -817,6 +858,7 @@
 									placeholder="example@gmail.com">
 								<div class="focus-input1 trans-04"></div>
 							</div>
+					
 
 							<div class="p-t-18">
 								<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
@@ -873,46 +915,6 @@
 		</div>
 
 
-
-		<script>
-			async function addCoupon() {
-				try {
-					const couponInput = document.querySelector('.stext-104[name="coupons"]');
-
-					const proceddtocheckout = document.querySelector('#proceddtocheckout')
-					const couponCode = couponInput.value.trim();
-					if (couponCode) {
-						$.ajax({
-							url: `/to-checkout?coupon=${couponCode}`,
-							method: "POST",
-							success: (res) => {
-								if (res.msg) {
-									couponInput.style.color = 'red';
-									proceddtocheckout.style.display = 'none';
-									couponInput.style.borderColor = 'red';
-								} else {
-									couponInput.style.color = 'black';
-									proceddtocheckout.style.display = 'block';
-									
-									couponInput.style.borderColor = '#E6E6E6';
-									document.getElementById('coupondiscound').innerHTML = res.couponDiscount + "%";
-									new Swal("Success!", "Coupon Added", "success");
-								}
-							},
-							error: (err) => {
-								console.log(err);
-							}
-						})
-					} else {
-						couponInput.style.color = 'black';
-						proceddtocheckout.style.display = 'block';
-						couponInput.style.borderColor = '#E6E6E6';
-					}
-				} catch (error) {
-					console.log(error.message);
-				}
-			}
-		</script>
 
 		<!--===============================================================================================-->
 		<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
