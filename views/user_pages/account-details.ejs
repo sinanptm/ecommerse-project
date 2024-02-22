@@ -23,7 +23,118 @@
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<style>
+		/* Overlay style */
+.order-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+/* Dialog style */
+.order-dialog {
+    display: none;
+	max-width: 650px;
+	min-width: 500px;
+
+}
+
+.order-dialog .modal-wrapper {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    width: 95%; /* Adjusted width */
+    max-width: 800px; /* Maximum width */
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* Modal header */
+.order-dialog .modal-header {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.order-dialog .modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.order-dialog .close-details {
+    color: #999;
+    font-size: 24px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.order-dialog .close-details:hover {
+    color: #333;
+}
+
+/* Modal body */
+.order-dialog .modal-body {
+    margin-bottom: 20px;
+}
+
+.order-dialog .order-info p,
+.order-dialog .ordered-items p {
+    margin-bottom: 10px;
+}
+
+.order-dialog .ordered-items ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.order-dialog .item-details {
+    display: flex;
+    align-items: center;
+}
+
+.order-dialog .item-details img {
+    width: 60px;
+    height: auto;
+    margin-right: 15px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.order-dialog .item-info {
+    flex-grow: 1;
+}
+
+/* Modal footer */
+.order-dialog .modal-footer {
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+    text-align: right;
+}
+
+.order-dialog .modal-footer button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.order-dialog .modal-footer button:hover {
+    background-color: #0056b3;
+}
+
+</style>
 </head>
 <% if (toast !==undefined && toast !==null) { %>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
@@ -377,8 +488,7 @@
 													<div class="wallet-container">
 														<div class="balance">
 															<% if (wallet!==null) { %>
-																<h2>Your Current Balance: ₹<%= wallet.balance
-																		|| '0 Balance' %>
+																<h2>Your Current Balance: ₹<%= wallet.balance.toFixed(2) || '0 Balance' %>
 																</h2>
 																<% } else{ %>
 																	<h5>You Wallet Is Not Activated Yet</h5>
@@ -401,7 +511,7 @@
 																					</p>
 																					<p>Amount: <span
 																							class="transaction-amount-<%= transaction.type %>">
-																							₹<%= transaction.amount %>
+																							₹<%= transaction.amount.toFixed(2) %>
 																						</span></p>
 																				</div>
 																				<p class="transaction-date">Date: <%=
@@ -854,70 +964,144 @@
 
 								<div class="flipkart-address-block-child3 flex-col-l">
 									<% if (orders && orders.length> 0) { %>
-										<% orders.forEach((order,i)=> { %>
-											<div class="order-details border rounded p-4 mb-4">
-												<div class="d-flex justify-content-between align-items-center mb-3">
-													<h4 class="mb-0">Order ID: SKe5<%=i%>
-													</h4>
-													<span class="badge rounded-pill 
-								<% if (order.isPending) { %>bg-danger
-                                <% } else if (order.orderStatus === '1') { %> bg-warning
-                                <% } else if (order.orderStatus === '2') { %> bg-info
-                                <% } else if (order.orderStatus === '3') { %> bg-primary
-                                <% } else if (order.orderStatus === '4') { %> bg-success
-                                <% } else if (order.orderStatus === '5') { %> bg-danger
-                                <% } %> text-white">
+									    <% orders.forEach((order,i)=> { %>
+									        <div class="order-details border rounded p-4 mb-4">
+									            <div class="d-flex justify-content-between align-items-center mb-3">
+									                <h4 class="mb-0">Order ID: SKe5<%=i%>
+									                </h4>
+									                <span class="badge rounded-pill 
+									                    <% if (order.isPending) { %>bg-danger
+									                    <% } else if (order.orderStatus === '1') { %> bg-warning
+									                    <% } else if (order.orderStatus === '2') { %> bg-info
+									                    <% } else if (order.orderStatus === '3') { %> bg-primary
+									                    <% } else if (order.orderStatus === '4') { %> bg-success
+									                    <% } else if (order.orderStatus === '5') { %> bg-danger
+									                    <% } %> text-white">
+									                    <% if (order.isPending ) { %> Payment Pendng
+									                        <% } else if (order.orderStatus==='1' ) { %> Processing
+									                            <% } else if (order.orderStatus==='2' ) { %> Quality Check
+									                                <% } else if (order.orderStatus==='3' ) { %> Shipped
+									                                    <% } else if (order.orderStatus==='4' ) { %> Delivered
+									                                        <% } else if (order.orderStatus==='5' ) { %> Canceled
+									                                            <% } %>
+									                </span>
+									            </div>
+									            <p>Order Amount: <%= order.orderAmount %>
+									                <p>Payment Status: <%= order.paymentStatus %>
+									                    </p>
+									                    <% if (order.orderStatus !=='4' ) { %>
+									                        <p>Expected Delivery on: <%=
+									                                order.deliveryDate.toDateString() %>
+									                        </p>
+									                        <% } else { %>
+									                            <p> Delivered on: <%= order.deliveryDate.toDateString() %> </p>
+									                            <% } %>
+									                                <p> Ordered Items:</p>
+									                                <ul class="list-unstyled">
+									                                    <% order.OrderedItems.forEach(item=> { %>
+									                                        <li>
+									                                            <strong>
+									                                                <%= item.name %>
+									                                            </strong>
+									                                            - Quantity: <%= item.quantity %>
+									                                                - Price: ₹<%= item.price %>
+									                                        </li>
+									                                        <% }); %>
+									                                </ul>
+									                                <% if (order.orderStatus=='4' ||order.orderStatus=='5' ) { %>
+																	
+									                                    <% } else { %>
+									                                        <button class="btn btn-danger"
+									                                            onclick="showCancelModal('<%= order._id %>')">Cancel</button>
+									                                        <% } %>
+																		
+									                                        <button id="order-details-<%= i %>" data-details="<%= JSON.stringify(order) %>" class="btn nav-button" style="height: 40px;width: 100px;">Details</button>
+									                                        <dialog id="orderDialog-<%= i %>" class="order-dialog">
+									                                            <div class="modal-wrapper">
+									                                                <div class="modal-header">
+									                                                    <h2>Order Details</h2>
+									                                                    <button class="close-details">&times;</button>
+									                                                </div>
+									                                                <div class="modal-body">
+									                                                    <div class="order-info">
+									                                                        <p><strong>Order ID:</strong> <%= order._id %></p><hr>
+																							<p><strong>Order Status:</strong> 
+																							    <% if (order.isPending) { %>
+																							        <span class="badge bg-danger text-white">Payment Pending</span>
+																							    <% } else if (order.orderStatus === '1') { %>
+																							        <span class="badge bg-warning text-white">Processing</span>
+																							    <% } else if (order.orderStatus === '2') { %>
+																							        <span class="badge bg-info text-white">Quality Check</span>
+																							    <% } else if (order.orderStatus === '3') { %>
+																							        <span class="badge bg-primary text-white">Shipped</span>
+																							    <% } else if (order.orderStatus === '4') { %>
+																							        <span class="badge bg-success text-white">Delivered</span>
+																							    <% } else if (order.orderStatus === '5') { %>
+																							        <span class="badge bg-danger text-white">Canceled</span>
+																							    <% } %>
+																							</p><hr>
+																							<p><strong>Payment :</strong>
+																								<% if (order.paymentType =='offline') { %>
+    																							    Cash on Delivery <br>
+    																							    Amount: <%= order.orderAmount %> <br>
+    																							    Date: <%= order.orderDate.toDateString() %> <br>
+    																							<% } else if (order.paymentType=='online_pending') { %>
+    																							    Amount: <%= order.orderAmount %> <br>
+    																							    Date: <%= order.orderDate.toDateString() %> <br>
+    																							    Date: <%= order.orderDate.toDateString() %> <br>
+    																							    Payment Pending
+    																							<% } else if (order.paymentType=='online') { %>
+    																							    Date: <%= order.orderDate.toDateString() %> <br>
+    																							    Amount: <%= order.orderAmount %> <br>
+    																							    Transaction ID: <small> <%= order.online_payment.transactionid %></small>
+    																							<% } else if(order.paymentType=="wallet") { %>
+    																							    Date: <%= order.orderDate.toDateString() %> <br>
+    																							    Amount: <%= order.orderAmount %> <br>
+    																							    Transaction ID: <small><%= order.walletPayment.transactionid %></small>
+    																							<% } else { %>
+    																							    No payment information available.
+    																							<% } %>
+																							</p><hr>
+									                                                        <p><strong>Order Amount:</strong> ₹<%= order.orderAmount %></p><hr>
+									                                                        <p><strong>Delivery Address:</strong> <%= order.deliveryAddress.streetAddress %>, <%= order.deliveryAddress.city %>, <%= order.deliveryAddress.state %>, <%= order.deliveryAddress.country %>, <%= order.deliveryAddress.pincode %></p><hr>
+									                                                    </div>
+									                                                    <div class="ordered-items">
+									                                                        <p><strong>Ordered Items:</strong></p>
+									                                                        <ul>
+									                                                            <% order.OrderedItems.forEach(item => { %>
+									                                                                <li>
+									                                                                    <div class="item-details">
+																											<a href="/product?id=<%= item.productid %>">
+																												<% console.log(item.productid); %>
+																												<img src="/resized_images/<%= item.img %>" alt="<%= item.name %>">
+																											</a>
+									                                                                        <div class="item-info">
+									                                                                            <p><strong><%= item.name %></strong></p>
+									                                                                            <p>Quantity: <%= item.quantity %></p>
+									                                                                            <p>Price: ₹<%= item.price %></p>
+									                                                                        </div>
+									                                                                    </div>
+									                                                                </li>
+									                                                                <% }); %>
+									                                                        </ul>
+									                                                    </div>
+									                                                </div>
+									                                                <div class="modal-footer">
+									                                                    <button class="close-details" id="close-details">Close</button>
+									                                                </div>
+									                                            </div>
+									                                        </dialog>
+									        </div>
+									        <% }); %>
+									            <% } else { %>
+									                <h5>No orders found.</h5>
+									                <br><br><br><br><br>
+									                <% } %>
+                    
 
-												<%if (order.isPending ) { %> Payment Pendng
-														<% } else if (order.orderStatus==='1' ) { %> Processing
-															<% } else if (order.orderStatus==='2' ) { %> Quality Check
-																<% } else if (order.orderStatus==='3' ) { %> Shipped
-																	<% } else if (order.orderStatus==='4' ) { %>
-																		Delivered
-																		<% } else if (order.orderStatus==='5' ) { %>
-																			Canceled
-																			<% } %>
-													</span>
-												</div>
-												<p>Order Amount: <%= order.orderAmount %>
-														<p>Payment Status: <%= order.paymentStatus %>
-														</p>
-														<% if (order.orderStatus !=='4' ) { %>
-															<p>Expected Delivery on: <%=
-																	order.deliveryDate.toDateString() %>
-															</p>
-															<% } else { %>
-																<p> Delivered on: <%= order.deliveryDate.toDateString()
-																		%>
-																</p>
-																<% } %>
-																	<p> Ordered Items:</p>
-																	<ul class="list-unstyled">
-																		<% order.OrderedItems.forEach(item=> { %>
-																			<li>
-																				<strong>
-																					<%= item.name %>
-																				</strong>
-																				- Quantity: <%= item.quantity %>
-																					- Price: ₹<%= item.price %>
-																			</li>
-																			<% }); %>
-																	</ul>
-																	<% if (order.orderStatus=='4'
-																		||order.orderStatus=='5' ) { %>
-
-																		<% } else { %>
-																			<button class="btn btn-danger"
-																				onclick="showCancelModal('<%= order._id %>')">Cancel</button>
-																			<% } %>
-											</div>
-											<% }); %>
-												<% } else { %>
-													<h5>No orders found.</h5>
-													<br><br><br><br><br>
-													<% } %>
 								</div>
 							</div>
+							
 							<div class="flex-c-m flex-w w-full p-t-38">
 								<% for (let i=1; i <=totalPages; i++) { %>
 									<a onclick="accountPagination('<%= i %>','<%= filter%>')"
@@ -929,7 +1113,45 @@
 						</div>
 
 					</section>
-
+					
+					<script>
+						$(document).ready(function () {
+							const dialogs = document.querySelectorAll(".order-dialog");
+						
+							dialogs.forEach((dialog, index) => {
+								const showOrderDetails = document.querySelector(`#order-details-${index}`);
+								const closeBtn = dialog.querySelector("#close-details");
+								const content = dialog.querySelector(".content");
+								let order;
+							
+								showOrderDetails.addEventListener("click", (event) => {
+									order = JSON.parse(event.target.dataset.details);
+									dialog.classList.add('open');
+									dialog.showModal();
+									// content.innerHTML = `<strong>${order._id}</strong>`;
+								});
+							
+								closeBtn.addEventListener("click", () => {
+									dialog.classList.remove('open');
+									dialog.close();
+								});
+							
+								dialog.addEventListener('click', (event) => {
+									if (event.target === dialog) {
+										dialog.classList.remove('open');
+										dialog.close();
+									}
+								});
+							
+								document.addEventListener('keydown', (event) => {
+									if (event.key === 'Escape' && dialog.classList.contains('open')) {
+										dialog.classList.remove('open');
+										dialog.close();
+									}
+								});
+							});
+						});
+					</script>
 
 					<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog"
 						aria-labelledby="cancelModalLabel" aria-hidden="true">

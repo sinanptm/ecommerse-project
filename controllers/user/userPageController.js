@@ -234,7 +234,6 @@ const loadAccount = async (req, res) => {
 
 
         const orders = await Order.find(filterQuery)
-            .populate('OrderedItems.productid')
             .sort({ orderDate: -1 })
             .skip(skip)
             .limit(limit)
@@ -247,7 +246,7 @@ const loadAccount = async (req, res) => {
         const pendings = await Order.find({
             userid,
             paymentStatus: 'pending',
-            $or: [
+            $and: [
                 { offlinePayment: { $exists: false } },
                 { offlinePayment: false },
                 { walletPayment: { $exists: false } }
@@ -255,13 +254,27 @@ const loadAccount = async (req, res) => {
             orderStatus: { $nin: ['4', '5'] }
         })
 
+
         for (const order of orders) {
+            if (order.offlinePayment) {
+              order.paymentType = 'offline'
+            } else if (order.walletPayment) {
+              order.paymentType = 'wallet'
+            } else if (!order.online_payment && order.paymentStatus === 'pending') {
+              order.paymentType = 'online_pending'
+            } else if (order.online_payment) {
+              order.paymentType = 'online'
+            } else {
+              order.paymentType = 'Not Available'
+            }
+
             let isPending = false;
             for (let i = 0; i < pendings.length; i++) {
                 if (`${order._id}` == `${pendings[i]._id}`) {
                     isPending = true;
                     break;
                 }
+            
             }
             order.isPending = isPending;
         }

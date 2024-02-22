@@ -204,12 +204,7 @@ async function searchProducts(event) {
                 data: {
                     name: name,
                 },
-                // success:(res)=>{
-                //     window.location.href = `/products?name=${name}`
-                // },
-                // error:(err)=>{
-                //     throw new Error(err);
-                // }
+            
             });
             $("#mainBody").html($(response).find("#mainBody").html())
             $(".filter-col1").html($(response).find(".filter-col1").html())
@@ -464,10 +459,9 @@ async function resetmail(email) {
 
 var dialog = document.querySelector("dialog");
 
-
 $(document).ready(function () {
     $('#submitt').on("click", async () => {
-        // Retrieve form data
+      
         let formdata = $('#change-password').serialize();
 
         let password = $('#newpass').val();
@@ -475,21 +469,21 @@ $(document).ready(function () {
 
         if (password !== confirmPassword) {
             $('#confirmPassError').text("Password and Confirm Password do not match.");
-            return; // Prevent form submission
+            return;
         } else {
             $('#confirmPassError').text("");
         }
 
         if (password.length < 4) {
             $('#confirmPassError').text("Password must be at least four characters long.");
-            return; // Prevent form submission
+            return;
         } else {
             $('#confirmPassError').text("");
         }
 
         if (password.includes(" ")) {
             $('#confirmPassError').text("Password cannot contain spaces.");
-            return; // Prevent form submission
+            return;
         } else {
             $('#confirmPassError').text("");
         }

@@ -481,7 +481,8 @@ const placeOrder = async (req, res) => {
         price: product.price,
         discount:product.discount,
         quantity: products[i].quantity,
-        name: product.name
+        name: product.name,
+        img:product.img[0]
       };
     });
     const details = await Promise.all(detailsPromises);
@@ -504,7 +505,7 @@ const placeOrder = async (req, res) => {
         state: address.state,
         pincode: address.pincode,
         mobile: address.mobile,
-        email: address.email,
+        email: address.email
       },
       coupon:req.session.coupon,
       orderDate,
@@ -579,7 +580,7 @@ const placeOrder = async (req, res) => {
     } else if (payment_method == 'wallet') {
       const wallet = await Wallet.findOneAndUpdate(
         { userid: userId },
-        {
+        { 
           $inc: { balance: -order.orderAmount },
           $push: {
             transactions: {
@@ -597,6 +598,7 @@ const placeOrder = async (req, res) => {
         transactionid: wallet.transactions[wallet.transactions.length - 1]._id,
         date: new Date()
       };
+      order.paymentStatus = 'completed'
 
       await order.save();
 

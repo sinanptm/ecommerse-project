@@ -59,7 +59,8 @@ const ordersSchema = new mongoose.Schema({
         price: Number,
         quantity: Number,
         discount:Number,
-        name: String
+        name: String,
+        img:String
     }],
     walletPayment: {
         transactionid: String,
