@@ -468,12 +468,12 @@ const loadCoupons = async (req, res) => {
 
 const addCoupon = async (req, res) => {
   try {
-    const { name, discount, expiry, code, min } = req.body;
+    const { name, discount, expiry, code, max } = req.body;
 
     const newCoupon = new Coupon({
       code,
       name,
-      minAmount: min ? min : 0,
+      maxAmount: max ? max : 0,
       discAmt: discount,
       expDate: new Date(expiry),
       createdate: new Date()

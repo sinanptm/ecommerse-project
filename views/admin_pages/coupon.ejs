@@ -180,8 +180,8 @@
                                             DISC: <small>
                                                 <%= coupon.discAmt %>%
                                             </small><br>
-                                            Min: <small>
-                                                <%= coupon.minAmount %>
+                                            Max: <small>
+                                                <%= coupon.maxAmount %>
                                             </small><br>
                                             used: <small>
                                                 <%= coupon.used||0 %> times
@@ -220,8 +220,8 @@
                 <input type="number" id="couponDiscount" name="discount" placeholder="Enter discount" min="1" max="99">
                 <div id="discountError" class="error"></div>
 
-                <label for="minAmount">Minimum Amount:</label>
-                <input type="number" id="minAmount" name="min" placeholder="Enter Min-price">
+                <label for="maxAmount">Maximum Amount:</label>
+                <input type="number" id="maxAmount" name="max" min="2" required placeholder="Enter Max-price">
                 <div id="minError" class="error"></div>
 
                 <label for="couponExpiry">Expiry Date:</label>

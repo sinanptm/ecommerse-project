@@ -291,8 +291,8 @@ const addToCheckout = async (req, res) => {
 
       if (findCoupon) {
 
-        if (findCoupon.minAmount >= total) {
-          res.json({ msg: true, err: `This Coupon is only Awailable for orders above ${findCoupon.minAmount}` })
+        if (findCoupon.maxAmount <= total) {
+          res.json({ msg: true, err: `This Coupon is only Awailable for orders belove ${findCoupon.maxAmount}` })
           
         } else if (new Date(findCoupon.expDate) < new Date()) {
           res.json({ msg: true });

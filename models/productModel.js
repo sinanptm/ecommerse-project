@@ -96,7 +96,7 @@ const couponsSchema = new Schema({
     createdate: { type: Date },
     expDate: { type: Date },
     used: Number,
-    minAmount:Number
+    maxAmount:Number
 });
 
 const Coupon = model("Coupon", couponsSchema);
