@@ -398,7 +398,8 @@ const getSalesReport = async (req, res) => {
       format: "A4",
       preferCSSPageSize: true,
     });
-
+    const pages = await browser.pages()
+    await Promise.all(pages.map(page=>{page.close()}))
     await browser.close();
 
     res.set({

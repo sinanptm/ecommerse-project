@@ -514,6 +514,9 @@ const createInvoice = async (req, res) => {
         `);
 
         const pdfBuffer = await page.pdf({ format: 'A4' });
+
+        const pages = await browser.pages()
+        await Promise.all(pages.map(page=>{page.close()}))
         await browser.close();
 
         res.setHeader('Content-Type', 'application/pdf');
