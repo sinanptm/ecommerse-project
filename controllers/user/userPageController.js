@@ -267,8 +267,8 @@ const loadAccount = async (req, res) => {
             order.isPending = isPending;
         }
 
-        const wallet = await Wallet.findOne({ userid });
-
+        let wallet = await Wallet.findOne({ userid }).lean()
+        wallet.transactions = wallet.transactions.reverse()
 
         const coupons = await Coupon.find();
 
@@ -437,7 +437,7 @@ const cancelOrder = async (req, res) => {
             reason: cancelReason
         });
         await newReason.save();
-        if (order.paymentStatus !== 'completed' && (typeof order.offlinePayment === 'undefined' || order.offlinePayment === null || order.offlinePayment === false)) {
+        if (order.paymentStatus == 'completed' && (typeof order.offlinePayment === 'undefined' || order.offlinePayment === null || order.offlinePayment === false)) {
             if (await Wallet.findOne({ userid })) {
                 await Wallet.updateOne({ userid }, {
                     $set: { updatedAt: new Date() },

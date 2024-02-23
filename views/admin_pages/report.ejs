@@ -1,214 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= reportData.type %> Report</title>
+    <title>Sales Report</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
         }
+
         .container {
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
         }
-        h1, h2 {
-            color: #333;
+
+        .report-header {
             text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
             margin-bottom: 20px;
         }
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+
+        .report-header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
         }
-        .order-container {
+
+        .filtering-time {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .order-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            /* Adjusted padding */
+            margin-bottom: 15px;
+            /* Adjusted margin */
+        }
+
+        .order-header p {
+            color: #333;
+            margin: 5px 0;
+            font-size: 18px;
+        }
+
+        .order-details {
+            margin-top: 15px;
+        }
+
+        .order-details p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .order-details h3 {
+            color: #333;
+            font-size: 20px;
+            margin-top: 15px;
+        }
+
+        .ordered-items li {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #444;
+        }
+
+        .ordered-items li strong {
+            font-weight: bold;
+            color: #222;
+        }
+
+        .no-orders-msg {
+            color: #666;
+            text-align: center;
+            font-size: 18px;
             margin-top: 20px;
         }
-        .order-item {
-            background-color: #f9f9f9;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
+
+        .profit {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 20px;
+            color: #007bff;
+            /* Blue color */
         }
-        .order-info {
-            margin-bottom: 10px;
-        }
-        .ordered-items {
-            margin-bottom: 10px;
-        }
-        .ordered-items li {
-            list-style: none;
-            margin-bottom: 5px;
-        }
-        .online-payment {
-            background-color: #e9e9e9;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-        }
-        .payment-status {
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        p {
-            margin: 0;
-            padding: 0;
+
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1><%= reportData.type %> Report</h1>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Total Revenue</th>
-                    <th>New Products</th>
-                    <th>New Users</th>
-                    <th>New Categories</th>
-                    <th>Cancelled Orders</th>
-                    <th>Total Orders</th>
-                    <th>Payment Pending Orders</th> <!-- New column for successful orders -->
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><%= reportData.totalRevenue %></td>
-                    <td><%= reportData.newProducts %></td>
-                    <td><%= reportData.newUsers %></td>
-                    <td><%= reportData.newCategories %></td>
-                    <td><%= reportData.cancelledOrders %></td>
-                    <td><%= reportData.totalOrders %></td>
-                    <td><%= paymentPendingOrders %></td> <!-- Display successful orders -->
-                </tr>
-            </tbody>
-        </table>  
-        <h2>New Products</h2>
-        <% if (products.length > 0) { %>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Sales</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% products.forEach(product => { %>
-                        <tr>
-                            <td><%= product.name %></td>
-                            <td><%= product.sales %></td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        <% } else { %>
-            <p>No products to display.</p>
-        <% } %>
-        <h2>New Categories</h2>
-        <% if (categories.length > 0) { %>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Sales</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% categories.forEach(category => { %>
-                        <tr>
-                            <td><%= category.name %></td>
-                            <td><%= category.sales %></td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        <% } else { %>
-            <p>No categories to display.</p>
-        <% } %>
-        <h2>Best Products</h2>
-        <% if (bestProducts.length > 0) { %>
-            <ul>
-                <% bestProducts.forEach(product => { %>
-                    <li><%= product.name %> - <%= product.sales %> sales</li>
-                <% }); %>
-            </ul>
-        <% } else { %>
-            <p>No best products to display.</p>
-        <% } %>
-        <h2>Best Categories</h2>
-        <% if (bestCatogories.length > 0) { %>
-            <ul>
-                <% bestCatogories.forEach(category => { %>
-                    <li><%= category.name %> - <%= category.sales %> sales</li>
-                <% }); %>
-            </ul>
-        <% } else { %>
-            <p>No best categories to display.</p>
-        <% } %>
-
-        <h2>Recent Orders</h2>
-        <div class="order-container">
-            <% orders.forEach((order,i) => { %>
-                <div class="order-item">
-                    <p class="order-info">
-                        <strong>Order ID:</strong> SK0<%= i+1 %><br>
-                        <strong>Order Amount:</strong> <%= order.orderAmount %><br>
-                        <strong>User ID:</strong> <%= order.userid %><br>
-                        <!-- Displaying Delivery Address -->
-                        <strong>Delivery Address:</strong><br>
-                        <%= order.deliveryAddress.streetAdress %>,<br>
-                        <%= order.deliveryAddress.city %>, <%= order.deliveryAddress.state %>, <%= order.deliveryAddress.pincode %><br>
-                        <%= order.deliveryAddress.country %><br>
-                        <!-- End of Delivery Address -->
-                        <strong>Order Date:</strong> <%= order.orderDate.toDateString() %><br>
-                        <strong>Order Status:</strong> <%= order.orderStatus %><br>
-                        <strong>Delivery Date:</strong> <%= order.deliveryDate.toDateString() %><br>
-                    </p>
-                    <!-- Display ordered items -->
-                    <ul class="ordered-items">
-                        <% order.OrderedItems.forEach(item => { %>
-                            <li>
-                                <strong>Name:</strong> <%= item.name %><br>
-                                <strong>Price:</strong> <%= item.price %><br>
-                                <strong>Quantity:</strong> <%= item.quantity %><br>
-                            </li>
-                        <% }); %>
-                    </ul>
-                    <!-- Display online payment details if offlinePayment is false -->
-                    <% if (!order.offlinePayment) { %>
-                        <div class="online-payment">
-                            <strong>Online Payment Details:</strong><br>
-                            <strong>Currency:</strong> <%= order.online_payment.currency %><br>
-                            <strong>Status:</strong> <%= order.online_payment.status %><br>
-                            <strong>Transaction ID:</strong> <%= order.online_payment.transactionid %><br>
-                            <strong>Created Date:</strong> <%= order.online_payment.createdate %><br>
-                        </div>
-                    <% } %>
-                    <!-- Display payment status -->
-                    <p class="payment-status">
-                        <strong>Payment Status:</strong> <%= order.paymentStatus %><br>
-                    </p>
-                </div>
-                <hr>
-            <% }); %>
+        <div class="report-header">
+            <h1>
+                <%= type %> Report
+            </h1>
+            <p class="filtering-time">
+                <%= filteringTime %>
+            </p>
         </div>
-        
+        <div class="profit">
+            <p>Total Profit: <%= profit %>
+            </p>
+        </div>
+        <div class="order-container">
+            <% if (orders.length> 0) { %>
+                <% orders.forEach((order, index)=> { %>
+                    <div class="order-card">
+                        <div class="order-header">
+                            <p><strong>Order ID:</strong>
+                                <%= order._id %>
+                            </p>
+                            <p><strong>Customer:</strong>
+                                <%= order.deliveryAddress.Fname %>
+                                    <%= order.deliveryAddress.Lname %>
+                            </p>
+                            <p><strong>Order Date:</strong>
+                                <%= order.orderDate.toDateString() %>
+                            </p>
+                        </div>
+                        <div class="order-details">
+                            <p><strong>Total Price:</strong>
+                                <%= order.orderAmount %>
+                            </p>
+                            <p><strong>Payment Status:</strong>
+                                <%= order.paymentStatus %>
+                            </p>
+                            <p><strong>Delivery Date:</strong>
+                                <%= order.deliveryDate.toDateString() %>
+                            </p>
+                            <h3>Product Information:</h3>
+                            <ul class="ordered-items">
+                                <% order.OrderedItems.forEach(item=> { %>
+                                    <li>
+                                        <strong>Name:</strong>
+                                        <%= item.name %><br>
+                                            <strong>Price:</strong>
+                                            <%= item.price %><br>
+                                                <strong>Quantity:</strong>
+                                                <%= item.quantity %><br>
+                                    </li>
+                                    <% }); %>
+                            </ul>
+                        </div>
+                    </div>
+                    <% if (index !==orders.length - 1) { %>
+                        <hr>
+                        <% } %>
+                            <% }); %>
+
+                                <% } else { %>
+                                    <p class="no-orders-msg">No recent orders.</p>
+                                    <% } %>
+        </div>
     </div>
-    
 </body>
+
 </html>

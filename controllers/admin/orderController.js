@@ -1,7 +1,8 @@
 const { Product, Category, Order, CancelationReson, Coupon } = require("../../models/productModel")
 const { User } = require("../../models/userModels")
 const { isValidObjectId } = require('../../util/validations');
-const { puppeteer, moment } = require("../../util/modules")
+const { puppeteer, moment } = require("../../util/modules");
+const { JsonWebTokenError } = require("jsonwebtoken");
 
 
 // * to load dashbord
@@ -312,112 +313,66 @@ const deleteOrder = async (req, res) => {
 
 
 // * for loading the report page 
-
 const loadReport = async (req, res) => {
   try {
-    const type = req.params.type;
-    if (!type || type !== 'weekly' || type !== "monthly") {
+    let type = req.params.type;
+   
 
+    if (!type || (type !== 'weekly' && type !== 'monthly' && type !== 'custom')) {
+      res.redirect("/admin/dashboard");
+      return;
     }
 
-    let reportData;
-    let products;
-    let categories;
+    let start;
+    let end;
+    let filteringTime;
+    let profit = 0;
 
-    const orderCancels = await CancelationReson.countDocuments();
-    const totalOrders = await Order.countDocuments();
+    if (type === 'custom') {
+      const range = JSON.parse(req.query.range);
+      const startDate = moment(range.start_date);
+      const endDate = moment(range.end_date);    
 
+      if (!startDate.isValid() || !endDate.isValid()) {
+        res.status(400).json({ error: "Invalid date format" });
+        return;
+      }
 
-    if (type === 'monthly') {
-      const currentMonth = moment().month() + 1;
+      start = startDate.startOf('day');
+      end = endDate.endOf('day');
 
-      const revenueData = await Order.aggregate([
-        { $match: { $expr: { $eq: [{ $month: "$orderDate" }, currentMonth] } } },
-        { $group: { _id: null, totalRevenue: { $sum: "$orderAmount" } } }
-      ]);
-
-      const newProductsData = await Product.aggregate([
-        { $match: { $expr: { $eq: [{ $month: "$createdate" }, currentMonth] } } },
-        { $count: "count" }
-      ]);
-
-      const newUsersData = await User.aggregate([
-        { $match: { $expr: { $eq: [{ $month: "$createdate" }, currentMonth] } } },
-        { $count: "count" }
-      ]);
-
-      const newCategoriesData = await Category.aggregate([
-        { $match: { $expr: { $eq: [{ $month: "$createdate" }, currentMonth] } } },
-        { $count: "count" }
-      ]);
-
-      reportData = {
-        type: "Monthly",
-        totalRevenue: revenueData.length > 0 ? revenueData[0].totalRevenue : 0,
-        newProducts: newProductsData.length > 0 ? newProductsData[0].count : 0,
-        newUsers: newUsersData.length > 0 ? newUsersData[0].count : 0,
-        newCategories: newCategoriesData.length > 0 ? newCategoriesData[0].count : 0,
-        cancelledOrders: orderCancels,
-        totalOrders: totalOrders,
-      };
-
-      const startOfMonth = moment().startOf('month');
-      const endOfMonth = moment().endOf('month');
-      products = await Product.find({ createdate: { $gte: startOfMonth, $lte: endOfMonth } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
-      categories = await Category.find({ createdate: { $gte: startOfMonth, $lte: endOfMonth } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
-
+      type = "Custom";
+      filteringTime = `Custom Range: ${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+    } else if (type === 'monthly') {
+      type = "Monthly";
+      start = moment().startOf('month');
+      end = moment().endOf('month');
+      filteringTime = `Monthly Report: ${start.format('MMMM YYYY')}`;
     } else if (type === 'weekly') {
-      const startOfWeek = moment().startOf('week');
-      const endOfWeek = moment().endOf('week');
-
-      const revenueData = await Order.aggregate([
-        { $match: { orderDate: { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() } } },
-        { $group: { _id: null, totalRevenue: { $sum: "$orderAmount" } } }
-      ]);
-
-      const newProductsData = await Product.aggregate([
-        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek.toDate()] }, { $lte: ["$createdate", endOfWeek.toDate()] }] } } },
-        { $count: "count" }
-      ]);
-
-      const newCategoriesData = await Category.aggregate([
-        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek.toDate()] }, { $lte: ["$createdate", endOfWeek.toDate()] }] } } },
-        { $count: "count" }
-      ]);
-
-      const newUsersData = await User.aggregate([
-        { $match: { $expr: { $and: [{ $gte: ["$createdate", startOfWeek.toDate()] }, { $lte: ["$createdate", endOfWeek.toDate()] }] } } },
-        { $count: "count" }
-      ]);
-
-      reportData = {
-        type: "Weekly",
-        totalRevenue: revenueData.length > 0 ? revenueData[0].totalRevenue : 0,
-        newProducts: newProductsData.length > 0 ? newProductsData[0].count : 0,
-        newUsers: newUsersData.length > 0 ? newUsersData[0].count : 0,
-        cancelledOrders: orderCancels,
-        totalOrders: totalOrders,
-        newCategories: newCategoriesData.length > 0 ? newCategoriesData[0].count : 0
-      };
-
-      products = await Product.find({ createdate: { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
-      categories = await Category.find({ createdate: { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() } }, { _id: 0, sales: 1, name: 1 }).sort({ sales: -1 });
+      type = "Weekly";
+      start = moment().startOf('week');
+      end = moment().endOf('week');
+      filteringTime = `Weekly Report: ${start.format('MMM DD, YYYY')} to ${end.format('MMM DD, YYYY')}`;
+    } else {
+      type = "Custom";
+      start = moment().startOf('day');
+      end = moment().endOf('day');
+      filteringTime = `Daily Report: ${start.format('YYYY-MM-DD')}`;
     }
 
-    const paymentPendingOrders = totalOrders - (await Order.find({ paymentStatus: 'pending' })).length
+    const orders = await Order.find({ orderStatus: '4', orderDate: { $gte: start, $lte: end } }).populate("userid");
 
-    const orders = await Order.find({ orderDate: { $gte: moment().subtract(1, 'day').startOf('day') } });
+    orders.forEach(order => {
+      profit += order.orderAmount; // Accumulate profit from each order
+    });
 
-    const bestProducts = await Product.find().sort({ sales: -1 }).limit(5)
-    const bestCatogories = await Category.find().sort({ sales: -1 }).limit(5)
-
-    res.render('report', { reportData, products, categories, bestCatogories, bestProducts, paymentPendingOrders, orders });
-
+    res.render('report', { orders, filteringTime, type, profit });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
-};
+}
+
 
 
 // * for downlaoding the the report 
@@ -425,9 +380,17 @@ const loadReport = async (req, res) => {
 const getSalesReport = async (req, res) => {
   try {
     const type = req.params.type
+    let range = {}
+    if (type == 'custom') {
+      range = {
+        start_date: req.body.start_date,
+        end_date: req.body.end_date
+      }
+      range = JSON.stringify(range)
+    }
     const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
-    await page.goto(`${req.protocol}://${req.get("host")}` + `/admin/sales-report/${type}`, {
+    await page.goto(`${req.protocol}://${req.get("host")}` + `/admin/sales-report/${type}?range=${range}`, {
       waitUntil: 'networkidle2',
     });
     await page.setViewport({ width: 1680, height: 1050 });

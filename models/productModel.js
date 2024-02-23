@@ -81,6 +81,7 @@ const Order = model("Order", ordersSchema);
 const cancelReasonschema = new Schema({
     orderid: { type: ObjectId, ref: "Order" },
     userid: { type: ObjectId, ref: "User" },
+    type: {type: String,enum:['return','cancel']},
     reason: String,
     cancelationTime: Date
 })
@@ -115,7 +116,6 @@ const messageSchema = new Schema({
 });
 
 const Message = model('Message', messageSchema);
-
 
 module.exports = {
     Order,

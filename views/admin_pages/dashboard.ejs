@@ -19,40 +19,53 @@
     <link href="css/main.css" rel="stylesheet" type="text/css" />
 </head>
 <style>
-     dialog::backdrop{
-                 background-color: rgba(5, 0, 0, 0.6);
-            }
-            .custom-dialog {
-                background-color: rgba(0, 0, 0, 0.8);
-                border: none;
-                border-radius: 10px;
-                padding: 20px;
-                color: white;
-                position: fixed;
-                top:200px ;
-                left: 400px;
-                transform: translate(-50%, -50%);
-                z-index: 9999;
-                display: none;
-            }
+    .custom-swal-container {
+        z-index: 9993234329;
+        /* Adjust the z-index value as needed */
+    }
 
-            .dialog-content {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
+    dialog::backdrop {
+        background-color: rgba(5, 0, 0, 0.6);
+    }
 
-            .btn {
-                margin: 10px;
-            }
+    .custom-dialog {
+        background-color: rgba(0, 0, 0, 0.8);
+        width: 390px;
+        border: none;
+        border-radius: 10px;
+        padding: 20px;
+        color: white;
+        position: fixed;
+        height: fit-content;
+        top: 200px;
+        left: 400px;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        display: none;
+    }
 
-            #close {
-                margin-top: 20px;
-            }
+    .dialog-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-            .open {
-                display: block;
-            }
+    .btn {
+        margin: 10px;
+    }
+
+    #close {
+        margin-top: 20px;
+    }
+
+    .open {
+        display: block;
+    }
+
+    .error {
+        color: white;
+        margin-top: 5px;
+    }
 </style>
 
 <body>
@@ -104,31 +117,31 @@
                     <a class="menu-link" href="/admin/coupon-managment"> <i class="icon material-icons md-stars"></i>
                         <span class="text">Coupons</span> </a>
                 </li>
-               
-            <br>
-            <br>
+
+                <br>
+                <br>
         </nav>
     </aside>
 
     <main class="main-wrap">
         <header class="main-header navbar">
             <div class="col-search">
-                
+
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
-                <ul class="nav"> 
-                    <li class="dropdown nav-item">                        
-                            <a class="dropdown-item text-danger" href="/admin/logout"><i
-                                    class="material-icons md-exit_to_app"></i>Logout</a>
-                        </div>
-                    </li>
-                </ul>
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
+                        class="material-icons md-apps"></i> </button>
+                <ul class="nav">
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-item text-danger" href="/admin/logout"><i
+                                class="material-icons md-exit_to_app"></i>Logout</a>
+            </div>
+            </li>
+            </ul>
             </div>
         </header>
-
-      
-
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <section class="content-main">
             <div class="content-header">
                 <div>
@@ -138,19 +151,104 @@
                 <button id="Open" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create
                     report</button>
             </div>
-
             <dialog class="custom-dialog">
                 <div class="dialog-content">
                     <form method="post" action="/admin/get-report-pdf/weekly">
-                        <button class="btn btn-primary">This Week Sales <span style="color: black;">(PDF)</span></button>
+                        <button type="submit" class="btn btn-primary sssss">This Week <span
+                                style="color: black;">(PDF)</span></button>
                     </form>
                     <form method="post" action="/admin/get-report-pdf/monthly">
-                        <button class="btn btn-primary">This Month Sales <span style="color: black;">(PDF)</span></button>
+                        <button type="submit" class="btn btn-primary sssss">This Month <span
+                                style="color: black;">(PDF)</span></button>
                     </form>
+                    <form id="custom_report_form" method="post" action="/admin/get-report-pdf/custom">
+                        <div>
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" id="start_date" name="start_date"><br>
+                            <span id="start_date_error" class="error"></span><br>
+                            <label for="end_date">End Date:</label>
+                            <input type="date" id="end_date" name="end_date"><br>
+                            <span id="end_date_error" class="error"></span>
+                        </div>
+                        <button type="button" class="btn btn-primary ssss" onclick="checkDate()">Custom Date <span
+                                style="color: black;">(PDF)</span></button>
+                    </form>
+
+
+                    <script>
+                        function checkDate() {
+                            var startDate = document.getElementById("start_date").value;
+                            var endDate = document.getElementById("end_date").value;
+                            var currentDate = new Date().toISOString().split('T')[0]; // Get current date in yyyy-mm-dd format
+
+                            // Check if both dates are selected
+                            if (startDate === "" || endDate === "") {
+                                document.getElementById("start_date_error").innerHTML = "Please select both start and end dates.";
+                                document.getElementById("end_date_error").innerHTML = "Please select both start and end dates.";
+                                return false;
+                            }
+
+                            // Check if dates are before the current date
+                            if (startDate > currentDate || endDate > currentDate) {
+                                document.getElementById("start_date_error").innerHTML = "Dates must be before the current date.";
+                                document.getElementById("end_date_error").innerHTML = "Dates must be before the current date.";
+                                return false;
+                            }
+
+                            // Check if start date is before end date
+                            if (startDate >= endDate) {
+                                document.getElementById("start_date_error").innerHTML = "Start date must be before end date.";
+                                document.getElementById("end_date_error").innerHTML = "End date must be after start date.";
+                                return false;
+                            }
+
+                            // Clear any previous error messages
+                            document.getElementById("start_date_error").innerHTML = "";
+                            document.getElementById("end_date_error").innerHTML = "";
+
+                            // If all validations pass, submit the form
+                            document.getElementById("custom_report_form").submit();
+                            dialog.close();
+                            Swal.fire({
+                                title: 'Alert!',
+                                text: 'Please wait, we are loading',
+                                icon: 'info',
+                                customClass: {
+                                    container: 'custom-swal-container'
+                                }
+                            });
+
+                        }
+
+                    </script>
+
                     <button id="close" class="btn btn-danger">Close</button>
                 </div>
             </dialog>
-             
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const buttons = document.querySelectorAll(".sssss");
+                    buttons.forEach(btn => {
+                        btn.addEventListener("click", () => {
+                            dialog.close();
+                            Swal.fire({
+                                title: 'Alert!',
+                                text: 'Please wait, we are loading',
+                                icon: 'info',
+                                customClass: {
+                                    container: 'custom-swal-container'
+                                }
+                            });
+
+                        });
+                    });
+                });
+            </script>
+
+
+
+
+
             <div class="row">
                 <div class="col-lg-3">
                     <div class="card card-body mb-4">
@@ -217,170 +315,171 @@
                 </div>
             </div>
 
-<% if (reportErr=='false') { %>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            try {
-                new Swal("Sorry!", 'Error in generating report', 'error'); // Display as a warning
-            } catch (error) {
-                console.log(error);
-            }
-        </script>
-<% } %>
+            <% if (reportErr=='false' ) { %>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    try {
+                        new Swal("Sorry!", 'Error in generating report', 'error'); // Display as a warning
+                    } catch (error) {
+                        console.log(error);
+                    }
+                </script>
+                <% } %>
 
-            <div class="row">
-                <div class="col-xl-8 col-lg-12">
-                    <div class="card mb-4">
-                        <article class="card-body">
-                            <h5 class="card-title">Sale statistics</h5>
-                            <canvas id="myChart" height="120px"></canvas>
-                        </article>
-                    </div>
                     <div class="row">
-                       
-                        <div class="col-lg-7" >
+                        <div class="col-xl-8 col-lg-12">
                             <div class="card mb-4">
                                 <article class="card-body">
-                                    <h5 class="card-title">Top 10 Products</h5>
-                                    <ul class="verti-timeline list-unstyled font-sm">
-                                        <% mostSaledProducts.forEach(product=> { %>
-                                            <li class="event-list">
-                                                <div class="event-timeline-dot">
-                                                    <a href="/admin/editProduct?id=<%= product._id %>"><i
-                                                            class="material-icons md-play_circle_outline font-xxl"></i></a>
-                                                </div>
-                                                <div class="media">
-                                                    <div class="me-3">
-                                                        <h6><span>
-                                                                <%= product.sales||0 %> sales
-                                                            </span> <i
-                                                                class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                        </h6>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <div>
-                                                            <%= product.name||"N/A" %>
+                                    <h5 class="card-title">Sale statistics</h5>
+                                    <canvas id="myChart" height="120px"></canvas>
+                                </article>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-lg-7">
+                                    <div class="card mb-4">
+                                        <article class="card-body">
+                                            <h5 class="card-title">Top 10 Products</h5>
+                                            <ul class="verti-timeline list-unstyled font-sm">
+                                                <% mostSaledProducts.forEach(product=> { %>
+                                                    <li class="event-list">
+                                                        <div class="event-timeline-dot">
+                                                            <a href="/admin/editProduct?id=<%= product._id %>"><i
+                                                                    class="material-icons md-play_circle_outline font-xxl"></i></a>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <% }) %>
-
-                                    </ul>
-                                </article>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-5">
-                            <div class="card mb-4">
-                                <article class="card-body">
-                                    <h5 class="card-title">Complaints</h5>
-                                    <div class="new-member-list">
-                                        <% cancelationReson.forEach(reson=> { %>
-                                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                                <div class="d-flex align-items-center">
-                                                    <img src="imgs/people/avatar3.jpg" alt="" class="avatar">
-                                                    <div>
-                                                        <h6>
-                                                            <%= reson.reason||"N/A" %>
-                                                        </h6>
-                                                        <p class="text-muted font-xs">
-                                                            <%= reson.cancelationTime.toDateString()||'N/A' %>
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <% }) %>
-                                    </div>
-                                </article>
-                            </div>
-                        </div>
-
-                       
-
-                        <div class="col-lg-7">
-                            <div class="card mb-4">
-                                <article class="card-body">
-                                    <h5 class="card-title">Top 10 Catogeries</h5>
-                                    <ul class="verti-timeline list-unstyled font-sm">
-                                        <% mostSaledCatogories.forEach(catagery=> { %>
-                                            <li class="event-list">
-                                                <div class="event-timeline-dot">
-                                                    <a href="/admin/editProduct?id=<%= catagery._id %>"><i
-                                                            class="material-icons md-play_circle_outline font-xxl"></i></a>
-                                                </div>
-                                                <div class="media">
-                                                    <div class="me-3">
-                                                        <h6><span>
-                                                                <%= catagery.sales||0 %> sales
-                                                            </span> <i
-                                                                class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                        </h6>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <div>
-                                                            <%= catagery.name||"N/A" %>
+                                                        <div class="media">
+                                                            <div class="me-3">
+                                                                <h6><span>
+                                                                        <%= product.sales||0 %> sales
+                                                                    </span> <i
+                                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
+                                                                </h6>
+                                                            </div>
+                                                            <div class="media-body">
+                                                                <div>
+                                                                    <%= product.name||"N/A" %>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <% }) %>
+                                                    </li>
+                                                    <% }) %>
 
-                                    </ul>
-                                </article>
+                                            </ul>
+                                        </article>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5">
+                                    <div class="card mb-4">
+                                        <article class="card-body">
+                                            <h5 class="card-title">Complaints</h5>
+                                            <div class="new-member-list">
+                                                <% cancelationReson.forEach(reson=> { %>
+                                                    <div class="d-flex align-items-center justify-content-between mb-4">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="imgs/people/avatar3.jpg" alt="" class="avatar">
+                                                            <div>
+                                                                <h6>
+                                                                    <%= reson.reason||"N/A" %>
+                                                                </h6>
+                                                                <p class="text-muted font-xs">
+                                                                    <%= reson.cancelationTime.toDateString()||'N/A' %>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <% }) %>
+                                            </div>
+                                        </article>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-lg-7">
+                                    <div class="card mb-4">
+                                        <article class="card-body">
+                                            <h5 class="card-title">Top 10 Catogeries</h5>
+                                            <ul class="verti-timeline list-unstyled font-sm">
+                                                <% mostSaledCatogories.forEach(catagery=> { %>
+                                                    <li class="event-list">
+                                                        <div class="event-timeline-dot">
+                                                            <a href="/admin/editProduct?id=<%= catagery._id %>"><i
+                                                                    class="material-icons md-play_circle_outline font-xxl"></i></a>
+                                                        </div>
+                                                        <div class="media">
+                                                            <div class="me-3">
+                                                                <h6><span>
+                                                                        <%= catagery.sales||0 %> sales
+                                                                    </span> <i
+                                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
+                                                                </h6>
+                                                            </div>
+                                                            <div class="media-body">
+                                                                <div>
+                                                                    <%= catagery.name||"N/A" %>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <% }) %>
+
+                                            </ul>
+                                        </article>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-5">
+                                    <div class="card mb-4">
+                                        <article class="card-body">
+                                            <h5 class="card-title">New Members</h5>
+                                            <div class="new-member-list">
+                                                <% newusers.forEach(user=> { %>
+                                                    <div class="d-flex align-items-center justify-content-between mb-4">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="imgs/people/avatar3.jpg" alt="" class="avatar">
+                                                            <div>
+                                                                <h6>
+                                                                    <%= user.name||"N/A" %>
+                                                                </h6>
+                                                                <p class="text-muted font-xs">
+                                                                    <%= user.email||'N/A' %>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <% }) %>
+                                            </div>
+                                        </article>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-
-
-                        <div class="col-lg-5">
+                        <div class="col-xl-4 col-lg-12">
                             <div class="card mb-4">
                                 <article class="card-body">
-                                    <h5 class="card-title">New Members</h5>
-                                    <div class="new-member-list">
-                                        <% newusers.forEach(user=> { %>
-                                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                                <div class="d-flex align-items-center">
-                                                    <img src="imgs/people/avatar3.jpg" alt="" class="avatar">
-                                                    <div>
-                                                        <h6>
-                                                            <%= user.name||"N/A" %>
-                                                        </h6>
-                                                        <p class="text-muted font-xs">
-                                                            <%= user.email||'N/A' %>
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                    <h5 class="card-title">Revenue Each Months</h5>
+                                    <canvas id="myChart2" height="217"></canvas>
+                                </article>
 
-                                            </div>
-                                            <% }) %>
-                                    </div>
+                            </div>
+                            <div class="card mb-4">
+                                <article class="card-body">
+                                    <h5 class="card-title">Revenue This Week</h5>
+                                    <canvas id="myChart3" height="217"></canvas>
                                 </article>
                             </div>
+
                         </div>
-
-                    </div>
-                </div>
-                <div class="col-xl-4 col-lg-12">
-                    <div class="card mb-4">
-                        <article class="card-body">
-                            <h5 class="card-title">Revenue Each Months</h5>
-                            <canvas id="myChart2" height="217"></canvas>
-                        </article>
-
-                    </div>
-                    <div class="card mb-4">
-                        <article class="card-body">
-                            <h5 class="card-title">Revenue This Week</h5>
-                            <canvas id="myChart3" height="217"></canvas>
-                        </article>
-                    </div>
-
-                </div>
-  <input type="hidden" id="monthlySales" value="<%= JSON.stringify(monthlySales||[]) %>">
-        <input type="hidden" id="currentWeekSales" value="<%= JSON.stringify(currentWeekSales||[]) %>">
-        <input type="hidden" id="monthlyproducts" value="<%= JSON.stringify(monthlyProductDetails||{}) %>">
-                <!-- <div class="pagination-area mt-30 mb-50">
+                        <input type="hidden" id="monthlySales" value="<%= JSON.stringify(monthlySales||[]) %>">
+                        <input type="hidden" id="currentWeekSales" value="<%= JSON.stringify(currentWeekSales||[]) %>">
+                        <input type="hidden" id="monthlyproducts"
+                            value="<%= JSON.stringify(monthlyProductDetails||{}) %>">
+                        <!-- <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">
                         <li class="page-item active"><a class="page-link" href="#">01</a></li>

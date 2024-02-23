@@ -973,14 +973,14 @@
 									                <h4 class="mb-0">Order ID: SKe5<%=i%>
 									                </h4>
 									                <span class="badge rounded-pill 
-									                    <% if (order.isPending) { %>bg-danger
+									                    <% if (order.isPending &&order.orderStatus !== '5') { %>bg-danger
 									                    <% } else if (order.orderStatus === '1') { %> bg-warning
 									                    <% } else if (order.orderStatus === '2') { %> bg-info
 									                    <% } else if (order.orderStatus === '3') { %> bg-primary
 									                    <% } else if (order.orderStatus === '4') { %> bg-success
 									                    <% } else if (order.orderStatus === '5') { %> bg-danger
 									                    <% } %> text-white">
-									                    <% if (order.isPending ) { %> Payment Pendng
+									                    <% if (order.isPending&&order.orderStatus !== '5' ) { %> Payment Pendng
 									                        <% } else if (order.orderStatus==='1' ) { %> Processing
 									                            <% } else if (order.orderStatus==='2' ) { %> Quality Check
 									                                <% } else if (order.orderStatus==='3' ) { %> Shipped
@@ -1030,7 +1030,7 @@
 									                                                        <p><strong>Order ID:</strong> <%= order._id %></p><hr>
 																							<p><strong>Order Status:</strong> 
 																								
-																							    <% if (order.isPending) { %>
+																							    <% if (order.isPending && order.orderStatus !== '5') { %>
 																							        <span class="badge bg-danger text-white">Payment Pending</span>
 																							    <% } else if (order.orderStatus === '1') { %>
 																							        <span class="badge bg-warning text-white">Processing</span>
@@ -1094,7 +1094,7 @@
 									                                                                        </div>
 									                                                                    </div>
 									                                                                </li>
-									                                                                <% }); %>
+									                                                            <% }); %>
 									                                                        </ul>
 									                                                    </div>
 									                                                </div>
@@ -1140,12 +1140,15 @@
 									order = JSON.parse(event.target.dataset.details);
 									dialog.classList.add('open');
 									dialog.showModal();
-									// content.innerHTML = `<strong>${order._id}</strong>`;
+									content.innerHTML = `<strong>${order._id}</strong>`;
+									
 								});
+
 							
 								closeBtn.addEventListener("click", () => {
 									dialog.classList.remove('open');
 									dialog.close();
+									
 								});
 							
 								dialog.addEventListener('click', (event) => {
@@ -1154,13 +1157,14 @@
 										dialog.close();
 									}
 								});
-							
+								
 								document.addEventListener('keydown', (event) => {
 									if (event.key === 'Escape' && dialog.classList.contains('open')) {
 										dialog.classList.remove('open');
 										dialog.close();
 									}
 								});
+
 							});
 						});
 					</script>
