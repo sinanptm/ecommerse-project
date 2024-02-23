@@ -233,11 +233,12 @@ const sendresetmail = async (req, res) => {
       message: `This mail is for resetting password for TRENDS`,
       subject: "Password Restting",
       duration: 4,
+      req,
     });
     return res.status(200).render('resetmail',{send:true})
 
   } catch (error) {
-    res.render("resetmail error", { msg: error.message ,send:false})
+    res.render("resetmail", { msg: error.message ,send:false})
   }
 }
 

@@ -87,7 +87,7 @@ const sendOTPs = async ({ email, subject = "TRENDS OTP verification", message = 
 };
 
 
-const sendNewPass = async ({ email, subject = "TRENDS Forget Password", message = "Thank you for connecting with us", duration = 1 }) => {
+const sendNewPass = async ({ email, subject = "TRENDS Forget Password", message = "Thank you for connecting with us", duration = 1 ,req}) => {
   try {
     if (!email && subject && message) {
       throw Error("Provide values for email, message, and password");
