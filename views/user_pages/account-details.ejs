@@ -464,10 +464,12 @@
 																			<h3 class="coupon-title">
 																				<%= coupon.discAmt %>% Off on Clothes
 																			</h3>
-																			<p class="coupon-description">Use code: <span
-																					class="code">
-																					<%= coupon.code %>
-																				</span></p>
+																			<p class="coupon-description">Use code:
+																			  <span class="code"> <%= coupon.code %> </span>
+																			</p>
+																			<p class="coupon-description">Minimum Spend:
+																			  <span class="code"> <%= coupon.minAmount %> </span>
+																			</p>
 																			<p>Expires on: <%= coupon.expDate.toDateString()
 																					%>
 																			</p>

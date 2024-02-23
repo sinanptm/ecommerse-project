@@ -1,6 +1,6 @@
-const { mongoose } = require("../util/modules")
+const { connect } = require("mongoose")
 module.exports = () => {
-  mongoose.connect(process.env.MONGO_URL)
+  connect(process.env.MONGO_URL)
     .then(() => {
       console.log('Connected to MongoDB');
     })

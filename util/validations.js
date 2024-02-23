@@ -1,5 +1,5 @@
-const { mongoose, jwt, bcrypt } = require('../util/modules')
-
+const { jwt, bcrypt } = require('../util/modules')
+const mongoose = require("mongoose")
 
 //  * Bcrypt hashing function
 const makeHash = async (pass) => {

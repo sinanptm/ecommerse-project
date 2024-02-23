@@ -1,6 +1,5 @@
 module.exports = {
     express: require("express"),
-    mongoose: require("mongoose"),
     path: require('path'),
     sharp: require("sharp"),
     puppeteer: require('puppeteer'),

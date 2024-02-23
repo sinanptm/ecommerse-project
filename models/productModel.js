@@ -1,13 +1,13 @@
-const { mongoose } = require("../util/modules")
+const { Schema, ObjectId, model } = require("mongoose");
 
 // Products Schema
-const productsSchema = new mongoose.Schema({
+const productsSchema = new Schema({
     name: { type: String, required: true, unique: true },
     price: { type: Number },
     quantity: { type: Number },
     status: { type: String },
     img: { type: Array },
-    categoryid: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+    categoryid: { type: ObjectId, ref: "Category" },
     createdate: { type: Date },
     discount: { type: Number },
     description: { type: String },
@@ -15,31 +15,31 @@ const productsSchema = new mongoose.Schema({
 });
 productsSchema.index({ name: 1, categoryid: 1 }, { unique: true });
 
-const Product = mongoose.model("Product", productsSchema);
+const Product = model("Product", productsSchema);
 
 // Category Schema
-const categorySchema = new mongoose.Schema({
+const categorySchema = new Schema({
     name: { type: String, required: true, unique: true },
     description: { type: String, required: true },
     type: { type: String },
-    items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    items: [{ type: ObjectId, ref: "Product" }],
     createdate: { type: Date },
     img: { type: String },
     sales: { type: Number, default: 0 }
 });
 
-const Category = mongoose.model("Category", categorySchema);
+const Category = model("Category", categorySchema);
 
 
 // Orders Schema
-const ordersSchema = new mongoose.Schema({
-    userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+const ordersSchema = new Schema({
+    userid: { type: ObjectId, ref: "User" },
     orderAmount: { type: Number },
     deliveryAddress: {
-        id: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },
+        id: { type: ObjectId, ref: "Address" },
         Fname: { type: String },
         Lname: { type: String },
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        userId: { type: ObjectId, ref: "User" },
         companyName: { type: String },
         country: { type: String },
         streetAdress: { type: String },
@@ -49,18 +49,18 @@ const ordersSchema = new mongoose.Schema({
         mobile: { type: Number },
         email: { type: String },
     },
-    coupon:Number,
+    coupon: Number,
     orderDate: { type: Date },
     orderStatus: { type: String },
     deliveryDate: { type: Date },
     ShippingDate: { type: Date },
     OrderedItems: [{
-        productid: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        productid: { type: ObjectId, ref: "Product" },
         price: Number,
         quantity: Number,
-        discount:Number,
+        discount: Number,
         name: String,
-        img:String
+        img: String
     }],
     walletPayment: {
         transactionid: String,
@@ -76,44 +76,45 @@ const ordersSchema = new mongoose.Schema({
     paymentStatus: String
 });
 
-const Order = mongoose.model("Order", ordersSchema);
+const Order = model("Order", ordersSchema);
 
-const cancelReasonschema = new mongoose.Schema({
-    orderid: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
-    userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+const cancelReasonschema = new Schema({
+    orderid: { type: ObjectId, ref: "Order" },
+    userid: { type: ObjectId, ref: "User" },
     reason: String,
     cancelationTime: Date
 })
 
-const CancelationReson = mongoose.model("CancelationReson", cancelReasonschema)
+const CancelationReson = model("CancelationReson", cancelReasonschema)
 
 
 // Coupons Schema
-const couponsSchema = new mongoose.Schema({
+const couponsSchema = new Schema({
     name: { type: String },
     code: { type: String },
     discAmt: { type: Number },
     createdate: { type: Date },
     expDate: { type: Date },
-    used: Number
+    used: Number,
+    minAmount:Number
 });
 
-const Coupon = mongoose.model("Coupon", couponsSchema);
+const Coupon = model("Coupon", couponsSchema);
 
 //  for customer service 
 
-const messageSchema = new mongoose.Schema({
+const messageSchema = new Schema({
     email: { type: String, required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    userId: { type: ObjectId, ref: "User", required: true },
     message: { type: String, },
     sendTime: { type: Date, default: Date.now },
     status: { type: String, enum: ['pending', 'resolved', 'closed'], default: 'pending' },
-    replay:String,
-    replayTime:Date,
-    seen:Date
+    replay: String,
+    replayTime: Date,
+    seen: Date
 });
 
-const Message = mongoose.model('Message', messageSchema);
+const Message = model('Message', messageSchema);
 
 
 module.exports = {

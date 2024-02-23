@@ -202,9 +202,9 @@ const removeProduct = async (req, res) => {
       console.error('Product not found in the cart:', productId);
       return res.status(404).json({ error: 'Product not found in the cart' });
     }
-    
+
     const removedProduct = cart.products.splice(productIndex, 1)[0];
-    
+
     cart.items -= 1;
     cart.totalPrice -= removedProduct.price;
     await cart.save();
@@ -255,26 +255,26 @@ const loadCart = async (req, res) => {
     for (const product of products) {
       specialOffer += (product.productid.price * product.quantity * product.productid.discount / 100);
     }
-    
+
     const filteredProducts = products.filter(product => product.productid.quantity > 0 && product.productid.status === "Available");
     const productsToCheckout = filteredProducts.map(product => ({ productid: product.productid._id, quantity: product.quantity }));
-    
+
 
     let outOfStock = [];
 
 
-    
+
     for (const product of productsToCheckout) {
       const p = await Product.findById(product.productid);
-      if (p.quantity <= 0 || p.quantity - product.quantity <0) {
+      if (p.quantity <= 0 || p.quantity - product.quantity < 0) {
         outOfStock.push({ name: p.name, remainingQuantity: p.quantity });
       }
     }
-    
-    return res.render("cart", { products, cart, totalPrice, productsToCheckout, toast: req.query.toast, outOfStock ,specialOffer});
+
+    return res.render("cart", { products, cart, totalPrice, productsToCheckout, toast: req.query.toast, outOfStock, specialOffer });
   } catch (error) {
     console.error(error);
-    return res.status(500).send(error,message);
+    return res.status(500).send(error, message);
   }
 };
 
@@ -284,14 +284,19 @@ const addToCheckout = async (req, res) => {
   try {
     let { totalprice, products, coupons } = req.body;
     const coupon = req.query.coupon;
+    const total = req.query.total;
 
     if (typeof coupon !== 'undefined' && coupon !== null) {
       var findCoupon = await Coupon.findOne({ code: coupon });
 
       if (findCoupon) {
-        
-        if (findCoupon.expDate && new Date(findCoupon.expDate) < new Date()) {
+
+        if (findCoupon.minAmount >= total) {
+          res.json({ msg: true, err: `This Coupon is only Awailable for orders above ${findCoupon.minAmount}` })
+          
+        } else if (new Date(findCoupon.expDate) < new Date()) {
           res.json({ msg: true });
+
         } else {
           req.session.coupon = findCoupon.discAmt;
           res.json({ msg: false, couponDiscount: findCoupon.discAmt });
@@ -419,7 +424,7 @@ const loadCheckout = async (req, res) => {
       totalDiscount,
       couponDiscount,
       parsedProducts,
-      sss : req.session.totalAmount,
+      sss: req.session.totalAmount,
       couponDiscountAmount, // Pass coupon discount amount to the view
     });
 
@@ -446,7 +451,7 @@ const placeOrder = async (req, res) => {
     products = JSON.parse(products);
     const productIds = products.map(product => product.productid);
     var populatedProducts = await Product.find({ _id: { $in: productIds } });
-    
+
     let outOfStock = [];
 
     for (const product of products) {
@@ -458,7 +463,7 @@ const placeOrder = async (req, res) => {
 
 
     if (outOfStock.length > 0) {
-      return res.json({msg:`products are out of stock please try again`,outOfStock:outOfStock})
+      return res.json({ msg: `products are out of stock please try again`, outOfStock: outOfStock })
     }
 
     // Update the cart
@@ -479,10 +484,10 @@ const placeOrder = async (req, res) => {
       return {
         productid: product._id,
         price: product.price,
-        discount:product.discount,
+        discount: product.discount,
         quantity: products[i].quantity,
         name: product.name,
-        img:product.img[0]
+        img: product.img[0]
       };
     });
     const details = await Promise.all(detailsPromises);
@@ -507,7 +512,7 @@ const placeOrder = async (req, res) => {
         mobile: address.mobile,
         email: address.email
       },
-      coupon:req.session.coupon,
+      coupon: req.session.coupon,
       orderDate,
       orderStatus: "1",
       deliveryDate,
@@ -580,7 +585,7 @@ const placeOrder = async (req, res) => {
     } else if (payment_method == 'wallet') {
       const wallet = await Wallet.findOneAndUpdate(
         { userid: userId },
-        { 
+        {
           $inc: { balance: -order.orderAmount },
           $push: {
             transactions: {
@@ -710,7 +715,7 @@ const showSuccess = async (req, res) => {
       return res.status(304).redirect("/cart")
     }
 
-    req.session.coupon =null
+    req.session.coupon = null
     req.session.parsedProducts = null
     req.session.totalAmount = null
 
@@ -724,7 +729,7 @@ const showSuccess = async (req, res) => {
           as: "userid"
         }
       },
-      
+
     ])
     order = order[0]
 

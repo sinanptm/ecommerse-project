@@ -232,31 +232,31 @@ const loadOrder = async (req, res) => {
 
     let actualPrice = 0;
     let discountPrice = 0;
-    
+
     for (const product of order.OrderedItems) {
-        actualPrice += product.price * product.quantity;
-        discountPrice += product.price * product.quantity * (1 - product.discount / 100);
+      actualPrice += product.price * product.quantity;
+      discountPrice += product.price * product.quantity * (1 - product.discount / 100);
     }
-    
+
     let couponDiscountBefore = discountPrice;
 
-    let couponDiscount = order.coupon ? (discountPrice * (order.coupon / 100)) : 0; 
-    
+    let couponDiscount = order.coupon ? (discountPrice * (order.coupon / 100)) : 0;
+
     let minusedAmount = couponDiscountBefore - (discountPrice - couponDiscount);
-        
 
 
-    res.render('order-details', { 
-      order: order, 
-      reason: reason, 
-      paymentType: paymentType, 
+
+    res.render('order-details', {
+      order: order,
+      reason: reason,
+      paymentType: paymentType,
       actualPrice: actualPrice,
-      coupon: order.coupon, 
-      couponDiscount: couponDiscount, 
+      coupon: order.coupon,
+      couponDiscount: couponDiscount,
       discountPrice: discountPrice,
       minusedAmount
-  });
-  
+    });
+
   } catch (error) {
     res.redirect("/admin/orders-list")
     console.log(error.message);
@@ -454,7 +454,8 @@ const getSalesReport = async (req, res) => {
 
 const loadCoupons = async (req, res) => {
   try {
-
+    // ? for deleting the expired coupon 
+    await Coupon.deleteMany({ expDate: { $lt: Date.now() } })
     const coupons = await Coupon.find()
 
     res.render('coupon', { coupons })
@@ -467,11 +468,12 @@ const loadCoupons = async (req, res) => {
 
 const addCoupon = async (req, res) => {
   try {
-    const { name, discount, expiry, code } = req.body;
+    const { name, discount, expiry, code, min } = req.body;
 
     const newCoupon = new Coupon({
       code,
       name,
+      minAmount: min ? min : 0,
       discAmt: discount,
       expDate: new Date(expiry),
       createdate: new Date()
