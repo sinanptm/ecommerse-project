@@ -225,7 +225,7 @@ const loadCart = async (req, res) => {
     req.session.coupon = 0
     const token = req.cookies.token || req.session.token;
     if (!token) {
-      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast: req.query.toast, totalPrice: 0, outOfStock: [] });
+      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast: req.query.toast, totalPrice: 0, outOfStock: [], specialOffer: 0 });
     }
 
     const userId = await getUserIdFromToken(token);
@@ -237,7 +237,7 @@ const loadCart = async (req, res) => {
 
 
     if (!cart) {
-      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast: req.query.toast, totalPrice: 0, outOfStock: [] });
+      return res.render("cart", { products: [], cart: { items: 0 }, productsToCheckout: { productid: 0, quantity: 0 }, toast: req.query.toast, totalPrice: 0, outOfStock: [], specialOffer: 0 });
     }
 
     const products = cart.products;
@@ -293,7 +293,7 @@ const addToCheckout = async (req, res) => {
 
         if (findCoupon.maxAmount <= total) {
           res.json({ msg: true, err: `This Coupon is only Awailable for orders belove ${findCoupon.maxAmount}` })
-          
+
         } else if (new Date(findCoupon.expDate) < new Date()) {
           res.json({ msg: true });
 

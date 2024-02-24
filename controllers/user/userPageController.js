@@ -143,7 +143,16 @@ const loadProducts = async (req, res) => {
             products[0].wishlist = true
         }
 
-        res.render("product", { products, categories, totalPages, currentPage: page, sort, category, price, name });
+        res.render("product", {
+            products,
+            categories,
+            totalPages,
+            currentPage: page,
+            sort,
+            category,
+            price,
+            name
+        });
     } catch (error) {
         console.error("Error in loadProducts:", error);
         res.status(500).send("Internal Server Error");
@@ -243,23 +252,23 @@ const loadAccount = async (req, res) => {
             return res.status(404).redirect('/home');
         }
 
-       
+
         let invoice = false;
         for (const order of orders) {
             if (order.offlinePayment) {
-              order.paymentType = 'offline'
+                order.paymentType = 'offline'
             } else if (order.walletPayment) {
-              order.paymentType = 'wallet'
-            } else if (!order.online_payment ) {
-              order.paymentType = 'online_pending'
+                order.paymentType = 'wallet'
+            } else if (!order.online_payment) {
+                order.paymentType = 'online_pending'
             } else if (order.online_payment) {
-              order.paymentType = 'online'
+                order.paymentType = 'online'
             } else {
-              order.paymentType = 'Not Available'
+                order.paymentType = 'Not Available'
             }
 
             let isPending = false;
-           
+
             if (order.paymentType == 'online_pending') {
                 isPending = true
                 invoice = true
@@ -516,7 +525,7 @@ const createInvoice = async (req, res) => {
         const pdfBuffer = await page.pdf({ format: 'A4' });
 
         const pages = await browser.pages()
-        await Promise.all(pages.map(page=>{page.close()}))
+        await Promise.all(pages.map(page => { page.close() }))
         await browser.close();
 
         res.setHeader('Content-Type', 'application/pdf');

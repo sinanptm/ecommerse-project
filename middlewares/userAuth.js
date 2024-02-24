@@ -1,5 +1,5 @@
 const { User, Cart, Wishlist } = require("../models/userModels");
-const { Message } = require("../models/productModel")
+const { Message, Banner } = require("../models/productModel")
 const { getUserIdFromToken } = require("../util/validations")
 
 
@@ -82,9 +82,11 @@ const notifications = async (req, res, next) => {
             const cart = await Cart.findOne({ userId })
             const whish = await Wishlist.findOne({ userid: userId })
             const msg = await Message.find({ userId, status: "resolved" })
+            const banner = await Banner.findOne()
 
             res.locals.whishItems = whish ? whish.products.length : 0
             res.locals.messages = msg ? msg.length : 0
+            res.locals.banner = banner
             res.locals.cartItems = cart ? cart.items || 0 : 0;
             res.locals.valid = req.cookies.token || req.session.token;
             next();

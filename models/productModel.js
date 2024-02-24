@@ -117,8 +117,31 @@ const messageSchema = new Schema({
 
 const Message = model('Message', messageSchema);
 
+const bannerSchema = new Schema({
+    home:[
+        {
+            mainHeading:String,
+            url:String,
+            subHeading:String,
+            img:String,
+            caption:String
+        }
+    ],
+    products:String,
+    cart:String,
+    wishlist:String,
+    checkout:String,
+    orderSuccess:String,
+    profile:String,
+    about:String,
+    contact:String
+})
+
+const Banner = model("Banner",bannerSchema)
+
 module.exports = {
     Order,
+    Banner,
     Product,
     Category,
     CancelationReson,

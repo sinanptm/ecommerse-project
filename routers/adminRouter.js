@@ -1,9 +1,9 @@
 const { path, express } = require("../util/modules");
 const adminRoute = express();
-const upload = require("../util/multer");
+const { upload,banner } = require("../util/multer");
 const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout, loadMessages, sendReply } = require("../controllers/admin/userControlller");
 const { loadDashBoard, loadOrders, deleteOrder, editOrder, loadOrder, loadReport, getSalesReport, loadCoupons, addCoupon, deleteCoupon, editCoupon } = require("../controllers/admin/orderController");
-const { loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, } = require("../controllers/admin/products&catogoire")
+const { loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, loadBanners, editBanner, addHomeBanner,deleteBanner } = require("../controllers/admin/products&catogoire")
 const { is_loginRequired, is_admin, handleUndefinedRoutes } = require("../middlewares/auth");
 
 
@@ -11,7 +11,7 @@ const { is_loginRequired, is_admin, handleUndefinedRoutes } = require("../middle
 adminRoute.set("views", path.join(__dirname, "../views/admin_pages"));
 adminRoute.use(express.static(path.join(__dirname, "../public/assets")));
 adminRoute.locals.title = "TRENDS DASHBOARD";
-
+adminRoute.use('/user-public', express.static(path.join(__dirname, "../public"))); // * for user pages static files 
 
 
 // * Admin login
@@ -58,12 +58,19 @@ adminRoute.post("/catogories", upload.single("file"), addCatagorie);
 adminRoute.post("/editCategories/:id", upload.single("file"), editCatogory);
 adminRoute.get("/deleteCatogory/:id", deleteCatogory);
 
-// * Orders and coupn managment 
+// * Coupn managment 
 adminRoute.get('/coupon-managment', loadCoupons)
 adminRoute.post('/add-coupon', addCoupon)
 adminRoute.delete("/delete-coupon", deleteCoupon)
 adminRoute.post("/edit-coupon", editCoupon)
 
+// * Banner managment
+adminRoute.get("/banner-managment", loadBanners)
+adminRoute.put("/edit-banner/:page",banner.single("file"), editBanner)
+adminRoute.post("/add-home-banner",banner.single('file'),addHomeBanner)
+adminRoute.delete("/delete-banner/:index",deleteBanner)
+
+// * Orders managment
 adminRoute.get("/orders-list", loadOrders)
 adminRoute.get('/order-details', loadOrder)
 adminRoute.get("/delete-order", deleteOrder)

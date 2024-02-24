@@ -1,6 +1,6 @@
-const { Product, Category } = require("../../models/productModel")
+const { Product, Category, Banner } = require("../../models/productModel")
 const { createHexId, isValidObjectId } = require('../../util/validations');
-const { sharp,path } = require("../../util/modules")
+const { sharp, path } = require("../../util/modules");
 
 //  * product management
 const loadProducts = async (req, res) => {
@@ -30,7 +30,7 @@ const loadProducts = async (req, res) => {
         }
 
         const products = await Product.find(findQuery)
-            .sort({createdate:-1})
+            .sort({ createdate: -1 })
             .skip(skip)
             .limit(perPage);
 
@@ -411,25 +411,25 @@ const editCatogory = async (req, res) => {
         const existingCatogory = await Category.findById(id);
         const file = req.file && req.file.filename;
 
-            var processImage = async (file) => {
-                if (file) {
-                    const originalImagePath = path.join(__dirname, '../../public/product_images', file);
-                    const resizedPath = path.join(__dirname, '../../public/resized_images', file);
-                    await sharp(originalImagePath)
-                        .resize({ height: 1486, width: 1200, fit: 'fill' })
-                        .toFile(resizedPath);
-                    return file;
-                } else {
-                    return null;
-                }
-            };
+        var processImage = async (file) => {
+            if (file) {
+                const originalImagePath = path.join(__dirname, '../../public/product_images', file);
+                const resizedPath = path.join(__dirname, '../../public/resized_images', file);
+                await sharp(originalImagePath)
+                    .resize({ height: 1486, width: 1200, fit: 'fill' })
+                    .toFile(resizedPath);
+                return file;
+            } else {
+                return null;
+            }
+        };
 
         if (file) {
-             img =  await processImage(req.file.filename)
-        }else{
-            img =  existingCatogory.img;
+            img = await processImage(req.file.filename)
+        } else {
+            img = existingCatogory.img;
         }
-        
+
 
         const category = await Category.updateOne(
             { _id: id },
@@ -468,11 +468,123 @@ const deleteCatogory = async (req, res) => {
     }
 };
 
+const loadBanners = async (req, res) => {
+    try {
+        const banners = await Banner.findOne()
+
+        res.render("banners", { banners })
+    } catch (error) {
+        console.log('error in loading banners: ', error.message);
+    }
+}
+
+const editBanner = async (req, res) => {
+    try {
+        const page = req.params.page;
+
+        if (page === 'home-text') {
+            const { field, text, index } = req.body;
+            let updateField = '';
+
+            switch (field) {
+                case 'mainHeading':
+                    updateField = `home.${index}.mainHeading`;
+                    break;
+                case 'url':
+                    updateField = `home.${index}.url`;
+                    break;
+                case 'subHeading':
+                    updateField = `home.${index}.subHeading`;
+                    break;
+                case 'caption':
+                    updateField = `home.${index}.caption`;
+                    break;
+                default:
+                    return res.status(400).json({ success: false, message: 'Invalid field' });
+            }
+
+
+            await Banner.updateOne({}, { $set: { [updateField]: text } });
+            return res.status(200).json({ success: true, value: text });
+
+        } else if (page === 'home') {
+            const { index } = req.body;
+            const newImg = req.file.filename;
+            const update = {
+                $set: {
+                    [`home.${index}.img`]: `/images/banner-images/${newImg}`
+                }
+            };
+            await Banner.updateOne({}, update);
+            return res.status(200).json({ success: true, src: `/images/banner-images/${newImg}` });
+        } else {
+            const newImg = req.file.filename;
+            const update = { [page]: `/images/banner-images/${newImg}` };
+            await Banner.updateOne({}, { $set: update });
+            return res.status(200).json({ success: true, src: update[page] });
+        }
+    } catch (error) {
+        console.log('Error in editing banners:', error.message);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const addHomeBanner = async (req, res) => {
+    try {
+        const { mainHeading, subHeading, url, caption } = req.body
+        const img = req.file ? req.file.filename : ''
+        await Banner.updateOne({}, {
+            $push: {
+                home: {
+                    img: `/images/banner-images/${img}`,
+                    mainHeading,
+                    subHeading,
+                    url,
+                    caption
+                }
+            }
+        })
+        res.status(200).redirect("/admin/banner-managment")
+    } catch (error) {
+        console.log('error in adding new banner :', error.message);
+        res.status(500)
+    }
+}
+
+
+const deleteBanner = async (req, res) => {
+    try {
+        const index = req.params.index;
+
+        const banner = await Banner.findOne();
+
+        if (!banner || !banner.home || !Array.isArray(banner.home)) {
+            return res.status(404).json({ message: 'Banner not found' });
+        }
+
+        if (index < 0 || index >= banner.home.length) {
+            return res.status(404).json({ message: 'Banner not found' });
+        }
+
+        banner.home.splice(index, 1);
+
+        await banner.save();
+
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.log('Error in deleting banner:', error.message);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+
+
 
 module.exports = {
     loadProducts,
     loadAddProduct,
-    laodCatagorie, 
+    laodCatagorie,
     loadEditProduct,
     addProduct,
     addCatagorie,
@@ -482,4 +594,9 @@ module.exports = {
     deleteProduct,
     listProduct,
     unlistProduct,
+    loadBanners,
+    editBanner,
+    addHomeBanner,
+    deleteBanner
+
 }
