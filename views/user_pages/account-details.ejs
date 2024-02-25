@@ -979,14 +979,17 @@
 									                    <% } else if (order.orderStatus === '3') { %> bg-primary
 									                    <% } else if (order.orderStatus === '4') { %> bg-success
 									                    <% } else if (order.orderStatus === '5') { %> bg-danger
-									                    <% } %> text-white">
+									                    <% } else if (order.orderStatus==='6') %> bg-danger
+														text-white">
 									                    <% if (order.isPending&&order.orderStatus !== '5' ) { %> Payment Pendng
 									                        <% } else if (order.orderStatus==='1' ) { %> Processing
 									                            <% } else if (order.orderStatus==='2' ) { %> Quality Check
 									                                <% } else if (order.orderStatus==='3' ) { %> Shipped
 									                                    <% } else if (order.orderStatus==='4' ) { %> Delivered
 									                                        <% } else if (order.orderStatus==='5' ) { %> Canceled
-									                                            <% } %>
+																				<%} else if (order.orderStatus==='6') { %> Returned
+																				
+									                                            	<% } %>
 									                </span>
 									            </div>
 									            <p>Order Amount: <%= order.orderAmount %>
@@ -1011,14 +1014,19 @@
 									                                        </li>
 									                                        <% }); %>
 									                                </ul>
-									                                <% if (order.orderStatus=='4' ||order.orderStatus=='5' ) { %>
+																	<% if (order.orderStatus === '4') { %>
+    <button class="btn btn-warning return-order" data-returnid="<%= order._id %>">Return</button>
+<% } else if (order.orderStatus === '5'||order.orderStatus==='6') { %>
+
+<% } else { %>
+    <button class="btn btn-danger" onclick="showCancelModal('<%= order._id %>')">Cancel</button>
+<% } %>
+
 																	
-									                                    <% } else { %>
-									                                        <button class="btn btn-danger"
-									                                            onclick="showCancelModal('<%= order._id %>')">Cancel</button>
-									                                        <% } %>
 																		
-									                                        <button id="order-details-<%= i %>" data-details="<%= JSON.stringify(order) %>" class="btn nav-button" style="height: 40px;width: 100px;">Details</button>
+									                                        <button id="order-details-<%= i %>" data-details="<%= JSON.stringify(order) %>" class="btn btn-info" style="height: 40px;width: 100px;">Details</button>
+
+																			
 									                                        <dialog id="orderDialog-<%= i %>" class="order-dialog">
 									                                            <div class="modal-wrapper">
 									                                                <div class="modal-header">
@@ -1042,6 +1050,8 @@
 																							        <span class="badge bg-success text-white">Delivered</span>
 																							    <% } else if (order.orderStatus === '5') { %>
 																							        <span class="badge bg-danger text-white">Canceled</span>
+																								<% } else if (order.orderStatus ==='6') {%>
+																									<span class="badge bg-danger text-white">Returned</span>
 																							    <% } %>
 																							</p><hr>
 																							<p><strong>Payment :</strong>
@@ -1127,7 +1137,8 @@
 					</section>
 					
 					<script>
-						$(document).ready(function () {
+						function as() {
+							$(document).ready(function () {
 							const dialogs = document.querySelectorAll(".order-dialog");
 						
 							dialogs.forEach((dialog, index) => {
@@ -1167,6 +1178,52 @@
 
 							});
 						});
+						}
+						as();
+						$(document).ready(() => {
+        const returnBtns = document.querySelectorAll(".return-order");
+        returnBtns.forEach(btn => {
+            btn.addEventListener("click", (event) => {
+                const orderId = event.target.dataset.returnid;
+                if (!orderId) {
+                    console.error("Invalid order ID:", orderId);
+                    return;
+                }
+                Swal.fire({
+                    title: "Reason For Returning",
+                    input: "text",
+                    inputAttributes: {
+                        autocapitalize: "off"
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: "Submit",
+                    showLoaderOnConfirm: true,
+                    preConfirm: async (msg) => {
+                        try {
+                            console.log(msg);
+                            const response = await $.ajax({
+                                url: `/return-order?id=${orderId}&msg=${msg}`,
+                                method: "DELETE"
+                            });
+                            console.log(response);
+                            await window.location.reload();
+                            Swal.fire("Success!", "The money will be credited to your wallet within 2 working days.", "success");
+                        } catch (error) {
+                            Swal.showValidationMessage("Order Return Failed");
+                            console.error("Error returning order:", error);
+                        }
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: `Error: ${result}`,
+                        });
+                    }
+                });
+            });
+        });
+    });
 					</script>
 
 					<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog"
@@ -1528,8 +1585,10 @@
 							});
 						});
 					</script>
+					<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 					<script src="vendor/isotope/isotope.pkgd.min.js"></script>
-					<script src="vendor/sweetalert/sweetalert.min.js"></script>
+					<script src="sweetalert2.min.js"></script>
+					<link rel="stylesheet" href="sweetalert2.min.css">
 					<script>
 						$('.js-addwish-b2').on('click', function (e) {
 							e.preventDefault();

@@ -167,6 +167,7 @@ async function orderFilter(event) {
                 filter:filter
             }
         })
+        await as();
         const newOrder = $(res).find('#orders').html()
         $('#orders').html(newOrder)
     } catch (error) {

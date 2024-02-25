@@ -190,7 +190,9 @@
                                                         alert-success
                                                     <% } else if (order.orderStatus === '5') { %>
                                                         alert-danger
-                                                    <% } %>
+                                                    <% } else if (order.orderStatus === '6') { %>
+                                                            alert-danger 
+                                                     <% } %>
                                                 ">
                                                     <% if (order.orderStatus==='1' ) { %>
                                                         Processing
@@ -202,7 +204,9 @@
                                                                     Delivered
                                                                     <% } else if (order.orderStatus==='5' ) { %>
                                                                         Cancelled
-                                                                        <% } %>
+                                                                        <% } else if (order.orderStatus==='6' ) { %>
+                                                                            Returned
+                                                                            <% } %>
                                                 </span>
                                             </td>
                                             <td>
@@ -211,7 +215,7 @@
                                             <td class="text-end">
                                                 <a href="/admin/order-details?id=<%= order._id %>"
                                                     class="btn btn-md rounded font-sm">Details</a>
-                                                <% if (order.orderStatus!=="4" &&order.orderStatus!=="5" ) { %>
+                                                <% if (order.orderStatus!=="4" &&order.orderStatus!=="5" &&order.orderStatus!=="6"  ) { %>
                                                     <a href="/admin/delete-order?id=<%= order._id %>"
                                                         class="btn btn-danger rounded font-sm">Delete</a>
                                                     <% } %>

@@ -174,10 +174,19 @@
                                 <div class="step-icon-wrap">
                                     <div class="step-icon"><i class="material-icons md-check_circle"></i></div>
                                 </div>
-                                <h4 class="step-title">Product Delivered</h4>
-                                <small class="text-muted text-sm">
+                                <% if (order.orderStatus==='6') { %>
+                                 <strike><h4 class="step-title">Product Delivered</h4></strike>
+                                <strike><small class="text-muted text-sm">
                                     <%= order.deliveryDate.toDateString() %>
-                                </small>
+                                </small></strike> <br>
+                                <small  class="text-muted text-sm">Returned</small>
+                                <% }else{ %>
+                                    <h4 class="step-title">Product Delivered</h4>
+                                    <small class="text-muted text-sm">
+                                        <%= order.deliveryDate.toDateString() %>
+                                    </small>
+                                <% } %>
+                               
                             </div>
                         </div>
                         
@@ -262,10 +271,10 @@
                         </div> <!-- col// -->
                     </div> <!-- row // -->
                     
-                  <% if (order.orderStatus==='5') { %>
+                  <% if (order.orderStatus==='5'|| order.orderStatus=='6') { %>
                     <div class="row">
                         <div class="col-md-12">
-                            <h6 class="mb-3">Canellation Reason</h6>
+                            <h6 class="mb-3"><%= order.orderStatus==='5'?'Canellation Reason':"Return Reason" %></h6>
                             <ul class="list-group">
                               <h6 style="color: rgb(254, 3, 3);"><%= reason.reason %></h6>
                             </ul>

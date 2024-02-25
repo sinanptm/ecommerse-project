@@ -19,7 +19,7 @@ const is_admin = async (req, res, next) => {
   }
 };
 
-// * for admin login otp serveice
+// * for admin login otp Validation
 
 // const is_registered = async (req, res, next) => {
 //   if (req.session.OTPId) {

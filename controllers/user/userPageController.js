@@ -226,13 +226,13 @@ const loadAccount = async (req, res) => {
 
         switch (filter) {
             case '5':
-                filterQuery.orderStatus = '5';
+                filterQuery.orderStatus = '5' ;
                 break;
             case '4':
-                filterQuery.orderStatus = '4';
+                filterQuery.orderStatus = {$in:['4','6']};
                 break;
             case 'all':
-                filterQuery.orderStatus = { $in: ['1', '2', '3'] }; // Adjusted to include all relevant statuses
+                filterQuery.orderStatus = { $in: ['1', '2', '3'] }; 
                 break;
             default:
                 break;
@@ -443,7 +443,8 @@ const cancelOrder = async (req, res) => {
             userid,
             orderid: orderId,
             cancelationTime: Date.now(),
-            reason: cancelReason
+            reason: cancelReason,
+            type: "cancel"
         });
         await newReason.save();
         if (order.paymentStatus == 'completed' && (typeof order.offlinePayment === 'undefined' || order.offlinePayment === null || order.offlinePayment === false)) {
@@ -482,6 +483,74 @@ const cancelOrder = async (req, res) => {
         res.status(500).redirect('/account?msg=' + error.message);
     }
 };
+
+
+const returnOrder = async (req, res) => {
+    try {
+        const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
+        const orderId = req.query.id;
+        const cancelReason = req.query.msg;
+
+        if (!isValidObjectId(orderId)) {
+            return res.status(404).json({ message: "Invalid Order ID" });
+        }
+
+        const order = await Order.findById(orderId);
+
+        if (!order) {
+            return res.status(404).json({ message: "Order Not Found" });
+        }
+
+        order.orderStatus = '6';
+        await order.save();
+
+        const newReason = new CancelationReson({
+            userid: userId,
+            orderid: orderId,
+            cancelationTime: Date.now(),
+            reason: cancelReason,
+            type: "cancel"
+        });
+        await newReason.save();
+
+        if (order.paymentStatus === 'completed') {
+            let wallet = await Wallet.findOne({ userid: userId });
+
+            if (wallet) {
+                await wallet.updateOne({
+                    $set: { updatedAt: new Date() },
+                    $push: {
+                        transactions: {
+                            type: 'credit',
+                            amount: order.orderAmount,
+                            orderid: order._id
+                        }
+                    },
+                    $inc: { balance: order.orderAmount }
+                });
+            } else {
+                wallet = new Wallet({
+                    userid: userId,
+                    createdAt: new Date(),
+                    balance: order.orderAmount,
+                    transactions: [{
+                        type: 'credit',
+                        amount: order.orderAmount,
+                        orderid: order._id,
+                    }],
+                    updatedAt: new Date(),
+                });
+                await wallet.save();
+            }
+        }
+
+        res.status(200).json({ success: true });
+
+    } catch (error) {
+        console.error('Error returning order:', error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
 
 
 // * for deleting address
@@ -687,6 +756,7 @@ module.exports = {
     deleteAddress,
     edittAddress,
     cancelOrder,
+    returnOrder,
     changePassword,
     createInvoice,
     contactAdmin,
