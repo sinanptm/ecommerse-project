@@ -77,16 +77,16 @@ const requireLogin = async (req, res, next) => {
 const notifications = async (req, res, next) => {
     try {
         res.locals.title = "TRENDS"
+        const banner = await Banner.findOne()
+        res.locals.banner = banner
         if (req.cookies.token || req.session.token) {
             const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
             const cart = await Cart.findOne({ userId })
             const whish = await Wishlist.findOne({ userid: userId })
             const msg = await Message.find({ userId, status: "resolved" })
-            const banner = await Banner.findOne()
 
             res.locals.whishItems = whish ? whish.products.length : 0
             res.locals.messages = msg ? msg.length : 0
-            res.locals.banner = banner
             res.locals.cartItems = cart ? cart.items || 0 : 0;
             res.locals.valid = req.cookies.token || req.session.token;
             next();
