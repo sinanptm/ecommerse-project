@@ -1,4 +1,10 @@
 
+
+
+
+
+
+
 async function searchUser(event) {
 	const name = event.target.value.trim()
 	if (name !== '') {
@@ -43,22 +49,22 @@ async function searchCategory(event) {
 async function searchProducts(event) {
 	try {
 		const name = event.target.value.trim()
-		if (name!=='') {
+		if (name !== '') {
 			$.ajax({
-			url:'/admin/products',
-			method:"GET",
-			data:{
-				name:name
-			},
-			success:(res)=>{
-				window.location.href = `/admin/products?name=${name}`
-			},
-			error:(err)=>{
-				throw new Error(err)
-			}
-		})
+				url: '/admin/products',
+				method: "GET",
+				data: {
+					name: name
+				},
+				success: (res) => {
+					window.location.href = `/admin/products?name=${name}`
+				},
+				error: (err) => {
+					throw new Error(err)
+				}
+			})
 		}
-		
+
 	} catch (error) {
 		console.log('error in searching products:', error.message);
 	}
@@ -195,7 +201,7 @@ async function orderSort(page, event, sort2) {
 }
 
 
-async function userSort(event, page,name) {
+async function userSort(event, page, name) {
 	try {
 		const sort = event.target.value
 		if (sort) {
@@ -205,7 +211,7 @@ async function userSort(event, page,name) {
 				data: {
 					sort: sort,
 					page: page,
-					name:name
+					name: name
 				}
 			})
 			$('#content-main').html($(res).find('#content-main').html());
@@ -216,7 +222,7 @@ async function userSort(event, page,name) {
 }
 
 
-async function categorySort(event, page,name) {
+async function categorySort(event, page, name) {
 	const sort = event.target.value;
 	if (sort) {
 		try {
@@ -226,7 +232,7 @@ async function categorySort(event, page,name) {
 				data: {
 					page: page,
 					sort: sort,
-					name:name
+					name: name
 				}
 			});
 			$('#content-main').html($(res).find('#content-main').html());
