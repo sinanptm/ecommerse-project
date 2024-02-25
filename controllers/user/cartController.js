@@ -756,8 +756,13 @@ const showSuccess = async (req, res) => {
 
 const loadWhishList = async (req, res) => {
   try {
-    const userid = await getUserIdFromToken(req.cookies.token || req.session.token);
-
+    req.session.coupon = 0
+    const token = req.cookies.token || req.session.token;
+    if (!token) {
+      return res.render("wishlist", { products: []});
+    }
+    
+    const userid = await getUserIdFromToken(token);
     const existingWishlist = await Wishlist.findOne({ userid });
 
     if (existingWishlist) {
@@ -767,7 +772,7 @@ const loadWhishList = async (req, res) => {
       res.render("wishlist", { products: [] });
     }
   } catch (error) {
-    console.log(error.message);
+    console.log('error in laoding wishlist ',error.message);
     res.status(500).send("Internal Server Error");
   }
 };

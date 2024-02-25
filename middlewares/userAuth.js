@@ -11,7 +11,7 @@ const is_registered = async (req, res, next) => {
             res.redirect("/register");
         }
     } catch (error) {
-        res.redirect("/home")
+        res.status(304).redirect('/')
         console.log('error in is_registered', error.message);
     }
 };
@@ -34,7 +34,7 @@ const is_loginRequired = async (req, res, next) => {
         }
     } catch (err) {
         console.error("Error checking authentication for login and signup pages:", err.message);
-        res.status(500).send("Internal Server Error");
+        res.status(304).redirect('/')
     }
 };
 
@@ -67,10 +67,9 @@ const requireLogin = async (req, res, next) => {
         }
     } catch (err) {
         console.log("Error checking login status:", err.message);
-        res.status(500).send("Internal Server Error");
         req.session.destroy()
         req.clearCookie("token")
-        res.redirect("/home")
+        res.status(304).redirect('/')
     }
 };
 
@@ -103,7 +102,8 @@ const notifications = async (req, res, next) => {
         res.locals.whishItems = 0;
         res.locals.valid = req.cookies.token || req.session.token;
         next();
-        console.log("Invalid Credentials:", error.message);
+        console.log("error in laoding notification :", error.message);
+        res.status(304).redirect('/')
     }
 }
 
