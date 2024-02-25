@@ -403,7 +403,7 @@ async function remoWhishProduct(id) {
 
 async function products_whishlist(e, id, name) {
     try {
-        const clickedButton = event.target;
+        const clickedButton = e.target;
         const parentDiv = clickedButton.parentElement;
         const imgElement = parentDiv.querySelector("img");
 

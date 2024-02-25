@@ -316,7 +316,7 @@ const deleteOrder = async (req, res) => {
 const loadReport = async (req, res) => {
   try {
     let type = req.params.type;
-   
+
 
     if (!type || (type !== 'weekly' && type !== 'monthly' && type !== 'custom')) {
       res.redirect("/admin/dashboard");
@@ -331,7 +331,7 @@ const loadReport = async (req, res) => {
     if (type === 'custom') {
       const range = JSON.parse(req.query.range);
       const startDate = moment(range.start_date);
-      const endDate = moment(range.end_date);    
+      const endDate = moment(range.end_date);
 
       if (!startDate.isValid() || !endDate.isValid()) {
         res.status(400).json({ error: "Invalid date format" });
@@ -399,7 +399,7 @@ const getSalesReport = async (req, res) => {
       preferCSSPageSize: true,
     });
     const pages = await browser.pages()
-    await Promise.all(pages.map(page=>{page.close()}))
+    await Promise.all(pages.map(page => { page.close() }))
     await browser.close();
 
     res.set({
@@ -420,9 +420,11 @@ const loadCoupons = async (req, res) => {
   try {
     // ? for deleting the expired coupon 
     await Coupon.deleteMany({ expDate: { $lt: Date.now() } })
+    const count = await Coupon.countDocuments()
+
     const coupons = await Coupon.find()
 
-    res.render('coupon', { coupons })
+    res.render('coupon', { coupons, count })
   } catch (error) {
     console.log(error.message);
   }

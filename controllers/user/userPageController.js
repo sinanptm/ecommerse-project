@@ -210,6 +210,8 @@ const loadAccount = async (req, res) => {
         const skip = (page - 1) * limit;
 
 
+
+
         const user = await User.aggregate([
             { $match: { _id: createHexId(userid) } },
             {
@@ -226,13 +228,13 @@ const loadAccount = async (req, res) => {
 
         switch (filter) {
             case '5':
-                filterQuery.orderStatus = '5' ;
+                filterQuery.orderStatus = '5';
                 break;
             case '4':
-                filterQuery.orderStatus = {$in:['4','6']};
+                filterQuery.orderStatus = { $in: ['4', '6'] };
                 break;
             case 'all':
-                filterQuery.orderStatus = { $in: ['1', '2', '3'] }; 
+                filterQuery.orderStatus = { $in: ['1', '2', '3'] };
                 break;
             default:
                 break;
@@ -279,6 +281,8 @@ const loadAccount = async (req, res) => {
         let wallet = await Wallet.findOne({ userid }).lean()
         wallet.transactions = wallet.transactions.reverse()
 
+        // ? for deleting the expired coupon 
+        await Coupon.deleteMany({ expDate: { $lt: Date.now() } })
         const coupons = await Coupon.find();
 
         const message = await Message.find({ userId: userid, status: 'resolved' })
