@@ -117,7 +117,7 @@
             <div class="content-header">
                 <div>
                     <h2 class="content-title card-title">Order List </h2>
-                    <p>Total Orders: <%= count ||0 %>.</p>
+                    <p>Total Orders: <%= totalOrders ||0 %>.</p>
                 </div>
 
             </div>
@@ -144,6 +144,7 @@
                                 <option value="3" <%=sort==='3' ? 'selected' : '' %>>Shipped</option>
                                 <option value="4" <%=sort==='4' ? 'selected' : '' %>>Delivered</option>
                                 <option value="5" <%=sort==='5' ? 'selected' : '' %>>Cancelled</option>
+                                <option value="6" <%=sort==='6' ? 'selected' : '' %>>Returned</option>
                             </select>
                         </div>
                     </div>
