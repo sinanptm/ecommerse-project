@@ -81,7 +81,8 @@ const notifications = async (req, res, next) => {
         if (req.cookies.token || req.session.token) {
             const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
             const cart = await Cart.findOne({ userId })
-            const whish = await Wishlist.findOne({ userid: userId })
+            let whish = await Wishlist.findOne({ userid: userId }).lean()
+            whish.products = new Set(whish.products)
             const msg = await Message.find({ userId, status: "resolved" })
 
             res.locals.whishItems = whish ? whish.products.length : 0
