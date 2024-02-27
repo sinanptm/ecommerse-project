@@ -1,7 +1,7 @@
 const { path, express } = require("../util/modules");
 const adminRoute = express();
-const { upload,banner } = require("../util/multer");
-const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout, loadMessages, sendReply , loadBanners, editBanner, addHomeBanner,deleteBanner} = require("../controllers/admin/userControlller");
+const { upload, banner } = require("../util/multer");
+const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout, loadMessages, sendReply, loadBanners, editBanner, addHomeBanner, deleteBanner } = require("../controllers/admin/userControlller");
 const { loadDashBoard, loadOrders, deleteOrder, editOrder, loadOrder, loadReport, getSalesReport, loadCoupons, addCoupon, deleteCoupon, editCoupon } = require("../controllers/admin/orderController");
 const { loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, } = require("../controllers/admin/products&catogoire")
 const { is_loginRequired, is_admin, handleUndefinedRoutes } = require("../middlewares/auth");
@@ -66,9 +66,9 @@ adminRoute.post("/edit-coupon", editCoupon)
 
 // * Banner managment
 adminRoute.get("/banner-managment", loadBanners)
-adminRoute.put("/edit-banner/:page",banner.single("file"), editBanner)
-adminRoute.post("/add-home-banner",banner.single('file'),addHomeBanner)
-adminRoute.delete("/delete-banner/:index",deleteBanner)
+adminRoute.put("/edit-banner/:page", banner.single("file"), editBanner)
+adminRoute.post("/add-home-banner", banner.single('file'), addHomeBanner)
+adminRoute.delete("/delete-banner/:index", deleteBanner)
 
 // * Orders managment
 adminRoute.get("/orders-list", loadOrders)

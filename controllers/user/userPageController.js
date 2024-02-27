@@ -1,7 +1,7 @@
 const { Product, Order, CancelationReson, Category, Coupon, Message } = require("../../models/productModel")
 const { User, Addresse, Wishlist, Wallet } = require("../../models/userModels")
 const { getUserIdFromToken, bcryptCompare, makeHash, createHexId, isValidObjectId } = require('../../util/validations');
-const { puppeteer } = require("../../util/modules")
+const { PDFDocument } = require("../../util/modules")
 
 
 // * homepage Loading
@@ -588,91 +588,95 @@ const createInvoice = async (req, res) => {
             orderStatus: { $nin: ['4', '5'] }
         }).populate('OrderedItems.productid');
 
-        const browser = await puppeteer.launch({ headless: "new" });
-        const page = await browser.newPage();
+        // Create a new PDF document
+        const doc = new PDFDocument();
 
-        await page.setContent(`  
-            ${generateOrderTable(pendings)}
-        `);
+        // Pipe the PDF content to a buffer
+        const buffers = [];
+        doc.on('data', buffers.push.bind(buffers));
+        doc.on('end', () => {
+            const pdfBuffer = Buffer.concat(buffers);
+            
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
+            res.send(pdfBuffer);
+        });
 
-        const pdfBuffer = await page.pdf({ format: 'A4' });
+        // Generate the PDF content
+        generateInvoice(doc, pendings);
 
-        const pages = await browser.pages()
-        await Promise.all(pages.map(page => { page.close() }))
-        await browser.close();
+        // Finalize the PDF document
+        doc.end();
 
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
-
-        res.send(pdfBuffer);
     } catch (error) {
         console.error('Error creating invoice:', error);
         res.status(500).json({ error: 'Error creating invoice' });
     }
 };
 
-
-// * For Genreating html table for invoice
-function generateOrderTable(orders) {
-    let html = `
-        <div style="font-family: Arial, sans-serif; margin: 0 auto; max-width: 600px;">
-            <h1 style="text-align: center; color: #333;">Invoice</h1>
-            <p style="text-align: center; color: #666;">Kindly complete your pending payments to receive your orders</p>
-            <p style="text-align: center; color: #666;">User ID: SK203</p>
-            <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
-                <thead>
-                    <tr style="background-color: #f2f2f2;">
-                        <th style="padding: 10px; text-align: left;">Order ID</th>
-                        <th style="padding: 10px; text-align: left;">Product Name</th>
-                        <th style="padding: 10px; text-align: left;">Quantity</th>
-                        <th style="padding: 10px; text-align: left;">Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-    `;
-
+function calculateTotalAmount(orders) {
     let totalAmount = 0;
+    orders.forEach(order => {
+        totalAmount += order.orderAmount;
+    });
+    return totalAmount;
+}
+
+function generateInvoice(doc, orders) {
+    // Set font and font size
+    doc.font('Helvetica');
+
+    // Title
+    doc.fontSize(24).text('Invoice', { align: 'center' }).moveDown();
+
+    // Information
+    doc.fontSize(14).text('Kindly complete your pending payments to receive your orders', { align: 'center' });
+    doc.text('User ID: SK203', { align: 'center' }).moveDown();
+
+    // Table header
+    const tableTop = doc.y + 20;
+    const colWidths = [150, 250, 100, 100];
+    const rowHeight = 30;
+
+    doc.fontSize(12).font('Helvetica-Bold');
+    doc.text('Order ID', 50, tableTop);
+    doc.text('Product Name', 200, tableTop);
+    doc.text('Quantity', 400, tableTop);
+    doc.text('Price', 500, tableTop);
+
+    // Table rows
+    doc.font('Helvetica');
+    let yPos = tableTop + rowHeight;
 
     orders.forEach(order => {
         const orderId = 'SK' + Math.floor(100000 + Math.random() * 900000);
-
-        order.OrderedItems.forEach((item, index) => {
-            if (index === 0) {
-                html += `
-                    <tr>
-                        <td style="padding: 10px;">${orderId}</td>
-                        <td style="padding: 10px;">${item.name}</td>
-                        <td style="padding: 10px;">${item.quantity}</td>
-                        <td style="padding: 10px;">${((item.price - (item.price * item.discount / 100)) * item.quantity).toFixed(2)}                        </td>
-                    </tr>
-                `;
-            } else {
-                html += `
-                    <tr>
-                        <td></td>
-                        <td style="padding: 10px;">${item.name}</td>
-                        <td style="padding: 10px;">${item.quantity}</td>
-                        <td style="padding: 10px;">${(item.price * item.quantity).toFixed(2)}</td>
-                    </tr>
-                `;
-            }
+        order.OrderedItems.forEach(item => {
+            doc.text(orderId, 50, yPos);
+            doc.text(item.name, 200, yPos, { width: colWidths[1] });
+            doc.text(item.quantity.toString(), 400, yPos);
+            const price = Math.round(((item.price - (item.price * item.discount / 100)) * item.quantity));
+            doc.text(price, 500, yPos);
+            yPos += rowHeight;
         });
-
-        totalAmount += order.orderAmount;
     });
 
+    // Total amount
+    const totalAmount = calculateTotalAmount(orders);
+    const totalInvoiceText = `Total Invoice Amount: $${totalAmount.toFixed(2)}`;
+    const thankYouText = 'Thank you for shopping with TRENDS';
+    const maxLength = Math.max(totalInvoiceText.length, thankYouText.length);
+    const totalInvoiceLine = `${totalInvoiceText}${' '.repeat(maxLength - totalInvoiceText.length)}`;
+    const thankYouLine = `${thankYouText}${' '.repeat(maxLength - thankYouText.length)}`;
 
 
-    html += `
-                </tbody>
-            </table>
-            <p style="text-align: right; color: #333; margin-top: 20px;">Total Invoice Amount: ${totalAmount.toFixed(2)}</p>
-            <p style="text-align: right; color: #666;">Thank you for shopping with TRENDS</p>
-        </div>
-    `;
 
-    return html;
+    doc.moveDown(2); 
+    doc.fontSize(14).text(totalInvoiceLine, yPos);
+    doc.fontSize(14).text(thankYouLine, { align: 'left' });
 }
+
+
+
 
 
 

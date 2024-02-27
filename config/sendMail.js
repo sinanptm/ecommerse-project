@@ -22,9 +22,9 @@ const transporter = nodemailer.createTransport({
 
 transporter.verify((err, success) => {
   if (err) {
-    console.log('Mail Serviece:',err);
+    console.log('Mail Serviece:', err);
   } else {
-    console.log('Mail Serviece:',success);
+    console.log('Mail Serviece:', success);
   }
 });
 
@@ -87,7 +87,7 @@ const sendOTPs = async ({ email, subject = "TRENDS OTP verification", message = 
 };
 
 
-const sendNewPass = async ({ email, subject = "TRENDS Forget Password", message = "Thank you for connecting with us", duration = 1 ,req}) => {
+const sendNewPass = async ({ email, subject = "TRENDS Forget Password", message = "Thank you for connecting with us", duration = 1, req }) => {
   try {
     if (!email && subject && message) {
       throw Error("Provide values for email, message, and password");
@@ -113,7 +113,7 @@ const sendNewPass = async ({ email, subject = "TRENDS Forget Password", message 
     const durationInMinutes = 5; // Set the desired number of minutes
     const expirationTime = new Date(new Date().getTime() + durationInMinutes * 60 * 1000);
 
-    
+
     const newOTP = new OTP({
       email,
       otp: otp.trim(),

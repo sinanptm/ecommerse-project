@@ -1,7 +1,7 @@
 {
-    "recommendations": [
-        "aaron-bond.better-comments",
-        "esbenp.prettier-vscode",
-        "vscode-icons-team.vscode-icons"
-    ]
+  "recommendations": [
+    "aaron-bond.better-comments",
+    "esbenp.prettier-vscode",
+    "vscode-icons-team.vscode-icons"
+  ]
 }

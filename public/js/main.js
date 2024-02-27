@@ -57,7 +57,7 @@ function showPersonalInfo() {
 function showAddresses() {
     resetButtonColors(); // Reset button colors
     document.getElementById('heading').innerHTML = "My Addresses";
-    document.getElementById('address-nav').style.color = 'black' 
+    document.getElementById('address-nav').style.color = 'black'
     document.getElementById('messagesection').style.display = 'none';
     document.getElementById('personalInfo').style.display = 'none';
     document.getElementById('addresssssss').style.display = 'block';
@@ -133,27 +133,27 @@ async function accountPagination(i, filter) {
         })
         $('#orders').html($(res).find("#orders").html())
     } catch (error) {
-        console.log('error in pagination '+error.message);
+        console.log('error in pagination ' + error.message);
     }
 }
 
 async function downloadInvoice() {
     try {
-        swal("Processing", "Please wait while we are loading", "info");
+        new Swal("Processing", "Please wait while we are loading", "info");
         $.ajax({
-            url:'/create-invoice',
-            method:"POST",
-            success:()=>{
+            url: '/create-invoice',
+            method: "POST",
+            success: () => {
                 document.getElementById('invoiceForm').submit();
             },
             error: (error) => {
                 console.error('Error downloading invoice:', error);
-                swal("Error", "Failed to download invoice", "error");
+                new swal("Error", "Failed to download invoice", "error");
             }
         });
     } catch (error) {
         console.error('Error downloading invoice:', error);
-        swal("Error", "Failed to download invoice", "error");
+        new swal("Error", "Failed to download invoice", "error");
     }
 }
 
@@ -161,10 +161,10 @@ async function orderFilter(event) {
     try {
         const filter = event.target.value;
         const res = await $.ajax({
-            url:'/account',
-            method:"GET",
-            data:{
-                filter:filter
+            url: '/account',
+            method: "GET",
+            data: {
+                filter: filter
             }
         })
         await as();
@@ -198,19 +198,19 @@ document.addEventListener('DOMContentLoaded', function () {
 async function searchProducts(event) {
     try {
         const name = event.target.value.trim();
-        if (name !== "") { 
+        if (name !== "") {
             const response = await $.ajax({
                 url: "/products",
                 method: "GET",
                 data: {
                     name: name,
                 },
-            
+
             });
             $("#mainBody").html($(response).find("#mainBody").html())
             $(".filter-col1").html($(response).find(".filter-col1").html())
             $("filter-col2").html($(response).find(".filter-col2").html())
-            
+
         }
 
     } catch (error) {
@@ -287,7 +287,7 @@ async function updateQuantity(id, change) {
 
 
 
-async function cataogorieSort(event, sort, page, price,name) {
+async function cataogorieSort(event, sort, page, price, name) {
     try {
         const catType = event.target.dataset.sort;
         if (catType) {
@@ -298,8 +298,8 @@ async function cataogorieSort(event, sort, page, price,name) {
     }
 }
 
-                    
-async function productsSort(event, category, page, price ,name) {
+
+async function productsSort(event, category, page, price, name) {
     try {
         const sortType = event.target.dataset.sort;
         if (sortType) {
@@ -311,7 +311,7 @@ async function productsSort(event, category, page, price ,name) {
                     category: category,
                     page: page,
                     price: price,
-                    name:name
+                    name: name
                 },
 
             });
@@ -327,7 +327,7 @@ async function productsSort(event, category, page, price ,name) {
     }
 }
 
-async function priceSort(event, page, sort, category,name) {
+async function priceSort(event, page, sort, category, name) {
     try {
         const price = event.target.dataset.sort
         if (price) {
@@ -339,7 +339,7 @@ async function priceSort(event, page, sort, category,name) {
                     sort: sort,
                     category: category,
                     price: price,
-                    name:name
+                    name: name
                 },
                 success: (res) => {
                     // window.location.href = `/products?page=${page}&&category=${category}&&price=${price}&&sort=${sort}`
@@ -418,7 +418,7 @@ async function products_whishlist(e, id, name) {
             $("#whishshs").html(newNoti)
             if (res) {
                 swal(name, " is added to wishlist !", "success");
-                
+
             }
 
         } else if (imgElement.id === "remove") {
@@ -464,7 +464,7 @@ var dialog = document.querySelector("dialog");
 
 $(document).ready(function () {
     $('#submitt').on("click", async () => {
-      
+
         let formdata = $('#change-password').serialize();
 
         let password = $('#newpass').val();
@@ -605,7 +605,7 @@ function deleteAddress(addressId) {
     }
 }
 
-function submitEditAddress(event,addressId) {
+function submitEditAddress(event, addressId) {
     clearEditAddressErrors();
 
     const fields = [

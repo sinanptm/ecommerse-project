@@ -13,4 +13,5 @@ module.exports = {
     session: require("express-session"),
     cookieParser: require("cookie-parser"),
     nocache: require("nocache"),
+    PDFDocument: require('pdfkit')
 }

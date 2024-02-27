@@ -38,7 +38,7 @@ const checkRegister = async (req, res) => {
       email: email,
       gender: gender,
       username: username,
-      createdate:new Date()
+      createdate: new Date()
     });
     const savedUser = await newUser.save();
     req.session.OTPId = savedUser._id.toString();
@@ -205,7 +205,7 @@ const checkLogin = async (req, res) => {
 
 const loadresetmail = async (req, res) => {
   try {
-    res.render("resetmail",{send:false})
+    res.render("resetmail", { send: false })
   } catch (error) {
     res.status(404).redirect("/login?toast=Page Not Found")
   }
@@ -218,14 +218,14 @@ const sendresetmail = async (req, res) => {
     let email
     if (req.query.email) {
       email = req.query.email
-    }else{
-      email  = req.body.email
+    } else {
+      email = req.body.email
     }
     email = email.trim()
 
     const user = await User.findOne({ email })
     if (!user) {
-      res.render("resetmail", { msg: "your Not a registered user",send:false})
+      res.render("resetmail", { msg: "your Not a registered user", send: false })
       return
     }
     await sendNewPass({
@@ -235,10 +235,10 @@ const sendresetmail = async (req, res) => {
       duration: 4,
       req,
     });
-    return res.status(200).render('resetmail',{send:true})
+    return res.status(200).render('resetmail', { send: true })
 
   } catch (error) {
-    res.render("resetmail", { msg: error.message ,send:false})
+    res.render("resetmail", { msg: error.message, send: false })
   }
 }
 
@@ -284,9 +284,9 @@ const checkNewPassword = async (req, res) => {
     const { password, email } = req.body
     const secPass = await makeHash(password);
     const data = await User.findOneAndUpdate({ email }, { $set: { password: secPass } })
-    if (req.session.token||req.cookies.token) {
+    if (req.session.token || req.cookies.token) {
       res.redirect('/account?toast=Password Changed')
-    }else{
+    } else {
       res.redirect("/login")
     }
   } catch (error) {

@@ -81,7 +81,7 @@ const Order = model("Order", ordersSchema);
 const cancelReasonschema = new Schema({
     orderid: { type: ObjectId, ref: "Order" },
     userid: { type: ObjectId, ref: "User" },
-    type: {type: String,enum:['return','cancel']},
+    type: { type: String, enum: ['return', 'cancel'] },
     reason: String,
     cancelationTime: Date
 })
@@ -97,7 +97,7 @@ const couponsSchema = new Schema({
     createdate: { type: Date },
     expDate: { type: Date },
     used: Number,
-    maxAmount:Number
+    maxAmount: Number
 });
 
 const Coupon = model("Coupon", couponsSchema);
@@ -118,26 +118,26 @@ const messageSchema = new Schema({
 const Message = model('Message', messageSchema);
 
 const bannerSchema = new Schema({
-    home:[
+    home: [
         {
-            mainHeading:String,
-            url:String,
-            subHeading:String,
-            img:String,
-            caption:String
+            mainHeading: String,
+            url: String,
+            subHeading: String,
+            img: String,
+            caption: String
         }
     ],
-    products:String,
-    cart:String,
-    wishlist:String,
-    checkout:String,
-    orderSuccess:String,
-    profile:String,
-    about:String,
-    contact:String
+    products: String,
+    cart: String,
+    wishlist: String,
+    checkout: String,
+    orderSuccess: String,
+    profile: String,
+    about: String,
+    contact: String
 })
 
-const Banner = model("Banner",bannerSchema)
+const Banner = model("Banner", bannerSchema)
 
 module.exports = {
     Order,
