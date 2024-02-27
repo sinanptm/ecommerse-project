@@ -14,7 +14,7 @@
     <meta property="og:url" content="">
     <meta property="og:image" content="">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="imgs/theme/favicon.svg">
+    <link rel="icon" type="image/png" href="user-public/images/icons/favicon-32x32.png" /> 
     <!-- Template CSS -->
     <link href="css/main.css" rel="stylesheet" type="text/css" />
 </head>
@@ -27,7 +27,7 @@
                 <h3 class="logo" alt="Evara Dashboard">TRENDS</h1>
             </a>
             <div>
-                
+
             </div>
         </div>
         <nav>
@@ -72,25 +72,26 @@
                         <span class="text">Coupons</span> </a>
                 </li>
 
-               
-            <br>
-            <br>
+
+                <br>
+                <br>
         </nav>
     </aside>
     <main class="main-wrap">
         <header class="main-header navbar">
             <div class="col-search">
-                
+
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
-                <ul class="nav"> 
-                    <li class="dropdown nav-item">                        
-                            <a class="dropdown-item text-danger" href="/admin/logout"><i
-                                    class="material-icons md-exit_to_app"></i>Logout</a>
-                        </div>
-                    </li>
-                </ul>
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
+                        class="material-icons md-apps"></i> </button>
+                <ul class="nav">
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-item text-danger" href="/admin/logout"><i
+                                class="material-icons md-exit_to_app"></i>Logout</a>
+            </div>
+            </li>
+            </ul>
             </div>
         </header>
 
@@ -169,8 +170,9 @@
                                     <div class="col-md-9">
                                         <div class="mb-4">
                                             <label class="form-label"></label>
-                                            <input type="number" required name="discount" placeholder="Enter discount percentage"
-                                                class="form-control" id="productDiscount" min="0" max="100">
+                                            <input type="number" required name="discount"
+                                                placeholder="Enter discount percentage" class="form-control"
+                                                id="productDiscount" min="0" max="100">
                                             <small class="form-text text-left" style="color: red; display: none;"
                                                 id="errorProductDiscount">Discount must be between 0 and 99</small>
                                         </div>
@@ -240,114 +242,114 @@
                 </div>
             </form>
         </section> <!-- content-main end// -->
-      <!-- content-main end// -->
-    <footer class="main-footer font-xs">
-        <div class="row pb-30 pt-15">
-          <div class="col-sm-6">
-            <script>
-              document.write(new Date().getFullYear());
-            </script>
-            ©, Trends-  Ecommerce Store.
-          </div>
-          <div class="col-sm-6">
-            <div class="text-sm-end">All rights reserved</div>
-          </div>
-        </div>
-      </footer>
+        <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    ©, Trends- Ecommerce Store.
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">All rights reserved</div>
+                </div>
+            </div>
+        </footer>
     </main>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-    const productNameInput = document.getElementById('productName');
-    const errorProductName = document.getElementById('errorProductName');
-    const productQuantityInput = document.getElementById('productQuantity');
-    const errorProductQuantity = document.getElementById('errorProductQuantity');
-    const productStatusSelect = document.getElementById('productStatus');
-    const errorProductStatus = document.getElementById('errorProductStatus');
-    const productPriceInput = document.getElementById('productPrice');
-    const errorProductPrice = document.getElementById('errorProductPrice');
-    const productDiscountInput = document.getElementById('productDiscount');
-    const errorProductDiscount = document.getElementById('errorProductDiscount');
-    const productCategoryInput = document.getElementsByName('categoryid');
-    const errorProductCategory = document.getElementById('errorProductCategory');
+            const productNameInput = document.getElementById('productName');
+            const errorProductName = document.getElementById('errorProductName');
+            const productQuantityInput = document.getElementById('productQuantity');
+            const errorProductQuantity = document.getElementById('errorProductQuantity');
+            const productStatusSelect = document.getElementById('productStatus');
+            const errorProductStatus = document.getElementById('errorProductStatus');
+            const productPriceInput = document.getElementById('productPrice');
+            const errorProductPrice = document.getElementById('errorProductPrice');
+            const productDiscountInput = document.getElementById('productDiscount');
+            const errorProductDiscount = document.getElementById('errorProductDiscount');
+            const productCategoryInput = document.getElementsByName('categoryid');
+            const errorProductCategory = document.getElementById('errorProductCategory');
 
-    productNameInput.addEventListener("input", function (event) {
-        validateInput(event, errorProductName, "Product title");
-    });
+            productNameInput.addEventListener("input", function (event) {
+                validateInput(event, errorProductName, "Product title");
+            });
 
-    productQuantityInput.addEventListener("input", function (event) {
-        validateQuantity(event, errorProductQuantity, "Quantity");
-    });
+            productQuantityInput.addEventListener("input", function (event) {
+                validateQuantity(event, errorProductQuantity, "Quantity");
+            });
 
-    productStatusSelect.addEventListener("change", function (event) {
-        validateInput(event, errorProductStatus, "Status");
-    });
+            productStatusSelect.addEventListener("change", function (event) {
+                validateInput(event, errorProductStatus, "Status");
+            });
 
-    productPriceInput.addEventListener("input", function (event) {
-        validatePrice(event, errorProductPrice, "Cost in INR");
-    });
+            productPriceInput.addEventListener("input", function (event) {
+                validatePrice(event, errorProductPrice, "Cost in INR");
+            });
 
-    productDiscountInput.addEventListener("input", function (event) {
-        validateDiscount(event, errorProductDiscount, "Discount");
-    });
+            productDiscountInput.addEventListener("input", function (event) {
+                validateDiscount(event, errorProductDiscount, "Discount");
+            });
 
-    productCategoryInput.forEach(function (categoryInput) {
-        categoryInput.addEventListener("change", function (event) {
-            validateInput(event, errorProductCategory, "Category");
+            productCategoryInput.forEach(function (categoryInput) {
+                categoryInput.addEventListener("change", function (event) {
+                    validateInput(event, errorProductCategory, "Category");
+                });
+            });
+
+            function validateInput(event, errorElement, fieldName) {
+                const enteredValue = event.target.value;
+                if (enteredValue.trim() === "") {
+                    errorElement.textContent = fieldName + " cannot be empty";
+                    errorElement.style.display = "block";
+                    event.target.style.border = "1px solid red";
+                } else {
+                    errorElement.textContent = "";
+                    errorElement.style.display = "none";
+                    event.target.style.border = "";
+                }
+            }
+
+            function validateQuantity(event, errorElement, fieldName) {
+                const enteredValue = parseInt(event.target.value);
+                if (enteredValue <= 0) {
+                    errorElement.textContent = fieldName + " must be greater than zero";
+                    errorElement.style.display = "block";
+                    event.target.style.border = "1px solid red";
+                } else {
+                    errorElement.textContent = "";
+                    errorElement.style.display = "none";
+                    event.target.style.border = "";
+                }
+            }
+
+            function validatePrice(event, errorElement, fieldName) {
+                const enteredValue = parseFloat(event.target.value);
+                if (enteredValue <= 0) {
+                    errorElement.textContent = fieldName + " must be greater than zero";
+                    errorElement.style.display = "block";
+                    event.target.style.border = "1px solid red";
+                } else {
+                    errorElement.textContent = "";
+                    errorElement.style.display = "none";
+                    event.target.style.border = "";
+                }
+            }
+
+            function validateDiscount(event, errorElement, fieldName) {
+                const enteredValue = parseFloat(event.target.value);
+                if (enteredValue < 0 || enteredValue >= 100) {
+                    errorElement.textContent = "Discount must be between 0 and 99";
+                    errorElement.style.display = "block";
+                    event.target.style.border = "1px solid red";
+                } else {
+                    errorElement.textContent = "";
+                    errorElement.style.display = "none";
+                    event.target.style.border = "";
+                }
+            }
         });
-    });
-
-    function validateInput(event, errorElement, fieldName) {
-        const enteredValue = event.target.value;
-        if (enteredValue.trim() === "") {
-            errorElement.textContent = fieldName + " cannot be empty";
-            errorElement.style.display = "block";
-            event.target.style.border = "1px solid red";
-        } else {
-            errorElement.textContent = "";
-            errorElement.style.display = "none";
-            event.target.style.border = "";
-        }
-    }
-
-    function validateQuantity(event, errorElement, fieldName) {
-        const enteredValue = parseInt(event.target.value);
-        if (enteredValue <= 0) {
-            errorElement.textContent = fieldName + " must be greater than zero";
-            errorElement.style.display = "block";
-            event.target.style.border = "1px solid red";
-        } else {
-            errorElement.textContent = "";
-            errorElement.style.display = "none";
-            event.target.style.border = "";
-        }
-    }
-
-    function validatePrice(event, errorElement, fieldName) {
-        const enteredValue = parseFloat(event.target.value);
-        if (enteredValue <= 0) {
-            errorElement.textContent = fieldName + " must be greater than zero";
-            errorElement.style.display = "block";
-            event.target.style.border = "1px solid red";
-        } else {
-            errorElement.textContent = "";
-            errorElement.style.display = "none";
-            event.target.style.border = "";
-        }
-    }
-
-    function validateDiscount(event, errorElement, fieldName) {
-        const enteredValue = parseFloat(event.target.value);
-        if (enteredValue < 0 || enteredValue >= 100) {
-            errorElement.textContent = "Discount must be between 0 and 99";
-            errorElement.style.display = "block";
-            event.target.style.border = "1px solid red";
-        } else {
-            errorElement.textContent = "";
-            errorElement.style.display = "none";
-            event.target.style.border = "";
-        }
-    }
-});
 
     </script>
     <script src="js/vendors/jquery-3.6.0.min.js"></script>

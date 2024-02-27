@@ -1,7 +1,7 @@
 const { User } = require("../../models/userModels");
 const { sendNewPass, deleteExpiredOTPs, sendOTPs } = require("../../config/sendMail");
 const { OTP } = require("../../models/otpModel");
-const { makeHash, bcryptCompare, generateToken } = require("../../util/validations")
+const { makeHash, bcryptCompare, generateToken } = require("../../util/validations");
 
 // * User registation page 
 const loadRegister = async (req, res) => {

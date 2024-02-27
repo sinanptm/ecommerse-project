@@ -1,4 +1,4 @@
-const { Product, Category } = require("../../models/productModel")
+const { Product, Category } = require("../../models/productModel");
 const { createHexId, isValidObjectId } = require('../../util/validations');
 const { sharp, path } = require("../../util/modules");
 

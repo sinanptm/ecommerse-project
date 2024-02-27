@@ -8,5 +8,5 @@ const OTPSchena = new Schema({
     expiresAt: { type: Date }
 })
 
-const OTP = model("OTP", OTPSchena)
-module.exports = { OTP }
+const OTP = model("OTP", OTPSchena);
+module.exports = { OTP };

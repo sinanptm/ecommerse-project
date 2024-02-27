@@ -1,8 +1,8 @@
 const { User, Admin, } = require("../../models/userModels");
-const { Message, Banner } = require('../../models/productModel')
+const { Message, Banner } = require('../../models/productModel');
 const { sendOTPs } = require("../../config/sendMail");
 const { OTP } = require("../../models/otpModel");
-const { makeHash, bcryptCompare } = require("../../util/validations")
+const { makeHash, bcryptCompare } = require("../../util/validations");
 
 //  * Admin Login page 
 const loadLogin = async (req, res) => {

@@ -1,10 +1,10 @@
-const { jwt, bcrypt } = require('../util/modules')
-const mongoose = require("mongoose")
+const { jwt, bcrypt } = require('../util/modules');
+const mongoose = require("mongoose");
 
 //  * Bcrypt hashing function
 const makeHash = async (pass) => {
   try {
-    pass = pass.trim()
+    pass = pass.trim();
     return await bcrypt.hash(pass, 10);
   } catch (error) {
     console.log(error.message);
@@ -17,7 +17,7 @@ const bcryptCompare = async (str, bfr) => {
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 
 

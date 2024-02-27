@@ -1,4 +1,4 @@
-const { connect } = require("mongoose")
+const { connect } = require("mongoose");
 module.exports = () => {
   connect(process.env.MONGO_URL)
     .then(() => {

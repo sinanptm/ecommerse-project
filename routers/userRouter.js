@@ -44,30 +44,30 @@ userRoute.use(requireLogin)
 
 // * Cart managment 
 userRoute.get("/cart", loadCart);
-userRoute.post("/add-to-cart", addToCart)
-userRoute.post('/quantity-manage/:id', addQuantity)
-userRoute.delete('/removeProduct/:id', removeProduct)
-userRoute.get("/addtocart", addToCartProductPage)
+userRoute.post("/add-to-cart", addToCart);
+userRoute.post('/quantity-manage/:id', addQuantity);
+userRoute.delete('/removeProduct/:id', removeProduct);
+userRoute.get("/addtocart", addToCartProductPage);
 
 // * checkout routes 
-userRoute.post('/to-checkout', addToCheckout)
-userRoute.get('/checkout', loadCheckout)
-userRoute.post("/place-order", placeOrder)
-userRoute.post("/online-payment", online_payment)
-userRoute.get('/order-success', showSuccess)
+userRoute.post('/to-checkout', addToCheckout);
+userRoute.get('/checkout', loadCheckout);
+userRoute.post("/place-order", placeOrder);
+userRoute.post("/online-payment", online_payment);
+userRoute.get('/order-success', showSuccess);
 userRoute.get("/logout", userLogout);
 
 // * User Profile Routes
-userRoute.get('/account', loadAccount)
-userRoute.post('/create-invoice', createInvoice)
+userRoute.get('/account', loadAccount);
+userRoute.post('/create-invoice', createInvoice);
 userRoute.put('/edit-details', editDetails);
-userRoute.post("/change-password", changePassword)
-userRoute.post('/add-address', addAddress)
-userRoute.put('/edit-address/:id', edittAddress)
+userRoute.post("/change-password", changePassword);
+userRoute.post('/add-address', addAddress);
+userRoute.put('/edit-address/:id', edittAddress);
 userRoute.delete('/delete-address/:id', deleteAddress);
 
-userRoute.post('/cancel-order', cancelOrder)
-userRoute.delete("/return-order", returnOrder)
+userRoute.post('/cancel-order', cancelOrder);
+userRoute.delete("/return-order", returnOrder);
 
 // * Whish list managment 
 userRoute.get("/whishlist", loadWhishList);

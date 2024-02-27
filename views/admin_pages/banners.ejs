@@ -14,14 +14,14 @@
     <meta property="og:url" content="">
     <meta property="og:image" content="">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="imgs/theme/favicon.svg">
+    <link rel="icon" type="image/png" href="user-public/images/icons/favicon-32x32.png" /> 
     <!-- Template CSS -->
     <link href="css/main.css" rel="stylesheet" type="text/css" />
-    	<!-- Include SweetAlert library -->
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-	<!-- Include jQuery library -->
-	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-	<!-- Other necessary head elements (CSS, etc.) go here -->
+    <!-- Include SweetAlert library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Other necessary head elements (CSS, etc.) go here -->
     <style>
         .edit-form {
             display: none;
@@ -38,46 +38,57 @@
             /* Optional: Ensure the image maintains its aspect ratio */
             /* Add any other styles you want */
         }
+
         .banner-image-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-.banner-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .banner-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-.banner-info {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-.banner-info input[type="text"] {
-        border: 1px solid #ccc; /* Add a border */
-        padding: 5px; /* Add some padding */
-        margin-bottom: 5px; /* Add margin between fields */
-        width: 100%; /* Set width to fill the container */
-        box-sizing: border-box; /* Ensure padding and border are included in the width */
-        transition: border-color 0.3s ease; /* Add transition effect for border color */
-    }
+        .banner-info {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
 
-    /* Style for the input fields when focused */
-    .banner-info input[type="text"]:focus {
-        border-color: #007bff; /* Change border color when focused */
-        outline: none; /* Remove default focus outline */
-    }
-    /* Style for non-editable text */
-    .non-editable {
-        display: inline-block;
-        font-size: 16px;
-        color: #333;
-        margin-bottom: 8px;
-    }
+        .banner-info input[type="text"] {
+            border: 1px solid #ccc;
+            /* Add a border */
+            padding: 5px;
+            /* Add some padding */
+            margin-bottom: 5px;
+            /* Add margin between fields */
+            width: 100%;
+            /* Set width to fill the container */
+            box-sizing: border-box;
+            /* Ensure padding and border are included in the width */
+            transition: border-color 0.3s ease;
+            /* Add transition effect for border color */
+        }
+
+        /* Style for the input fields when focused */
+        .banner-info input[type="text"]:focus {
+            border-color: #007bff;
+            /* Change border color when focused */
+            outline: none;
+            /* Remove default focus outline */
+        }
+
+        /* Style for non-editable text */
+        .non-editable {
+            display: inline-block;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 
@@ -169,386 +180,530 @@
             </header>
 
             <div class="card">
-              
+
 
 
                 <div class="card-body">
                     <div class="banners">
 
 
-                        
-                        
+
+
 
                         <div class="accordion accordion-flush" id="accordionFlushExample">
 
-                         
+
 
                             <% if(banners.home ) { %>
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="flush-headingHome">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseHome"
-                                                aria-expanded="false" aria-controls="flush-collapseHome">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#flush-collapseHome"
+                                            aria-expanded="false" aria-controls="flush-collapseHome">
                                             Home Page
                                         </button>
                                     </h2>
-                            
-                                    <div id="flush-collapseHome" class="accordion-collapse collapse" aria-labelledby="flush-headingHome" data-bs-parent="#accordionFlushExample">
+
+                                    <div id="flush-collapseHome" class="accordion-collapse collapse"
+                                        aria-labelledby="flush-headingHome" data-bs-parent="#accordionFlushExample">
                                         <div class="accordion-body">
 
-                                            <div class="accordion-item"> 
+                                            <div class="accordion-item">
                                                 <h2 class="accordion-header" id="flush-headingAddNewBanner">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseAddNewBanner"
-                                                            aria-expanded="false" aria-controls="flush-collapseAddNewBanner">
-                                                            Add New Banner
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse"
+                                                        data-bs-target="#flush-collapseAddNewBanner"
+                                                        aria-expanded="false"
+                                                        aria-controls="flush-collapseAddNewBanner">
+                                                        Add New Banner
                                                     </button>
                                                 </h2>
-                                                <div id="flush-collapseAddNewBanner" class="accordion-collapse collapse" aria-labelledby="flush-headingAddNewBanner"
-                                                     data-bs-parent="#accordionFlushExample">
+                                                <div id="flush-collapseAddNewBanner" class="accordion-collapse collapse"
+                                                    aria-labelledby="flush-headingAddNewBanner"
+                                                    data-bs-parent="#accordionFlushExample">
                                                     <div class="accordion-body">
                                                         <form id="addNewBannerForm" enctype="multipart/form-data">
                                                             <p style="color: red;" id="add-error"></p>
                                                             <div class="mb-3">
-                                                                <label for="newMainHeading" class="form-label">Main Heading</label>
-                                                                <input type="text" class="form-control" id="newMainHeading" name="mainHeading">
+                                                                <label for="newMainHeading" class="form-label">Main
+                                                                    Heading</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="newMainHeading" name="mainHeading">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="newUrl" class="form-label">URL</label>
-                                                                <input type="text" class="form-control" id="newUrl" name="url">
+                                                                <input type="text" class="form-control" id="newUrl"
+                                                                    name="url">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="newUrl" class="form-label">Image</label>
-                                                                <input type="file" class="form-control" id="newUrl" required name="file">
+                                                                <input type="file" class="form-control" id="newUrl"
+                                                                    required name="file">
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="newSubHeading" class="form-label">Sub Heading</label>
-                                                                <input type="text" class="form-control" id="newSubHeading" name="subHeading">
+                                                                <label for="newSubHeading" class="form-label">Sub
+                                                                    Heading</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="newSubHeading" name="subHeading">
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="newCaption" class="form-label">Caption</label>
-                                                                <input type="text" class="form-control" id="newCaption" name="caption">
+                                                                <label for="newCaption"
+                                                                    class="form-label">Caption</label>
+                                                                <input type="text" class="form-control" id="newCaption"
+                                                                    name="caption">
                                                             </div>
-                                                            <button type="submit" class="btn btn-primary" id="submitNewBanner">Add Banner</button>
+                                                            <button type="submit" class="btn btn-primary"
+                                                                id="submitNewBanner">Add Banner</button>
                                                         </form>
-                                                      
+
                                                     </div>
                                                 </div>
                                             </div>
 
-                                           
-                                            
 
-    
+
+
+
                                             <% banners.home.forEach(function(banner,index) { %>
-                                               <% if (banner !==null) { %>
+                                                <% if (banner !==null) { %>
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="flush-headingHome<%= index %>">
+                                                            <button class="accordion-button collapsed" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#flush-collapseHome<%= index %>"
+                                                                aria-expanded="false"
+                                                                aria-controls="flush-collapseHome<%= index %>">
+                                                                <%= index + 1 %>: <%= banner.mainHeading %>
+                                                            </button>
+                                                        </h2>
+                                                        <div id="flush-collapseHome<%= index %>"
+                                                            class="accordion-collapse collapse"
+                                                            aria-labelledby="flush-headingHome<%= index %>"
+                                                            data-bs-parent="#flush-collapseHome">
+                                                            <div class="accordion-body">
+                                                                <!-- Display all data of the banner -->
+                                                                <div class="banner-info">
+                                                                    <h6 style="color: red;" id="error<%= index %>"></h6>
+                                                                    <label for="mainHeading<%= index %>">Main
+                                                                        Heading:</label>
+                                                                    <span id="mainHeading<%= index %>_text"
+                                                                        class="non-editable">
+                                                                        <%= banner.mainHeading %>
+                                                                    </span>
+                                                                    <input type="text" id="mainHeading<%= index %>"
+                                                                        oninput="editHomeText('<%= index %>',event)"
+                                                                        name="mainHeading"
+                                                                        value="<%= banner.mainHeading %>"
+                                                                        style="display: none;"><br>
+
+                                                                    <label for="url<%= index %>">URL:</label>
+                                                                    <a href="<%= banner.url %>"
+                                                                        id="url<%= index %>_text" class="non-editable"
+                                                                        style="text-decoration: none; color: #007bff;">
+                                                                        <%= banner.url %>
+                                                                    </a>
+                                                                    <input type="text" id="url<%= index %>" name="url"
+                                                                        oninput="editHomeText('<%= index %>',event)"
+                                                                        value="<%= banner.url %>"
+                                                                        style="display: none;"><br>
+
+                                                                    <label for="subHeading<%= index %>">Sub
+                                                                        Heading:</label>
+                                                                    <span id="subHeading<%= index %>_text"
+                                                                        class="non-editable">
+                                                                        <%= banner.subHeading %>
+                                                                    </span>
+                                                                    <input type="text" id="subHeading<%= index %>"
+                                                                        oninput="editHomeText('<%= index %>',event)"
+                                                                        name="subHeading"
+                                                                        value="<%= banner.subHeading %>"
+                                                                        style="display: none;"><br>
+
+                                                                    <label for="caption<%= index %>">Caption:</label>
+                                                                    <span id="caption<%= index %>_text"
+                                                                        class="non-editable">
+                                                                        <%= banner.caption %>
+                                                                    </span>
+                                                                    <input type="text" id="caption<%= index %>"
+                                                                        oninput="editHomeText('<%= index %>',event)"
+                                                                        name="caption" value="<%= banner.caption %>"
+                                                                        style="display: none;"><br>
+                                                                    <!-- Add more fields here as needed -->
+
+                                                                    <button class="btn btn-primary edit-banner-info-btn"
+                                                                        data-index="<%= index %>">Edit</button>
+                                                                    <button class="btn btn-danger "
+                                                                        onclick="deleteBanner('<%= index %>')">Delete</button>
+
+                                                                </div>
+                                                                <br>
+
+                                                                <div class="banner-image-container">
+                                                                    <img class="banner-image" id="home<%= index %>"
+                                                                        src="/admin/user-public/<%= banner.img %>"
+                                                                        alt="<%= banner.mainHeading %> Image">
+                                                                </div>
+
+                                                                <button class="btn btn-primary edit-home-image-btn"
+                                                                    data-banner-id="<%= banner._id %>"
+                                                                    onclick="toggleFileInput('home-image-file-input-<%= index %>')">
+                                                                    Edit Image <small
+                                                                        style="color: rgb(243, 252, 247);"> Size:
+                                                                        1064x515</small>
+                                                                </button><br><br>
+
+                                                                <input type="file" name="file"
+                                                                    id="home-image-file-input-<%= index %>"
+                                                                    oninput="editHomeImage(event,'home','<%= index %>')"
+                                                                    style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+                                                        <% }); %> <br>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+
+
+
+
+
+                                    <% if(banners.products) { %>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingProducts">
+                                                <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#flush-collapseProducts"
+                                                    aria-expanded="false" aria-controls="flush-collapseProducts">
+                                                    Products Page
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseProducts" class="accordion-collapse collapse"
+                                                aria-labelledby="flush-headingProducts"
+                                                data-bs-parent="#accordionFlushExample">
+                                                <div class="accordion-body">
+                                                    <img id="products" class="banner-image"
+                                                        src="/admin/user-public/<%= banners.products %>"
+                                                        alt="Products Image">
+                                                    <br> <br><br><br>
+
+                                                    <button class="btn btn-primary " id="edit-products-image-btn">
+                                                        Edit Image <small style="color: rgb(208, 251, 231);">Size:
+                                                            630x320</small>
+                                                    </button><br><br>
+
+                                                    <input oninput="editImage(event,'products')" type="file" name="file"
+                                                        id="products-image-file-input" style="display: none;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% } %>
+
+
+                                            <% if(banners.cart) { %>
                                                 <div class="accordion-item">
-                                                    <h2 class="accordion-header" id="flush-headingHome<%= index %>">
-                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseHome<%= index %>"
-                                                                aria-expanded="false" aria-controls="flush-collapseHome<%= index %>">
-                                                            <%= index + 1 %>:  <%= banner.mainHeading %>
+                                                    <h2 class="accordion-header" id="flush-headingCart">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#flush-collapseCart" aria-expanded="false"
+                                                            aria-controls="flush-collapseCart">
+                                                            Cart Page
                                                         </button>
                                                     </h2>
-                                                    <div id="flush-collapseHome<%= index %>" class="accordion-collapse collapse" aria-labelledby="flush-headingHome<%= index %>"
-                                                         data-bs-parent="#flush-collapseHome">
+                                                    <div id="flush-collapseCart" class="accordion-collapse collapse"
+                                                        aria-labelledby="flush-headingCart"
+                                                        data-bs-parent="#accordionFlushExample">
                                                         <div class="accordion-body">
-                                                            <!-- Display all data of the banner -->
-                                                            <div class="banner-info">
-                                                                <h6 style="color: red;" id="error<%= index %>"></h6>
-                                                                <label for="mainHeading<%= index %>">Main Heading:</label>
-                                                                <span id="mainHeading<%= index %>_text" class="non-editable"><%= banner.mainHeading %></span>
-                                                                <input type="text" id="mainHeading<%= index %>" oninput="editHomeText('<%= index %>',event)" name="mainHeading" value="<%= banner.mainHeading %>" style="display: none;"><br>
-                                                                
-                                                                <label for="url<%= index %>">URL:</label>
-                                                                <a href="<%= banner.url %>" id="url<%= index %>_text" class="non-editable" style="text-decoration: none; color: #007bff;"><%= banner.url %></a>
-                                                                <input type="text" id="url<%= index %>" name="url" oninput="editHomeText('<%= index %>',event)" value="<%= banner.url %>" style="display: none;"><br>
-                                                                
-                                                                <label for="subHeading<%= index %>">Sub Heading:</label>
-                                                                <span id="subHeading<%= index %>_text" class="non-editable"><%= banner.subHeading %></span>
-                                                                <input type="text" id="subHeading<%= index %>" oninput="editHomeText('<%= index %>',event)" name="subHeading" value="<%= banner.subHeading %>" style="display: none;"><br>
-                                                                
-                                                                <label for="caption<%= index %>">Caption:</label>
-                                                                <span id="caption<%= index %>_text" class="non-editable"><%= banner.caption %></span>
-                                                                <input type="text" id="caption<%= index %>" oninput="editHomeText('<%= index %>',event)" name="caption" value="<%= banner.caption %>" style="display: none;"><br>
-                                                                <!-- Add more fields here as needed -->
-                                                                
-                                                                <button class="btn btn-primary edit-banner-info-btn" data-index="<%= index %>">Edit</button> 
-                                                                <button class="btn btn-danger " onclick="deleteBanner('<%= index %>')">Delete</button> 
 
-                                                            </div>
-                                                            <br>
-                                                            
-                                                            <div class="banner-image-container">
-                                                                <img class="banner-image" id="home<%= index %>" src="/admin/user-public/<%= banner.img %>" alt="<%= banner.mainHeading %> Image">
-                                                            </div>
-                                                            
-                                                            <button class="btn btn-primary edit-home-image-btn" data-banner-id="<%= banner._id %>" onclick="toggleFileInput('home-image-file-input-<%= index %>')">
-                                                                Edit Image <small style="color: rgb(243, 252, 247);">  Size: 1064x515</small>
-                                                            </button><br><br>
-                                                            
-                                                            <input type="file" name="file" id="home-image-file-input-<%= index %>" oninput="editHomeImage(event,'home','<%= index %>')" style="display: none;">
+                                                            <img id="cart" class="banner-image"
+                                                                src="/admin/user-public/<%= banners.cart %>"
+                                                                alt="Cart Image">
+                                                            <br><br>
+
+                                                            <button class="btn btn-primary edit-cart-image-btn">
+                                                                Edit Image <small
+                                                                    style="color: rgb(208, 251, 231);">Size:
+                                                                    630x320</small> </button><br><br>
+
+                                                            <input oninput="editImage(event,'cart')" type="file"
+                                                                name="file" id="cart-image-file-input"
+                                                                style="display: none;">
+
                                                         </div>
                                                     </div>
                                                 </div>
-                                               <% } %>
-                                            <% }); %> <br>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
+                                                <% } %>
 
-                  
-                            
+                                                    <% if(banners.wishlist) { %>
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="flush-headingWishlist">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#flush-collapseWishlist"
+                                                                    aria-expanded="false"
+                                                                    aria-controls="flush-collapseWishlist">
+                                                                    Wishlist Page
+                                                                </button>
+                                                            </h2>
+                                                            <div id="flush-collapseWishlist"
+                                                                class="accordion-collapse collapse"
+                                                                aria-labelledby="flush-headingWishlist"
+                                                                data-bs-parent="#accordionFlushExample">
+                                                                <div class="accordion-body">
 
-                            <% if(banners.products) { %>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="flush-headingProducts">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#flush-collapseProducts"
-                                                aria-expanded="false" aria-controls="flush-collapseProducts">
-                                            Products Page
-                                        </button>
-                                    </h2>
-                                    <div id="flush-collapseProducts" class="accordion-collapse collapse"
-                                         aria-labelledby="flush-headingProducts" data-bs-parent="#accordionFlushExample">
-                                        <div class="accordion-body">
-                                                <img id="products" class="banner-image" src="/admin/user-public/<%= banners.products %>" alt="Products Image">
-                                            <br> <br><br><br>
-                        
-                                            <button class="btn btn-primary " id="edit-products-image-btn">
-                                                Edit Image <small style="color: rgb(208, 251, 231);">Size: 630x320</small>
-                                            </button><br><br>
+                                                                    <img id="wishlist" class="banner-image"
+                                                                        src="/admin/user-public/<%= banners.wishlist %>"
+                                                                        alt="Wishlist Image">
+                                                                    <br><br>
 
-                                            <input oninput="editImage(event,'products')"type="file" name="file" id="products-image-file-input" style="display: none;">
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
+                                                                    <button
+                                                                        class="btn btn-primary edit-wishlist-image-btn">
+                                                                        Edit Image <small
+                                                                            style="color: rgb(208, 251, 231);">Size:
+                                                                            630x320</small>
+                                                                    </button> <br><br>
 
-                        
-                            <% if(banners.cart) { %>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="flush-headingCart">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#flush-collapseCart"
-                                                aria-expanded="false" aria-controls="flush-collapseCart">
-                                            Cart Page
-                                        </button>
-                                    </h2>
-                                    <div id="flush-collapseCart" class="accordion-collapse collapse"
-                                         aria-labelledby="flush-headingCart" data-bs-parent="#accordionFlushExample">
-                                        <div class="accordion-body">
+                                                                    <input oninput="editImage(event,'wishlist')"
+                                                                        type="file" name="file"
+                                                                        id="wishlist-image-file-input"
+                                                                        style="display: none;">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
 
-                                                <img id="cart" class="banner-image" src="/admin/user-public/<%= banners.cart %>" alt="Cart Image">
-                                            <br><br>
-                                            
-                                            <button class="btn btn-primary edit-cart-image-btn">
-                                                Edit Image <small style="color: rgb(208, 251, 231);">Size: 630x320</small>                                            </button><br><br>
-                                            
-                                            <input oninput="editImage(event,'cart')" type="file" name="file" id="cart-image-file-input" style="display: none;">
+                                                            <% if(banners.checkout) { %>
+                                                                <div class="accordion-item">
+                                                                    <h2 class="accordion-header"
+                                                                        id="flush-headingCheckout">
+                                                                        <button class="accordion-button collapsed"
+                                                                            type="button" data-bs-toggle="collapse"
+                                                                            data-bs-target="#flush-collapseCheckout"
+                                                                            aria-expanded="false"
+                                                                            aria-controls="flush-collapseCheckout">
+                                                                            Checkout Page
+                                                                        </button>
+                                                                    </h2>
+                                                                    <div id="flush-collapseCheckout"
+                                                                        class="accordion-collapse collapse"
+                                                                        aria-labelledby="flush-headingCheckout"
+                                                                        data-bs-parent="#accordionFlushExample">
+                                                                        <div class="accordion-body">
+                                                                            <img id="checkout" class="banner-image"
+                                                                                src="/admin/user-public/<%= banners.checkout %>"
+                                                                                alt="Checkout Image">
 
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
-                            <% if(banners.wishlist) { %>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="flush-headingWishlist">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#flush-collapseWishlist"
-                                                aria-expanded="false"
-                                                aria-controls="flush-collapseWishlist">
-                                            Wishlist Page
-                                        </button>
-                                    </h2>
-                                    <div id="flush-collapseWishlist" class="accordion-collapse collapse"
-                                         aria-labelledby="flush-headingWishlist"
-                                         data-bs-parent="#accordionFlushExample">
-                                        <div class="accordion-body">
+                                                                            <br><br>
 
-                                                <img id="wishlist" class="banner-image"  src="/admin/user-public/<%= banners.wishlist %>"
-                                                     alt="Wishlist Image">
-                                            <br><br>
-                            
-                                            <button class="btn btn-primary edit-wishlist-image-btn">
-                                                Edit Image <small style="color: rgb(208, 251, 231);">Size: 630x320</small>
-                                            </button> <br><br>
-                            
-                                            <input oninput="editImage(event,'wishlist')" type="file" name="file" id="wishlist-image-file-input"
-                                                   style="display: none;">
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
-                            <% if(banners.checkout) { %>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="flush-headingCheckout">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#flush-collapseCheckout"
-                                                aria-expanded="false"
-                                                aria-controls="flush-collapseCheckout">
-                                            Checkout Page
-                                        </button>
-                                    </h2>
-                                    <div id="flush-collapseCheckout" class="accordion-collapse collapse"
-                                         aria-labelledby="flush-headingCheckout"
-                                         data-bs-parent="#accordionFlushExample">
-                                        <div class="accordion-body">
-                                                 <img id="checkout" class="banner-image"  src="/admin/user-public/<%= banners.checkout %>"
-                                                 alt="Checkout Image">
-                                           
-                                            <br><br>
-                            
-                                            <!-- Button to trigger showing the input field -->
-                                            <button class="btn btn-primary edit-checkout-image-btn">
-                                                Edit Image <small style="color: rgb(208, 251, 231);">Size: 630x320</small>
-                                            </button> <br><br>
-                            
-                                            <!-- Input field for selecting a new image file -->
-                                            <input oninput="editImage(event,'checkout')" type="file" name="file" id="checkout-image-file-input"
-                                                   style="display: none;">
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
-                            <% if(banners.orderSuccess) { %>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="flush-headingOrderSuccess">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#flush-collapseOrderSuccess"
-                                                aria-expanded="false"
-                                                aria-controls="flush-collapseOrderSuccess">
-                                            Order Success Page
-                                        </button>
-                                    </h2>
-                                    <div id="flush-collapseOrderSuccess" class="accordion-collapse collapse"
-                                         aria-labelledby="flush-headingOrderSuccess"
-                                         data-bs-parent="#accordionFlushExample">
-                                        <div class="accordion-body">
-                                            <img id="orderSuccess" class="banner-image"  src="/admin/user-public/<%= banners.orderSuccess %>"
-                                                 alt="Order Success Image">
-                                            <br><br>
-                            
-                                            <button class="btn btn-primary edit-order-success-image-btn">
-                                                Edit Image <small style="color: rgb(208, 251, 231);">Size: 630x320</small>
-                                            </button><br><br>
-                            
-                                            <input  oninput="editImage(event,'orderSuccess')" type="file" name="file" id="order-success-image-file-input"
-                                                   style="display: none;">
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
-                            <% if(banners.profile) { %>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="flush-headingProfile">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#flush-collapseProfile"
-                                                aria-expanded="false"
-                                                aria-controls="flush-collapseProfile">
-                                            Profile Page
-                                        </button>
-                                    </h2>
-                                    <div id="flush-collapseProfile" class="accordion-collapse collapse"
-                                         aria-labelledby="flush-headingProfile"
-                                         data-bs-parent="#accordionFlushExample">
-                                        <div class="accordion-body">
+                                                                            <!-- Button to trigger showing the input field -->
+                                                                            <button
+                                                                                class="btn btn-primary edit-checkout-image-btn">
+                                                                                Edit Image <small
+                                                                                    style="color: rgb(208, 251, 231);">Size:
+                                                                                    630x320</small>
+                                                                            </button> <br><br>
 
-                                                <img id="profile" class="banner-image"  src="/admin/user-public/<%= banners.profile %>"
-                                                     alt="Profile Image">
-                                            <br><br>
-                            
-                                            <!-- Button to trigger showing the input field -->
-                                            <button class="btn btn-primary edit-profile-image-btn">
-                                                Edit Image <small style="color: rgb(208, 251, 231);">Size: 630x320</small>
-                                            </button><br><br>
-                            
-                                            <!-- Input field for selecting a new image file -->
-                                            <input oninput="editImage(event,'profile')" type="file" name="file" id="profile-image-file-input"
-                                                   style="display: none;">
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
-                            <% if(banners.about) { %>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="flush-headingAbout">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#flush-collapseAbout"
-                                                aria-expanded="false"
-                                                aria-controls="flush-collapseAbout">
-                                            About Page
-                                        </button>
-                                    </h2>
-                                    <div id="flush-collapseAbout" class="accordion-collapse collapse"
-                                         aria-labelledby="flush-headingAbout"
-                                         data-bs-parent="#accordionFlushExample">
-                                        <div class="accordion-body">
+                                                                            <!-- Input field for selecting a new image file -->
+                                                                            <input oninput="editImage(event,'checkout')"
+                                                                                type="file" name="file"
+                                                                                id="checkout-image-file-input"
+                                                                                style="display: none;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <% } %>
 
-                                                <img id="about" class="banner-image"  src="/admin/user-public/<%= banners.about %>"
-                                                     alt="About Image">
-                                            <br><br>
-                            
-                                            <!-- Button to trigger showing the input field -->
-                                            <button class="btn btn-primary edit-about-image-btn">
-                                                Edit Image <small style="color: rgb(208, 251, 231);">Size: 630x320</small>
-                                            </button><br><br>
-                            
-                                            <!-- Input field for selecting a new image file -->
-                                            <input oninput="editImage(event,'about')" type="file" name="file" id="about-image-file-input"
-                                                   style="display: none;">
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
-                            <% if(banners.contact) { %>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="flush-headingContact">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#flush-collapseContact"
-                                                aria-expanded="false"
-                                                aria-controls="flush-collapseContact">
-                                            Contact Page
-                                        </button>
-                                    </h2>
-                                    <div id="flush-collapseContact" class="accordion-collapse collapse"
-                                         aria-labelledby="flush-headingContact"
-                                         data-bs-parent="#accordionFlushExample">
-                                        <div class="accordion-body">
-                                                     <img class="banner-image"  id="contact" src="/admin/user-public/<%= banners.contact %>"
-                                                          alt="Contact Image">
+                                                                    <% if(banners.orderSuccess) { %>
+                                                                        <div class="accordion-item">
+                                                                            <h2 class="accordion-header"
+                                                                                id="flush-headingOrderSuccess">
+                                                                                <button
+                                                                                    class="accordion-button collapsed"
+                                                                                    type="button"
+                                                                                    data-bs-toggle="collapse"
+                                                                                    data-bs-target="#flush-collapseOrderSuccess"
+                                                                                    aria-expanded="false"
+                                                                                    aria-controls="flush-collapseOrderSuccess">
+                                                                                    Order Success Page
+                                                                                </button>
+                                                                            </h2>
+                                                                            <div id="flush-collapseOrderSuccess"
+                                                                                class="accordion-collapse collapse"
+                                                                                aria-labelledby="flush-headingOrderSuccess"
+                                                                                data-bs-parent="#accordionFlushExample">
+                                                                                <div class="accordion-body">
+                                                                                    <img id="orderSuccess"
+                                                                                        class="banner-image"
+                                                                                        src="/admin/user-public/<%= banners.orderSuccess %>"
+                                                                                        alt="Order Success Image">
+                                                                                    <br><br>
 
-                                            <br><br>
-                            
-                                            <!-- Button to trigger showing the input field -->
-                                            <button class="btn btn-primary edit-contact-image-btn">
-                                                Edit Image <small style="color: rgb(208, 251, 231);">Size: 630x320</small>
-                                            </button><br><br>
-                            
-                                            <!-- Input field for selecting a new image file -->
-                                            <input oninput="editImage(event,'contact')" type="file" name="file" id="contact-image-file-input"
-                                                   style="display: none;">
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
+                                                                                    <button
+                                                                                        class="btn btn-primary edit-order-success-image-btn">
+                                                                                        Edit Image <small
+                                                                                            style="color: rgb(208, 251, 231);">Size:
+                                                                                            630x320</small>
+                                                                                    </button><br><br>
+
+                                                                                    <input
+                                                                                        oninput="editImage(event,'orderSuccess')"
+                                                                                        type="file" name="file"
+                                                                                        id="order-success-image-file-input"
+                                                                                        style="display: none;">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <% } %>
+
+                                                                            <% if(banners.profile) { %>
+                                                                                <div class="accordion-item">
+                                                                                    <h2 class="accordion-header"
+                                                                                        id="flush-headingProfile">
+                                                                                        <button
+                                                                                            class="accordion-button collapsed"
+                                                                                            type="button"
+                                                                                            data-bs-toggle="collapse"
+                                                                                            data-bs-target="#flush-collapseProfile"
+                                                                                            aria-expanded="false"
+                                                                                            aria-controls="flush-collapseProfile">
+                                                                                            Profile Page
+                                                                                        </button>
+                                                                                    </h2>
+                                                                                    <div id="flush-collapseProfile"
+                                                                                        class="accordion-collapse collapse"
+                                                                                        aria-labelledby="flush-headingProfile"
+                                                                                        data-bs-parent="#accordionFlushExample">
+                                                                                        <div class="accordion-body">
+
+                                                                                            <img id="profile"
+                                                                                                class="banner-image"
+                                                                                                src="/admin/user-public/<%= banners.profile %>"
+                                                                                                alt="Profile Image">
+                                                                                            <br><br>
+
+                                                                                            <!-- Button to trigger showing the input field -->
+                                                                                            <button
+                                                                                                class="btn btn-primary edit-profile-image-btn">
+                                                                                                Edit Image <small
+                                                                                                    style="color: rgb(208, 251, 231);">Size:
+                                                                                                    630x320</small>
+                                                                                            </button><br><br>
+
+                                                                                            <!-- Input field for selecting a new image file -->
+                                                                                            <input
+                                                                                                oninput="editImage(event,'profile')"
+                                                                                                type="file" name="file"
+                                                                                                id="profile-image-file-input"
+                                                                                                style="display: none;">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <% } %>
+
+                                                                                    <% if(banners.about) { %>
+                                                                                        <div class="accordion-item">
+                                                                                            <h2 class="accordion-header"
+                                                                                                id="flush-headingAbout">
+                                                                                                <button
+                                                                                                    class="accordion-button collapsed"
+                                                                                                    type="button"
+                                                                                                    data-bs-toggle="collapse"
+                                                                                                    data-bs-target="#flush-collapseAbout"
+                                                                                                    aria-expanded="false"
+                                                                                                    aria-controls="flush-collapseAbout">
+                                                                                                    About Page
+                                                                                                </button>
+                                                                                            </h2>
+                                                                                            <div id="flush-collapseAbout"
+                                                                                                class="accordion-collapse collapse"
+                                                                                                aria-labelledby="flush-headingAbout"
+                                                                                                data-bs-parent="#accordionFlushExample">
+                                                                                                <div
+                                                                                                    class="accordion-body">
+
+                                                                                                    <img id="about"
+                                                                                                        class="banner-image"
+                                                                                                        src="/admin/user-public/<%= banners.about %>"
+                                                                                                        alt="About Image">
+                                                                                                    <br><br>
+
+                                                                                                    <!-- Button to trigger showing the input field -->
+                                                                                                    <button
+                                                                                                        class="btn btn-primary edit-about-image-btn">
+                                                                                                        Edit Image
+                                                                                                        <small
+                                                                                                            style="color: rgb(208, 251, 231);">Size:
+                                                                                                            630x320</small>
+                                                                                                    </button><br><br>
+
+                                                                                                    <!-- Input field for selecting a new image file -->
+                                                                                                    <input
+                                                                                                        oninput="editImage(event,'about')"
+                                                                                                        type="file"
+                                                                                                        name="file"
+                                                                                                        id="about-image-file-input"
+                                                                                                        style="display: none;">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <% } %>
+
+                                                                                            <% if(banners.contact) { %>
+                                                                                                <div
+                                                                                                    class="accordion-item">
+                                                                                                    <h2 class="accordion-header"
+                                                                                                        id="flush-headingContact">
+                                                                                                        <button
+                                                                                                            class="accordion-button collapsed"
+                                                                                                            type="button"
+                                                                                                            data-bs-toggle="collapse"
+                                                                                                            data-bs-target="#flush-collapseContact"
+                                                                                                            aria-expanded="false"
+                                                                                                            aria-controls="flush-collapseContact">
+                                                                                                            Contact Page
+                                                                                                        </button>
+                                                                                                    </h2>
+                                                                                                    <div id="flush-collapseContact"
+                                                                                                        class="accordion-collapse collapse"
+                                                                                                        aria-labelledby="flush-headingContact"
+                                                                                                        data-bs-parent="#accordionFlushExample">
+                                                                                                        <div
+                                                                                                            class="accordion-body">
+                                                                                                            <img class="banner-image"
+                                                                                                                id="contact"
+                                                                                                                src="/admin/user-public/<%= banners.contact %>"
+                                                                                                                alt="Contact Image">
+
+                                                                                                            <br><br>
+
+                                                                                                            <!-- Button to trigger showing the input field -->
+                                                                                                            <button
+                                                                                                                class="btn btn-primary edit-contact-image-btn">
+                                                                                                                Edit
+                                                                                                                Image
+                                                                                                                <small
+                                                                                                                    style="color: rgb(208, 251, 231);">Size:
+                                                                                                                    630x320</small>
+                                                                                                            </button><br><br>
+
+                                                                                                            <!-- Input field for selecting a new image file -->
+                                                                                                            <input
+                                                                                                                oninput="editImage(event,'contact')"
+                                                                                                                type="file"
+                                                                                                                name="file"
+                                                                                                                id="contact-image-file-input"
+                                                                                                                style="display: none;">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <% } %>
+
 
                         </div>
 
-                      
+
 
                     </div>
                 </div>
@@ -587,296 +742,296 @@
     <script src="assets/js/main.js" type="text/javascript"></script>
 </body>
 <script>
-    
-async function deleteBanner(index) {
-	try {
-		const result = await Swal.fire({
-			title: "Do you want to save the changes?",
-			showDenyButton: true,
-			showCancelButton: true,
-			confirmButtonText: "I do",
-			denyButtonText: `I Don't `
-		});
 
-		if (result.isConfirmed) {
-			const response = await $.ajax({
-				url: `/admin/delete-banner/${index}`,
-				method: "DELETE"
-			});
-			await window.location.reload()
-			Swal.fire("Saved!", "", "success");
+    async function deleteBanner(index) {
+        try {
+            const result = await Swal.fire({
+                title: "Do you want to save the changes?",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "I do",
+                denyButtonText: `I Don't `
+            });
 
-		} else if (result.isDenied) {
-			Swal.fire("Changes are not saved", "", "info");
-		}
-	} catch (error) {
-		console.error('Error in deleting banner:', error);
-		window.location.reload();
-		Swal.fire("Saved!", "", "success");
-	}
-}
+            if (result.isConfirmed) {
+                const response = await $.ajax({
+                    url: `/admin/delete-banner/${index}`,
+                    method: "DELETE"
+                });
+                await window.location.reload()
+                Swal.fire("Saved!", "", "success");
 
-
-async function editImage(event, page) {
-	try {
-		const file = event.target.files[0];
-		const formData = new FormData();
-		formData.append('file', file);
-
-		$.ajax({
-			url: `/admin/edit-banner/${page}`,
-			method: "PUT",
-			data: formData,
-			processData: false,
-			contentType: false,
-			success: (res) => {
-				document.getElementById(page).src = res.src
-				new Swal("Succuss!", `${page} Page banner updated`, "success")
-
-			},
-			error: (err) => {
-				throw new Error(err)
-			}
-		});
-	} catch (error) {
-		console.log(`Error in editing ${page} image:`, error.message);
-		new Swal("Error!", `Error in Editting ${page} Banner`, "error")
-	}
-}
-
-async function editHomeImage(event, page, index) {
-	try {
-		const file = event.target.files[0];
-		const formData = new FormData();
-		formData.append('file', file);
-		formData.append('index', index);
-
-		$.ajax({
-			url: `/admin/edit-banner/${page}`,
-			method: "PUT",
-			data: formData,
-			processData: false,
-			contentType: false,
-			success: (res) => {
-				document.getElementById(`home${index}`).src = res.src;
-				new Swal("Success!", "Home Page Banner Updated", 'success')
-			},
-			error: (err) => {
-				throw new Error(err);
-			}
-		});
-	} catch (error) {
-		console.log(`Error in editing ${page} image :`, error.message);
-	}
-}
+            } else if (result.isDenied) {
+                Swal.fire("Changes are not saved", "", "info");
+            }
+        } catch (error) {
+            console.error('Error in deleting banner:', error);
+            window.location.reload();
+            Swal.fire("Saved!", "", "success");
+        }
+    }
 
 
+    async function editImage(event, page) {
+        try {
+            const file = event.target.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
 
-async function editHomeText(index, event) {
-	try {
-		const name = event.target.name
-		const field = name
-		const text = event.target.value
-		document.getElementById(`error${index}`).innerHTML = ''
-		if (text.trim() == '') {
-			document.getElementById(`error${index}`).innerHTML = 'Field Should Not Be Empty'
-			return;
-		}
-		if (name === 'url') {
-			const siteSpecificPattern = /^\/.*$/;
-			const urlPattern = /^(https?:\/\/)?([\w\d.-]+)\.([a-z]{2,})(\/[\w\d.-]*)*$/;
-			if (!urlPattern.test(text) && !siteSpecificPattern.test(text)) {
-				document.getElementById(`error${index}`).innerHTML = 'URL Must be valid';
-				return;
-			}
-		}
+            $.ajax({
+                url: `/admin/edit-banner/${page}`,
+                method: "PUT",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: (res) => {
+                    document.getElementById(page).src = res.src
+                    new Swal("Succuss!", `${page} Page banner updated`, "success")
+
+                },
+                error: (err) => {
+                    throw new Error(err)
+                }
+            });
+        } catch (error) {
+            console.log(`Error in editing ${page} image:`, error.message);
+            new Swal("Error!", `Error in Editting ${page} Banner`, "error")
+        }
+    }
+
+    async function editHomeImage(event, page, index) {
+        try {
+            const file = event.target.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('index', index);
+
+            $.ajax({
+                url: `/admin/edit-banner/${page}`,
+                method: "PUT",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: (res) => {
+                    document.getElementById(`home${index}`).src = res.src;
+                    new Swal("Success!", "Home Page Banner Updated", 'success')
+                },
+                error: (err) => {
+                    throw new Error(err);
+                }
+            });
+        } catch (error) {
+            console.log(`Error in editing ${page} image :`, error.message);
+        }
+    }
 
 
 
-
-		$.ajax({
-			url: `/admin/edit-banner/home-text`,
-			method: "PUT",
-			data: {
-				index: index,
-				field: field.trim(),
-				text: text
-			},
-			success: (res) => {
-				document.getElementById(`${name}${index.trim()}_text`).innerHTML = res.value
-				if (name === "mainHeading") {
-					document.getElementById(`heading${index.trim()}`).innerHTML = `${JSON.parse(index) + 1}:  ${res.value}`
-				}
-			},
-			error: (err) => {
-				throw new Error(err);
-			}
-		});
-	} catch (error) {
-		console.log(`Error in editing ${page} image :`, error);
-		new Swal("Error!", "Error in Editting Banner", "error")
-	}
-}
-
-$("#addNewBannerForm").submit(function (event) {
-	event.preventDefault();
-	const heading = document.getElementById("newMainHeading").value;
-	const url = document.getElementById("newUrl").value;
-	const sub = document.getElementById("newSubHeading").value;
-	const cap = document.getElementById("newCaption").value;
-	const siteSpecificPattern = /^\/.*$/;
-	const urlPattern = /^(https?:\/\/)?([\w\d.-]+)\.([a-z]{2,})(\/[\w\d.-]*)*(\?.*)?$/; // Updated URL pattern to include query parameters
-	if (heading.trim() === '' || url.trim() === '' || sub.trim() === '' || cap.trim() === '') {
-		return document.getElementById("add-error").innerHTML = "The fields should not be empty";
-	}
-	if (!urlPattern.test(url) && !siteSpecificPattern.test(url)) {
-		document.getElementById(`add-error`).innerHTML = 'URL must be valid';
-		return;
-	}
-
-	addNewBanner();
-});
+    async function editHomeText(index, event) {
+        try {
+            const name = event.target.name
+            const field = name
+            const text = event.target.value
+            document.getElementById(`error${index}`).innerHTML = ''
+            if (text.trim() == '') {
+                document.getElementById(`error${index}`).innerHTML = 'Field Should Not Be Empty'
+                return;
+            }
+            if (name === 'url') {
+                const siteSpecificPattern = /^\/.*$/;
+                const urlPattern = /^(https?:\/\/)?([\w\d.-]+)\.([a-z]{2,})(\/[\w\d.-]*)*$/;
+                if (!urlPattern.test(text) && !siteSpecificPattern.test(text)) {
+                    document.getElementById(`error${index}`).innerHTML = 'URL Must be valid';
+                    return;
+                }
+            }
 
 
-async function addNewBanner() {
-	try {
-		const formData = new FormData($("#addNewBannerForm")[0]);
-		$.ajax({
-			url: "/admin/add-home-banner",
-			method: "POST",
-			data: formData,
-			contentType: false,
-			processData: false,
-			success: (res) => {
-				$(".banners").html($(res).find(".banners").html());
-				new Swal("Success!", 'New Banner Added', 'success');
-			},
-			error: (err) => {
-				throw new Error(err);
-			}
-		});
-	} catch (error) {
-		console.log('Error in adding banner:', error.message);
-		new Swal("Error!", 'Error in adding new Banner', 'error');
-	}
-}
 
 
+            $.ajax({
+                url: `/admin/edit-banner/home-text`,
+                method: "PUT",
+                data: {
+                    index: index,
+                    field: field.trim(),
+                    text: text
+                },
+                success: (res) => {
+                    document.getElementById(`${name}${index.trim()}_text`).innerHTML = res.value
+                    if (name === "mainHeading") {
+                        document.getElementById(`heading${index.trim()}`).innerHTML = `${JSON.parse(index) + 1}:  ${res.value}`
+                    }
+                },
+                error: (err) => {
+                    throw new Error(err);
+                }
+            });
+        } catch (error) {
+            console.log(`Error in editing ${page} image :`, error);
+            new Swal("Error!", "Error in Editting Banner", "error")
+        }
+    }
+
+    $("#addNewBannerForm").submit(function (event) {
+        event.preventDefault();
+        const heading = document.getElementById("newMainHeading").value;
+        const url = document.getElementById("newUrl").value;
+        const sub = document.getElementById("newSubHeading").value;
+        const cap = document.getElementById("newCaption").value;
+        const siteSpecificPattern = /^\/.*$/;
+        const urlPattern = /^(https?:\/\/)?([\w\d.-]+)\.([a-z]{2,})(\/[\w\d.-]*)*(\?.*)?$/; // Updated URL pattern to include query parameters
+        if (heading.trim() === '' || url.trim() === '' || sub.trim() === '' || cap.trim() === '') {
+            return document.getElementById("add-error").innerHTML = "The fields should not be empty";
+        }
+        if (!urlPattern.test(url) && !siteSpecificPattern.test(url)) {
+            document.getElementById(`add-error`).innerHTML = 'URL must be valid';
+            return;
+        }
+
+        addNewBanner();
+    });
+
+
+    async function addNewBanner() {
+        try {
+            const formData = new FormData($("#addNewBannerForm")[0]);
+            $.ajax({
+                url: "/admin/add-home-banner",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: (res) => {
+                    $(".banners").html($(res).find(".banners").html());
+                    new Swal("Success!", 'New Banner Added', 'success');
+                },
+                error: (err) => {
+                    throw new Error(err);
+                }
+            });
+        } catch (error) {
+            console.log('Error in adding banner:', error.message);
+            new Swal("Error!", 'Error in adding new Banner', 'error');
+        }
+    }
 
 
 
 
 
-function toggleFileInput(inputId) {
-	const input = document.getElementById(inputId);
-	input.style.display = input.style.display === 'none' ? 'block' : 'none';
-}
-// Script for editing product images
-const editProductsImageButton = document.querySelector('#edit-products-image-btn');
-const productsImageFileInput = document.querySelector('#products-image-file-input');
 
-if (editProductsImageButton && productsImageFileInput) {
-	editProductsImageButton.addEventListener('click', function () {
-		productsImageFileInput.style.display = productsImageFileInput.style.display === 'none' ? 'block' : 'none';
-	});
-}
 
-// Script for editing cart images
-const editCartImageButton = document.querySelector('.edit-cart-image-btn');
-const cartImageFileInput = document.querySelector('#cart-image-file-input');
+    function toggleFileInput(inputId) {
+        const input = document.getElementById(inputId);
+        input.style.display = input.style.display === 'none' ? 'block' : 'none';
+    }
+    // Script for editing product images
+    const editProductsImageButton = document.querySelector('#edit-products-image-btn');
+    const productsImageFileInput = document.querySelector('#products-image-file-input');
 
-if (editCartImageButton && cartImageFileInput) {
-	editCartImageButton.addEventListener('click', function () {
-		cartImageFileInput.style.display = cartImageFileInput.style.display === 'none' ? 'block' : 'none';
-	});
-}
+    if (editProductsImageButton && productsImageFileInput) {
+        editProductsImageButton.addEventListener('click', function () {
+            productsImageFileInput.style.display = productsImageFileInput.style.display === 'none' ? 'block' : 'none';
+        });
+    }
 
-// Script for editing wishlist images
-const editWishlistImageButton = document.querySelector('.edit-wishlist-image-btn');
-const wishlistImageFileInput = document.querySelector('#wishlist-image-file-input');
+    // Script for editing cart images
+    const editCartImageButton = document.querySelector('.edit-cart-image-btn');
+    const cartImageFileInput = document.querySelector('#cart-image-file-input');
 
-if (editWishlistImageButton && wishlistImageFileInput) {
-	editWishlistImageButton.addEventListener('click', function () {
-		wishlistImageFileInput.style.display = wishlistImageFileInput.style.display === 'none' ? 'block' : 'none';
-	});
-}
+    if (editCartImageButton && cartImageFileInput) {
+        editCartImageButton.addEventListener('click', function () {
+            cartImageFileInput.style.display = cartImageFileInput.style.display === 'none' ? 'block' : 'none';
+        });
+    }
 
-// Script for editing checkout images
-const editCheckoutImageButton = document.querySelector('.edit-checkout-image-btn');
-const checkoutImageFileInput = document.querySelector('#checkout-image-file-input');
+    // Script for editing wishlist images
+    const editWishlistImageButton = document.querySelector('.edit-wishlist-image-btn');
+    const wishlistImageFileInput = document.querySelector('#wishlist-image-file-input');
 
-if (editCheckoutImageButton && checkoutImageFileInput) {
-	editCheckoutImageButton.addEventListener('click', function () {
-		checkoutImageFileInput.style.display = checkoutImageFileInput.style.display === 'none' ? 'block' : 'none';
-	});
-}
+    if (editWishlistImageButton && wishlistImageFileInput) {
+        editWishlistImageButton.addEventListener('click', function () {
+            wishlistImageFileInput.style.display = wishlistImageFileInput.style.display === 'none' ? 'block' : 'none';
+        });
+    }
 
-// Script for editing order success images
-const editOrderSuccessImageButton = document.querySelector('.edit-order-success-image-btn');
-const orderSuccessImageFileInput = document.querySelector('#order-success-image-file-input');
+    // Script for editing checkout images
+    const editCheckoutImageButton = document.querySelector('.edit-checkout-image-btn');
+    const checkoutImageFileInput = document.querySelector('#checkout-image-file-input');
 
-if (editOrderSuccessImageButton && orderSuccessImageFileInput) {
-	editOrderSuccessImageButton.addEventListener('click', function () {
-		orderSuccessImageFileInput.style.display = orderSuccessImageFileInput.style.display === 'none' ? 'block' : 'none';
-	});
-}
+    if (editCheckoutImageButton && checkoutImageFileInput) {
+        editCheckoutImageButton.addEventListener('click', function () {
+            checkoutImageFileInput.style.display = checkoutImageFileInput.style.display === 'none' ? 'block' : 'none';
+        });
+    }
 
-// Script for editing profile images
-const editProfileImageButton = document.querySelector('.edit-profile-image-btn');
-const profileImageFileInput = document.querySelector('#profile-image-file-input');
+    // Script for editing order success images
+    const editOrderSuccessImageButton = document.querySelector('.edit-order-success-image-btn');
+    const orderSuccessImageFileInput = document.querySelector('#order-success-image-file-input');
 
-if (editProfileImageButton && profileImageFileInput) {
-	editProfileImageButton.addEventListener('click', function () {
-		profileImageFileInput.style.display = profileImageFileInput.style.display === 'none' ? 'block' : 'none';
-	});
-}
+    if (editOrderSuccessImageButton && orderSuccessImageFileInput) {
+        editOrderSuccessImageButton.addEventListener('click', function () {
+            orderSuccessImageFileInput.style.display = orderSuccessImageFileInput.style.display === 'none' ? 'block' : 'none';
+        });
+    }
 
-// Script for editing about images
-const editAboutImageButton = document.querySelector('.edit-about-image-btn');
-const aboutImageFileInput = document.querySelector('#about-image-file-input');
+    // Script for editing profile images
+    const editProfileImageButton = document.querySelector('.edit-profile-image-btn');
+    const profileImageFileInput = document.querySelector('#profile-image-file-input');
 
-if (editAboutImageButton && aboutImageFileInput) {
-	editAboutImageButton.addEventListener('click', function () {
-		aboutImageFileInput.style.display = aboutImageFileInput.style.display === 'none' ? 'block' : 'none';
-	});
-}
+    if (editProfileImageButton && profileImageFileInput) {
+        editProfileImageButton.addEventListener('click', function () {
+            profileImageFileInput.style.display = profileImageFileInput.style.display === 'none' ? 'block' : 'none';
+        });
+    }
 
-// Script for editing contact images
-const editContactImageButton = document.querySelector('.edit-contact-image-btn');
-const contactImageFileInput = document.querySelector('#contact-image-file-input');
+    // Script for editing about images
+    const editAboutImageButton = document.querySelector('.edit-about-image-btn');
+    const aboutImageFileInput = document.querySelector('#about-image-file-input');
 
-if (editContactImageButton && contactImageFileInput) {
-	editContactImageButton.addEventListener('click', function () {
-		contactImageFileInput.style.display = contactImageFileInput.style.display === 'none' ? 'block' : 'none';
-	});
-}
-document.addEventListener('DOMContentLoaded', function () {
-	const editButtons = document.querySelectorAll('.edit-banner-info-btn');
+    if (editAboutImageButton && aboutImageFileInput) {
+        editAboutImageButton.addEventListener('click', function () {
+            aboutImageFileInput.style.display = aboutImageFileInput.style.display === 'none' ? 'block' : 'none';
+        });
+    }
 
-	editButtons.forEach(function (button) {
-		button.addEventListener('click', function (event) {
-			const index = event.target.getAttribute('data-index');
-			toggleEditableInputs(index);
-		});
-	});
-});
+    // Script for editing contact images
+    const editContactImageButton = document.querySelector('.edit-contact-image-btn');
+    const contactImageFileInput = document.querySelector('#contact-image-file-input');
 
-function toggleEditableInputs(index) {
-	const inputIds = ['mainHeading', 'url', 'subHeading', 'caption'];
+    if (editContactImageButton && contactImageFileInput) {
+        editContactImageButton.addEventListener('click', function () {
+            contactImageFileInput.style.display = contactImageFileInput.style.display === 'none' ? 'block' : 'none';
+        });
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButtons = document.querySelectorAll('.edit-banner-info-btn');
 
-	inputIds.forEach(function (id) {
-		const input = document.getElementById(id + index);
-		const spanText = document.getElementById(id + index + '_text');
+        editButtons.forEach(function (button) {
+            button.addEventListener('click', function (event) {
+                const index = event.target.getAttribute('data-index');
+                toggleEditableInputs(index);
+            });
+        });
+    });
 
-		if (input.style.display === 'none') {
-			input.style.display = 'block';
-			spanText.style.display = 'none';
-		} else {
-			input.style.display = 'none';
-			spanText.style.display = 'inline';
-		}
-	});
-}
+    function toggleEditableInputs(index) {
+        const inputIds = ['mainHeading', 'url', 'subHeading', 'caption'];
+
+        inputIds.forEach(function (id) {
+            const input = document.getElementById(id + index);
+            const spanText = document.getElementById(id + index + '_text');
+
+            if (input.style.display === 'none') {
+                input.style.display = 'block';
+                spanText.style.display = 'none';
+            } else {
+                input.style.display = 'none';
+                spanText.style.display = 'inline';
+            }
+        });
+    }
 
 
 
@@ -884,7 +1039,7 @@ function toggleEditableInputs(index) {
 
 </script>
 
-              
+
 </html>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">

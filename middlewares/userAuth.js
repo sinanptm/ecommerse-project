@@ -1,6 +1,6 @@
 const { User, Cart, Wishlist } = require("../models/userModels");
-const { Message, Banner } = require("../models/productModel")
-const { getUserIdFromToken } = require("../util/validations")
+const { Message, Banner } = require("../models/productModel");
+const { getUserIdFromToken } = require("../util/validations");
 
 
 const is_registered = async (req, res, next) => {
@@ -85,8 +85,6 @@ const notifications = async (req, res, next) => {
             if (whish && whish.products) {
                 whish.products = new Set(whish.products);
                 var productIds = Array.from(whish.products).map(objId => objId.toString());
-                console.log(productIds);
-
             }
             const msg = await Message.find({ userId, status: "resolved" })
 

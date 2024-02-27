@@ -13,4 +13,4 @@ module.exports = {
     cookieParser: require("cookie-parser"),
     nocache: require("nocache"),
     PDFDocument: require('pdfkit')
-}
+};

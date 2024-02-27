@@ -1,7 +1,7 @@
 const { Product, Order, CancelationReson, Category, Coupon, Message } = require("../../models/productModel")
-const { User, Addresse, Wishlist, Wallet } = require("../../models/userModels")
+const { User, Addresse, Wishlist, Wallet } = require("../../models/userModels");
 const { getUserIdFromToken, bcryptCompare, makeHash, createHexId, isValidObjectId } = require('../../util/validations');
-const { PDFDocument } = require("../../util/modules")
+const { PDFDocument } = require("../../util/modules");
 
 
 // * homepage Loading

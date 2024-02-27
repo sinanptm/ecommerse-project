@@ -1,7 +1,7 @@
 const { Cart, User, Wishlist, Addresse, Wallet } = require("../../models/userModels");
 const { Product, Order, Category, Coupon } = require("../../models/productModel");
 const { getUserIdFromToken, createHexId, isValidObjectId } = require("../../util/validations");
-const { crypto, Razorpay } = require("../../util/modules")
+const { crypto, Razorpay } = require("../../util/modules");
 
 
 // * for adding new items to the cart

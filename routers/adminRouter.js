@@ -3,8 +3,8 @@ const adminRoute = express();
 const { upload, banner } = require("../util/multer");
 const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout, loadMessages, sendReply, loadBanners, editBanner, addHomeBanner, deleteBanner } = require("../controllers/admin/userControlller");
 const { loadDashBoard, loadOrders, deleteOrder, editOrder, loadOrder,getSalesReport, loadCoupons, addCoupon, deleteCoupon, editCoupon } = require("../controllers/admin/orderController");
-const { loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, } = require("../controllers/admin/products&catogoire")
-const { is_loginRequired, is_admin, handleUndefinedRoutes } = require("../middlewares/auth");
+const { loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, } = require("../controllers/admin/products&catogoire");
+const { is_loginRequired, is_admin, handleUndefinedRoutes } = require("../middlewares/adminAuth");
 
 
 
@@ -58,26 +58,26 @@ adminRoute.post("/editCategories/:id", upload.single("file"), editCatogory);
 adminRoute.get("/deleteCatogory/:id", deleteCatogory);
 
 // * Coupn managment 
-adminRoute.get('/coupon-managment', loadCoupons)
-adminRoute.post('/add-coupon', addCoupon)
-adminRoute.delete("/delete-coupon", deleteCoupon)
-adminRoute.post("/edit-coupon", editCoupon)
+adminRoute.get('/coupon-managment', loadCoupons);
+adminRoute.post('/add-coupon', addCoupon);
+adminRoute.delete("/delete-coupon", deleteCoupon);
+adminRoute.post("/edit-coupon", editCoupon);
 
 // * Banner managment
-adminRoute.get("/banner-managment", loadBanners)
-adminRoute.put("/edit-banner/:page", banner.single("file"), editBanner)
-adminRoute.post("/add-home-banner", banner.single('file'), addHomeBanner)
-adminRoute.delete("/delete-banner/:index", deleteBanner)
+adminRoute.get("/banner-managment", loadBanners);
+adminRoute.put("/edit-banner/:page", banner.single("file"), editBanner);
+adminRoute.post("/add-home-banner", banner.single('file'), addHomeBanner);
+adminRoute.delete("/delete-banner/:index", deleteBanner);
 
 // * Orders managment
-adminRoute.get("/orders-list", loadOrders)
-adminRoute.get('/order-details', loadOrder)
-adminRoute.get("/delete-order", deleteOrder)
-adminRoute.post('/edit-order/:id', editOrder)
+adminRoute.get("/orders-list", loadOrders);
+adminRoute.get('/order-details', loadOrder);
+adminRoute.get("/delete-order", deleteOrder);
+adminRoute.post('/edit-order/:id', editOrder);
 
-adminRoute.get("/messages", loadMessages)
-adminRoute.post("/send-reply", sendReply)
+adminRoute.get("/messages", loadMessages);
+adminRoute.post("/send-reply", sendReply);
 
-adminRoute.use(handleUndefinedRoutes)
+adminRoute.use(handleUndefinedRoutes);
 
 module.exports = adminRoute;

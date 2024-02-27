@@ -1,5 +1,5 @@
-const { Product, Category, Order, CancelationReson, Coupon } = require("../../models/productModel")
-const { User } = require("../../models/userModels")
+const { Product, Category, Order, CancelationReson, Coupon } = require("../../models/productModel");
+const { User } = require("../../models/userModels");
 const { isValidObjectId } = require('../../util/validations');
 const { PDFDocument, moment } = require("../../util/modules");
 
