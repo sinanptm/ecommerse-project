@@ -2,7 +2,7 @@ const { path, express } = require("../util/modules");
 const adminRoute = express();
 const { upload, banner } = require("../util/multer");
 const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout, loadMessages, sendReply, loadBanners, editBanner, addHomeBanner, deleteBanner } = require("../controllers/admin/userControlller");
-const { loadDashBoard, loadOrders, deleteOrder, editOrder, loadOrder, loadReport, getSalesReport, loadCoupons, addCoupon, deleteCoupon, editCoupon } = require("../controllers/admin/orderController");
+const { loadDashBoard, loadOrders, deleteOrder, editOrder, loadOrder,getSalesReport, loadCoupons, addCoupon, deleteCoupon, editCoupon } = require("../controllers/admin/orderController");
 const { loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, } = require("../controllers/admin/products&catogoire")
 const { is_loginRequired, is_admin, handleUndefinedRoutes } = require("../middlewares/auth");
 
@@ -24,7 +24,6 @@ adminRoute.post("/login", checkLogin);
 // * adminRoute.get("/verifyAdmin", is_registered, is_loginRequired, loadOTP);
 // * adminRoute.post("/verifyAdmin", verifyOTP);
 
-adminRoute.get('/sales-report/:type', loadReport)
 
 // * For Validating Admin Token
 adminRoute.use(is_admin)

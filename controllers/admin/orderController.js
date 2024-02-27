@@ -1,8 +1,7 @@
 const { Product, Category, Order, CancelationReson, Coupon } = require("../../models/productModel")
 const { User } = require("../../models/userModels")
 const { isValidObjectId } = require('../../util/validations');
-const { puppeteer, moment } = require("../../util/modules");
-const { JsonWebTokenError } = require("jsonwebtoken");
+const { PDFDocument, moment } = require("../../util/modules");
 
 
 // * to load dashbord
@@ -313,106 +312,97 @@ const deleteOrder = async (req, res) => {
 
 
 // * for loading the report page 
-const loadReport = async (req, res) => {
+const generatePDFReport = async (orders, filteringTime, type, profit, res) => {
   try {
-    let type = req.params.type;
+    const doc = new PDFDocument();
+    const fileName = `${type}_Report.pdf`;
 
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    doc.pipe(res);
 
-    if (!type || (type !== 'weekly' && type !== 'monthly' && type !== 'custom')) {
-      res.redirect("/admin/dashboard");
-      return;
-    }
+    doc.fontSize(18).text(`${type} Sales Report`, { align: 'center' });
+    doc.fontSize(14).text(filteringTime, { align: 'center' });
+    doc.moveDown();
+    doc.fontSize(12).text(`Total Profit: $${profit.toFixed(2)}`, { align: 'right' });
+    doc.moveDown();
 
-    let start;
-    let end;
-    let filteringTime;
-    let profit = 0;
+    const tableTop = doc.y;
+    const col1 = 50, col2 = 200, col3 = 350, col4 = 450;
+    doc.font('Helvetica-Bold').text('Order ID', col1, tableTop);
+    doc.text('Date', col2, tableTop);
+    doc.text('Customer', col3, tableTop);
+    doc.text('Amount', col4, tableTop);
 
-    if (type === 'custom') {
-      const range = JSON.parse(req.query.range);
-      const startDate = moment(range.start_date);
-      const endDate = moment(range.end_date);
-
-      if (!startDate.isValid() || !endDate.isValid()) {
-        res.status(400).json({ error: "Invalid date format" });
-        return;
-      }
-
-      start = startDate.startOf('day');
-      end = endDate.endOf('day');
-
-      type = "Custom";
-      filteringTime = `Custom Range: ${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
-    } else if (type === 'monthly') {
-      type = "Monthly";
-      start = moment().startOf('month');
-      end = moment().endOf('month');
-      filteringTime = `Monthly Report: ${start.format('MMMM YYYY')}`;
-    } else if (type === 'weekly') {
-      type = "Weekly";
-      start = moment().startOf('week');
-      end = moment().endOf('week');
-      filteringTime = `Weekly Report: ${start.format('MMM DD, YYYY')} to ${end.format('MMM DD, YYYY')}`;
-    } else {
-      type = "Custom";
-      start = moment().startOf('day');
-      end = moment().endOf('day');
-      filteringTime = `Daily Report: ${start.format('YYYY-MM-DD')}`;
-    }
-
-    const orders = await Order.find({ orderStatus: '4', orderDate: { $gte: start, $lte: end } }).populate("userid");
-
-    orders.forEach(order => {
-      profit += order.orderAmount; // Accumulate profit from each order
+    let yPos = tableTop + 20; 
+    orders.forEach((order, index) => {
+      const randomID = `SK${Math.floor(10000 + Math.random() * 90000) }`
+      doc.font('Helvetica').text(randomID, col1, yPos);
+      doc.text(order.orderDate.toDateString(), col2, yPos);
+      doc.text(order.userid.name, col3, yPos);
+      doc.text(`$${order.orderAmount.toFixed(2)}`, col4, yPos);
+      yPos += 20; 
     });
 
-    res.render('report', { orders, filteringTime, type, profit });
+    doc.end();
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 
-
-// * for downlaoding the the report 
 
 const getSalesReport = async (req, res) => {
   try {
-    const type = req.params.type
-    let range = {}
-    if (type == 'custom') {
+    const type = req.params.type;
+    let range = {};
+    let start, end; 
+
+    if (type === 'custom') {
       range = {
         start_date: req.body.start_date,
         end_date: req.body.end_date
-      }
-      range = JSON.stringify(range)
+      };
+      start = moment(range.start_date);
+      end = moment(range.end_date);
+    } else if (type === 'monthly') {
+      start = moment().startOf('month');
+      end = moment().endOf('month');
+    } else if (type === 'weekly') {
+      start = moment().startOf('week');
+      end = moment().endOf('week');
+    } else {
+      start = moment().startOf('day');
+      end = moment().endOf('day');
     }
-    const browser = await puppeteer.launch({ headless: "new" });
-    const page = await browser.newPage();
-    await page.goto(`${req.protocol}://${req.get("host")}` + `/admin/sales-report/${type}?range=${range}`, {
-      waitUntil: 'networkidle2',
-    });
-    await page.setViewport({ width: 1680, height: 1050 });
-    const pdf = await page.pdf({
-      format: "A4",
-      preferCSSPageSize: true,
-    });
-    const pages = await browser.pages()
-    await Promise.all(pages.map(page => { page.close() }))
-    await browser.close();
 
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Length': pdf.length
+    const orders = await Order.find({ orderStatus: '4', orderDate: { $gte: start, $lte: end } }).populate("userid");
+    let profit = 0;
+    orders.forEach(order => {
+      profit += order.orderAmount;
     });
 
-    res.send(pdf);
+    let filteringTime;
+    if (type === 'custom') {
+      filteringTime = `Custom Range: ${range.start_date} to ${range.end_date}`;
+    } else if (type === 'monthly') {
+      filteringTime = `Monthly Report: ${start.format('MMMM YYYY')}`;
+    } else if (type === 'weekly') {
+      filteringTime = `Weekly Report: ${start.format('MMM DD, YYYY')} to ${end.format('MMM DD, YYYY')}`;
+    } else {
+      filteringTime = `Daily Report: ${start.format('YYYY-MM-DD')}`;
+    }
+
+    generatePDFReport(orders, filteringTime, type, profit, res);
   } catch (error) {
     console.error(error.message);
-    res.status(304).redirect("/admin/dashboard?report=false")
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
+
+
+
+
 
 // * for liading the coupons page 
 
@@ -515,7 +505,6 @@ module.exports = {
   loadOrder,
   deleteOrder,
   editOrder,
-  loadReport,
   getSalesReport,
   loadCoupons,
   addCoupon,
