@@ -82,10 +82,15 @@ const notifications = async (req, res, next) => {
             const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
             const cart = await Cart.findOne({ userId })
             let whish = await Wishlist.findOne({ userid: userId }).lean()
-            whish.products = new Set(whish.products)
+            if (whish && whish.products) {
+                whish.products = new Set(whish.products);
+                var productIds = Array.from(whish.products).map(objId => objId.toString());
+                console.log(productIds);
+
+            }
             const msg = await Message.find({ userId, status: "resolved" })
 
-            res.locals.whishItems = whish ? whish.products.length : 0
+            res.locals.whishItems = productIds ? productIds.length : 0
             res.locals.messages = msg ? msg.length : 0
             res.locals.cartItems = cart ? cart.items || 0 : 0;
             res.locals.valid = req.cookies.token || req.session.token;
