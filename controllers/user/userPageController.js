@@ -279,7 +279,9 @@ const loadAccount = async (req, res) => {
         }
 
         let wallet = await Wallet.findOne({ userid }).lean()
-        wallet.transactions = wallet.transactions.reverse()
+        if (wallet) {
+            wallet.transactions = wallet.transactions ? wallet.transactions.reverse() : [];
+        }
 
         // ? for deleting the expired coupon 
         await Coupon.deleteMany({ expDate: { $lt: Date.now() } })
@@ -533,7 +535,7 @@ const returnOrder = async (req, res) => {
                     $inc: { balance: order.orderAmount }
                 });
             } else {
-                
+
                 wallet = new Wallet({
                     userid: userId,
                     createdAt: new Date(),
@@ -597,7 +599,7 @@ const createInvoice = async (req, res) => {
         doc.on('data', buffers.push.bind(buffers));
         doc.on('end', () => {
             const pdfBuffer = Buffer.concat(buffers);
-            
+
             res.setHeader('Content-Type', 'application/pdf');
             res.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
             res.send(pdfBuffer);
@@ -671,7 +673,7 @@ function generateInvoice(doc, orders) {
 
 
 
-    doc.moveDown(2); 
+    doc.moveDown(2);
     doc.fontSize(14).text(totalInvoiceLine, yPos);
     doc.fontSize(14).text(thankYouLine, { align: 'left' });
 }
