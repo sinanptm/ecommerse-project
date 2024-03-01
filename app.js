@@ -1,6 +1,7 @@
 const { express, nocache, session, cookieParser } = require('./util/modules');
 const app = express();
 require("dotenv").config();
+const { PORT, SECRET } = process.env
 const connectMongoDB = require('./config/mongodb');
 const userRoute = require("./routers/userRouter");
 const adminRouter = require("./routers/adminRouter");
@@ -14,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(
   session({
-    secret: process.env.SECRET,
+    secret: SECRET,
     resave: false,
     saveUninitialized: true,
   })
@@ -25,8 +26,6 @@ app.use("/admin", adminRouter);
 
 app.use("/", userRoute);
 
-const port = process.env.PORT || 3333;
-
-app.listen(port, () => {
-  console.log(`App is running on http://127.0.0.1:${port}`);
+app.listen(PORT, () => {
+  console.log(`App is running on http://127.0.0.1:${PORT}`);
 });

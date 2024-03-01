@@ -1,6 +1,6 @@
 const { path, express } = require("../util/modules")
 const userRoute = express();
-const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/user/userController");
+const { loadLogin, checkLogin, loadresetmail, sendresetmail, loadnewPassword, checkNewPassword, loadOTP, newOTP, verifyOTP, loadRegister, checkRegister, userLogout, } = require("../controllers/user/loginController");
 const { loadHome, loadProducts, laodProductDetials, loadAccount, editDetails, edittAddress, addAddress, deleteAddress, loadAbout, loadContact, cancelOrder, changePassword, createInvoice, contactAdmin, markAsRead, returnOrder } = require("../controllers/user/userPageController");
 const { loadCart, addToCart, addQuantity, removeProduct, loadCheckout, addToCheckout, online_payment, placeOrder, showSuccess, addToCartProductPage, loadWhishList, addToWhishlist, removeFromWhishlist } = require("../controllers/user/cartController")
 const { is_registered, requireLogin, is_loginRequired, notifications, handleUndefinedRoutes } = require("../middlewares/userAuth");
