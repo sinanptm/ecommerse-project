@@ -13,7 +13,7 @@ const userSchema = new Schema({
   updated: { type: Boolean, default: false },
   is_verified: { type: Boolean, default: false },
   status: { type: String, default: "Active" },
-  token: { type: String, unique: true },
+  token: { type: String, unique: false },
 });
 
 const User = model("User", userSchema);

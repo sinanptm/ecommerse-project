@@ -94,7 +94,7 @@ const verifyOTP = async (req, res) => {
       return res.render("otp", { msg: `Provide values for email ${email}`, email: req.session.pmail, });
     }
 
-    const matchedRecord = await OTP.findOne({ email: email });
+    const matchedRecord = await OTP.findOne({otp });
 
     if (!matchedRecord) {
       delete req.session.OTPId;
@@ -112,20 +112,7 @@ const verifyOTP = async (req, res) => {
       await OTP.deleteOne({ email: email });
       const veriy = await User.updateOne({ email }, { $set: { is_verified: true } });
 
-      // const token = await generateToken(veriy._id);
-
-      // req.session.token = token;
-      // res.cookie("token", token, {
-      //   maxAge: 30 * 24 * 60 * 60 * 1000,
-      // });
-
-
-      // await User.updateOne(
-      //   { email },
-      //   { $set: { token: token } },
-      //   { upsert: true }
-      // );
-
+  
       delete req.session.OTPId;
       return res.redirect("/login");
     } else {
@@ -302,14 +289,15 @@ const userLogout = async (req, res) => {
     res.clearCookie("token");
     const token = req.cookies.token || req.session.token
     const userid = token ? await getUserIdFromToken(token) : ''
-    await User.findByIdAndUpdate(userid, {
+    await User.findByIdAndUpdate({_id:userid}, {
       $set: {
         token: ''
       }
     })
     res.redirect("/login")
   } catch (error) {
-    res.status(500).send("Internal Server Error");
+    console.log(error);
+    res.redirect("/login")
   }
 };
 

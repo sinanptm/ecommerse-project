@@ -2,9 +2,9 @@ const { User, Admin, } = require("../../models/userModels");
 const { Message, Banner } = require('../../models/productModel');
 const { sendOTPs } = require("../../config/sendMail");
 const { OTP } = require("../../models/otpModel");
-const { makeHash, bcryptCompare } = require("../../util/validations");
+const { makeHash, bcryptCompare, getUserIdFromToken } = require("../../util/validations");
 
-//  * Admin Login page 
+//  ! Admin Login page 
 const loadLogin = async (req, res) => {
   try {
     res.render("login");
@@ -41,6 +41,30 @@ const checkLogin = async (req, res) => {
     }
   } catch (error) {
     res.status(404).json(error.message);
+  }
+};
+
+//  * Aadmin logout 
+const logout = async (req, res) => {
+  try {
+    req.session.destroy((err) => {
+      if (err) {
+        console.log("Error destroying session:", err);
+        res.status(500).send("Internal Server Error");
+      } else {
+        res.clearCookie("adminToken");
+        res.redirect("/admin/login");
+      }
+    });
+    const token = req.session.adminToken||req.cookies.adminToken
+    if (token) {
+      const adminId = await getUserIdFromToken(token)
+      await Admin.findByIdAndUpdate({_id:adminId},{token:''})
+    }
+    res.clearCookie("adminToken")
+    res.status(200).redirect('/admin')
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -135,7 +159,16 @@ const checkLogin = async (req, res) => {
 //   }
 // };
 
-//  * dashboard--user_managment
+
+
+
+
+
+
+
+
+
+//  ! dashboard--user_managment
 
 const loadUser = async (req, res) => {
   try {
@@ -220,22 +253,6 @@ const userUnblock = async (req, res) => {
 
 
 
-//  * Aadmin logout 
-const logout = async (req, res) => {
-  try {
-    req.session.destroy((err) => {
-      if (err) {
-        console.log("Error destroying session:", err);
-        res.status(500).send("Internal Server Error");
-      } else {
-        res.clearCookie("adminToken");
-        res.redirect("/admin/login");
-      }
-    });
-  } catch (err) {
-
-  }
-};
 
 // * for contacting the user 
 
