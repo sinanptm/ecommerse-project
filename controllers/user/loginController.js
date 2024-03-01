@@ -1,7 +1,7 @@
 const { User } = require("../../models/userModels");
 const { sendNewPass, deleteExpiredOTPs, sendOTPs } = require("../../config/sendMail");
 const { OTP } = require("../../models/otpModel");
-const { makeHash, bcryptCompare, generateToken } = require("../../util/validations");
+const { makeHash, bcryptCompare, generateToken, getUserIdFromToken } = require("../../util/validations");
 
 // * User registation page 
 const loadRegister = async (req, res) => {
@@ -298,16 +298,16 @@ const checkNewPassword = async (req, res) => {
 
 const userLogout = async (req, res) => {
   try {
-    console.log(12);
-    req.session.destroy((err) => {
-      if (err) {
-        console.log("Error destroying session:", err);
-        res.status(500).send("Internal Server Error");
-      } else {
-        res.clearCookie("token");
-        res.redirect("/login");
+    req.session.token = null
+    res.clearCookie("token");
+    const token = req.cookies.token || req.session.token
+    const userid = token ? await getUserIdFromToken(token) : ''
+    await User.findByIdAndUpdate(userid, {
+      $set: {
+        token: ''
       }
-    });
+    })
+    res.redirect("/login")
   } catch (error) {
     res.status(500).send("Internal Server Error");
   }

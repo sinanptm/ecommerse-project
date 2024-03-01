@@ -97,7 +97,7 @@ const notifications = async (req, res, next) => {
             res.locals.cartItems = 0;
             res.locals.messages = 0
             res.locals.whishItems = 0;
-            res.locals.valid = null;
+            res.locals.valid = req.cookies.token || req.session.token;
             next();
         }
     } catch (error) {
