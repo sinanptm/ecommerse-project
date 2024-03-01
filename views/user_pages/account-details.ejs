@@ -1213,9 +1213,7 @@
     					                allowOutsideClick: () => !Swal.isLoading()
     					            }).then((result) => {
     					                if (result.isConfirmed) {
-    					                    Swal.fire({
-    					                        title: `Error: ${result}`,
-    					                    });
+											Swal.fire("Success!", "The money will be credited to your wallet within 2 working days.", "success");
     					                }
     					            });
 								   }
