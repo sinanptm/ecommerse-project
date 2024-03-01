@@ -97,7 +97,7 @@ const notifications = async (req, res, next) => {
             res.locals.cartItems = 0;
             res.locals.messages = 0
             res.locals.whishItems = 0;
-            res.locals.valid = req.cookies.token || req.session.token;
+            res.locals.valid = null;
             next();
         }
     } catch (error) {
@@ -107,7 +107,6 @@ const notifications = async (req, res, next) => {
         res.locals.valid = req.cookies.token || req.session.token;
         next();
         console.log("error in laoding notification :", error.message);
-        res.status(304).redirect('/')
     }
 }
 
