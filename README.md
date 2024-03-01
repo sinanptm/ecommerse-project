@@ -36,17 +36,18 @@ Contributions are welcome! Feel free to open issues or pull requests to suggest 
    ```bash
    git clone https://github.com/sinanptm/ecommerse-project.git
 Install dependencies:
+npm install
 
-**npm install**
- - Set up environment variables:
- - Create a .env file based on the provided .env.example and fill in the required values.
+**Set up environment variables:**
 
-**Copy the data for banners:**
+Create a .env file based on the provided .env.example and fill in the required values.
+Copy the data for banners:
 Copy the content from banners.json file and paste it into your database or data store to ensure that the banners are added properly.
 
 **Start the server:**
 npm start
 
-
 **Visit the application:**
 Open your browser and go to http://127.0.0.1:8080 to view the application.
+
+Additionally, copy the admin user data from admin.json and insert it into your database for admin access.
