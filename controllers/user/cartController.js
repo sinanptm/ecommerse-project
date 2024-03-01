@@ -711,7 +711,6 @@ const showSuccess = async (req, res) => {
     const id = req.query.id
 
     if (!id || !isValidObjectId(id)) {
-      console.log('no orderid');
       return res.status(304).redirect("/cart")
     }
 

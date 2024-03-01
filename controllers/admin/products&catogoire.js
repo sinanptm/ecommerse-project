@@ -285,7 +285,6 @@ const unlistProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
-        console.log(1);
         const id = req.params.id;
 
         const existingProduct = await Product.findById(id);

@@ -275,7 +275,6 @@ const editOrder = async (req, res) => {
     const status = req.body.status
     const order = await Order.findByIdAndUpdate(id, { $set: { orderStatus: status } })
     if (!order) {
-      console.log('no order to edit');
       return res.status(304).redirect('/admin/order-details?id=' + id)
     }
 
@@ -294,12 +293,10 @@ const deleteOrder = async (req, res) => {
   try {
     const id = req.query.id
     if (!id) {
-      console.log('no id ');
       return res.status(304).redirect('/admin/orders-list')
     }
     const order = await Order.findById(id);
     if (!order) {
-      console.log('no order');
       return res.status(304).redirect('/admin/orders-list')
     }
     await Order.findByIdAndDelete(id);
