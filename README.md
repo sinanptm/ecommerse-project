@@ -20,7 +20,15 @@ Welcome to our Node.js e-commerce project! This project aims to provide a simple
 14. **Banner Management:** Manage banners to promote products or campaigns.
 15. **Wallet:** Allow users to store credit for future purchases.
 
+## Usage
 
+- **Admin Dashboard:** Access the admin dashboard by navigating to /admin and login with your credentials.
+- **Adding Products:** Add new products through the admin dashboard.
+- **User Interface:** Users can browse products, add them to the cart, and complete the checkout process.
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or pull requests to suggest improvements, report bugs, or add new features.
 
 ## Installation
 
@@ -29,28 +37,18 @@ Welcome to our Node.js e-commerce project! This project aims to provide a simple
    git clone https://github.com/sinanptm/ecommerse-project.git
 Install dependencies:
 
-bash
-Copy code
 npm install
 Set up environment variables:
 Create a .env file based on the provided .env.example and fill in the required values.
 
+Copy the data for banners:
+Copy the content from banners.json file and paste it into your database or data store to ensure that the banners are added properly.
+
 Start the server:
 
-bash
-Copy code
 npm start
 Visit the application:
 Open your browser and go to http://127.0.0.1:8080 to view the application.
 
-Usage
-Admin Dashboard: Access the admin dashboard by navigating to /admin and login with your credentials.
-Adding Products: Add new products through the admin dashboard.
-User Interface: Users can browse products, add them to the cart, and complete the checkout process.
-Contributing
-Contributions are welcome! Feel free to open issues or pull requests to suggest improvements, report bugs, or add new features.
 
-vbnet
-Copy code
-
-Make sure to copy this Markdown-formatted text into your README file. This should display the conten
+Now, users will know to copy the data from `banners.json` to ensure that the banners are properly adde
