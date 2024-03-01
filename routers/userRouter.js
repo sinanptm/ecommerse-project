@@ -25,6 +25,8 @@ userRoute.post("/checkOTP", verifyOTP);
 userRoute.get("/register", is_loginRequired, loadRegister);
 userRoute.post("/register", is_loginRequired, checkRegister);
 
+userRoute.get("/logout", userLogout);
+
 // * home page and products page
 userRoute.get("/", loadHome);
 userRoute.get("/home", loadHome);
@@ -55,7 +57,6 @@ userRoute.get('/checkout', loadCheckout);
 userRoute.post("/place-order", placeOrder);
 userRoute.post("/online-payment", online_payment);
 userRoute.get('/order-success', showSuccess);
-userRoute.get("/logout", userLogout);
 
 // * User Profile Routes
 userRoute.get('/account', loadAccount);
