@@ -175,26 +175,22 @@ async function orderFilter(event) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const copyButtons = document.querySelectorAll('.coupon-btn');
+function copyCode(event) {
+    try {
+        const codeToCopy = event.target.dataset.code
 
-    copyButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const codeElement = this.parentElement.querySelector('.code');
-            const codeToCopy = codeElement.innerText;
-
-            // Copy the code to clipboard
-            navigator.clipboard.writeText(codeToCopy)
-                .then(() => {
-                    swal("Success!", "Coupon code copied: " + codeToCopy, "success");
-                })
-                .catch(() => {
-                    swal("Error!", "Failed to copy coupon code.", "error");
-                });
-        });
-    });
-});
-
+        // Copy the code to clipboard
+        navigator.clipboard.writeText(codeToCopy)
+            .then(() => {
+                new Swal("Success!", "Coupon code copied: " + codeToCopy, "success");
+            })
+            .catch(() => {
+                new Swal("Error!", "Failed to copy coupon code.", "error");
+            });
+    } catch (error) {
+        console.log(error);
+    }
+}
 async function searchProducts(event) {
     try {
         const name = event.target.value.trim();

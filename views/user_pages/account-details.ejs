@@ -474,7 +474,7 @@
 																					%>
 																			</p>
 																		</div>
-																		<button class="coupon-btn">Copy Code</button>
+																		<button class="coupon-btn" data-code="<%= coupon.code %>" onclick="copyCode(event)">Copy Code</button>
 																	</li>
 																<% } %>
 															<% }) %>
@@ -503,8 +503,7 @@
 																<h2>Recent Transactions:</h2>
 																<ul>
 																	<% if (wallet.transactions.length>0) { %>
-																		<% wallet.transactions.forEach(transaction=> {
-																			%>
+																		<% wallet.transactions.forEach(transaction=> { %>
 																			<li
 																				class="transaction-<%= transaction.type.toLowerCase() %>">
 																				<div>
@@ -533,6 +532,7 @@
 													</div>
 
 												</div>
+												
 
 
 
@@ -972,25 +972,21 @@
 									            <div class="d-flex justify-content-between align-items-center mb-3">
 									                <h4 class="mb-0">Order ID: SKe5<%=i%>
 									                </h4>
-									                <span class="badge rounded-pill 
-									                    <% if (order.isPending &&order.orderStatus !== '5') { %>bg-danger
-									                    <% } else if (order.orderStatus === '1') { %> bg-warning
-									                    <% } else if (order.orderStatus === '2') { %> bg-info
-									                    <% } else if (order.orderStatus === '3') { %> bg-primary
-									                    <% } else if (order.orderStatus === '4') { %> bg-success
-									                    <% } else if (order.orderStatus === '5') { %> bg-danger
-									                    <% } else if (order.orderStatus==='6') %> bg-danger
-														text-white">
-									                    <% if (order.isPending&&order.orderStatus !== '5' ) { %> Payment Pendng
-									                        <% } else if (order.orderStatus==='1' ) { %> Processing
-									                            <% } else if (order.orderStatus==='2' ) { %> Quality Check
-									                                <% } else if (order.orderStatus==='3' ) { %> Shipped
-									                                    <% } else if (order.orderStatus==='4' ) { %> Delivered
-									                                        <% } else if (order.orderStatus==='5' ) { %> Canceled
-																				<%} else if (order.orderStatus==='6') { %> Returned
-																				
-									                                            	<% } %>
-									                </span>
+													<% if (order.isPending && order.orderStatus !== '5') { %>
+													    <span class="badge bg-danger text-white">Payment Pending</span>
+													<% } else if (order.orderStatus === '1') { %>
+													    <span class="badge bg-warning text-white">Processing</span>
+													<% } else if (order.orderStatus === '2') { %>
+													    <span class="badge bg-info text-white">Quality Check</span>
+													<% } else if (order.orderStatus === '3') { %>
+													    <span class="badge bg-primary text-white">Shipped</span>
+													<% } else if (order.orderStatus === '4') { %>
+													    <span class="badge bg-success text-white">Delivered</span>
+													<% } else if (order.orderStatus === '5') { %>
+													    <span class="badge bg-danger text-white">Canceled</span>
+													<% } else if (order.orderStatus ==='6') {%>
+														<span class="badge bg-danger text-white">Returned</span>
+													<% } %>
 									            </div>
 									            <p>Order Amount: <%= order.orderAmount %>
 									                <p>Payment Status: <%= order.paymentStatus %>
@@ -1136,89 +1132,7 @@
 
 					</section>
 					
-					<script>
-						function as() {
-							$(document).ready(function () {
-							const dialogs = document.querySelectorAll(".order-dialog");
-						
-							dialogs.forEach((dialog, index) => {
-								const showOrderDetails = document.querySelector(`#order-details-${index}`);
-								const closeBtn = dialog.querySelector("#close-details");
-								const content = dialog.querySelector(".content");
-								let order;
-							
-								showOrderDetails.addEventListener("click", (event) => {
-									order = JSON.parse(event.target.dataset.details);
-									dialog.classList.add('open');
-									dialog.showModal();
-									content.innerHTML = `<strong>${order._id}</strong>`;
-									
-								});
-
-							
-								closeBtn.addEventListener("click", () => {
-									dialog.classList.remove('open');
-									dialog.close();
-									
-								});
-							
-								dialog.addEventListener('click', (event) => {
-									if (event.target === dialog) {
-										dialog.classList.remove('open');
-										dialog.close();
-									}
-								});
-								
-								document.addEventListener('keydown', (event) => {
-									if (event.key === 'Escape' && dialog.classList.contains('open')) {
-										dialog.classList.remove('open');
-										dialog.close();
-									}
-								});
-
-							});
-						});
-						}
-						as();
-						
-    					           function returnOrder(event) {
-									const orderId = event.target.dataset.returnid;
-    					            if (!orderId) {
-    					                console.error("Invalid order ID:", orderId);
-    					                return;
-    					            }
-    					            Swal.fire({
-    					                title: "Reason For Returning",
-    					                input: "text",
-    					                inputAttributes: {
-    					                    autocapitalize: "off"
-    					                },
-    					                showCancelButton: true,
-    					                confirmButtonText: "Submit",
-    					                showLoaderOnConfirm: true,
-    					                preConfirm: async (msg) => {
-    					                    try {
-    					                        console.log(msg);
-    					                        const response = await $.ajax({
-    					                            url: `/return-order?id=${orderId}&msg=${msg}`,
-    					                            method: "DELETE"
-    					                        });
-    					                        await window.location.reload();
-    					                        Swal.fire("Success!", "The money will be credited to your wallet within 2 working days.", "success");
-    					                    } catch (error) {
-    					                        // Swal.showValidationMessage("Order Return Failed");
-    					                        console.error("Error returning order:", error);
-    					                    }
-    					                },
-    					                allowOutsideClick: () => !Swal.isLoading()
-    					            }).then((result) => {
-    					                if (result.isConfirmed) {
-											Swal.fire("Success!", "The money will be credited to your wallet within 2 working days.", "success");
-    					                }
-    					            });
-								   }
-    				
-					</script>
+			
 
 					<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog"
 						aria-labelledby="cancelModalLabel" aria-hidden="true">
@@ -1390,7 +1304,7 @@
 
 									<ul>
 										<li class="p-b-10">
-											<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											<a href="/products" class="stext-107 cl7 hov-cl1 trans-04">
 												Women
 											</a>
 										</li>
@@ -1422,26 +1336,26 @@
 
 									<ul>
 										<li class="p-b-10">
-											<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											<a href="/account" class="stext-107 cl7 hov-cl1 trans-04">
 												Track Order
 											</a>
 										</li>
 
 										<li class="p-b-10">
-											<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											<a href="account?filter=6" class="stext-107 cl7 hov-cl1 trans-04">
 												Returns
 											</a>
 										</li>
 
 										<li class="p-b-10">
-											<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+											<a href="account?filter=all" class="stext-107 cl7 hov-cl1 trans-04">
 												Shipping
 											</a>
 										</li>
 
 										<li class="p-b-10">
-											<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-												FAQs
+											<a href="/about" class="stext-107 cl7 hov-cl1 trans-04">
+												About
 											</a>
 										</li>
 									</ul>
@@ -1541,101 +1455,133 @@
 							<i class="zmdi zmdi-chevron-up"></i>
 						</span>
 					</div>
-
-
 					<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-					<script src="vendor/animsition/js/animsition.min.js"></script>
-					<script src="vendor/bootstrap/js/popper.js"></script>
-					<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-					<script src="vendor/select2/select2.min.js"></script>
-					<script>
-						$(".js-select2").each(function () {
-							$(this).select2({
-								minimumResultsForSearch: 20,
-								dropdownParent: $(this).next('.dropDownSelect2')
-							});
-						})
+<script src="vendor/animsition/js/animsition.min.js"></script>
+<script src="vendor/bootstrap/js/popper.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="vendor/select2/select2.min.js"></script>
+<script>
+	$(".js-select2").each(function () {
+		$(this).select2({
+			minimumResultsForSearch: 20,
+			dropdownParent: $(this).next('.dropDownSelect2')
+		});
+	})
+	function as() {
+		$(document).ready(function () {
+			const dialogs = document.querySelectorAll(".order-dialog");
+
+			dialogs.forEach((dialog, index) => {
+				const showOrderDetails = document.querySelector(`#order-details-${index}`);
+				const closeBtn = dialog.querySelector("#close-details");
+				const content = dialog.querySelector(".content");
+				let order;
+
+				showOrderDetails.addEventListener("click", (event) => {
+					order = JSON.parse(event.target.dataset.details);
+					dialog.classList.add('open');
+					dialog.showModal();
+					content.innerHTML = `<strong>${order._id}</strong>`;
+
+				});
 
 
-					</script>
-					<script src="vendor/daterangepicker/moment.min.js"></script>
-					<script src="vendor/daterangepicker/daterangepicker.js"></script>
-					<script src="vendor/slick/slick.min.js"></script>
-					<script src="js/slick-custom.js"></script>
-					<script src="vendor/parallax100/parallax100.js"></script>
-					<script>
-						$('.parallax100').parallax100();
-					</script>
-					<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
-					<script>
-						$('.gallery-lb').each(function () { // the containers for all your galleries
-							$(this).magnificPopup({
-								delegate: 'a', // the selector for gallery item
-								type: 'image',
-								gallery: {
-									enabled: true
-								},
-								mainClass: 'mfp-fade'
-							});
-						});
-					</script>
-					<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-					<script src="vendor/isotope/isotope.pkgd.min.js"></script>
-					<script src="sweetalert2.min.js"></script>
-					<link rel="stylesheet" href="sweetalert2.min.css">
-					<script>
-						$('.js-addwish-b2').on('click', function (e) {
-							e.preventDefault();
-						});
+				closeBtn.addEventListener("click", () => {
+					dialog.classList.remove('open');
+					dialog.close();
 
-						$('.js-addwish-b2').each(function () {
-							var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
-							$(this).on('click', function () {
-								swal(nameProduct, "is added to wishlist !", "success");
+				});
 
-								$(this).addClass('js-addedwish-b2');
-								$(this).off('click');
-							});
-						});
+				dialog.addEventListener('click', (event) => {
+					if (event.target === dialog) {
+						dialog.classList.remove('open');
+						dialog.close();
+					}
+				});
 
-						$('.js-addwish-detail').each(function () {
-							var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+				document.addEventListener('keydown', (event) => {
+					if (event.key === 'Escape' && dialog.classList.contains('open')) {
+						dialog.classList.remove('open');
+						dialog.close();
+					}
+				});
 
-							$(this).on('click', function () {
-								swal(nameProduct, "is added to wishlist !", "success");
+			});
+		});
+	}
+	as();
 
-								$(this).addClass('js-addedwish-detail');
-								$(this).off('click');
-							});
-						});
+	function returnOrder(event) {
+		const orderId = event.target.dataset.returnid;
+		if (!orderId) {
+			console.error("Invalid order ID:", orderId);
+			return;
+		}
+		Swal.fire({
+			title: "Reason For Returning",
+			input: "text",
+			inputAttributes: {
+				autocapitalize: "off"
+			},
+			showCancelButton: true,
+			confirmButtonText: "Submit",
+			showLoaderOnConfirm: true,
+			preConfirm: async (msg) => {
+				try {
+					console.log(msg);
+					const response = await $.ajax({
+						url: `/return-order?id=${orderId}&msg=${msg}`,
+						method: "DELETE"
+					});
+					await window.location.reload();
+					Swal.fire("Success!", "The money will be credited to your wallet within 2 working days.", "success");
+				} catch (error) {
+					// Swal.showValidationMessage("Order Return Failed");
+					console.error("Error returning order:", error);
+				}
+			},
+			allowOutsideClick: () => !Swal.isLoading()
+		}).then((result) => {
+			if (result.isConfirmed) {
+				Swal.fire("Success!", "The money will be credited to your wallet within 2 working days.", "success");
+			}
+		});
+	}
 
-						/*---------------------------------------------*/
+</script>
+<script src="vendor/daterangepicker/moment.min.js"></script>
+<script src="vendor/daterangepicker/daterangepicker.js"></script>
+<script src="vendor/slick/slick.min.js"></script>
+<script src="js/slick-custom.js"></script>
+<script src="vendor/parallax100/parallax100.js"></script>
+<script>
+	$('.parallax100').parallax100();
+</script>
+<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
 
-						$('.js-addcart-detail').each(function () {
-							var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-							$(this).on('click', function () {
-								swal(nameProduct, "is added to cart !", "success");
-							});
-						});
-					</script>
-					<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-					<script>
-						$('.js-pscroll').each(function () {
-							$(this).css('position', 'relative');
-							$(this).css('overflow', 'hidden');
-							var ps = new PerfectScrollbar(this, {
-								wheelSpeed: 1,
-								scrollingThreshold: 1000,
-								wheelPropagation: false,
-							});
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="vendor/isotope/isotope.pkgd.min.js"></script>
+<script src="sweetalert2.min.js"></script>
+<link rel="stylesheet" href="sweetalert2.min.css">
 
-							$(window).on('resize', function () {
-								ps.update();
-							})
-						});
-					</script>
-					<script src="js/main.js"></script>
+<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<script>
+	$('.js-pscroll').each(function () {
+		$(this).css('position', 'relative');
+		$(this).css('overflow', 'hidden');
+		var ps = new PerfectScrollbar(this, {
+			wheelSpeed: 1,
+			scrollingThreshold: 1000,
+			wheelPropagation: false,
+		});
 
-				</body>
+		$(window).on('resize', function () {
+			ps.update();
+		})
+	});
+</script>
+<script src="js/main.js"></script>
 
-</html>
+</body>
+
+</html>a

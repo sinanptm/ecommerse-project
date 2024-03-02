@@ -94,7 +94,7 @@ const verifyOTP = async (req, res) => {
       return res.render("otp", { msg: `Provide values for email ${email}`, email: req.session.pmail, });
     }
 
-    const matchedRecord = await OTP.findOne({otp });
+    const matchedRecord = await OTP.findOne({ email });
 
     if (!matchedRecord) {
       delete req.session.OTPId;
@@ -112,7 +112,7 @@ const verifyOTP = async (req, res) => {
       await OTP.deleteOne({ email: email });
       const veriy = await User.updateOne({ email }, { $set: { is_verified: true } });
 
-  
+
       delete req.session.OTPId;
       return res.redirect("/login");
     } else {
@@ -289,7 +289,7 @@ const userLogout = async (req, res) => {
     res.clearCookie("token");
     const token = req.cookies.token || req.session.token
     const userid = token ? await getUserIdFromToken(token) : ''
-    await User.findByIdAndUpdate({_id:userid}, {
+    await User.findByIdAndUpdate({ _id: userid }, {
       $set: {
         token: ''
       }
