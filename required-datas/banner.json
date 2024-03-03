@@ -1,0 +1,54 @@
+{
+  "_id": { "$oid": "65d98d1f695d46172bad6214" },
+  "products": "/images/banner-images/slide-06.jpg",
+  "cart": "/images/banner-images/photo-1557821552-17105176677c.avif",
+  "wishlist": "/images/banner-images/wishlist-apps.webp",
+  "checkout": "/images/banner-images/A-Comprehensive_list_desk_banner.jpg",
+  "orderSuccess": "/images/banner-images/781e2cdb91d16efbfe31b7b9a3202304.jpg",
+  "profile": "/images/banner-images/What-is-eCommerce-How-does-eCommerce-work.jpg",
+  "about": "/images/banner-images/bg-01.jpg",
+  "contact": "/images/banner-images/bg-01.jpg",
+  "home": [
+    {
+      "mainHeading": "Men new Collection",
+      "url": "/products",
+      "subHeading": "Men new",
+      "img": "/images/banner-images/file-1708797841035.jpg",
+      "caption": "New",
+      "_id": { "$oid": "65da2f91010b11511273dace" }
+    },
+    {
+      "mainHeading": "New Arrivals",
+      "url": "/products",
+      "subHeading": "Womens' collection 2024",
+      "img": "/images/banner-images/file-1708797901959.jpg",
+      "caption": "Womens",
+      "_id": { "$oid": "65da2fcd010b11511273dad6" }
+    },
+    {
+      "mainHeading": "New Season",
+      "url": "/home",
+      "subHeading": "Men's New Styles",
+      "img": "/images/banner-images/file-1708798051635.jpg",
+      "caption": "Men's",
+      "_id": { "$oid": "65da300c010b11511273dadf" }
+    },
+    {
+      "mainHeading": "Offerd Products",
+      "url": "/products?price=0-500",
+      "subHeading": "up to 30% OFF on Womens Collection",
+      "img": "/images/banner-images/file-1708799922695.jpg",
+      "caption": "30% OFF",
+      "_id": { "$oid": "65da37b23281e29c90c40092" }
+    },
+    {
+      "mainHeading": "30% OFF On Shirts",
+      "url": "/products?category=Shirt",
+      "subHeading": "30% OFF On Men Shirts",
+      "img": "/images/banner-images/file-1708836386057.jpg",
+      "caption": "Shirts",
+      "_id": { "$oid": "65dac622337aa4a689280181" }
+    }
+  ],
+  "__v": { "$numberInt": "1" }
+}
