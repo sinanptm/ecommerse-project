@@ -443,6 +443,7 @@ const placeOrder = async (req, res) => {
       key_id: process.env.RAZORPAY_KEY,
       key_secret: process.env.RAZORPAY_SECRET,
     });
+    
     const userId = await getUserIdFromToken(req.cookies.token || req.session.token);
     let { totalprice, products, payment_method, address } = req.body;
     const orderDate = Date.now();
