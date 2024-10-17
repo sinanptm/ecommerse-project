@@ -124,5 +124,4 @@ module.exports = {
     requireLogin,
     notifications,
     handleUndefinedRoutes
-
 };

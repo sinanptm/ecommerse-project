@@ -26,6 +26,10 @@ app.use("/admin", adminRouter);
 
 app.use("/", userRoute);
 
+app.use((error,req,res,next)=>{
+  console.log(error);
+})
+
 app.listen(PORT, () => {
   console.log(`App is running on http://127.0.0.1:${PORT}`);
 });
