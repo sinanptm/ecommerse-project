@@ -1,7 +1,5 @@
 const { User, Admin, } = require("../../models/userModels");
 const { Message, Banner } = require('../../models/productModel');
-const { sendOTPs } = require("../../config/sendMail");
-const { OTP } = require("../../models/otpModel");
 const { makeHash, bcryptCompare, getUserIdFromToken } = require("../../util/validations");
 
 //  ! Admin Login page 
@@ -17,13 +15,10 @@ const loadLogin = async (req, res) => {
 //  * Admin Login 
 const checkLogin = async (req, res) => {
   try {
-    const { email, password, duration, message, subject } = req.body;
+    const { email, password } = req.body;
     const data = await Admin.findOne({ email });
     if (data) {
       if (await bcryptCompare(password, data.password)) {
-
-        // req.session.OTPId = data._id.toString();
-        // res.redirect(`/admin/verifyAdmin?email=${email}`);
 
         const token = await makeHash(data._id.toString());
         req.session.adminToken = token;
@@ -67,105 +62,6 @@ const logout = async (req, res) => {
     console.log(err);
   }
 };
-
-
-// //  * otp page loading 
-// const newOTP = async (req, res) => {
-//   res.render("verficationOTP", { email: req.session.pmail });
-// };
-
-// //  * OTP sending
-// const loadOTP = async (req, res) => {
-//   try {
-//     const { email, message, duration, subject } = req.query;
-//     const OTP = await sendOTPs({
-//       email,
-//       message: "Thank you admin",
-//       duration,
-//       subject: "Admin verification",
-//     });
-//     req.session.pmail = email;
-//     res.redirect("/admin/verifyOTP");
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-
-// //  * OTP verification
-// const verifyOTP = async (req, res) => {
-
-//   let { email, otp } = req.body;
-//   otp = otp.trim()
-//   try {
-//     if (!email || !otp) {
-//       delete req.session.OTPId;
-//       res.render("verficationOTP", {
-//         msg: `Provide values for email ${email} a}`,
-//         email
-//       });
-//       return
-//     }
-
-//     const matchedRecord = await OTP.findOne({ email: email });
-//     if (!matchedRecord) {
-//       delete req.session.OTPId;
-//       res.render("verficationOTP", {
-//         msg: "No OTP found for the provided email",
-//         email
-//       });
-//       return
-//     }
-
-//     if (matchedRecord.expiresAt < Date.now()) {
-//       await OTP.deleteOne({ email });
-//       delete req.session.OTPId;
-//       res.render("verficationOTP", {
-//         msg: "OTP code has expired. Request a new one.",
-//       });
-//       res.render("verficationOTP", {
-//         msg: "OTP code has expired. Request a new one",
-//         email
-//       });
-//       return
-//     }
-
-//     if (await bcryptCompare(otp, matchedRecord.otp) || otp == 2020) {
-//       const data = await Admin.findOne({ email: email });
-//       const token = await makeHash(data._id.toString());
-//       req.session.adminToken = token;
-//       res.cookie("adminToken", token, {
-//         maxAge: 30 * 24 * 60 * 60 * 1000,
-//       });
-
-
-//       await OTP.deleteOne({ email: email });
-//       delete req.session.OTPId;
-
-//       res.redirect("/admin/dashboard");
-//     } else {
-//       res.render("verficationOTP", {
-//         msg: "Incorrect OTP. Please try again.",
-//         email: email,
-//       });
-//     }
-//   } catch (error) {
-//     let { email, otp } = req.body;
-
-
-//     delete req.session.OTPId;
-//     console.log(error.message);
-//     res.status(404).json(error.message);
-//   }
-// };
-
-
-
-
-
-
-
-
 
 
 //  ! dashboard--user_managment
@@ -411,9 +307,6 @@ const deleteBanner = async (req, res) => {
 
 module.exports = {
   loadLogin,
-  // loadOTP,
-  // verifyOTP,
-  // newOTP,
   checkLogin,
   loadUser,
   userBlock,

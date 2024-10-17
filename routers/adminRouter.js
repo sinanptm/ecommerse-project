@@ -3,7 +3,8 @@ const adminRoute = express();
 const { upload, banner } = require("../util/multer");
 const { loadLogin, checkLogin, loadUser, userBlock, userUnblock, logout, loadMessages, sendReply, loadBanners, editBanner, addHomeBanner, deleteBanner } = require("../controllers/admin/userControlller");
 const { loadDashBoard, loadOrders, deleteOrder, editOrder, loadOrder,getSalesReport, loadCoupons, addCoupon, deleteCoupon, editCoupon } = require("../controllers/admin/orderController");
-const { loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct, laodCatagorie, addCatagorie, deleteCatogory, editCatogory, } = require("../controllers/admin/products&catogoire");
+const { loadProducts, loadAddProduct, addProduct, editProduct, loadEditProduct, deleteProduct, listProduct, unlistProduct } = require("../controllers/admin/products");
+const {laodCatagorie, addCatagorie, deleteCatogory, editCatogory } = require("../controllers/admin/category");
 const { is_loginRequired, is_admin, handleUndefinedRoutes } = require("../middlewares/adminAuth");
 
 
